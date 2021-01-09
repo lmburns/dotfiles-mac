@@ -18,6 +18,11 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+
 # MySQL
 export PATH=${PATH}:/usr/local/mysql/bin/
 
@@ -40,7 +45,6 @@ plugins=(git
 source $ZSH/oh-my-zsh.sh
 
 # p10k
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 [ ! -f ${XDG_CONFIG_HOME}/zsh/.p10k.zsh ] || source ${XDG_CONFIG_HOME}/zsh/.p10k.zsh
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
@@ -78,7 +82,7 @@ alias grep='grep --color=auto'
 alias diff='diff --color=auto'
 
 alias gls='gls -Flha --color --group-directories-first'
-alias nzsh='nvim ~/.zshrc'
+alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias ninit='nvim ~/.config/nvim/init.vim'
 alias rclonescripts='cd ~/Desktop/unix/mac/scripts/rclone_scripts'
 
@@ -170,9 +174,6 @@ vf() {fzf | xargs -r -I % $EDITOR % ;}
 
 
 #----- VARIABLES -----#
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
 export NOTMUCH_CONFIG="$XDG_CONFIG_HOME/notmuch/notmuch-config"
 export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
