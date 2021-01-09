@@ -34,11 +34,11 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
-[credential]
-	helper = osxkeychain
 [init]
 	defaultBranch = master
 [commit]
 	gpgSign = true
 [gpg]
 	program = /usr/local/bin/gpg
+[pull]
+	rebase = false

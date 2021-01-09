@@ -18,10 +18,11 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# MySQL
 export PATH=${PATH}:/usr/local/mysql/bin/
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/lucasburns/.oh-my-zsh"
+export ZSH="$XDG_CONFIG_HOME/zsh/.oh-my-zsh"
 
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -39,7 +40,8 @@ plugins=(git
 source $ZSH/oh-my-zsh.sh
 
 # p10k
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[ ! -f ${XDG_CONFIG_HOME}/zsh/.p10k.zsh ] || source ${XDG_CONFIG_HOME}/zsh/.p10k.zsh
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
@@ -76,7 +78,6 @@ alias grep='grep --color=auto'
 alias diff='diff --color=auto'
 
 alias gls='gls -Flha --color --group-directories-first'
-#alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 alias nzsh='nvim ~/.zshrc'
 alias ninit='nvim ~/.config/nvim/init.vim'
 alias rclonescripts='cd ~/Desktop/unix/mac/scripts/rclone_scripts'
@@ -154,25 +155,24 @@ alias pandoc='pandoc --highlight-style zenburn'
 # OpenVPN
 export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 
-# GPG
-export GPG_TTY=$(tty)
-# export PINENTRY_USER_DATA="USE_CURSES=1"
-
-# AutoJump
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
-# FZF=
-vf() {fzf | xargs -r -I % $EDITOR % ;}
-export FZF_DEFAULT_OPTS="--layout=reverse --height 40%"
-
 # SSH
 # eval $(ssh-add)
 # eval `ssh-agent`
 # ssh-add ~/.ssh/id_rsa
 
+# AutoJump
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
+
+#----- FUNCTIONS -----#
+# FZF=
+vf() {fzf | xargs -r -I % $EDITOR % ;}
+
+
 #----- VARIABLES -----#
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
 export NOTMUCH_CONFIG="$XDG_CONFIG_HOME/notmuch/notmuch-config"
 export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
@@ -181,3 +181,15 @@ export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
 export R_HISTFILE="$XDG_CONFIG_HOME/r/Rhistory"
 export R_PROFILE_USER="$XDG_CONFIG_HOME/r/Rprofile"
 export LESSHISTFILE="-"
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
+export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
+
+export FZF_DEFAULT_OPTS="--layout=reverse --height 40%"
+
+# GPG
+export GPG_TTY=$(tty)
+# export PINENTRY_USER_DATA="USE_CURSES=1"
+
+# Adding Anaconda Python to beginning of $PATH
+export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
+
