@@ -1,0 +1,44 @@
+[user]
+	name = burnsac5040
+	email = burnsac@me.com
+	signingKey = C011CBEF6628B679
+[alias]
+	a = add
+	addurl = remote set-url --add origin
+	b = branch
+	c = commit
+	cl = clone
+	cm = commit -m
+	co = checkout
+	csm = commit -S -m
+	d = diff
+	dc = diff --cached
+	l = log
+	lp = log --graph --pretty=format:'%Cred%h%Creset %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	lg = log --pretty='format:%h %G? %aN  %s'
+	lss = log --show-signature
+	pl = pull
+	ps = push
+	psf = push --force
+	rao = remote add origin
+	s = status --short
+	sh = stash
+	shp = stash pop
+	st = status
+	vd = difftool --tool=vimdiff --no-prompt
+    vdc = difftool --tool=vimdiff --no-prompt --cached
+[core]
+	autocrlf = input
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[credential]
+	helper = osxkeychain
+[init]
+	defaultBranch = master
+[commit]
+	gpgSign = true
+[gpg]
+	program = /usr/local/bin/gpg

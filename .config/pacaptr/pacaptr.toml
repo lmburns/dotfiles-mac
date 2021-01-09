@@ -1,0 +1,5 @@
+dry_run = false
+needed = true
+no_confirm = false
+no_cache = false
+default_pm = 'brew'
