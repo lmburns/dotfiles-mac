@@ -1,5 +1,5 @@
 [user]
-	name = burnsac5040
+	name = Lucas Burns
 	email = burnsac@me.com
 	signingKey = C011CBEF6628B679
 [alias]
@@ -39,7 +39,7 @@
 [init]
 	defaultBranch = master
 [commit]
-	gpgSign = true
+	gpgsign = true
 [gpg]
 	program = /usr/local/bin/gpg
 [pull]

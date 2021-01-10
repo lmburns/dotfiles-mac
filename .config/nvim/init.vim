@@ -35,15 +35,14 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mhinz/vim-startify'
 
-" Matching Parenthesis
-" Plug 'tpope/vim-surround'
-
 " Html
-Plug 'mattn/emmet-vim'
+" Plug 'mattn/emmet-vim'
 Plug 'shime/vim-livedown'
 Plug 'tpope/vim-commentary'
 Plug 'kevinoid/vim-jsonc'
 Plug 'alvan/vim-closetag'
+Plug 'turbio/bracey.vim'
+Plug 'ap/vim-css-color'
 
 "R
 Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
@@ -64,11 +63,10 @@ let g:mapleader = "."
 nnoremap d "_d
 vnoremap d "_d
 
-" Map Space to / and Ctrl+Space to ?
-" map <space> /
-" map <C-space> ?
-" map <silent> <leader><cr> :noh<cr>
-
+set title
+set noruler
+set noshowmode
+set encoding=utf-8
 set clipboard+=unnamedplus
 set tabstop=4
 set shiftwidth=4
@@ -76,8 +74,6 @@ set ignorecase " smartcase " Ignore case but become case sensitive when uppercas
 set number relativenumber " Show line number and relative line number
 
 set cursorline " Show current line where cursor is
-
-" Use mouse to select and resize windows, etc.
 set mouse=a  " Enable mouse in several mode // acn
 " set mousemodel=popup  " Set the behaviour of mouse
 
@@ -107,6 +103,9 @@ nnoremap S :%s//g<Left><Left>
 
 " Disables automatic commenting on newline:
 	autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" Open corresponding .pdf/.html or preview
+	nmap <leader>p :w <Bar> !open %<CR>
 
 
 " Inserts a space above or below
@@ -255,24 +254,14 @@ map <leader>nb :NERDTreeFromBookmark
 map <leader>nf :NERDTreeFind<cr>
 
 " junegunn - File Searching
-nnoremap <C-p> :FZF<CR>
+" nnoremap <C-p> :FZF<CR>
+map ; :Files<CR>
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit'
   \}
 
-map ; :Files<CR>
-
-" use alt+hjkl to move between split/vsplit panels
-" tnoremap <A-h> <C-\><C-n><C-w>h
-" tnoremap <A-j> <C-\><C-n><C-w>j
-" tnoremap <A-k> <C-\><C-n><C-w>k
-" tnoremap <A-l> <C-\><C-n><C-w>l
-" nnoremap <A-h> <C-w>h
-" nnoremap <A-j> <C-w>j
-" nnoremap <A-k> <C-w>k
-" nnoremap <A-l> <C-w>l
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -296,7 +285,7 @@ set t_BE=
 
 " Insert mode key word completion setting
 " set complete+=kspell complete-=w complete-=b complete-=u complete-=t
-set spelllang=en,cjk  " Spell languages
+set spelllang=en_us,cjk  " Spell languages
 set spellsuggest+=10  " The number of suggestions shown in the screen for z=
 nnoremap <silent> <F10> :set spell!<cr>
 inoremap <silent> <F10> <C-O>:set spell!<cr>
@@ -360,7 +349,7 @@ autocmd FileType rmd if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | 
 let R_assign_map = ';'
 let r_syntax_folding = 1
 let r_indent_op_pattern = '\(+\|-\|\*\|/\|=\|\~\|%\)$'
-let R_rconsole_height = 12
+let R_rconsole_height = 10
 
 " Press the space bar to send lines and selection to R console
 " vmap <Space> <Plug>RDSendSelection

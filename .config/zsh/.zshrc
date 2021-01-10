@@ -77,6 +77,11 @@ alias cp='cp -iv'
 alias rm='rm -iv'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
+alias ..='cd ..'
+alias ll='exa -FlahH'
+alias ls='exa -Flh'
+alias hs='history | grep'
+alias ka='killall'
 alias yt='youtube-dl --add-metadata -i'
 alias grep='grep --color=auto'
 alias diff='diff --color=auto'
@@ -94,8 +99,6 @@ alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@
 
 alias projects='cd ~/JupyterNotebook/projects'
 alias unx='cd ~/Desktop/unix/mac'
-alias config='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
-alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
 alias wget='wget --hsts-file ~/.config/wget/.wget-hsts'
 alias tsm='transmission-remote'
 alias tsmd='transmission-daemon'
@@ -110,9 +113,6 @@ alias cpumem="ps -A -o %cpu,%mem | awk '{ cpu += \$1; mem += \$2} END {print \"C
 alias qbt='qbt torrent'
 alias pyn='openpyn'
 alias oconn='openpyn us -t 10'
-alias ..='cd ..'
-alias ll='exa -FlahH'
-alias ls='exa -Flh'
 alias essh='eval $(ssh-add)'
 
 # RSync
@@ -132,6 +132,8 @@ alias pacman='pacaptr'
 alias fd='fd -Hi'
 
 # Github
+alias config='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
+alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
 alias gua='git remote | xargs -L1 git push --all'
 alias grm='ssh git@lucasburns.xyz -- grm'
 alias nbconvert='jupyter nbconvert --to python'
@@ -154,7 +156,7 @@ export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 export EDITOR='nvim'
 alias vim='nvim'
 alias vimdiff='nvim -d'
-alias pandoc='pandoc --highlight-style zenburn'
+# alias pandoc='pandoc --highlight-style zenburn'
 
 # OpenVPN
 export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
@@ -171,7 +173,7 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 #----- FUNCTIONS -----#
 # FZF=
 vf() {fzf | xargs -r -I % $EDITOR % ;}
-
+nfiles() {N="$(ls $1 | wc -l)"; echo "$N files in $1"}
 
 #----- VARIABLES -----#
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
@@ -185,7 +187,7 @@ export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 
-export FZF_DEFAULT_OPTS="--layout=reverse --height 40%"
+export FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border"
 
 # GPG
 export GPG_TTY=$(tty)
