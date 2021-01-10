@@ -41,7 +41,7 @@ Plug 'shime/vim-livedown'
 Plug 'tpope/vim-commentary'
 Plug 'kevinoid/vim-jsonc'
 Plug 'alvan/vim-closetag'
-Plug 'turbio/bracey.vim'
+Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
 Plug 'ap/vim-css-color'
 
 "R
@@ -87,6 +87,13 @@ set foldlevel=2
 
 " Replace all is aliased to S.
 nnoremap S :%s//g<Left><Left>
+
+if (has("termguicolors"))
+ set termguicolors
+endif
+syntax enable
+colorscheme kimbie
+
 
 " Interpret .md files, etc. as .markdown
 	let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
@@ -233,13 +240,6 @@ autocmd FileType json syntax match Comment +\/\/.\+$+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Config Section
-if (has("termguicolors"))
- set termguicolors
-endif
-syntax enable
-colorscheme kimbie
-
 " NERDTREE
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
@@ -379,3 +379,12 @@ if has('gui_running') || &termguicolors
   let rout_color_warn     = 'guifg=#f14a68'
   let rout_color_index    = 'guifg=#d3af86'
 endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Bracey
+nmap <leader>b :Bracey<CR>
+nmap <leader>r :BraceyReload<CR>
+
+
