@@ -5,6 +5,7 @@
 [alias]
 	a = add
 	addurl = remote set-url --add origin
+	ammend = commit --amend --reuse-message=HEAD
 	b = branch
 	c = commit
 	cl = clone
@@ -13,7 +14,7 @@
 	csm = commit -S -m
 	d = diff
 	dc = diff --cached
-	l = log
+	l = log -p
 	lp = log --graph --pretty=format:'%Cred%h%Creset %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 	lg = log --pretty='format:%h %G? %aN  %s'
 	lss = log --show-signature
@@ -42,5 +43,7 @@
 	gpgsign = true
 [gpg]
 	program = /usr/local/bin/gpg
+[help]
+	autocorrect = 1
 [pull]
 	rebase = false

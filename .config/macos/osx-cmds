@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# If you want to view the download history
+sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 'select LSQuarantineDataURLString from LSQuarantineEvent'| sort > ~/quarantine
+
+# Delete download history
+sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 'delete from LSQuarantineEvent'
+
+# Disable gatekeeper if need be
+sudo spctl --master-disable
+
+# Hide root user from login screen
+sudo defaults write /Library/Preferences/com.apple.loginwindow SHOWOTHERUSERS_MANAGED -bool FALSE
+
+# Disable spotlight in favor of Alfred
+# csrutil status # view status
+# csrutil disable # go into recovery and type this (disables SIP), then reboot
+# sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist. # type this after rebooting
+
+# Hide Spotlight tray-icon (and subsequent helper)
+sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
+
+# Delete local time machine backups (because you can't disable them anymore)
+for d in $(tmutil listlocalsnapshotdates | grep "-"); do sudo tmutil deletelocalsnapshots $d; done
+
+# If you want to do them manually
+# tmutil listlocalsnapshots /
+# sudo tmutil deletelocalsnapshots
+# sudo tmutil deletelocalsnapshots 2018-03-01-002010
+
+# Try this and see if it works to disable local timemachines altoogether
+# hash tmutil &> /dev/null && sudo tmutil disablelocal
+
+
+# Disable asking if you want to open application
+defaults write com.apple.LaunchServices LSQuarantine -bool false
+
+# Disable crash reporter
+defaults write com.apple.CrashReporter DialogType -string "none"
+
+# Restart computer automatically if it freezes
+sudo systemsetup -setrestartfreeze on
+
+# Show battery percentage in status bar
+defaults write com.apple.menuextra.battery ShowPercent YES
+
+# Ask for password immediately after screen sleeps
+defaults write com.apple.screensaver askForPassword -int 1
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+# Show full path in finder status bar
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES
+killall Finder
+
+# Show all filename extensions in finder
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+# Allow text selection in Quick Look
+defaults write com.apple.finder QLEnableTextSelection -bool true
+
+# Disable warning about file extension change
+default write com.apple.finder FXEnableExtensionChangeWarning --bool false
+
+# Disable .DS_Store on USB
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+# Show the /Library and /Volumes folders
+chflags nohidden ~/Library && xattr -d com.apple.FinderInfo ~/Library
+sudo chflags nohidden /Volumes
+
+# Stop sending search queries to Apple in Safari
+defaults write com.apple.Safari UniversalSearchEnabled -bool false
+defaults write com.apple.Safari SuppressSearchSuggestions -bool true
+defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
+
+# Change screen shot location and image type
+mkdir -p ~/Desktop/screenshots
+defaults write com.apple.screencapture location -string "${HOME}/Desktop/screenshots"
+defaults write com.apple.screencapture type -string "png"
+

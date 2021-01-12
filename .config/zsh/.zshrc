@@ -124,16 +124,17 @@ alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" ~/Desktop/unix /Volumes/S
 alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/manual'
 
 alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@lucasburns.xyz:/ /Volumes/SSD/server'
-# alias rsyncsrv='rsync -auP root@lucasburns.xyz:/ /Volumes/SSD/server'
 
 alias less='vimpager'
 alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
+alias p='pacaptr'
 alias fd='fd -Hi'
 
 # Github
 alias config='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
 alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
+alias cua='c push home master && c push origin master'
 alias gua='git remote | xargs -L1 git push --all'
 alias grm='ssh git@lucasburns.xyz -- grm'
 alias nbconvert='jupyter nbconvert --to python'
@@ -141,7 +142,7 @@ alias g='git'
 alias magit='nvim -c MagitOnly'
 alias ngc='nvim .git/config'
 
-alias www='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/mac/srv/www-md'
+alias www='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/www/www-md'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 

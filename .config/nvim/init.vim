@@ -50,8 +50,6 @@ Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
 
 Plug 'jreybert/vimagit'
 
-"}}
-
 call plug#end()"Config Section
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -62,9 +60,9 @@ call plug#end()"Config Section
 let g:mapleader = "."
 nnoremap d "_d
 vnoremap d "_d
+nnoremap Y y$
 
 set title
-set noruler
 set noshowmode
 set encoding=utf-8
 set clipboard+=unnamedplus
@@ -78,7 +76,9 @@ set mouse=a  " Enable mouse in several mode // acn
 " set mousemodel=popup  " Set the behaviour of mouse
 
 set undofile " Persistent undo
-set noswapfile
+" set noswapfile
+set backupdir=~/.vim/backups
+
 " set foldmethod=marker
 set foldmethod=indent
 set foldnestmax=10
@@ -114,6 +114,9 @@ colorscheme kimbie
 " Open corresponding .pdf/.html or preview
 	nmap <leader>p :w <Bar> !open %<CR>
 
+" Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
+	set splitbelow splitright
+
 
 " Inserts a space above or below
 nnoremap <silent> [<space>  :<c-u>put!=repeat([''],v:count)<bar>']+1<cr>
@@ -137,7 +140,6 @@ map <C-l> <C-W>l
 let maplocalleader = ',' " For NVim-R
 
 " Coc Coding
-" [https://awesomeopensource.com/project/neoclide/coc.nvim]
 set hidden
 set nobackup
 set nowritebackup
