@@ -20,13 +20,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} " Coding plugin
 Plug 'jpalardy/vim-slime', { 'for': 'python' }
 Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
-Plug 'machakann/vim-swap'
 Plug 'jupyter-vim/jupyter-vim'
-
 Plug 'PeterRincker/vim-searchlight'
 
 " Show match number for incsearch
-Plug 'osyo-manga/vim-anzu'
 Plug 'itchyny/vim-highlighturl'
 " Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }
 
@@ -62,8 +59,8 @@ nnoremap d "_d
 vnoremap d "_d
 nnoremap Y y$
 
+set nocompatible
 set title
-set noshowmode
 set encoding=utf-8
 set clipboard+=unnamedplus
 set tabstop=4
@@ -92,14 +89,15 @@ if (has("termguicolors"))
  set termguicolors
 endif
 syntax enable
-colorscheme kimbie
+colorscheme kimbie-black
 
-
-" Interpret .md files, etc. as .markdown
+" Ensure files are read as what I want:
 	let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
-
-" Make calcurse notes markdown compatible:
+	map <leader>v :VimwikiIndex
+	let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
 	autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
+	autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
+	autocmd BufRead,BufNewFile *.tex set filetype=tex
 
 " Enable autocompletion:
 	" set wildmode=longest,list,full
@@ -117,6 +115,27 @@ colorscheme kimbie
 " Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
 	set splitbelow splitright
 
+" Compile rmarkdown
+	autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
+	autocmd Filetype rmd map <F6> :RMarkdown pdf latex_engine="xelatex", toc=TRUE<CR>
+
+" Compile markdown
+	autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
+	autocmd FileType md nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
+
+
+" Compile document, be it groff/LaTeX/markdown/etc.
+	" map <leader>c :w! \| !compiler "<c-r>%"<CR>
+
+" Pandoc
+     let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
+
+	command! -nargs=* RunSilent
+		  \ | execute ':silent !'.'<args>'
+		  \ | execute ':redraw!'
+	nmap <Leader>pc :RunSilent pandoc -o /tmp/vim-pandoc-out.pdf %<CR>
+	nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
+
 
 " Inserts a space above or below
 nnoremap <silent> [<space>  :<c-u>put!=repeat([''],v:count)<bar>']+1<cr>
@@ -129,6 +148,10 @@ map <leader>tc :tabclose<cr>    " To close the current tab.
 map <leader>tm :tabmove<cr>     " To move the current tab to next position.
 map <leader>tn :tabn<cr>        " To swtich to next tab.
 map <leader>tp :tabp<cr>        " To switch to previous tab.
+
+" Buffers
+map <leader>bp :bprev<CR>
+map <leader>bn :bnext<CR>
 
 " Smart way to move between windows
 map <C-j> <C-W>j
@@ -322,7 +345,7 @@ endif
 
 " Airline
 let g:airline_powerline_fonts = 1
-let g:airline_theme='kimbie'
+let g:airline_theme='gruvbox'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -386,7 +409,7 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Bracey
-nmap <leader>b :Bracey<CR>
+nmap <leader>br :Bracey<CR>
 nmap <leader>r :BraceyReload<CR>
 
 

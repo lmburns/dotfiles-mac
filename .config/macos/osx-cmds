@@ -1,7 +1,11 @@
 #!/bin/bash
 
+osascript -e 'tell application "System Preferences" to quit'
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
 # If you want to view the download history
-sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 'select LSQuarantineDataURLString from LSQuarantineEvent'| sort > ~/quarantine
+# sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 'select LSQuarantineDataURLString from LSQuarantineEvent'| sort > ~/quarantine
 
 # Delete download history
 sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 'delete from LSQuarantineEvent'
@@ -78,4 +82,7 @@ defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
 mkdir -p ~/Desktop/screenshots
 defaults write com.apple.screencapture location -string "${HOME}/Desktop/screenshots"
 defaults write com.apple.screencapture type -string "png"
+
+# Build the locate database (it may take a while, but useful)
+sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
 
