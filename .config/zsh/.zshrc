@@ -40,7 +40,8 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(git
 		zsh-autosuggestions
 		autojump
-		pass)
+		pass
+		dotbare)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -50,6 +51,13 @@ source $ZSH/oh-my-zsh.sh
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 source ~/.bash_profile
+
+# fzf keybindings fix
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# AutoJump
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
 
 # Setting PATH for Python 3.7
 PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
@@ -75,6 +83,7 @@ unset __conda_setup
 # Aliases
 alias cp='cp -iv'
 alias rm='rm -iv'
+alias rr='rm -rf'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
 alias ..='cd ..'
@@ -134,7 +143,7 @@ alias fd='fd -Hi'
 # Github
 alias config='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
 alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
-alias cua='c push home master && c push origin master'
+alias cua='cps >/dev/null 2>&1'
 alias gua='git remote | xargs -L1 git push --all'
 alias grm='ssh git@lucasburns.xyz -- grm'
 alias nbconvert='jupyter nbconvert --to python'
@@ -146,8 +155,7 @@ alias www='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Deskt
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 
-# fzf keybindings fix
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+alias z='zathura'
 
 # NNN
 export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
@@ -167,8 +175,6 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 # eval `ssh-agent`
 # ssh-add ~/.ssh/id_rsa
 
-# AutoJump
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
 
 
 #----- FUNCTIONS -----#
@@ -189,6 +195,12 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 
 export FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border"
+
+alias db='dotbare'
+export DOTBARE_DIR="$XDG_DATA_HOME/cfg"
+export DOTBARE_TREE="$HOME"
+export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare"
+export DOTBARE_FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border"
 
 # GPG
 export GPG_TTY=$(tty)
