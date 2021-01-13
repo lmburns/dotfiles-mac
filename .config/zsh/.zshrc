@@ -98,7 +98,7 @@ alias diff='diff --color=auto'
 alias gls='gls -Flha --color --group-directories-first'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias ninit='nvim ~/.config/nvim/init.vim'
-alias rclonescripts='cd ~/Desktop/unix/mac/scripts/rclone_scripts'
+alias scripts='cd ~/Desktop/unix/mac/scripts'
 
 alias sme='mbsync burnsac@me.com'
 alias mwme='mw -y burnsac@me.com'
