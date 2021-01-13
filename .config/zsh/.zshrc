@@ -143,10 +143,6 @@ alias fd='fd -Hi'
 # Github
 alias config='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
 alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
-<<<<<<< HEAD
-alias cua='cps >/dev/null 2>&1'
-=======
->>>>>>> 2b38d893769ae8e2969724d1761dbf23df7a787a
 alias gua='git remote | xargs -L1 git push --all'
 alias grm='ssh git@lucasburns.xyz -- grm'
 alias nbconvert='jupyter nbconvert --to python'
