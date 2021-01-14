@@ -1,7 +1,7 @@
 {
   "coc.preferences.useQuickfixForLocations": true,
   "coc.preferences.snippets.enable": true,
-  "coc.preferences.extensionUpdateCheck": "never",
+  "coc.preferences.extensionUpdateCheck": "daily",
   "suggest.disableMenu": true,
   "suggest.snippetIndicator": "",
   "suggest.noselect": false

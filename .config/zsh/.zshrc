@@ -35,18 +35,17 @@ plugins=(git
 		zsh-autosuggestions
 		autojump
 		pass
-		dotbare
-		vi-mode)
+		dotbare)
 
 source $ZSH/oh-my-zsh.sh
 
 # ZSH Menu
-zstyle ':completion:*' menu select
-zmodload zsh/complist
-bindkey -M menuselect 'h' vi-backward-char
-bindkey -M menuselect 'k' vi-up-line-or-history
-bindkey -M menuselect 'l' vi-forward-char
-bindkey -M menuselect 'j' vi-down-line-or-history
+# zstyle ':completion:*' menu select
+# zmodload zsh/complist
+# bindkey -M menuselect 'h' vi-backward-char
+# bindkey -M menuselect 'k' vi-up-line-or-history
+# bindkey -M menuselect 'l' vi-forward-char
+# bindkey -M menuselect 'j' vi-down-line-or-history
 
 
 # p10k
@@ -64,8 +63,8 @@ source ~/.bash_profile
 
 
 # Setting PATH for Python 3.7
-PATH="/Library/Frameworks/Python.framework/Versions/3.8/bin:${PATH}"
-export PATH
+# PATH="/Library/Frameworks/Python.framework/Versions/3.8/bin:${PATH}"
+# export PATH
 
 # MySQL
 export PATH=${PATH}:/usr/local/mysql/bin/
@@ -182,7 +181,6 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 #----- FUNCTIONS -----#
 # FZF=
 vf() {fzf | xargs -r -I % $EDITOR % ;}
-nfiles() {N="$(ls $1 | wc -l)"; echo "$N files in $1"}
 
 #----- VARIABLES -----#
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"

@@ -5,7 +5,7 @@
 " |_| |_|\___|\___/ \_/ |_|_| |_| |_|
 
 call plug#begin("~/.vim/plugged")
-  " Plugin Section
+" Plugin Section
 Plug 'scrooloose/nerdtree'
 Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -16,16 +16,20 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vimwiki/vimwiki'
 Plug 'zhou13/vim-easyescape'
 
+" Themes
+Plug 'sainnhe/gruvbox-material'
+Plug 'hardcoreplayers/gruvbox9'
+Plug 'morhetz/gruvbox'
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Coding plugin
 Plug 'jpalardy/vim-slime', { 'for': 'python' }
 Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
 Plug 'jupyter-vim/jupyter-vim'
-Plug 'PeterRincker/vim-searchlight'
 
 " Show match number for incsearch
 Plug 'itchyny/vim-highlighturl'
-" Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }
+Plug 'PeterRincker/vim-searchlight'
 
 " Statusbar
 Plug 'vim-airline/vim-airline'
@@ -33,7 +37,6 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'mhinz/vim-startify'
 
 " Html
-" Plug 'mattn/emmet-vim'
 Plug 'shime/vim-livedown'
 Plug 'tpope/vim-commentary'
 Plug 'kevinoid/vim-jsonc'
@@ -43,7 +46,6 @@ Plug 'ap/vim-css-color'
 
 "R
 Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
-" Plug 'gaalcaras/ncm-R'
 
 Plug 'jreybert/vimagit'
 
@@ -76,13 +78,12 @@ set title
 set noswapfile
 set encoding=utf-8
 set clipboard+=unnamedplus
-set tabstop=4
-set shiftwidth=4
+set tabstop=4 shiftwidth=4 expandtab
 set ignorecase " smartcase " Ignore case // be sensitive when uppercase
 set number " Show line number and relative line number
 	nnoremap <silent><F3> :set relativenumber!<CR>
-set scrolloff=2 " Cusor is 2 lines from bottom of page
 
+set scrolloff=2 " Cusor is 2 lines from bottom of page
 set cursorline " Show current line where cursor is
 set mouse=a  " Enable mouse in several mode // acn
 " set mousemodel=popup  " Set the behaviour of mouse
@@ -102,7 +103,9 @@ if (has("termguicolors"))
 endif
 
 syntax enable
-colorscheme kimbie-black
+" colorscheme kimbie-black
+colorscheme gruvbox-material
+
 
 " Ensure files are read as what I want:
 	let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
@@ -337,6 +340,10 @@ inoremap <silent> <F10> <C-O>:set spell!<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Running Python
+let g:pymode_options_max_line_length=120
+let g:syntastic_python_pylint_post_args="--max-line-length=120"
+
+
 autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 
@@ -353,6 +360,7 @@ else
 endif
 
 " " JupyterVim
+let g:pymode_lint_ignore = "E501,W"
 " let g:vim_virtualenv_path = '/Users/lucasburns/opt/anaconda3'
 " if exists('g:vim_virtualenv_path')
 "     pythonx import os; import vim
@@ -364,7 +372,7 @@ endif
 
 " Airline
 let g:airline_powerline_fonts = 1
-let g:airline_theme='gruvbox'
+let g:airline_theme='gruvbox_material'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -406,26 +414,49 @@ autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a
 autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a
 autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>
 
-" let Rout_more_colors = 1
+let Rout_more_colors = 1
+" Kimbie
+" if has('gui_running') || &termguicolors
+"   let rout_color_input    = 'guifg=#9e9e9e'
+"   let rout_color_normal   = 'guifg=#f79a32'
+"   let rout_color_number   = 'guifg=#889b4a'
+"   let rout_color_integer  = 'guifg=#a3b95a'
+"   let rout_color_float    = 'guifg=#98676a'
+"   let rout_color_complex  = 'guifg=#fcaf00'
+"   let rout_color_negnum   = 'guifg=#d7afff'
+"   let rout_color_negfloat = 'guifg=#d6afff'
+"   let rout_color_date     = 'guifg=#4c96a8'
+"   let rout_color_true     = 'guifg=#088649'
+"   let rout_color_false    = 'guifg=#ff5d5e'
+"   let rout_color_inf      = 'guifg=#f06431'
+"   let rout_color_constant = 'guifg=#5fafcf'
+"   let rout_color_string   = 'guifg=#502166'
+"   let rout_color_error    = 'guifg=#ffffff guibg=#dc3958'
+"   let rout_color_warn     = 'guifg=#f14a68'
+"   let rout_color_index    = 'guifg=#d3af86'
+" endif
+
+" Gruvbox
 if has('gui_running') || &termguicolors
-  let rout_color_input    = 'guifg=#9e9e9e'
-  let rout_color_normal   = 'guifg=#f79a32'
-  let rout_color_number   = 'guifg=#889b4a'
-  let rout_color_integer  = 'guifg=#a3b95a'
-  let rout_color_float    = 'guifg=#98676a'
-  let rout_color_complex  = 'guifg=#fcaf00'
-  let rout_color_negnum   = 'guifg=#d7afff'
-  let rout_color_negfloat = 'guifg=#d6afff'
-  let rout_color_date     = 'guifg=#4c96a8'
-  let rout_color_true     = 'guifg=#088649'
-  let rout_color_false    = 'guifg=#ff5d5e'
-  let rout_color_inf      = 'guifg=#f06431'
-  let rout_color_constant = 'guifg=#5fafcf'
-  let rout_color_string   = 'guifg=#502166'
-  let rout_color_error    = 'guifg=#ffffff guibg=#dc3958'
-  let rout_color_warn     = 'guifg=#f14a68'
+  let rout_color_input    = 'guifg=#e2cca9'
+  let rout_color_normal   = 'guifg=#d4be98'
+  let rout_color_number   = 'guifg=#80aa9e'
+  let rout_color_integer  = 'guifg=#8bba7f'
+  let rout_color_float    = 'guifg=#d3869b'
+  let rout_color_complex  = 'guifg=#e9b143'
+  let rout_color_negnum   = 'guifg=#f28534'
+  let rout_color_negfloat = 'guifg=#e78a4e'
+  let rout_color_date     = 'guifg=#ea6962'
+  let rout_color_true     = 'guifg=#b0b846'
+  let rout_color_false    = 'guifg=#f2594b'
+  let rout_color_inf      = 'guifg=#f28534'
+  let rout_color_constant = 'guifg=#7daea3'
+  let rout_color_string   = 'guifg=#266b79'
+  let rout_color_error    = 'guifg=#d4be98 guibg=#d3869b'
+  let rout_color_warn     = 'guifg=#fb4934'
   let rout_color_index    = 'guifg=#d3af86'
 endif
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
