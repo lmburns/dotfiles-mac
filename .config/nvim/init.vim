@@ -52,42 +52,55 @@ call plug#end()"Config Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """" General Mappings
-
-" Resetting cutting, instead use v/V x
 let g:mapleader = "."
-nnoremap d "_d
-vnoremap d "_d
-nnoremap Y y$
 
+" <F3> = turn on/off relative line numbers
+" <F4> = compile markdown file using pandoc
+" <F5> = compile rmarkdown based on `output`
+" <F6> = compile rmarkdown (only pdf) using `RMarkdown`
+" <F9> = compile python
+" <F10> = spell check
+
+
+" Make deleting line not go to clipbard
+	nnoremap d "_d
+	vnoremap d "_d
+" Yank line without newline character
+	nnoremap Y y$
+" Make cut not go to clipboard
+	nnoremap x "_dl
+
+" set path+=**
 set nocompatible
 set title
+set noswapfile
 set encoding=utf-8
 set clipboard+=unnamedplus
 set tabstop=4
 set shiftwidth=4
-set ignorecase " smartcase " Ignore case but become case sensitive when uppercase
-set number relativenumber " Show line number and relative line number
+set ignorecase " smartcase " Ignore case // be sensitive when uppercase
+set number " Show line number and relative line number
+	nnoremap <silent><F3> :set relativenumber!<CR>
+set scrolloff=2 " Cusor is 2 lines from bottom of page
 
 set cursorline " Show current line where cursor is
 set mouse=a  " Enable mouse in several mode // acn
 " set mousemodel=popup  " Set the behaviour of mouse
 
 set undofile " Persistent undo
-" set noswapfile
-set backupdir=~/.vim/backups
 
-" set foldmethod=marker
 set foldmethod=indent
 set foldnestmax=10
 set nofoldenable
 set foldlevel=2
 
 " Replace all is aliased to S.
-nnoremap S :%s//g<Left><Left>
+	nnoremap S :%s//g<Left><Left>
 
 if (has("termguicolors"))
  set termguicolors
 endif
+
 syntax enable
 colorscheme kimbie-black
 
@@ -100,8 +113,8 @@ colorscheme kimbie-black
 	autocmd BufRead,BufNewFile *.tex set filetype=tex
 
 " Enable autocompletion:
-	" set wildmode=longest,list,full
-	" set wildmenu
+	set wildmode=longest,list,full
+	set wildmenu
 
 " Automatically deletes all tralling whitespace on save.
 	autocmd BufWritePre * %s/\s\+$//e
@@ -118,6 +131,7 @@ colorscheme kimbie-black
 " Compile rmarkdown
 	autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
 	autocmd Filetype rmd map <F6> :RMarkdown pdf latex_engine="xelatex", toc=TRUE<CR>
+	nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
 
 " Compile markdown
 	autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
@@ -135,11 +149,12 @@ colorscheme kimbie-black
 		  \ | execute ':redraw!'
 	nmap <Leader>pc :RunSilent pandoc -o /tmp/vim-pandoc-out.pdf %<CR>
 	nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
+	nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
 
 
 " Inserts a space above or below
-nnoremap <silent> [<space>  :<c-u>put!=repeat([''],v:count)<bar>']+1<cr>
-nnoremap <silent> ]<space>  :<c-u>put =repeat([''],v:count)<bar>'[-1<cr>
+	nnoremap <silent> [<space>  :<c-u>put!=repeat([''],v:count)<bar>']+1<cr>
+	nnoremap <silent> ]<space>  :<c-u>put =repeat([''],v:count)<bar>'[-1<cr>
 
 " Tabs & Navigation
 map <leader>nt :tabnew<cr> 		" To create a new tab.
@@ -304,9 +319,9 @@ set t_BE=
 
 " Completion behaviour
 " set completeopt+=noinsert  " Auto select the first completion entry
-" set completeopt+=menuone  " Show menu even if there is only one item
-" set completeopt-=preview  " Disable the preview window
-" set pumheight=10  " Maximum number of items to show in popup menu
+set completeopt+=menuone  " Show menu even if there is only one item
+set completeopt-=preview  " Disable the preview window
+set pumheight=10  " Maximum number of items to show in popup menu
 
 " Insert mode key word completion setting
 " set complete+=kspell complete-=w complete-=b complete-=u complete-=t
@@ -328,18 +343,22 @@ autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellesca
 " imap <C-x> <Esc>:w<CR>:!clear;python %<CR>
 " noremap <C-x> :w !python %<CR>
 " inoremap <C-x> <ESC>:w !python %<CR>
-let g:python_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python'
+" let g:python_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
 
-" JupyterVim
 if has('nvim')
-    let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python'
+    let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
 else
     set pyxversion=3
-
-    " OSX
-    set pythonthreedll=/Library/Frameworks/Python.framework/Versions/3.6/Python
+    set pythonthreedll=/Library/Frameworks/Python.framework/Versions/3.8/Python
 endif
 
+" " JupyterVim
+" let g:vim_virtualenv_path = '/Users/lucasburns/opt/anaconda3'
+" if exists('g:vim_virtualenv_path')
+"     pythonx import os; import vim
+"     pythonx activate_this = os.path.join(vim.eval('g:vim_virtualenv_path'), 'bin/activate_this.py')
+"     pythonx with open(activate_this) as f: exec(f.read(), {'__file__': activate_this})
+" endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -369,16 +388,19 @@ let g:livedown_browser = "firefox"
 autocmd FileType r if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
 autocmd FileType rmd if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
 
-" Run ;RStop // :RKill to quit
+" Open shortcuts
+nmap <Leader>rs :vs ~/JupyterNotebook/projects/RStudio/nvim-r.md<CR>
 
+
+" Run ;RStop // :RKill to quit
 let R_assign_map = ';'
 let r_syntax_folding = 1
 let r_indent_op_pattern = '\(+\|-\|\*\|/\|=\|\~\|%\)$'
 let R_rconsole_height = 10
 
 " Press the space bar to send lines and selection to R console
-" vmap <Space> <Plug>RDSendSelection
-" nmap <Space> <Plug>RDSendLine
+vmap <Space> <Plug>RDSendSelection
+nmap <Space> <Plug>RDSendLine
 
 autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a
 autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a

@@ -23,14 +23,8 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
-# MySQL
-export PATH=${PATH}:/usr/local/mysql/bin/
-
 # Path to your oh-my-zsh installation.
 export ZSH="$XDG_CONFIG_HOME/zsh/.oh-my-zsh"
-
-# Syntax Highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
@@ -41,9 +35,19 @@ plugins=(git
 		zsh-autosuggestions
 		autojump
 		pass
-		dotbare)
+		dotbare
+		vi-mode)
 
 source $ZSH/oh-my-zsh.sh
+
+# ZSH Menu
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+
 
 # p10k
 [ ! -f ${XDG_CONFIG_HOME}/zsh/.p10k.zsh ] || source ${XDG_CONFIG_HOME}/zsh/.p10k.zsh
@@ -52,7 +56,7 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 source ~/.bash_profile
 
-# fzf keybindings fix
+# FZF keybindings fix
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # AutoJump
@@ -60,8 +64,11 @@ source ~/.bash_profile
 
 
 # Setting PATH for Python 3.7
-PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
+PATH="/Library/Frameworks/Python.framework/Versions/3.8/bin:${PATH}"
 export PATH
+
+# MySQL
+export PATH=${PATH}:/usr/local/mysql/bin/
 
 # Homebrew
 export PATH="/usr/local/bin:$PATH"
@@ -94,6 +101,7 @@ alias ka='killall'
 alias yt='youtube-dl --add-metadata -i'
 alias grep='grep --color=auto'
 alias diff='diff --color=auto'
+alias sha='shasum -a 256'
 
 alias gls='gls -Flha --color --group-directories-first'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
@@ -156,13 +164,9 @@ alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 
 alias z='zathura'
 
-# NNN
-export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
-export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
-# set --export NNN_FIFO "/tmp/nnn.fifo"
 
 export EDITOR='nvim'
-alias vim='nvim'
+alias vi='nvim'
 alias vimdiff='nvim -d'
 # alias pandoc='pandoc --highlight-style zenburn'
 
@@ -173,7 +177,6 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 # eval $(ssh-add)
 # eval `ssh-agent`
 # ssh-add ~/.ssh/id_rsa
-
 
 
 #----- FUNCTIONS -----#
@@ -201,10 +204,18 @@ export DOTBARE_TREE="$HOME"
 export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare"
 export DOTBARE_FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border"
 
+# NNN
+export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
+export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
+# set --export NNN_FIFO "/tmp/nnn.fifo"
+
 # GPG
 export GPG_TTY=$(tty)
 # export PINENTRY_USER_DATA="USE_CURSES=1"
 
 # Adding Anaconda Python to beginning of $PATH
 export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
+
+# Syntax Highlighting
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 

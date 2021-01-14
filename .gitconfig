@@ -26,6 +26,7 @@
 	sh = stash
 	shp = stash pop
 	st = status
+	tr = ls-tree -r master --name-only
 	vd = difftool --tool=vimdiff --no-prompt
     vdc = difftool --tool=vimdiff --no-prompt --cached
 [core]
