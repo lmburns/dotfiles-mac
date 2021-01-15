@@ -37,11 +37,12 @@ plugins=(git
 		zsh-autosuggestions
 		autojump
 		pass
-		dotbare)
+		dotbare
+        vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
-ZSH Menu
+# ZSH Menu
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 bindkey -M menuselect 'h' vi-backward-char
@@ -135,6 +136,8 @@ alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" ~/Desktop/unix /Volumes/S
 alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/manual'
 
 alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@lucasburns.xyz:/ /Volumes/SSD/server'
+alias www='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/www/www-md'
+alias rsyncwww='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/Desktop/unix/www /Volumes/SSD'
 
 alias z='zathura'
 alias less='vimpager'
@@ -152,8 +155,6 @@ alias nbconvert='jupyter nbconvert --to python'
 alias g='git'
 alias magit='nvim -c MagitOnly'
 alias ngc='nvim .git/config'
-
-alias www='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/www/www-md'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 

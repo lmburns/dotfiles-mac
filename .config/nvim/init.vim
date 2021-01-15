@@ -47,6 +47,7 @@ Plug 'ap/vim-css-color'
 Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
 
 Plug 'jreybert/vimagit'
+" Checkout vim notes
 
 call plug#end()"Config Section
 
@@ -96,6 +97,8 @@ set foldlevel=2
 
 " Replace all is aliased to S.
 	nnoremap S :%s//g<Left><Left>
+" Replace quotes on the line
+    nmap <leader>Q :s/'/"/g<CR>
 
 if (has("termguicolors"))
  set termguicolors
@@ -120,7 +123,7 @@ colorscheme gruvbox-material
 
 " Automatically deletes all tralling whitespace on save.
 	autocmd BufWritePre * %s/\s\+$//e           " End of lines
-    autocmd BufWritePre * %s#\($\n\s*\)\+\%$##  " End of file
+    autocmd BufWritePre * %s#\($\n\s*\)\+\%$##e  " End of file
 
 
 " Disables automatic commenting on newline:
@@ -136,7 +139,6 @@ colorscheme gruvbox-material
 " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
 	autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
 	autocmd Filetype rmd map <F6> :RMarkdown pdf latex_engine="xelatex", toc=TRUE<CR>
-	nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
 
 " Compile markdown
 	autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
@@ -154,6 +156,7 @@ colorscheme gruvbox-material
 		  \ | execute ':redraw!'
 	nmap <Leader>pc :RunSilent pandoc -o /tmp/vim-pandoc-out.pdf %<CR>
 	nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
+    nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
 	nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
 
 
@@ -178,6 +181,23 @@ map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
+
+" SyntaxQuery: Display the syntax stack at current cursor position
+function! s:syntax_query() abort
+  for id in synstack(line("."), col("."))
+    execute 'hi' synIDattr(id, "name")
+  endfor
+endfunction
+command! SQ call s:syntax_query()
+
+" autocmd Syntax * syntax keyword INFO contained NOTE
+" autocmd Syntax * syntax keyword INFO containedin=.*Comment
+" autocmd Syntax * syntax keyword InfoMarker INFO containedin=.*Comment,vimLineComment,vimCommentTitle,rComment,rCommentTodo | highlight def link InfoMarker TODO
+autocmd Syntax * syntax keyword INFO containedin=.*Comment,vimLineComment,vimCommentTitle,vimTodo,rComment,rTodoParen,rCommentTodo,pythonTodo,pythonComment
+" autocmd Syntax * syntax keyword infocomm INFO containedin=.*Comment | highlight def link infocomm TODO
+" autocmd Syntax * syntax keyword myTodo INFO NOTES containedin=ALL | highlight def link myTodo TODO
+" autocmd Syntax * syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let maplocalleader = ',' " For NVim-R
@@ -342,6 +362,8 @@ inoremap <silent> <F10> <C-O>:set spell!<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Running Python
+" :g/^\s*#\sIn/d = delete nbconvert 'In[0]' lines
+" :g/^$/,/./-j = delete multiple blank lines
 let g:pymode_options_max_line_length=120
 let g:syntastic_python_pylint_post_args="--max-line-length=120"
 
@@ -361,7 +383,7 @@ else
     set pythonthreedll=/Library/Frameworks/Python.framework/Versions/3.8/Python
 endif
 
-" " JupyterVim
+" JupyterVim
 let g:pymode_lint_ignore = "E501,W"
 " let g:vim_virtualenv_path = '/Users/lucasburns/opt/anaconda3'
 " if exists('g:vim_virtualenv_path')

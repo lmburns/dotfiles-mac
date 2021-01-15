@@ -21,7 +21,8 @@
 	pl = pull
 	ps = push
 	psf = push --force
-	rao = remote add origin
+    rao = remote add origin
+    rmc = rm --cached
 	s = status --short
 	sh = stash
 	shp = stash pop
