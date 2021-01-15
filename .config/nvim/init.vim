@@ -18,13 +18,12 @@ Plug 'zhou13/vim-easyescape'
 
 " Themes
 Plug 'sainnhe/gruvbox-material'
-Plug 'hardcoreplayers/gruvbox9'
-Plug 'morhetz/gruvbox'
+" Plug 'hardcoreplayers/gruvbox9'
+" Plug 'morhetz/gruvbox'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Coding plugin
 Plug 'jpalardy/vim-slime', { 'for': 'python' }
 Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
-Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
 Plug 'jupyter-vim/jupyter-vim'
 
 " Show match number for incsearch
@@ -132,6 +131,7 @@ colorscheme gruvbox-material
 	set splitbelow splitright
 
 " Compile rmarkdown
+" NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
 	autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
 	autocmd Filetype rmd map <F6> :RMarkdown pdf latex_engine="xelatex", toc=TRUE<CR>
 	nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
@@ -406,15 +406,24 @@ let r_syntax_folding = 1
 let r_indent_op_pattern = '\(+\|-\|\*\|/\|=\|\~\|%\)$'
 let R_rconsole_height = 10
 
+nmap <silent> <LocalLeader>t :call RAction("tail")<CR>
+nmap <silent> <LocalLeader>H :call RAction("head")<CR>
+
 " Press the space bar to send lines and selection to R console
-vmap <Space> <Plug>RDSendSelection
-nmap <Space> <Plug>RDSendLine
+" vmap <Space> <Plug>RDSendSelection
+" nmap <Space> <Plug>RDSendLine
 
 autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a
 autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a
 autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>
 
+" Made iTerm2 send ✠ when pressing Shift+Enter
+nnoremap <silent> ✠ :call SendLineToR("stay")<CR><Esc><Home><Down>
+inoremap <silent> ✠ <Esc>:call SendLineToR("stay")<CR><Esc>A
+vnoremap <silent> ✠ :call SendSelectionToR("silent", "stay")<CR><Esc><Esc>
+
 let Rout_more_colors = 1
+" let rout_follow_colorscheme = 1
 " Kimbie
 " if has('gui_running') || &termguicolors
 "   let rout_color_input    = 'guifg=#9e9e9e'

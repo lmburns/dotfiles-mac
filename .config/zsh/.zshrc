@@ -101,7 +101,7 @@ alias yt='youtube-dl --add-metadata -i'
 alias grep='grep --color=auto'
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
-
+alias pipup="pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U --user"
 alias gls='gls -Flha --color --group-directories-first'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias ninit='nvim ~/.config/nvim/init.vim'
