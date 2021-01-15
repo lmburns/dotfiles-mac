@@ -119,7 +119,9 @@ colorscheme gruvbox-material
 	set wildmenu
 
 " Automatically deletes all tralling whitespace on save.
-	autocmd BufWritePre * %s/\s\+$//e
+	autocmd BufWritePre * %s/\s\+$//e           " End of lines
+    autocmd BufWritePre * %s#\($\n\s*\)\+\%$##  " End of file
+
 
 " Disables automatic commenting on newline:
 	autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -405,6 +407,7 @@ let R_assign_map = ';'
 let r_syntax_folding = 1
 let r_indent_op_pattern = '\(+\|-\|\*\|/\|=\|\~\|%\)$'
 let R_rconsole_height = 10
+let R_csv_app = 'terminal:vd'
 
 nmap <silent> <LocalLeader>t :call RAction("tail")<CR>
 nmap <silent> <LocalLeader>H :call RAction("head")<CR>
@@ -473,5 +476,3 @@ endif
 " Bracey
 nmap <leader>br :Bracey<CR>
 nmap <leader>r :BraceyReload<CR>
-
-

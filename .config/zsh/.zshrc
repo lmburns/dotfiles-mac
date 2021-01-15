@@ -4,6 +4,8 @@
 #  / /\__ \ | | | | | (__
 # /___|___/_| |_|_|  \___|
 
+# MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
+
 # History
 export HISTSIZE=10000000
 export HISTFILE="$HOME/.cache/zsh/history/.zsh_history"
@@ -39,13 +41,13 @@ plugins=(git
 
 source $ZSH/oh-my-zsh.sh
 
-# ZSH Menu
-# zstyle ':completion:*' menu select
-# zmodload zsh/complist
-# bindkey -M menuselect 'h' vi-backward-char
-# bindkey -M menuselect 'k' vi-up-line-or-history
-# bindkey -M menuselect 'l' vi-forward-char
-# bindkey -M menuselect 'j' vi-down-line-or-history
+ZSH Menu
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
 
 
 # p10k
@@ -60,11 +62,6 @@ source ~/.bash_profile
 
 # AutoJump
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
-
-# Setting PATH for Python 3.7
-# PATH="/Library/Frameworks/Python.framework/Versions/3.8/bin:${PATH}"
-# export PATH
 
 # MySQL
 export PATH=${PATH}:/usr/local/mysql/bin/
@@ -105,7 +102,6 @@ alias pipup="pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f
 alias gls='gls -Flha --color --group-directories-first'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias ninit='nvim ~/.config/nvim/init.vim'
-alias scripts='cd ~/Desktop/unix/mac/scripts'
 
 alias sme='mbsync burnsac@me.com'
 alias mwme='mw -y burnsac@me.com'
@@ -115,16 +111,15 @@ alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@
 
 alias projects='cd ~/JupyterNotebook/projects'
 alias unx='cd ~/Desktop/unix/mac'
+alias scripts='cd ~/Desktop/unix/mac/scripts'
+
 alias wget='wget --hsts-file ~/.config/wget/.wget-hsts'
 alias tsm='transmission-remote'
 alias tsmd='transmission-daemon'
 alias nnn='nnn -Caxe'
-# alias gutxt='gbk-upload-text.sh'
-# alias guprj='gbk-upload-projects.sh'
 alias lsn='nnn -deH'
 alias dmenu='open -a dmenu-mac'
 alias getip='ipconfig getifaddr en0 &&  curl ipecho.net/plain; echo'
-# dig +short myip.opendns.com @resolver1.opendns.com
 alias cpumem="ps -A -o %cpu,%mem | awk '{ cpu += \$1; mem += \$2} END {print \"CPU: \"  cpu,\"MEM: \"  mem}'"
 alias qbt='qbt torrent'
 alias pyn='openpyn'
@@ -141,6 +136,7 @@ alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/
 
 alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@lucasburns.xyz:/ /Volumes/SSD/server'
 
+alias z='zathura'
 alias less='vimpager'
 alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
@@ -160,9 +156,6 @@ alias ngc='nvim .git/config'
 alias www='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/www/www-md'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
-
-alias z='zathura'
-
 
 export EDITOR='nvim'
 alias vi='nvim'
@@ -216,4 +209,3 @@ export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
 
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
