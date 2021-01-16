@@ -54,7 +54,7 @@ call plug#end()"Config Section
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """" General Mappings
-let g:mapleader = "."
+let g:mapleader = "<"
 
 " <F3> = turn on/off relative line numbers
 " <F4> = compile markdown file using pandoc
