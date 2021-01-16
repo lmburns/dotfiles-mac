@@ -1,3 +1,5 @@
+import plugins
+
 options.default_width = 20
 options.encoding = "utf-8"
 options.bulk_select_clear = True
@@ -9,7 +11,7 @@ options.cmdlog_histfile = '~/.visidata/history/%Y%m.vd'
 # options.disp_column_sep = '|'
 
 options.clipboard_copy_cmd   = 'xclip -selection primary'
-options.min_memory_mb        =  100
+# options.min_memory_mb        =  100
 options.cmdlog_histfile      = '~/.visidata/history/%Y%m.vd'
 options.disp_note_none       =  '⌀'                  #visible contents of a cell whose value is Nonedisp_truncator      …                      # indicator that the contents are only partially visible
 options.disp_oddspace        =  '·'                  # displayable character for odd whitespace
@@ -24,7 +26,7 @@ options.disp_more_left       =  '<'                  # header note indicating mo
 options.disp_more_right      =  '>'                  # header note indicating more columns to the right
 options.disp_error_val       =  '!'                  # displayed contents for computation exception
 options.disp_ambig_width     =  '1'                  # width to use for unicode chars marked ambiguous
-options.color_default        =  '60 mediumpurple4'   # the default color
+options.color_default        =  '246 grey58'   # the default color
 options.color_default_hdr    =  '24 deepskyblue4 bold underline'     # color of the column headers
 options.color_current_row    =  '167 indianred'     # color of the cursor row
 # options.color_current_col    =  'red reverse'        # color of the cursor column
@@ -55,8 +57,8 @@ options.disp_pixel_random    =  'False'              # randomly choose attr from
 options.color_graph_hidden   =  '238 blue'           # color of legend for hidden attribute
 options.color_graph_selected =  'bold'               # color of selected graph points
 options.color_graph_axis     =  'bold'               # color for graph axis labels
-options.color_diff           =  'red'                # color of values different from --diff source
-options.color_diff_add       =  'yellow'             # color of rows/columns added to --diff source   # displayable character for odd whitespace
+# options.color_diff           =  'red'                # color of values different from --diff source
+# options.color_diff_add       =  'yellow'             # color of rows/columns added to --diff source   # displayable character for odd whitespace
 
 globalCommand('gm', 'mm, _ = curses.mousemask(-1); status("mouse "+("ON" if mm else "OFF"))', 'enable mouse events')
 globalCommand('zm', 'mm, _ = curses.mousemask(0); status("mouse "+("ON" if mm else "OFF"))', 'disable mouse events')

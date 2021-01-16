@@ -189,11 +189,14 @@ function! s:syntax_query() abort
   endfor
 endfunction
 command! SQ call s:syntax_query()
-
+" NOTE:
+" INFO:
+" TODO:
 " autocmd Syntax * syntax keyword INFO contained NOTE
 " autocmd Syntax * syntax keyword INFO containedin=.*Comment
 " autocmd Syntax * syntax keyword InfoMarker INFO containedin=.*Comment,vimLineComment,vimCommentTitle,rComment,rCommentTodo | highlight def link InfoMarker TODO
 autocmd Syntax * syntax keyword INFO containedin=.*Comment,vimLineComment,vimCommentTitle,vimTodo,rComment,rTodoParen,rCommentTodo,pythonTodo,pythonComment
+autocmd syntax * syntax keyword comTitle "(^\s*#\s+):" containedin=rSection,rComment,rCommentTodo
 " autocmd Syntax * syntax keyword infocomm INFO containedin=.*Comment | highlight def link infocomm TODO
 " autocmd Syntax * syntax keyword myTodo INFO NOTES containedin=ALL | highlight def link myTodo TODO
 " autocmd Syntax * syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL

@@ -138,6 +138,7 @@ alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/
 alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@lucasburns.xyz:/ /Volumes/SSD/server'
 alias www='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/www/www-md'
 alias rsyncwww='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/Desktop/unix/www /Volumes/SSD'
+alias rsyncweb='rsync -uvrP --delete-after'
 
 alias z='zathura'
 alias less='vimpager'
@@ -173,8 +174,11 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 
 
 #----- FUNCTIONS -----#
-# FZF=
 vf() {fzf | xargs -r -I % $EDITOR % ;}
+targz() { tar -zcvf $1.tar.gz $1; rm -r $1; }
+untargz() { tar -zxvf $1; rm -r $1; }
+sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
+
 
 #----- VARIABLES -----#
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
