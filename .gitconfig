@@ -19,10 +19,11 @@
 	lg = log --pretty='format:%h %G? %aN  %s'
 	lss = log --show-signature
 	pl = pull
-	ps = push
+  ps = push
+  pom = push origin master
 	psf = push --force
-    rao = remote add origin
-    rmc = rm --cached
+  rao = remote add origin
+  rmc = rm --cached
 	s = status --short
 	sh = stash
 	shp = stash pop

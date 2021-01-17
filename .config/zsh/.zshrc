@@ -99,6 +99,7 @@ alias yt='youtube-dl --add-metadata -i'
 alias grep='grep --color=auto'
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
+alias hs='history | grep'
 alias pipup="pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U --user"
 alias gls='gls -Flha --color --group-directories-first'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
@@ -146,6 +147,7 @@ alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
 alias fd='fd -Hi'
+alias spt='speedtest | rg "(Download:|Upload:)"'
 
 # Github
 alias config='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
@@ -193,6 +195,7 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 
 export FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border"
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
 
 alias db='dotbare'
 export DOTBARE_DIR="$XDG_DATA_HOME/cfg"

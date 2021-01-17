@@ -62,6 +62,8 @@
 
 " General Mappings: {{{
   let g:mapleader = ' '
+  let maplocalleader = ',' " For NVim-R
+
 
   " UndoHistory: store undo history in a file. even after closing and reopening vim
   if has('persistent_undo')
@@ -102,6 +104,8 @@
   set number
     nnoremap <silent><F3> :set relativenumber!<CR>
 
+  set foldmethod=marker
+  set nofoldenable
   set laststatus=0
   set scrolloff=2                      " cusor 2 lines from bottom of page
   set cursorline                       " show line where cursor is
@@ -246,7 +250,6 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-  let maplocalleader = ',' " For NVim-R
 
 " Coc Coding {{{
   set hidden
