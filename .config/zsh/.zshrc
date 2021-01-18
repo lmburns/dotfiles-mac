@@ -147,6 +147,7 @@ alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
 alias fd='fd -Hi'
+alias smi='sudo make install'
 alias spt='speedtest | rg "(Download:|Upload:)"'
 
 # Github

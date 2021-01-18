@@ -17,10 +17,16 @@
   Plug 'vim-pandoc/vim-pandoc'
   Plug 'vim-pandoc/vim-rmarkdown'
   Plug 'vim-pandoc/vim-pandoc-syntax'
+  Plug 'godlygeek/tabular'
+  Plug 'plasticboy/vim-markdown'
   Plug 'vimwiki/vimwiki'
   Plug 'zhou13/vim-easyescape'
   " Themes
   Plug 'sainnhe/gruvbox-material'
+  Plug 'joshdick/onedark.vim'
+  Plug 'embark-theme/vim', { 'as': 'embark' }
+  Plug 'ghifarit53/daycula-vim' , {'branch' : 'main'}
+
   " Plug 'hardcoreplayers/gruvbox9'
   " Plug 'morhetz/gruvbox'
 
@@ -85,8 +91,10 @@
 
   syntax enable
   " colorscheme kimbie-black
-  colorscheme gruvbox-material
-
+  " colorscheme gruvbox-material
+  " colorscheme onedark
+  " colorscheme embark
+  colorscheme daycula
   set path+=**
   set lazyredraw
   set belloff=all                     " turn off bell
@@ -105,6 +113,7 @@
     nnoremap <silent><F3> :set relativenumber!<CR>
 
   set foldmethod=marker
+  set foldcolumn=1
   set nofoldenable
   set laststatus=0
   set scrolloff=2                      " cusor 2 lines from bottom of page
@@ -153,6 +162,8 @@
   nnoremap Y y$
   " Make cut not go to clipboard
   nnoremap x "_dl
+  " Delete line without newline character
+  nnoremap E 0D
 
   " Annoying when I hit 'q:' and it starts recording
   nmap q: :q<Cr>
@@ -197,6 +208,10 @@
   nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
   nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
   nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
+
+  " Markdown {{{
+
+  " }}}
 
   " Inserts a space above or below
   nnoremap <silent> [<space>  :<c-u>put!=repeat([''],v:count)<bar>']+1<cr>
@@ -249,7 +264,6 @@
 " }}}
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 
 " Coc Coding {{{
   set hidden
@@ -398,6 +412,7 @@
   " Fix paste bug triggered by the above inoremaps
   set t_BE=
 " }}}
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -454,8 +469,13 @@
 
 " Airline {{{
   let g:airline_powerline_fonts = 1
-  let g:airline_theme='gruvbox_material'
+  let g:airline_theme='daycula'
 " }}}
+
+" Vimagit {{{
+  noremap  <Leader>m :MagitO<Cr>
+" }}}
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
