@@ -15,20 +15,30 @@
   Plug 'junegunn/fzf.vim'
   Plug 'jremmen/vim-ripgrep'
   Plug 'vim-pandoc/vim-pandoc'
-  Plug 'vim-pandoc/vim-rmarkdown'
   Plug 'vim-pandoc/vim-pandoc-syntax'
-  Plug 'godlygeek/tabular'
+  Plug 'vim-pandoc/vim-rmarkdown'
   Plug 'plasticboy/vim-markdown'
+  Plug 'godlygeek/tabular'
   Plug 'vimwiki/vimwiki'
   Plug 'zhou13/vim-easyescape'
+
   " Themes
   Plug 'sainnhe/gruvbox-material'
   Plug 'joshdick/onedark.vim'
   Plug 'embark-theme/vim', { 'as': 'embark' }
   Plug 'ghifarit53/daycula-vim' , {'branch' : 'main'}
-
+  Plug 'ghifarit53/tokyonight-vim'
+  Plug 'kaicataldo/material.vim', { 'branch': 'main' }
+  Plug 'srcery-colors/srcery-vim'
+  Plug 'wadackel/vim-dogrun'
+  Plug 'glepnir/oceanic-material'
+  Plug 'drewtempelmeyer/palenight.vim'
+  Plug 'KeitaNakamura/neodark.vim'
+  Plug 'tyrannicaltoucan/vim-deep-space'
+  " Plug 'AlessandroYorba/Sierra'
+  " Plug 'chuling/equinusocio-material.vim'
   " Plug 'hardcoreplayers/gruvbox9'
-  " Plug 'morhetz/gruvbox'
+  Plug 'morhetz/gruvbox'
 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
@@ -90,11 +100,19 @@
   endif
 
   syntax enable
-  " colorscheme kimbie-black
+  " colorscheme kimbie
   " colorscheme gruvbox-material
   " colorscheme onedark
   " colorscheme embark
-  colorscheme daycula
+  " colorscheme daycula
+  " colorscheme tokyonight
+  colorscheme material
+  " colorscheme srcery
+  " colorscheme oceanic_material
+  " colorscheme dogrun
+  " colorscheme neodark
+  " colorscheme palenight
+  set background=dark
   set path+=**
   set lazyredraw
   set belloff=all                     " turn off bell
@@ -108,7 +126,7 @@
   set clipboard+=unnamedplus          " use system clipboard
   set splitbelow splitright           " split screen below and right
   set tabstop=2 shiftwidth=2 expandtab softtabstop=2
-  set ignorecase
+  set ignorecase smartcase
   set number
     nnoremap <silent><F3> :set relativenumber!<CR>
 
@@ -169,6 +187,8 @@
   nmap q: :q<Cr>
   nmap Q: :q<Cr>
   command! -bang -nargs=* Q q
+
+  let g:material_theme_style = 'darker'
 
 
   " Ensure files are read as what I want:
@@ -250,7 +270,8 @@
          \ . " sts=" . a:amount
   endfunction
 
-  au FileType markdown,python,json call <SID>IndentSize(4)
+  " FileType specific indents
+    au FileType markdown,python,json call <SID>IndentSize(4)
 
   " Messing with inserting custom words to NOTES/TODO syntax
   " autocmd Syntax * syntax keyword INFO contained NOTE
@@ -262,6 +283,11 @@
   " autocmd Syntax * syntax keyword myTodo INFO NOTES containedin=ALL | highlight def link myTodo TODO
   " autocmd Syntax * syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
 " }}}
+
+" Earthbound Themes {{{
+  " au BufEnter * :source ~/.vim/customsyntax/extend-syntax.vim
+" }}}
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -469,7 +495,7 @@
 
 " Airline {{{
   let g:airline_powerline_fonts = 1
-  let g:airline_theme='daycula'
+  let g:airline_theme='material'
 " }}}
 
 " Vimagit {{{

@@ -85,12 +85,14 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 # Aliases
+alias bsh='bash -x ./testwiki bash'
 alias cp='cp -iv'
 alias rm='rm -iv'
 alias rr='rm -rf'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
 alias ..='cd ..'
+alias s='sudo'
 alias ll='exa -FlahH'
 alias ls='exa -Flh'
 alias hs='history | grep'
@@ -129,7 +131,7 @@ alias oconn='openpyn us -t 10'
 alias essh='eval $(ssh-add)'
 
 # RSync
-alias rsynca='rsync -PruLtcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
+alias rsynca='rsync -PruLtcv --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
 alias rsyncjn='rsync -PruLtcv --exclude ".DS_Store" --exclude "projects"  ~/JupyterNotebook /Volumes/SSD/manual'
 alias rsyncpr='rsync -PruLtcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" ~/JupyterNotebook/projects /Volumes/SSD/manual'
 alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "HOME" --exclude "unix" ~/Desktop /Volumes/SSD/manual'
@@ -137,12 +139,12 @@ alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" ~/Desktop/unix /Volumes/S
 alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/manual'
 
 alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@lucasburns.xyz:/ /Volumes/SSD/server'
-alias www='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/www/www-md'
-alias rsyncwww='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/Desktop/unix/www /Volumes/SSD'
+alias wwwpull='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/www/www-md'
+alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/Desktop/unix/www /Volumes/SSD'
 alias rsyncweb='rsync -uvrP --delete-after'
 
 alias z='zathura'
-alias less='vimpager'
+# alias less='vimpager'
 alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
@@ -196,7 +198,7 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 
 export FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border"
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
+export FZF_DEFAULT_COMMAND='rg --files --hidden'
 
 alias db='dotbare'
 export DOTBARE_DIR="$XDG_DATA_HOME/cfg"

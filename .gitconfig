@@ -33,6 +33,7 @@
     vdc = difftool --tool=vimdiff --no-prompt --cached
 [core]
 	autocrlf = input
+	excludesfile = /Users/lucasburns/.gitignore_global
 [filter "lfs"]
 	required = true
 	clean = git-lfs clean -- %f
