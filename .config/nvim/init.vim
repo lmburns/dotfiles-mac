@@ -24,6 +24,9 @@
 
   " Themes
   Plug 'sainnhe/gruvbox-material'
+  Plug 'sainnhe/edge'
+  Plug 'sainnhe/sonokai'
+  Plug 'sainnhe/forest-night'
   Plug 'joshdick/onedark.vim'
   Plug 'embark-theme/vim', { 'as': 'embark' }
   Plug 'ghifarit53/daycula-vim' , {'branch' : 'main'}
@@ -35,6 +38,7 @@
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
+  Plug 'sheerun/vim-polyglot'
   " Plug 'AlessandroYorba/Sierra'
   " Plug 'chuling/equinusocio-material.vim'
   " Plug 'hardcoreplayers/gruvbox9'
@@ -79,6 +83,10 @@
 " General Mappings: {{{
   let g:mapleader = ' '
   let maplocalleader = ',' " For NVim-R
+  let g:gruvbox_material_palette = 'mix'
+  let g:gruvbox_material_background = 'hard'
+  let g:sonokai_style = 'shusia'
+  let g:edge_style = 'aura'
 
 
   " UndoHistory: store undo history in a file. even after closing and reopening vim
@@ -102,11 +110,14 @@
   syntax enable
   " colorscheme kimbie
   " colorscheme gruvbox-material
+  " colorscheme edge
+  colorscheme sonokai
+  " colorscheme forest-night
   " colorscheme onedark
   " colorscheme embark
   " colorscheme daycula
   " colorscheme tokyonight
-  colorscheme material
+  " colorscheme material
   " colorscheme srcery
   " colorscheme oceanic_material
   " colorscheme dogrun
@@ -144,6 +155,7 @@
   set synmaxcol=1000                    " do not highlight long lines
   " set timeoutlen=250                    " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
+  filetype plugin indent on
 
   " easier navigation in normal / visual / operator pending mode
   noremap K     {
@@ -179,9 +191,9 @@
   " Yank line without newline character
   nnoremap Y y$
   " Make cut not go to clipboard
-  nnoremap x "_dl
+  nnoremap x "_x
   " Delete line without newline character
-  nnoremap E 0D
+  nnoremap E 0"_D
 
   " Annoying when I hit 'q:' and it starts recording
   nmap q: :q<Cr>
@@ -271,7 +283,8 @@
   endfunction
 
   " FileType specific indents
-    au FileType markdown,python,json call <SID>IndentSize(4)
+    autocmd FileType markdown,python,json call <SID>IndentSize(4)
+    autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
 
   " Messing with inserting custom words to NOTES/TODO syntax
   " autocmd Syntax * syntax keyword INFO contained NOTE
@@ -401,7 +414,7 @@
   let g:NERDTreeIgnore = []
   let g:NERDTreeStatusline = ''
   " Automaticaly close nvim if NERDTree is only thing left open
-  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
   " Toggle
   " nnoremap <silent> <C-b> :NERDTreeToggle<CR>
@@ -495,7 +508,7 @@
 
 " Airline {{{
   let g:airline_powerline_fonts = 1
-  let g:airline_theme='material'
+  let g:airline_theme='sonokai'
 " }}}
 
 " Vimagit {{{
@@ -558,6 +571,7 @@
   vnoremap <silent> ✠ :call SendSelectionToR("silent", "stay")<CR><Esc><Esc>
 
   let Rout_more_colors = 1
+  let r_indent_align_args = 0
   " let rout_follow_colorscheme = 1
 
 " Kimbie {{{

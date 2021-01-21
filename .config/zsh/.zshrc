@@ -70,6 +70,9 @@ export PATH=${PATH}:/usr/local/mysql/bin/
 # Homebrew
 export PATH="/usr/local/bin:$PATH"
 
+# mybin
+export PATH="/usr/local/mybin:$PATH"
+
 # >>> conda initialize >>>
 __conda_setup="$('/Users/lucasburns/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
@@ -85,7 +88,6 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 # Aliases
-alias bsh='bash -x ./testwiki bash'
 alias cp='cp -iv'
 alias rm='rm -iv'
 alias rr='rm -rf'
@@ -145,6 +147,7 @@ alias rsyncweb='rsync -uvrP --delete-after'
 
 alias z='zathura'
 # alias less='vimpager'
+export PAGER=/usr/local/bin/moar
 alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
@@ -179,10 +182,14 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 
 
 #----- FUNCTIONS -----#
-vf() {fzf | xargs -r -I % $EDITOR % ;}
+vf() { fzf | xargs -r -I % $EDITOR % ; }
+fzfd() { find $1 | fzf | xargs -r -I % $EDITOR % ; }
 targz() { tar -zcvf $1.tar.gz $1; rm -r $1; }
 untargz() { tar -zxvf $1; rm -r $1; }
 sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
+asciir() { asciinema rec $1; }
+pss() { ps aux | rg --color always -i $1 | rg -v rg }
+psgrep() { ps up $(pgrep -f $@) 2>&-; }
 
 
 #----- VARIABLES -----#
