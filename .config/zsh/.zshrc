@@ -4,12 +4,21 @@
 #  / /\__ \ | | | | | (__
 # /___|___/_| |_|_|  \___|
 
+# ███████╗███████╗██╗  ██╗
+# ╚══███╔╝██╔════╝██║  ██║
+#   ███╔╝ ███████╗███████║
+#  ███╔╝  ╚════██║██╔══██║
+# ███████╗███████║██║  ██║
+# ╚══════╝╚══════╝╚═╝  ╚═╝
+
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
 # History
+export ZSH_DISABLE_COMPFIX=true
 export HISTSIZE=10000000
 export HISTFILE="$HOME/.cache/zsh/history/.zsh_history"
 export SAVEHIST=10000000
+export HIST_STAMPS="yyyy-mm-dd"
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt appendhistory
@@ -95,6 +104,7 @@ alias mv='mv -iv'
 alias mkd='mkdir -pv'
 alias ..='cd ..'
 alias s='sudo'
+alias l='exa'
 alias ll='exa -FlahH'
 alias ls='exa -Flh'
 alias hs='history | grep'
@@ -166,6 +176,7 @@ alias magit='nvim -c MagitOnly'
 alias ngc='nvim .git/config'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
+alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@lucasburns.xyz:/var/www/lambda'
 
 export EDITOR='nvim'
 alias vi='nvim'
@@ -183,6 +194,7 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 
 #----- FUNCTIONS -----#
 vf() { fzf | xargs -r -I % $EDITOR % ; }
+dwc() { ls $1 | wc -l ; }
 fzfd() { find $1 | fzf | xargs -r -I % $EDITOR % ; }
 targz() { tar -zcvf $1.tar.gz $1; rm -r $1; }
 untargz() { tar -zxvf $1; rm -r $1; }
@@ -199,6 +211,7 @@ export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 export TASKDATA="$XDG_CONFIG_HOME/task"
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/ripgreprc"
 export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
+# export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export R_HISTFILE="$XDG_CONFIG_HOME/r/Rhistory"
 export R_PROFILE_USER="$XDG_CONFIG_HOME/r/Rprofile"
 export LESSHISTFILE="-"
