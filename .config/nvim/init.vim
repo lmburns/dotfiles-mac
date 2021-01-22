@@ -87,6 +87,7 @@
   let g:gruvbox_material_background = 'hard'
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
+  let g:material_theme_style = 'ocean-community'
 
 
   " UndoHistory: store undo history in a file. even after closing and reopening vim
@@ -199,9 +200,6 @@
   nmap q: :q<Cr>
   nmap Q: :q<Cr>
   command! -bang -nargs=* Q q
-
-  let g:material_theme_style = 'darker'
-
 
   " Ensure files are read as what I want:
   let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
