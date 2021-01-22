@@ -18,9 +18,12 @@
   Plug 'vim-pandoc/vim-pandoc-syntax'
   Plug 'vim-pandoc/vim-rmarkdown'
   Plug 'plasticboy/vim-markdown'
-  Plug 'godlygeek/tabular'
+  " Plug 'godlygeek/tabular'
+  Plug 'sheerun/vim-polyglot'           " Syntax highlighting
+  Plug 'kevinoid/vim-jsonc'
   Plug 'vimwiki/vimwiki'
   Plug 'zhou13/vim-easyescape'
+  Plug 'rhysd/open-pdf.vim'
 
   " Themes
   Plug 'sainnhe/gruvbox-material'
@@ -38,7 +41,6 @@
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
-  Plug 'sheerun/vim-polyglot'
   " Plug 'AlessandroYorba/Sierra'
   " Plug 'chuling/equinusocio-material.vim'
   " Plug 'hardcoreplayers/gruvbox9'
@@ -56,9 +58,9 @@
   Plug 'vim-airline/vim-airline-themes'
   Plug 'mhinz/vim-startify'
 
+  " HTML/CSS
   Plug 'shime/vim-livedown'
   Plug 'tpope/vim-commentary'
-  Plug 'kevinoid/vim-jsonc'
   Plug 'alvan/vim-closetag'
   Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
   Plug 'ap/vim-css-color'
@@ -134,6 +136,7 @@
   set noswapfile                      " no swap files
   set list lcs=tab:‣\ ,trail:•        " customize invisibles
   set incsearch                       " incremential search highligh
+    nnoremap <silent><F7> :set nohlsearch!<CR>
   set encoding=utf-8                  " utf-8 encoding
   set clipboard+=unnamedplus          " use system clipboard
   set splitbelow splitright           " split screen below and right
@@ -231,6 +234,11 @@
   " Pandoc
    let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
 
+   command! -bang CheatSheet call fzf#vim#files('~/JupyterNotebook/projects/rstudio/cheatsheet', <bang>0)
+   " Still trying to figure this out
+   nmap <Leader>cs :CheatSheet<CR>
+   nmap <Leader>sc !(nohup xargs -I{%} zathura "{%}" >/dev/null)
+
   command! -nargs=* RunSilent
       \ | execute ':silent !'.'<args>'
       \ | execute ':redraw!'
@@ -272,6 +280,12 @@
     endfor
   endfunction
   command! SQ call s:syntax_query()
+
+  " function! s:o_short()
+  "   exe ":Files ~/JupyterNotebook/projects/rstudio/cheatsheet"<CR>
+  "   exe ":!(nohup xargs -I{} zathura '{}' >/dev/null 2>&1 &)"
+  " endfunction
+  " command! osh call s:o_short()
 
   " IndentSize: Change indent size depending on file type
   function! <SID>IndentSize(amount)
@@ -338,7 +352,7 @@
   " Make <CR> auto-select the first completion item and notify coc.nvim to
   " format on enter, <cr> could be remapped by other vim plugin
   " inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-  "                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+  "                               \: '\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>''
 
   " Use `[g` and `]g` to navigate diagnostics
   " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -400,7 +414,7 @@
   " For json
   autocmd FileType json syntax match Comment +\/\/.\+$+
   " For coc-pairs
-  " autocmd FileType html let b:coc_pairs_disabled = ['`']
+  autocmd FileType html let b:coc_pairs_disabled = ['html']
 " }}}
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

@@ -47,18 +47,26 @@ plugins=(git
 		autojump
 		pass
 		dotbare
-        vi-mode)
+    vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
 # ZSH Menu
-zstyle ':completion:*' menu select
-zmodload zsh/complist
-bindkey -M menuselect 'h' vi-backward-char
-bindkey -M menuselect 'k' vi-up-line-or-history
-bindkey -M menuselect 'l' vi-forward-char
-bindkey -M menuselect 'j' vi-down-line-or-history
+# zstyle ':completion:*' menu select
+# zmodload zsh/complist
+# bindkey -M menuselect 'h' vi-backward-char
+# bindkey -M menuselect 'k' vi-up-line-or-history
+# bindkey -M menuselect 'l' vi-forward-char
+# bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey '^a' autosuggest-accept
+bindkey '^x' autosuggest-execute
 
+# fzf tab completion
+source ~/.config/zsh/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh
+zstyle ":completion:*:git-checkout:*" sort false
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 
 # p10k
 [ ! -f ${XDG_CONFIG_HOME}/zsh/.p10k.zsh ] || source ${XDG_CONFIG_HOME}/zsh/.p10k.zsh
@@ -126,6 +134,7 @@ alias mwgm='mw -y burnsppl@gmail.com'
 alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@lucasburns.xyz'
 
 alias projects='cd ~/JupyterNotebook/projects'
+alias nvimd='cd /usr/local/share/nvim/runtime'
 alias unx='cd ~/Desktop/unix/mac'
 alias scripts='cd ~/Desktop/unix/mac/scripts'
 
@@ -151,9 +160,8 @@ alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" ~/Desktop/unix /Volumes/S
 alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/manual'
 
 alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@lucasburns.xyz:/ /Volumes/SSD/server'
-alias wwwpull='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/Desktop/unix/www/www-md'
-alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/Desktop/unix/www /Volumes/SSD'
-alias rsyncweb='rsync -uvrP --delete-after'
+alias wwwpull='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/server'
+alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/server /Volumes/SSD'
 
 alias z='zathura'
 # alias less='vimpager'
@@ -195,13 +203,28 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 #----- FUNCTIONS -----#
 vf() { fzf | xargs -r -I % $EDITOR % ; }
 dwc() { ls $1 | wc -l ; }
+rsyncweb() { rsync -uvrP $1 root@lucasburns.xyz:$2 ; }
 fzfd() { find $1 | fzf | xargs -r -I % $EDITOR % ; }
+fzfp() {fd -a -e "pdf" . $1 | fzf | (nohup xargs -I{} zathura "{}" >/dev/null)}
 targz() { tar -zcvf $1.tar.gz $1; rm -r $1; }
 untargz() { tar -zxvf $1; rm -r $1; }
 sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
 asciir() { asciinema rec $1; }
 pss() { ps aux | rg --color always -i $1 | rg -v rg }
 psgrep() { ps up $(pgrep -f $@) 2>&-; }
+
+pz () {
+    local zathura
+    open=zathura
+    ag -U -g ".pdf$" \
+    | fast-p \
+    | fzf --read0 --reverse -e -d $'\t'  \
+        --preview-window down:80% --preview '
+            v=$(echo {q} | gtr " " "|");
+            echo -e {1}"\n"{2} | ggrep -E "^|$v" -i --color=always;
+        ' \
+    | gcut -z -f 1 -d $'\t' | gtr -d '\n' | gxargs -r --null $open > /dev/null 2> /dev/null
+}
 
 
 #----- VARIABLES -----#
