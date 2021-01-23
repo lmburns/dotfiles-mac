@@ -177,7 +177,7 @@
   " Replace all is aliased to S.
   " Replace quotes on the line
   nnoremap S :%s//g<Left><Left>
-  nmap <leader>Q :s/'/"/g<CR>
+  nmap <leader>Q :s/'/"/g<CR>:nohlsearch<CR>
 
   " use tab and shift tab to indent and de-indent code
   nnoremap <Tab>   >>

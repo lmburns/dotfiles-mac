@@ -151,7 +151,7 @@ alias pyn='openpyn'
 alias oconn='openpyn us -t 10'
 alias essh='eval $(ssh-add)'
 
-# RSync
+# RSync / a=rlptgoD
 alias rsynca='rsync -PruLtcv --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
 alias rsyncjn='rsync -PruLtcv --exclude ".DS_Store" --exclude "projects"  ~/JupyterNotebook /Volumes/SSD/manual'
 alias rsyncpr='rsync -PruLtcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" ~/JupyterNotebook/projects /Volumes/SSD/manual'
@@ -162,6 +162,7 @@ alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/
 alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@lucasburns.xyz:/ /Volumes/SSD/server'
 alias wwwpull='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/server'
 alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/server /Volumes/SSD'
+alias sudorysnc='sudo rsync -PrugptvENtzl --delete-after --include ".*" --exclude ".DS_Store" --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" / /Volumes/SSD/void'
 
 alias z='zathura'
 # alias less='vimpager'
@@ -185,10 +186,12 @@ alias ngc='nvim .git/config'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@lucasburns.xyz:/var/www/lambda'
+alias hangups='hangups -c ~/.config/hangups/hangups.conf'
 
 export EDITOR='nvim'
 alias vi='nvim'
 alias vimdiff='nvim -d'
+alias jrnl=' jrnl'
 # alias pandoc='pandoc --highlight-style zenburn'
 
 # OpenVPN
