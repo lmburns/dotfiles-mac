@@ -19,11 +19,13 @@ export HISTSIZE=10000000
 export HISTFILE="$HOME/.cache/zsh/history/.zsh_history"
 export SAVEHIST=10000000
 export HIST_STAMPS="yyyy-mm-dd"
+export HISTORY_IGNORE='cd *'
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt appendhistory
 setopt sharehistory
 setopt incappendhistory
+unsetopt share_history
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -46,8 +48,7 @@ plugins=(git
 		zsh-autosuggestions
 		autojump
 		pass
-		dotbare
-    vi-mode)
+    dotbare)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -187,11 +188,13 @@ alias ngc='nvim .git/config'
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@lucasburns.xyz:/var/www/lambda'
 alias hangups='hangups -c ~/.config/hangups/hangups.conf'
+alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done with task! Exit status: $?"' -activate com.googlecode.iterm2
+
 
 export EDITOR='nvim'
 alias vi='nvim'
 alias vimdiff='nvim -d'
-alias jrnl=' jrnl'
+# alias jrnl=' jrnl'
 # alias pandoc='pandoc --highlight-style zenburn'
 
 # OpenVPN
@@ -215,6 +218,7 @@ sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
 asciir() { asciinema rec $1; }
 pss() { ps aux | rg --color always -i $1 | rg -v rg }
 psgrep() { ps up $(pgrep -f $@) 2>&-; }
+mbn() { (nohup mn $1 >/dev/null &) }
 
 pz () {
     local zathura
@@ -259,7 +263,7 @@ export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 # set --export NNN_FIFO "/tmp/nnn.fifo"
 
 # GPG
-export GPG_TTY=$(tty)
+# export GPG_TTY=$(tty)
 # export PINENTRY_USER_DATA="USE_CURSES=1"
 
 # Adding Anaconda Python to beginning of $PATH

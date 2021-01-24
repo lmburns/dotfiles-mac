@@ -1,0 +1,5 @@
+#!/bin/bash
+
+transmission-daemon && terminal-notifier -message "Starting transmission daemon..."
+
+transmission-remote -a "$@" && terminal-notifier -message "🔽 Torrent added." && (nohup mn  "Torrent added" > /dev/null &)
