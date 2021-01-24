@@ -1,10 +1,1 @@
-#!/bin/bash
-# * TR_APP_VERSION
-# * TR_TIME_LOCALTIME
-# * TR_TORREN_DIR
-# * TR_TORRENT_HASH
-# * TR_TORRENT_ID
-# * TR_TORRENT_NAME
-terminal-notifier -title "Transmission-daemon" -message "$TR_TORRENT_NAME has completely downloaded."
-echo "$TR_TORRENT_NAME" has finished downloading | neomutt -s "Torrent finished" lucas@lucasburns.xyz
-(nohup mn  "Torrent done" > /dev/null &)
+/Users/lucasburns/Desktop/unix/mac/scripts/tools/tordone

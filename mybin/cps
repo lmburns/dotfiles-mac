@@ -1,7 +1,1 @@
-#!/bin/zsh
-
-source /Users/lucasburns/.config/zsh/.zshrc > /dev/null 2>&1
-
-c push home master && c push origin master
-
-
+/Users/lucasburns/Desktop/unix/mac/scripts/git/cps.sh

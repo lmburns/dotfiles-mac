@@ -1,11 +1,1 @@
-#!/bin/bash
-
-timeout="10000"
-
-screencapture /tmp/screen.png
-
-convert /tmp/screen.png -paint 1 -swirl 240 ~/Desktop/unix/imagemagick/lock.png -gravity center -composite -matte /tmp/screen.png
-
-osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/tmp/screen.png"'
-
-osascript -e 'tell app "System Events" to key code 12 using {control down, command down}'
+/Users/lucasburns/Desktop/unix/mac/scripts/lockscreen
