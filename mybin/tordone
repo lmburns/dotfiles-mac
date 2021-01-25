@@ -1,1 +1,9 @@
-/Users/lucasburns/Desktop/unix/mac/scripts/tools/tordone
+#!/bin/bash
+# * TR_APP_VERSION
+# * TR_TIME_LOCALTIME
+# * TR_TORREN_DIR
+# * TR_TORRENT_HASH
+# * TR_TORRENT_ID
+# * TR_TORRENT_NAME
+tput bel; terminal-notifier -title "Transmission-daemon" -message "$TR_TORRENT_NAME has completely downloaded."
+(nohup mn  "Torrent done" > /dev/null &)

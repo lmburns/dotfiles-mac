@@ -14,6 +14,7 @@
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
 # History
+export LC_ALL=en_US.UTF-8
 export ZSH_DISABLE_COMPFIX=true
 export HISTSIZE=10000000
 export HISTFILE="$HOME/.cache/zsh/history/.zsh_history"
@@ -25,7 +26,7 @@ setopt hist_ignore_space
 setopt appendhistory
 setopt sharehistory
 setopt incappendhistory
-unsetopt share_history
+# unsetopt share_history
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -194,7 +195,7 @@ alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done w
 export EDITOR='nvim'
 alias vi='nvim'
 alias vimdiff='nvim -d'
-# alias jrnl=' jrnl'
+alias jrnl=' jrnl'
 # alias pandoc='pandoc --highlight-style zenburn'
 
 # OpenVPN
@@ -264,10 +265,13 @@ export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 
 # GPG
 # export GPG_TTY=$(tty)
-# export PINENTRY_USER_DATA="USE_CURSES=1"
+export PINENTRY_USER_DATA="USE_CURSES=1"
 
 # Adding Anaconda Python to beginning of $PATH
 export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
 
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+blocks1

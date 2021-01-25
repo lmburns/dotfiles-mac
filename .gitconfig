@@ -30,10 +30,14 @@
 	st = status
 	tr = ls-tree -r master --name-only
 	vd = difftool --tool=vimdiff --no-prompt
-    vdc = difftool --tool=vimdiff --no-prompt --cached
+	vdc = difftool --tool=vimdiff --no-prompt --cached
+[blame "gpg"]
+	texconv = gpg --no-tty --decrypt --quiet
 [core]
 	autocrlf = input
 	excludesfile = /Users/lucasburns/.gitignore_global
+[diff "gpg"]
+	texconv = gpg --no-tty --decrypt --quiet
 [filter "lfs"]
 	required = true
 	clean = git-lfs clean -- %f
