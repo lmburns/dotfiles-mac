@@ -36,6 +36,9 @@ due=7
 # Other
 search.case.sensitive=no
 alias.burndown=burndown.daily
+alias.rm=delete
+alias.p=project
+alias.cal=calendar
 active.indicator=>
 
 # Color controls.

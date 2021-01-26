@@ -20,7 +20,7 @@ export HISTSIZE=10000000
 export HISTFILE="$HOME/.cache/zsh/history/.zsh_history"
 export SAVEHIST=10000000
 export HIST_STAMPS="yyyy-mm-dd"
-export HISTORY_IGNORE='cd *'
+export HISTORY_IGNORE='(jrnl *| jrnl *)'
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt appendhistory
@@ -273,5 +273,5 @@ export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-blocks1
+# typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+# blocks1
