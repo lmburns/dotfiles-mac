@@ -24,6 +24,7 @@
   Plug 'vimwiki/vimwiki'
   Plug 'zhou13/vim-easyescape'
   Plug 'rhysd/open-pdf.vim'
+  " Plug 'sgur/vim-editorconfig'
 
   " Themes
   Plug 'sainnhe/gruvbox-material'
@@ -112,9 +113,9 @@
 
   syntax enable
   " colorscheme kimbie
-  " colorscheme gruvbox-material
+  colorscheme gruvbox-material
   " colorscheme edge
-  colorscheme sonokai
+  " colorscheme sonokai
   " colorscheme forest-night
   " colorscheme onedark
   " colorscheme embark
@@ -520,7 +521,7 @@
 
 " Airline {{{
   let g:airline_powerline_fonts = 1
-  let g:airline_theme='sonokai'
+  let g:airline_theme='gruvbox_material'
 " }}}
 
 " Vimagit {{{
@@ -560,11 +561,25 @@
   nmap <Leader>rs :vs ~/JupyterNotebook/projects/RStudio/nvim-r.md<CR>
 
   " Run ;RStop // :RKill to quit
-  let R_assign_map = ';'
+  let R_auto_start = 1                                   " Autostart R when opening .R
+  let R_assign_map = ';'                                 " Convert ';' into ' <-
   let r_syntax_folding = 1
-  let r_indent_op_pattern = '\(+\|-\|\*\|/\|=\|\~\|%\)$'
-  let R_rconsole_height = 10
-  let R_csv_app = 'terminal:vd'
+  let r_indent_op_pattern = '\(+\|-\|\*\|/\|=\|\~\|%\)$' " Indent automatically
+  let R_rconsole_height = 10                             " Console height
+  let R_csv_app = 'terminal:vd'                          " Use visidata to view dataframes
+  let R_nvimpager = 'tab'                                " Use Vim to see R documentation
+  let R_open_example = 1                                 " Use Vim to display R examples
+  let g:Rout_prompt_str = '$ '                           " Start of R command prompt
+  let g:Rout_continue_str = '... '                       " Symbol for R string continuation
+  " let R_specialplot = 1                                  " nvim.plot() instead of plot()
+  let R_commented_lines = 0                              " Don't send commented lines to term
+  let R_openpdf = 1                                      " Automatically open PDFs
+  let R_pdfviewer = "zathura"                            " PDF viewer
+  let R_close_term = 1                                   " Close terminal when closing vim
+  let R_objbr_place = 'RIGHT'                            " Location of object browser
+  " let R_external_term = 1                                " OSX use R.app graphical
+  " let R_applescript = 1                                  " OSX use R.app graphical
+
 
   nmap <silent> <LocalLeader>t :call RAction("tail")<CR>
   nmap <silent> <LocalLeader>H :call RAction("head")<CR>
@@ -582,7 +597,7 @@
   inoremap <silent> ✠ <Esc>:call SendLineToR("stay")<CR><Esc>A
   vnoremap <silent> ✠ :call SendSelectionToR("silent", "stay")<CR><Esc><Esc>
 
-  let Rout_more_colors = 1
+  let Rout_more_colors = 1                                " Make terminal output more colorful
   let r_indent_align_args = 0
   " let rout_follow_colorscheme = 1
 

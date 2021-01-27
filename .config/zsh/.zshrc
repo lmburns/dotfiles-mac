@@ -275,3 +275,4 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # blocks1
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
