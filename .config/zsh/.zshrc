@@ -192,7 +192,8 @@ alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme 
 alias hangups='hangups -c ~/.config/hangups/hangups.conf'
 alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done with task! Exit status: $?"' -activate com.googlecode.iterm2
 
-
+export BROWSER="LibreWolf"
+export RTV_BROWSER="w3m"
 export EDITOR='nvim'
 alias vi='nvim'
 alias vimdiff='nvim -d'
