@@ -167,8 +167,9 @@ alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/server /
 alias sudorysnc='sudo rsync -PrugptvENtzl --delete-after --include ".*" --exclude ".DS_Store" --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" / /Volumes/SSD/void'
 
 alias z='zathura'
-# alias less='vimpager'
-export PAGER=/usr/local/bin/moar
+export PAGER="vimpager"
+# Colorize man pages with `bat`
+# export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
@@ -221,6 +222,7 @@ pss() { ps aux | rg --color always -i $1 | rg -v rg }
 psgrep() { ps up $(pgrep -f $@) 2>&-; }
 mbn() { (nohup mn $1 >/dev/null &) }
 
+# Use fzf and zathura to open PDFs
 pz () {
     local zathura
     open=zathura
@@ -233,6 +235,18 @@ pz () {
         ' \
     | gcut -z -f 1 -d $'\t' | gtr -d '\n' | gxargs -r --null $open > /dev/null 2> /dev/null
 }
+
+# Use lf to change directory
+lfcd () {
+    tmp="$(mktemp)"
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp" >/dev/null
+        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+    fi
+}
+
 
 
 #----- VARIABLES -----#
@@ -264,7 +278,8 @@ export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 # set --export NNN_FIFO "/tmp/nnn.fifo"
 
 # GPG
-# export GPG_TTY=$(tty)
+export GPG_TTY=$TTY
+export GPG_AGENT_INFO="$HOME/.gnupg/S.gpg-agent"
 export PINENTRY_USER_DATA="USE_CURSES=1"
 
 # Adding Anaconda Python to beginning of $PATH
@@ -273,6 +288,7 @@ export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+# Colorscripts
 # typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # blocks1
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+source $HOME/.config/zsh/lficons

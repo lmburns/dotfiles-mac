@@ -1,4 +1,4 @@
---theme="DominionDay"
+--theme="gruvbox-white"
 #--italic-text=always
 # Disable automatic paging:
 #--paging=never

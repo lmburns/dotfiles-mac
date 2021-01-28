@@ -1,0 +1,142 @@
+# ┌───────────────────────────────────────────────────────────────────────────┐
+# │ Basics / General                                                          │
+# └───────────────────────────────────────────────────────────────────────────┘
+set shell bash				# interpreter for shell commands
+set shellopts '-eu'		# exit on error
+set ifs "\n"					# internal field separator / split $fs, $fx
+set scrolloff 10			# space on top and bottom of screen
+set icons
+set period 1
+set hidden
+set incsearch
+set dircounts
+set info size
+set sortby natural
+set ratios '1:2:3'
+# set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
+
+# vars that depend on environmental variables
+$lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
+
+
+# ┌───────────────────────────────────────────────────────────────────────────┐
+# │ Commands / Functions                                                      │
+# └───────────────────────────────────────────────────────────────────────────┘
+cmd open ${{
+    case $(file --mime-type $f -b) in
+		application/pdf) nohup zathura $fx >/dev/null 2>&1 ;;
+        text/*) $EDITOR $fx;;
+		image/x-xcf) nohup gimp $f >/dev/null 2>&1 ;;
+		image/svg+xml) display -- $f ;;
+		image/*) basename $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | sxiv -aio >/dev/null 2>&1 ;;
+		audio/*) mpv --audio-display=no $f >/dev/null ;;
+		video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
+        *) for f in $fx; do nohup $OPENER $f > /dev/null 2> /dev/null & done;;
+    esac
+}}
+
+
+cmd delete ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	printf "%s\n\t" "$fx"
+	printf "delete?[y/N]"
+	read ans
+	[ $ans = "y" ] && trash-put $fx
+}}
+
+
+cmd moveto ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Move to where?"
+	dest="$(cut -d'	' -f2- ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf | sed 's|~|$HOME|' )" &&
+	for x in $fx; do
+		eval mv -iv \"$x\" \"$dest\"
+	done &&
+	terminal-notifier -title "🚚 File(s) moved." -message "File(s) moved to $dest."
+}}
+
+
+cmd copyto ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Copy to where?"
+	dest="$(cut -d'	' -f2- ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf | sed 's|~|$HOME|' )" &&
+	for x in $fx; do
+		eval cp -ivr \"$x\" \"$dest\"
+	done &&
+	terminal-notifier -title "📋 File(s) copied." -message "File(s) copies to $dest."
+}}
+
+
+cmd tar ${{
+    set -f
+    mkdir $1
+    cp -r $fx $1
+    tar czf $1.tar.gz $1
+    rm -rf $1
+}}
+
+
+cmd trash ${{
+		set -f
+		trash-put -v -- $fx
+}}
+
+
+cmd aj %lf -remote "send $id cd '$(autojump $1)'"
+cmd fzf $vi $(find . -name "$1" | fzf)
+cmd setbg "$1"
+cmd bulkrename $vidir
+cmd fzf $vi $(find . -name "$1" | fzf)
+# cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
+cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
+cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
+
+
+# ┌───────────────────────────────────────────────────────────────────────────┐
+# │ Mappings                                                                  │
+# └───────────────────────────────────────────────────────────────────────────┘
+# map f $lf -remote "send $id select '$(fzf)'"
+map f push :fzf<space>
+map z push :aj<space>
+map w $lf -remote "send $id select $(fzf)"
+map J $lf -remote "send $id cd $(cut -d'	' -f2 ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf)"
+map gh
+map g top
+map ? $lf -doc | vimpager
+map D trash
+map L %trash-list
+map R %trash-restore
+map C copyto
+map M moveto
+map zz push :z<space>
+map <c-n> push :mkdir<space>
+map <c-f> push :mkfile<space>
+map <c-r> reload
+map <enter> shell
+
+map gv cd ~/.config/nvim
+map gc cd ~/.config
+
+map x $$f																# execute file
+map X !$f																# execute file
+map o &mimeopen $f
+map O $mimeopen --ask $f
+
+map A rename														# at the very end
+map c push A<c-u>												# new rename
+map I push A<c-a>												# at the beginning
+map i push A<a-b><a-b><a-f>							# before extention
+map a push A<a-b>												# after extention
+map B bulkrename
+map b $setbg $f
+
+map v $LESS='-iWQMXR~' bat --paging=always --theme=gruvbox-white "$f"
+map . set hidden!
+map t tar
+
+map <c-e> down
+map <c-y> up
+map V push :!nvim<space>
