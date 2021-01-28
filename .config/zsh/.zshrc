@@ -190,9 +190,10 @@ alias ngc='nvim .git/config'
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@lucasburns.xyz:/var/www/lambda'
 alias hangups='hangups -c ~/.config/hangups/hangups.conf'
+alias newsboat='newsboat -C ~/.config/newsboat/newsboat.config'
 alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done with task! Exit status: $?"' -activate com.googlecode.iterm2
 
-export BROWSER="LibreWolf"
+export BROWSER='open -a LibreWolf'
 export RTV_BROWSER="w3m"
 export EDITOR='nvim'
 alias vi='nvim'
@@ -248,7 +249,7 @@ lfcd () {
     fi
 }
 
-
+eval "$(zoxide init zsh)"
 
 #----- VARIABLES -----#
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
@@ -286,10 +287,14 @@ export PINENTRY_USER_DATA="USE_CURSES=1"
 # Adding Anaconda Python to beginning of $PATH
 export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
 
+# Homebrew ruby over system
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
+
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Colorscripts
 # typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # blocks1
+
 source $HOME/.config/zsh/lficons

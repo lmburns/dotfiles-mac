@@ -87,7 +87,7 @@
   let g:mapleader = ' '
   let maplocalleader = ',' " For NVim-R
   let g:gruvbox_material_palette = 'mix'
-  let g:gruvbox_material_background = 'hard'
+  let g:gruvbox_material_background = 'medium'
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
   let g:material_theme_style = 'ocean-community'

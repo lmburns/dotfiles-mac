@@ -45,14 +45,15 @@ handle_mime() {
             fi
             highlight --replace-tabs="${HIGHLIGHT_TABWIDTH}" --out-format="${highlight_format}" \
                 --style="${HIGHLIGHT_STYLE}" --force -- "${FILE_PATH}" ;;
-	application/zip|*/x-tar|*/gzip) atool --list -- "${FILE_PATH}" ;;
+	application/zip) atool --list -- "${FILE_PATH}" ;;
+  */x-tar|*/gzip) tar tf "${FILE_PATH}" ;;
         image/*) chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
         video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
         */pdf) pdftotext -l 10 -nopgbrk -q -- "${FILE_PATH}" - ;;
         *opendocument*) odt2txt "${FILE_PATH}" ;;
         *.md5) md5sum -c "${FILE_PATH}" || exit 1;;
         *.sha256) sha256sum -c "${FILE_PATH}" || exit 1;;
-        *.docx|application/vnd.openxmlformats-office-document.wordprocessingml.document) docx2txt.pl "${FILE_PATH}" || exit 1;;
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document) docx2txt "${FILE_PATH}" || exit 1;;
     esac
 }
 
