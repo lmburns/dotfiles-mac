@@ -12,7 +12,8 @@ set incsearch
 set dircounts
 set info size
 set sortby natural
-set ratios '1:2:3'
+set preview
+# set ratios '1:2:3'
 # set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
 # vars that depend on environmental variables
@@ -36,6 +37,7 @@ cmd open ${{
 }}
 
 
+# Delete single file
 cmd delete ${{
 	if (whiptail --title "$fx" --yesno "Delete?[y/N]" --defaultno 8 40); then
 		trash-put $fx && echo "$fx deleted"
@@ -45,9 +47,29 @@ cmd delete ${{
 }}
 
 
+cmd trash ${{
+  files=$(printf "$fx" | tr '\n' ';')
+  while [ "$files" ]; do
+    # extract the substring from start of string up to delimiter.
+    # this is the first "element" of the string.
+    file=${files%%;*}
+
+    trash-put "$(basename "$file")"
+    # if there's only one element left, set `files` to an empty string.
+    # this causes us to exit this `while` loop.
+    # else, we delete the first "element" of the string from files, and move onto the next.
+    if [ "$files" = "$file" ]; then
+      files=''
+    else
+      files="${files#*;}"
+    fi
+  done
+}}
+
+
 cmd moveto ${{
 	prompt="Where to move to?: "
-	dest="$(find . -type d | fzf --print-query --prompt="$prompt")" &&
+	dest="$(find . -type d --maxdepth 3 | fzf --print-query --prompt="$prompt")" &&
 	for x in $fx; do
 		eval mv -iv \"$x\" \"$dest\"
 	done &&
@@ -57,7 +79,7 @@ cmd moveto ${{
 
 cmd copyto ${{
 	prompt="Where to copy to?: "
-	dest="$(find . -type d | fzf --print-query --prompt="$prompt")" &&
+	dest="$(find . -type d --maxdepth 3 | fzf --print-query --prompt="$prompt")" &&
 	for x in $fx; do
 		eval cp -ivr \"$x\" \"$dest\"
 	done &&
@@ -65,30 +87,61 @@ cmd copyto ${{
 }}
 
 
-cmd tar ${{
-    set -f
-    mkdir $1
-    cp -r $fx $1
-    tar czf $1.tar.gz $1
-    rm -rf $1
+cmd fzf_jump ${{
+  res="$(find . -maxdepth 3 | fzf --reverse --header='Jump to location')"
+  if [ -f "$res" ]; then
+    cmd="select"
+  elif [ -d "$res" ]; then
+    cmd="cd"
+  fi
+  lf -remote "send $id $cmd \"$res\""
 }}
 
 
-cmd trash ${{
-		set -f
-		trash-put -v -- $fx
+cmd broot_jump ${{
+  f=$(mktemp)
+  res="$(broot --outcmd $f && cat $f | sed 's/cd //')"
+  rm -f "$f"
+  if [ -f "$res" ]; then
+    cmd="select"
+  elif [ -d "$res" ]; then
+    cmd="cd"
+  fi
+  lf -remote "send $id $cmd \"$res\""
 }}
+
 
 cmd fzf_z ${{
 	sel="$(zoxide query -l | fzf +s)"
 	[ -d "$sel" ] && lf -remote "send $id cd \"$sel\""
 }}
 
+
+## Archive
+cmd unarchive ${{
+  case "$f" in
+      *.zip) unzip "$f" ;;
+      *.tar.gz) tar -xzvf "$f" ;;
+      *.tar.bz2) tar -xjvf "$f" ;;
+      *.tar) tar -xvf "$f" ;;
+      *) echo "Unsupported format" ;;
+  esac
+}}
+
+cmd zip %zip -r "$f" "$f"
+cmd tar %tar cvf "$f.tar" "$f"
+cmd targz %tar cvzf "$f.tar.gz" "$f"
+cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
+
+cmd dragon %dragon-drag-and-drop -a -x $fx
+cmd dragon-stay %dragon-drag-and-drop -a $fx
+cmd dragon-individual %dragon-drag-and-drop $fx
+cmd cpdragon %cpdragon
+cmd mvdragon %mvdragon
+cmd dlfile %dlfile
+
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
-cmd fzf $vi $(find . -name "$1" | fzf)
-cmd setbg "$1"
-cmd bulkrename $vidir
-cmd fzf $vi $(find . -name "$1" | fzf)
+cmd fzf $vi $(find . -name "$1" --maxdepth 3 | fzf --reverse)
 # cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
 cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
@@ -97,46 +150,97 @@ cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Mappings                                                                  │
 # └───────────────────────────────────────────────────────────────────────────┘
-# map f $lf -remote "send $id select '$(fzf)'"
-map f push :fzf<space>
-map n push :fzf_z<space>
-map z push :aj<space>
-map w $lf -remote "send $id select $(fzf)"
-map J $lf -remote "send $id cd $(cut -d'	' -f2 ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf)"
+map m
+map o
+map n
+map "'"
+map '"'
+map d
+map c
+map e
+map f
 map gh
-map g top
+
+# File Openers
+map ee $$EDITOR "$f"
+map u $view "$f"
+map v $LESS='-iWQMXR~' bat --paging=always --theme=gruvbox-white "$f"
+map V push :!nvim<space>
 map ? $lf -doc | vimpager
+
+# Archive Mappings
+map az zip
+map at tar
+map ag targz
+map ab targz
+map au unarchive
+
+# Trash Mappings
+map dd trash
 map D delete
-map L %trash-list
-map R %trash-restore
-map C copyto
-map M moveto
-map zz push :z<space>
-map <c-n> push :mkdir<space>
-map <c-f> push :mkfile<space>
-map <c-r> reload
-map <enter> shell
+map tc %trash-empty
+map tr %trash-restore
 
-map gv cd ~/.config/nvim
-map gc cd ~/.config
+# Dragon Mapping
+map dr dragon
+map ds dragon-stay
+map di dragon-individual
+map dm mvdragon
+map dc cpdragon
+map dl dlfile
 
-map x $$f																# execute file
-map X !$f																# execute file
-map o &mimeopen $f
-map O $mimeopen --ask $f
-
+# Renaming
 map A rename														# at the very end
 map c push A<c-u>												# new rename
 map I push A<c-a>												# at the beginning
 map i push A<a-b><a-b><a-f>							# before extention
 map a push A<a-b>												# after extention
 map B bulkrename
-map b $setbg $f
 
-map v $LESS='-iWQMXR~' bat --paging=always --theme=gruvbox-white "$f"
+# File movement
+map f push :fzf<space>		# Regular fzf
+map <c-b> broot_jump
+map n push :fzf_z<space>	# Fzf zioxide
+map <c-z> fzf_jump				# Fzf jump directory
+map <c-j> push :aj<space> # Auto jump
+map w $lf -remote "send $id select $(fzf)"
+
+# General
 map . set hidden!
-map t tar
+map p paste
+map x cut
+map y copy
+map <enter> open
+map mf push :mkfile<space>
+map md push :mkdir<space>
+map g top
+map G bottom
+map R reload
+map C clear
+map U unselect
+map <c-x> $$f															# execute file
+map <c-s> shell
 
-map <c-e> down
-map <c-y> up
-map V push :!nvim<space>
+map C copyto
+map M moveto
+
+# Movement
+map gd cd ~/Documents
+map gD cd ~/Downloads
+map ge cd ~/Desktop
+
+map gv cd ~/.config/nvim
+map gc cd ~/.config
+map gc cd ~/.config
+
+map gC cd ~/.local/share/cell
+map gl cd ~/.local
+
+map gE cd /etc
+map gU. cd /usr
+map gUs cd /usr/share
+
+map \;j cd ~
+
+# map o &mimeopen $f
+# map O $mimeopen --ask $f

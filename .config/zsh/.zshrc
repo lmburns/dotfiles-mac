@@ -298,3 +298,7 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # blocks1
 
 source $HOME/.config/zsh/lficons
+# export PATH="/usr/local/doas/bin:$PATH"
+
+source /Users/lucasburns/.config/broot/launcher/bash/br
+export PATH="$HOME/.local/bin:$PATH"

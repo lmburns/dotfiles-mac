@@ -19,14 +19,18 @@ IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
 # Script arguments
 FILE_PATH="${1}"         # Full path of the highlighted file
 HEIGHT="${2}"
+WIDTH="${3}"
+IMAGE_CACHE_PATH="${4}"  # Full path that should be used to cache image preview
 
-#FILE_EXTENSION="${FILE_PATH##*.}"
-#FILE_EXTENSION_LOWER=$(echo ${FILE_EXTENSION} | tr '[:upper:]' '[:lower:]')
+FILE_EXTENSION="${FILE_PATH##*.}"
+# FILE_EXTENSION_LOWER=$(echo ${FILE_EXTENSION} | tr '[:upper:]' '[:lower:]')
+FILE_EXTENSION_LOWER="$(printf "%s" "${FILE_EXTENSION}" | tr '[:upper:]' '[:lower:]')"
+
 
 # Settings
 HIGHLIGHT_SIZE_MAX=262143  # 256KiB
 HIGHLIGHT_TABWIDTH=8
-HIGHLIGHT_STYLE='pablo'
+HIGHLIGHT_STYLE='rdark'
 
 
 handle_mime() {
@@ -46,19 +50,44 @@ handle_mime() {
             highlight --replace-tabs="${HIGHLIGHT_TABWIDTH}" --out-format="${highlight_format}" \
                 --style="${HIGHLIGHT_STYLE}" --force -- "${FILE_PATH}" ;;
 	application/zip) atool --list -- "${FILE_PATH}" ;;
-  */x-tar|*/gzip) tar tf "${FILE_PATH}" ;;
-        image/*) chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
-        video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
-        */pdf) pdftotext -l 10 -nopgbrk -q -- "${FILE_PATH}" - ;;
-        *opendocument*) odt2txt "${FILE_PATH}" ;;
-        *.md5) md5sum -c "${FILE_PATH}" || exit 1;;
-        *.sha256) sha256sum -c "${FILE_PATH}" || exit 1;;
-        application/vnd.openxmlformats-officedocument.wordprocessingml.document) docx2txt "${FILE_PATH}" || exit 1;;
+  # */x-tar|*/gzip) tar tf "${FILE_PATH}" ;;
+  image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
+   video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
+  */pdf) pdftotext -l 10 -nopgbrk -q -- "${FILE_PATH}" - ;;
+  application/vnd.openxmlformats-officedocument.wordprocessingml.document) docx2txt "${FILE_PATH}" || exit 1;;
+    esac
+}
+
+handle_other() {
+    case "${FILE_PATH}" in
+        *.tgz|*.tar.gz) tar tzf "${FILE_PATH}";;
+        *.tar.bz2|*.tbz2) tar tjf "${FILE_PATH}";;
+        *.tar.txz|*.txz) xz --list "${FILE_PATH}";;
+        *.tar) tar tf "${FILE_PATH}";;
+        *.jar|*.war|*.ear|*.oxt) unzip -l "${FILE_PATH}";;
+        *.rar) unrar l "${FILE_PATH}";;
+        *.7z) 7z l "${FILE_PATH}";;
+        *.[1-8]) man "${FILE_PATH}" | col -b ;;
+        *.o) nm "${FILE_PATH}" | less ;;
+        *.torrent) transmission-show "${FILE_PATH}";;
+        *.iso) iso-info --no-header -l "${FILE_PATH}";;
+        *odt,*.ods,*.odp,*.sxw) odt2txt "${FILE_PATH}";;
+        *.doc) catdoc "${FILE_PATH}" ;;
+        *.docx) docx2txt "${FILE_PATH}" - ;;
+        *.csv) cat "${FILE_PATH}" | sed s/,/\\n/g ;;
+        *.json) jq --color-output . "${FILE_PATH}";;
+        *.asc) highlight --out-format=ansi --style="${HIGHLIGHT_STYLE}" "${FILE_PATH}";;
+
     esac
 }
 
 MIMETYPE="$( file --dereference --brief --mime-type -- "${FILE_PATH}" )"
 handle_mime "${MIMETYPE}"
+handle_other
+
 exit 1
+
+# image/*) chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
+# image/*) /usr/local/bin/imgcat --width "$(identify -format '%w' "${FILE_PATH}")" --height "$(identify -format '%h' "${FILE_PATH}")" --iterm2 "${FILE_PATH}" || exit 1;;
 
 # fileviewer *.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm /usr/local/bin/imgcat --width %pw --height %ph --iterm2 %c:p %pd
