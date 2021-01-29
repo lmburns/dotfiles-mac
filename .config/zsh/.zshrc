@@ -1,15 +1,8 @@
-#          _
-#  _______| |__  _ __ ___
-# |_  / __| '_ \| '__/ __|
-#  / /\__ \ | | | | | (__
-# /___|___/_| |_|_|  \___|
-
-# ███████╗███████╗██╗  ██╗
-# ╚══███╔╝██╔════╝██║  ██║
-#   ███╔╝ ███████╗███████║
-#  ███╔╝  ╚════██║██╔══██║
-# ███████╗███████║██║  ██║
-# ╚══════╝╚══════╝╚═╝  ╚═╝
+ # ______     ______     __  __     ______     ______
+# /\___  \   /\  ___\   /\ \_\ \   /\  == \   /\  ___\
+# \/_/  /__  \ \___  \  \ \  __ \  \ \  __<   \ \ \____
+ #  /\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \ \_____\
+ #  \/_____/   \/_____/   \/_/\/_/   \/_/ /_/   \/_____/
 
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
@@ -289,16 +282,10 @@ export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
 
 # Homebrew ruby over system
 export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
+# Dragon - drag and drop
+export PATH="$HOME/.local/bin:$PATH"
 
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# Colorscripts
-# typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-# blocks1
-
 source $HOME/.config/zsh/lficons
-# export PATH="/usr/local/doas/bin:$PATH"
-
 source /Users/lucasburns/.config/broot/launcher/bash/br
-export PATH="$HOME/.local/bin:$PATH"
