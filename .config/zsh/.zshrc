@@ -257,6 +257,8 @@ export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
 export R_HISTFILE="$XDG_CONFIG_HOME/r/Rhistory"
 export R_PROFILE_USER="$XDG_CONFIG_HOME/r/Rprofile"
 export LESSHISTFILE="-"
+# export OPENSSL_INCLUDE_DIR=`brew --prefix openssl`/include
+# export OPENSSL_LIB_DIR=`brew --prefix openssl`/lib
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 
@@ -289,5 +291,8 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $HOME/.config/zsh/lficons
+[ -f "$HOME/.config/zsh/lficons" ] && source "$HOME/.config/zsh/lficons"
+
 source /Users/lucasburns/.config/broot/launcher/bash/br
+export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+export PATH="/usr/local/opt/libressl/bin:$PATH"
