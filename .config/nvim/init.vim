@@ -150,7 +150,7 @@
   set foldcolumn=1
   set nofoldenable
   set laststatus=0
-  set scrolloff=2                      " cusor 2 lines from bottom of page
+  set scrolloff=5                      " cusor 2 lines from bottom of page
   set cursorline                       " show line where cursor is
   set mouse=a                          " enable mouse all modes
   set wildmode=longest,list,full       " Autocompletion

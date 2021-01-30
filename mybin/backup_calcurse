@@ -1,0 +1,8 @@
+#!/bin/bash
+
+FILE="/calcurse-bkp-$(date +'%Y%m%d').tar.gz"
+DIR="$HOME/backup/calcurse"
+TAR="$HOME/.local/share/calcurse"
+
+mkdir -p "$DIR"
+tar czfP "$DIR/$FILE" "$TAR"

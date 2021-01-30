@@ -5,20 +5,33 @@ set shell bash				# interpreter for shell commands
 set shellopts '-eu'		# exit on error
 set ifs "\n"					# internal field separator / split $fs, $fx
 set scrolloff 10			# space on top and bottom of screen
-set icons
-set period 1
-set hidden
-set incsearch
+set icons             # show icons next to files
+set period 1          # interval to check for directory updates
+set hidden            # show hidden files by default
+set incsearch         # jump to first match after each keystroke in search
 set dircounts
 set info size
 set sortby natural
-set preview
+set preview           # preview file on the right pane
 set drawbox
-set ratios '1:2:3'
+set ratios '1:2:3'    # ratio of pane widths
+set color256
 # set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
 # vars that depend on environmental variables
 $lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
+
+# ┌───────────────────────────────────────────────────────────────────────────┐
+# │ Environmental Variables                                                   │
+# └───────────────────────────────────────────────────────────────────────────┘
+# f = full path
+# fs = selected files separated with the value of 'filesep', full path
+# fx selected files
+# :  read (default)  builtin/custom command
+# $  shell           shell command
+# %  shell-pipe      shell command running with the ui
+# !  shell-wait      shell command waiting for key press
+# &  shell-async     shell command running asynchronously
 
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
@@ -48,6 +61,10 @@ cmd delete ${{
 	fi
 }}
 
+cmd trash-list ${{
+  trash=$(trash-list)
+  whiptail --msgbox --title "Trash List" "$trash" 35 75
+}}
 
 cmd trash ${{
   files=$(printf "$fx" | tr '\n' ';')
@@ -170,6 +187,7 @@ cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
 cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
 cmd yank-path $printf '%s' "$fx" | pbcopy
 cmd open-with %"$@" $fx
+cmd usage $du -h -d1 | less
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Mappings                                                                  │
@@ -188,7 +206,7 @@ map gh
 # File Openers
 map ee $$EDITOR "$f"
 map u $view "$f"
-map v $LESS='-iWQMXR~' bat --paging=always --theme=gruvbox-white "$f"
+map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | vimpager
 map o push :open-with<space>
@@ -203,7 +221,8 @@ map au unarchive
 # Trash Mappings
 map dd trash
 map D delete
-map tc %trash-empty
+map te %trash-empty
+map tl trash-list
 map tr %trash-restore
 
 # Dragon Mapping
@@ -246,6 +265,7 @@ map C clear
 map U unselect
 map <c-x> $$f															# execute file
 map <c-s> shell
+map <c-u> usage
 
 map C copyto
 map M moveto

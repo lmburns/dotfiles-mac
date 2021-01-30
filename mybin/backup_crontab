@@ -1,8 +1,7 @@
 #!/bin/bash
 
-FILE="crontab_$(date +%s)"
+FILE="crontab_$(date +'%Y%m%d')"
 DIR="$HOME/backup/crontab"
 
 mkdir -p "$DIR"
 crontab -l > "$DIR/$FILE"
-

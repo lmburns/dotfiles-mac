@@ -1,4 +1,4 @@
---theme="gruvbox-white"
+--theme="gruvbox"
 #--italic-text=always
 # Disable automatic paging:
 #--paging=never

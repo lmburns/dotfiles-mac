@@ -30,7 +30,7 @@ FILE_EXTENSION_LOWER="$(printf "%s" "${FILE_EXTENSION}" | tr '[:upper:]' '[:lowe
 # Settings
 HIGHLIGHT_SIZE_MAX=262143  # 256KiB
 HIGHLIGHT_TABWIDTH=8
-HIGHLIGHT_STYLE='rdark'
+HIGHLIGHT_STYLE='pablo'
 
 
 handle_mime() {
@@ -57,6 +57,11 @@ handle_mime() {
   application/vnd.openxmlformats-officedocument.wordprocessingml.document) docx2txt "${FILE_PATH}" || exit 1;;
     esac
 }
+
+# */pdf) pdftotext -l 10 -nopgbrk -q -- "${FILE_PATH}" - ;;
+
+# image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
+
 
 handle_other() {
     case "${FILE_PATH}" in

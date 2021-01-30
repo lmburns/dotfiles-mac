@@ -1,0 +1,11 @@
+#!/bin/bash
+
+open=zathura
+ag -U -g ".pdf$" \
+| fast-p \
+| fzf --read0 --reverse -e -d $'\t'  \
+    --preview-window down:80% --preview '
+        v=$(echo {q} | gtr " " "|");
+        echo -e {1}"\n"{2} | ggrep -E "^|$v" -i --color=always;
+    ' \
+| gcut -z -f 1 -d $'\t' | gtr -d '\n' | gxargs -r --null $open > /dev/null 2> /dev/null

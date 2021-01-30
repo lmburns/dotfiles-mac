@@ -160,9 +160,11 @@ alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/server /
 alias sudorysnc='sudo rsync -PrugptvENtzl --delete-after --include ".*" --exclude ".DS_Store" --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" / /Volumes/SSD/void'
 
 alias z='zathura'
-export PAGER="vimpager"
+# export PAGER="less"
 # Colorize man pages with `bat`
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+# export MANPAGER="nvim -c 'set ft=man' -"
+export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
 alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
