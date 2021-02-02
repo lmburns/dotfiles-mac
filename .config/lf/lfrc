@@ -15,7 +15,6 @@ set sortby natural
 set preview           # preview file on the right pane
 set drawbox
 set ratios '1:2:3'    # ratio of pane widths
-set color256
 # set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
 # vars that depend on environmental variables
@@ -53,8 +52,8 @@ cmd open ${{
 
 # Delete single file
 cmd delete ${{
-	if (whiptail --title "$fx" --yesno "Delete?[y/N]" --defaultno 8 40); then
-		trash-put $fx && echo "$fx deleted" && 	terminal-notifier -title "🗑️  Fle deleted" -message "File $fx moved to trash"
+	if (whiptail --title "$(echo $fx | xargs -r basename -a)" --yesno "Delete?[y/N]" --defaultno 8 40); then
+		trash-put $fx && echo "$fx deleted" && 	terminal-notifier -title "🗑️  Fle deleted" -message "$(echo $fx | xargs -r basename -a) moved to trash"
 
 	else
 		echo "$fx not deleted"
@@ -92,7 +91,7 @@ cmd whipmove ${{
   for x in $fx; do
     eval mv -iv \"$x\" \"$dest\"
   done &&
- 	terminal-notifier -title "🚚 File(s) moved." -message "File(s) moved to $dest."
+ 	terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) moved to $dest."
 
 }}
 
@@ -106,14 +105,14 @@ cmd movetofuzzy ${{
 	terminal-notifier -title "🚚 File(s) moved." -message "File(s) moved to $dest."
 }}
 
-# Fzy Move
+# Fzy Move - local directory
 cmd moveto ${{
 	prompt="Where to move to?: "
 	dest="$(fd -Hit d . | fzy --prompt="$prompt")" &&
 	for x in $fx; do
 		eval mv -iv \"$x\" \"$dest\"
 	done &&
-	terminal-notifier -title "🚚 File(s) moved." -message "File(s) moved to $dest."
+	terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) moved to $dest."
 }}
 
 
@@ -269,6 +268,7 @@ map <c-u> usage
 
 map C copyto
 map M moveto
+map mt whipmove
 
 # Movement
 map gd cd ~/Documents

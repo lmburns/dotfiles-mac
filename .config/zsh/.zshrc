@@ -106,17 +106,16 @@ alias rr='rm -rf'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
 alias ..='cd ..'
-alias s='sudo'
 alias l='exa'
 alias ll='exa -FlahH'
 alias ls='exa -Flh'
-alias hs='history | grep'
+alias his='history | grep'
 alias ka='killall'
 alias yt='youtube-dl --add-metadata -i'
 alias grep='grep --color=auto'
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
-alias hs='history | grep'
+alias his='history | grep'
 alias pipup="pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U --user"
 alias gls='gls -Flha --color --group-directories-first'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
@@ -126,7 +125,7 @@ alias sme='mbsync burnsac@me.com'
 alias mwme='mw -y burnsac@me.com'
 alias sgm='mbsync burnsppl@gmail.com'
 alias mwgm='mw -y burnsppl@gmail.com'
-alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@lucasburns.xyz'
+alias smail='mw -y burnsac@me.com && mw -y burnsppl@gmail.com && mw -y lucas@lucasburns.xyz'
 
 alias projects='cd ~/JupyterNotebook/projects'
 alias nvimd='cd /usr/local/share/nvim/runtime'
@@ -159,7 +158,7 @@ alias wwwpull='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/s
 alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/server /Volumes/SSD'
 alias sudorysnc='sudo rsync -PrugptvENtzl --delete-after --include ".*" --exclude ".DS_Store" --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" / /Volumes/SSD/void'
 
-alias z='zathura'
+alias zath='zathura'
 # export PAGER="less"
 # Colorize man pages with `bat`
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
@@ -169,7 +168,6 @@ alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
 alias fd='fd -Hi'
-alias smi='sudo make install'
 alias spt='speedtest | rg "(Download:|Upload:)"'
 
 # Github
@@ -186,7 +184,9 @@ alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@lucasburns.xyz:/var/www/lambda'
 alias hangups='hangups -c ~/.config/hangups/hangups.conf'
 alias newsboat='newsboat -C ~/.config/newsboat/newsboat.config'
+alias ticker='ticker --config ~/.config/ticker/ticker.yaml'
 alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done with task! Exit status: $?"' -activate com.googlecode.iterm2
+alias taskt='taskwarrior-tui'
 
 export BROWSER='open -a LibreWolf'
 export RTV_BROWSER="w3m"
@@ -291,8 +291,8 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Syntax Highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-[ -f "$HOME/.config/zsh/lficons" ] && source "$HOME/.config/zsh/lficons"
+[ -f "$XDG_CONFIG_HOME/zsh/lficons" ] && source "$XDG_CONFIG_HOME/zsh/lficons"
+[ -f "$XDG_CONFIG_HOME/broot/launcher/bash/br" ] && source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
 
-source /Users/lucasburns/.config/broot/launcher/bash/br
-export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-export PATH="/usr/local/opt/libressl/bin:$PATH"
+killall limelight &> /dev/null
+limelight &> /dev/null &

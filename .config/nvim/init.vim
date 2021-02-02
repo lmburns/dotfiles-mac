@@ -13,18 +13,14 @@
   Plug 'ryanoasis/vim-devicons'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
-  Plug 'jremmen/vim-ripgrep'
   Plug 'vim-pandoc/vim-pandoc'
   Plug 'vim-pandoc/vim-pandoc-syntax'
   Plug 'vim-pandoc/vim-rmarkdown'
   Plug 'plasticboy/vim-markdown'
-  " Plug 'godlygeek/tabular'
+  Plug 'vimwiki/vimwiki'
   Plug 'sheerun/vim-polyglot'           " Syntax highlighting
   Plug 'kevinoid/vim-jsonc'
-  Plug 'vimwiki/vimwiki'
   Plug 'zhou13/vim-easyescape'
-  Plug 'rhysd/open-pdf.vim'
-  " Plug 'sgur/vim-editorconfig'
 
   " Themes
   Plug 'sainnhe/gruvbox-material'
@@ -51,6 +47,7 @@
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
   Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
   Plug 'jupyter-vim/jupyter-vim'
+  " Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
 
   Plug 'itchyny/vim-highlighturl'
@@ -92,7 +89,6 @@
   let g:edge_style = 'aura'
   let g:material_theme_style = 'ocean-community'
 
-
   " UndoHistory: store undo history in a file. even after closing and reopening vim
   if has('persistent_undo')
     let target_path = expand('~/.config/vim-persisted-undo/')
@@ -123,13 +119,14 @@
   " colorscheme tokyonight
   " colorscheme material
   " colorscheme srcery
-  " colorscheme oceanic_material
+  " " colorscheme oceanic_material
   " colorscheme dogrun
   " colorscheme neodark
   " colorscheme palenight
   set background=dark
   set path+=**
   set lazyredraw
+  set shell=bash
   set belloff=all                     " turn off bell
   set title
   set noshowmode                      " hide file, it's in airline
@@ -161,6 +158,9 @@
   " set timeoutlen=250                    " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
   filetype plugin indent on
+
+  " make background transparent
+  " hi Normal guibg=NONE ctermbg=NONE
 
   " easier navigation in normal / visual / operator pending mode
   noremap K     {
@@ -274,6 +274,7 @@
   map <C-h> <C-W>h
   map <C-l> <C-W>l
 
+  ":verbose hi <name>
   " SyntaxQuery: Display the syntax stack at current cursor position
   function! s:syntax_query() abort
     for id in synstack(line("."), col("."))
@@ -299,15 +300,12 @@
     autocmd FileType markdown,python,json call <SID>IndentSize(4)
     autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
 
-  " Messing with inserting custom words to NOTES/TODO syntax
-  " autocmd Syntax * syntax keyword INFO contained NOTE
-  " autocmd Syntax * syntax keyword INFO containedin=.*Comment
-  " autocmd Syntax * syntax keyword InfoMarker INFO containedin=.*Comment,vimLineComment,vimCommentTitle,rComment,rCommentTodo | highlight def link InfoMarker TODO
-  autocmd Syntax * syntax keyword INFO containedin=.*Comment,vimLineComment,vimCommentTitle,vimTodo,rComment,rTodoParen,rCommentTodo,pythonTodo,pythonComment
-  autocmd syntax * syntax keyword comTitle "(^\s*#\s+):" containedin=rSection,rComment,rCommentTodo
-  " autocmd Syntax * syntax keyword infocomm INFO containedin=.*Comment | highlight def link infocomm TODO
   " autocmd Syntax * syntax keyword myTodo INFO NOTES containedin=ALL | highlight def link myTodo TODO
-  " autocmd Syntax * syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
+
+  augroup HiglightTODO
+    autocmd!
+    autocmd WinEnter,VimEnter * :silent! call matchadd('Todo', 'INFO\|NOTES\|NOTE\|TODO', -1)
+  augroup END
 " }}}
 
 " Earthbound Themes {{{
@@ -514,6 +512,13 @@
   "     pythonx with open(activate_this) as f: exec(f.read(), {'__file__': activate_this})
   " endif
 " }}}
+
+  " Vim-Slime
+  let g:slime_target = "tmux"
+  " xmap ,l <Plug>SlimeRegionSend
+  " nmap ,l <Plug>SlimeParagraphSend
+  autocmd FileType python xmap <buffer> ,l <Plug>SlimeRegionSend
+  autocmd FileType python nmap <buffer> ,l <Plug>SlimeParagraphSend
 " }}}
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -521,7 +526,7 @@
 
 " Airline {{{
   let g:airline_powerline_fonts = 1
-  let g:airline_theme='gruvbox_material'
+  let g:airline_theme='srcery'
 " }}}
 
 " Vimagit {{{
@@ -647,3 +652,34 @@ endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+function! s:IsFirenvimActive(event) abort
+  if !exists('*nvim_get_chan_info')
+    return 0
+  endif
+  let l:ui = nvim_get_chan_info(a:event.chan)
+  return has_key(l:ui, 'client') && has_key(l:ui.client, 'name') &&
+      \ l:ui.client.name =~? 'Firenvim'
+endfunction
+
+function! OnUIEnter(event) abort
+  if s:IsFirenvimActive(a:event)
+    set laststatus=0
+  endif
+endfunction
+autocmd UIEnter * call OnUIEnter(deepcopy(v:event))
+
+let g:firenvim_config = {
+    \ 'globalSettings': {
+        \ 'alt': 'all',
+    \  },
+    \ 'localSettings': {
+        \ '.*': {
+            \ 'cmdline': 'neovim',
+            \ 'content': 'text',
+            \ 'priority': 0,
+            \ 'selector': 'textarea',
+            \ 'takeover': 'always',
+        \ },
+    \ }
+\ }
