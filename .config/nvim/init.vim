@@ -5,7 +5,7 @@
 " |_| |_|\___|\___/ \_/ |_|_| |_| |_|
 
 " Plugins {{{
-  " set ttyfast
+  set ttyfast
   set nocompatible
 
   call plug#begin("~/.vim/plugged")
@@ -48,12 +48,14 @@
   " Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
 
+  Plug 'tpope/vim-surround'
   Plug 'itchyny/vim-highlighturl'
   Plug 'PeterRincker/vim-searchlight'
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   Plug 'mhinz/vim-startify'
   Plug 'justinmk/vim-sneak'
+  " Plug 'easymotion/vim-easymotion'
 
   " HTML/CSS
   Plug 'shime/vim-livedown'
@@ -81,8 +83,8 @@
 
 
 " General Mappings: {{{
-  let g:mapleader = ' '
-  let maplocalleader = ',' " For NVim-R
+  let mapleader = ' '
+  let maplocalleader = ','                      " For NVim-R
   let g:gruvbox_material_palette = 'mix'
   let g:gruvbox_material_background = 'medium'
   let g:sonokai_style = 'shusia'
@@ -172,7 +174,7 @@
   " Replace all is aliased to S.
   " Replace quotes on the line
   nnoremap S :%s//g<Left><Left>
-  nmap <leader>Q :s/'/"/g<CR>:nohlsearch<CR>
+  nmap <Leader>Q :s/'/"/g<CR>:nohlsearch<CR>
 
   " use tab and shift tab to indent and de-indent code
   nnoremap <Tab>   >>
@@ -201,7 +203,7 @@
 
   " Ensure files are read as what I want:
   let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
-  map <leader>v :VimwikiIndex
+  map <Leader>v :VimwikiIndex
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
 
   autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
@@ -216,7 +218,7 @@
   autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
   " Open corresponding .pdf/.html or preview
-  nmap <leader>p :w <Bar> !open %<CR>
+  nmap <Leader>p :w <Bar> !open %<CR>
 
   " Compile rmarkdown
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
@@ -243,16 +245,16 @@
   nnoremap <silent> ]<space>  :<c-u>put =repeat([''],v:count)<bar>'[-1<cr>
 
   " Tabs & Navigation
-  map <leader>nt :tabnew<cr> 		" To create a new tab.
-  map <leader>to :tabonly<cr>     " To close all other tabs (show only the current tab).
-  map <leader>tc :tabclose<cr>    " To close the current tab.
-  map <leader>tm :tabmove<cr>     " To move the current tab to next position.
-  map <leader>tn :tabn<cr>        " To swtich to next tab.
-  map <leader>tp :tabp<cr>        " To switch to previous tab.
+  map <Leader>nt :tabnew<cr> 		" To create a new tab.
+  map <Leader>to :tabonly<cr>     " To close all other tabs (show only the current tab).
+  map <Leader>tc :tabclose<cr>    " To close the current tab.
+  map <Leader>tm :tabmove<cr>     " To move the current tab to next position.
+  map <Leader>tn :tabn<cr>        " To swtich to next tab.
+  map <Leader>tp :tabp<cr>        " To switch to previous tab.
 
   " Buffers
-  map <leader>bp :bprev<CR>
-  map <leader>bn :bnext<CR>
+  map <Leader>bp :bprev<CR>
+  map <Leader>bn :bnext<CR>
 
   " Smart way to move between windows
   map <C-j> <C-W>j
@@ -286,7 +288,23 @@
     autocmd FileType markdown,python,json call <SID>IndentSize(2)
     autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
 
-  autocmd Syntax * syntax keyword myTodo INFO NOTES containedin=ALL | highlight def link myTodo TODO
+  " autocmd Syntax * syntax keyword myTodo NOTE INFO NOTES containedin=ALL | highlight def link myTodo Todo
+
+  augroup vimTodo
+    au!
+    au Syntax * syn match myTodo /\v<(FIXME|NOTE|NOTES|INFO|OPTIMIZE|XXX):/
+          \ containedin=.*Comment,vimCommentTitle
+  augroup END
+  hi def link myTodo Todo
+
+  " Have vimCommentTitle equivalency in Python
+  augroup ccommtitle
+    au!
+    au Syntax * syn match cmTitle /#\s*\%([sS]:\|\h\w*#\)\=\u\w*\(\s\+\u\w*\)*:/
+        \ containedin=vimCommentTitle
+  augroup END
+  hi def link cmTitle vimCommentTitle
+
 
 " }}}
 
@@ -307,40 +325,15 @@
     set signcolumn=yes
   endif
 
-  " Use tab for trigger completion with characters ahead and navigate.
-  inoremap <silent><expr> <TAB>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ coc#refresh()
-  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-  endfunction
-
-  " Use <c-space> to trigger completion.
-  if has('nvim')
-    inoremap <silent><expr> <c-space> coc#refresh()
-  else
-    inoremap <silent><expr> <c-@> coc#refresh()
-  endif
-
-  " Make <CR> auto-select the first completion item and notify coc.nvim to
-  " format on enter, <cr> could be remapped by other vim plugin
-  " inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-  "                               \: '\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>''
-
-  " Use `[g` and `]g` to navigate diagnostics
-  " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-  " nmap <silent> [g <Plug>(coc-diagnostic-prev)
-  " nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
   " GoTo code navigation.
   nmap <silent> gd <Plug>(coc-definition)
   nmap <silent> gy <Plug>(coc-type-definition)
   nmap <silent> gi <Plug>(coc-implementation)
   nmap <silent> gr <Plug>(coc-references)
+
+  xmap <Leader>f <Plug>(coc-format-selected)
+  nmap <Leader>f <Plug>(coc-format-selected)
+
 
   " Use K to show documentation in preview window.
   nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -407,9 +400,9 @@
 
   " Toggle
   " nnoremap <silent> <C-b> :NERDTreeToggle<CR>
-  map <leader>nn :NERDTreeToggle<cr>
-  map <leader>nb :NERDTreeFromBookmark
-  map <leader>nf :NERDTreeFind<cr>
+  map <Leader>nn :NERDTreeToggle<cr>
+  map <Leader>nb :NERDTreeFromBookmark
+  map <Leader>nf :NERDTreeFind<cr>
   " }}}
 
   " FZF & ripgrep {{{
@@ -418,10 +411,10 @@
   let g:rg_highlight = 'true'
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
 
-  nnoremap <silent> <leader><space> :Files<CR>
-  nnoremap <silent> <leader>a :Buffers<CR>
-  nnoremap <silent> <leader>A :Windows<CR>
-  nnoremap <silent> <leader>; :BLines<CR>
+  nnoremap <silent> <Leader><space> :Files<CR>
+  nnoremap <silent> <Leader>a :Buffers<CR>
+  nnoremap <silent> <Leader>A :Windows<CR>
+  nnoremap <silent> <Leader>; :BLines<CR>
   let g:fzf_preview_window = ''
   let $FZF_DEFAULT_OPTS = '--ansi'
   let g:fzf_layout         = { 'down': '~20%' }
@@ -478,12 +471,8 @@
   " autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
   " autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 
-  " if has('nvim')
-  "     let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
-  " else
-  "     set pyxversion=3
-  "     set pythonthreedll=/Library/Frameworks/Python.framework/Versions/3.8/Python
-  " endif
+  let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
+  set pyxversion=3
 
   " JupyterVim {{{
   " let g:pymode_lint_ignore = "E501,W"
@@ -498,7 +487,7 @@
   " Vim-Slime
   let g:slime_target = "neovim"
   autocmd FileType python xmap <buffer> ,l <Plug>SlimeRegionSend
-  autocmd FileType python nmap <buffer> ,l <Plug>SlimeParagraphSend
+  autocmd FileType python nmap <buffer> ,l <Plug>SlimeLineSend
 " }}}
 
 " =====================================================================
@@ -530,8 +519,8 @@
 " }}}
 
 " Bracey {{{
-  nmap <leader>br :Bracey<CR>
-  nmap <leader>r :BraceyReload<CR>
+  nmap <Leadder>br :Bracey<CR>
+  nmap <Leadder>r :BraceyReload<CR>
 " }}}
 
 " =====================================================================
@@ -583,9 +572,9 @@
   autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>
 
   " Made iTerm2 send ✠ when pressing Shift+Enter
-  nnoremap <silent> ✠ :call SendLineToR("stay")<CR><Esc><Home><Down>
-  inoremap <silent> ✠ <Esc>:call SendLineToR("stay")<CR><Esc>A
-  vnoremap <silent> ✠ :call SendSelectionToR("silent", "stay")<CR><Esc><Esc>
+  autocmd FileType r nnoremap <silent> ✠ :call SendLineToR("stay")<CR><Esc><Home><Down>
+  autocmd FileType r inoremap <silent> ✠ <Esc>:call SendLineToR("stay")<CR><Esc>A
+  autocmd FileType r vnoremap <silent> ✠ :call SendSelectionToR("silent", "stay")<CR><Esc><Esc>
 
   let Rout_more_colors = 1                                " Make terminal output more colorful
   let r_indent_align_args = 0
@@ -616,47 +605,51 @@
 " =====================================================================
 " =====================================================================
 
-" Terminal {{{
-" let g:neoterm_autoscroll=1
-let g:term_buf = 0
-let g:term_win = 0
-function! TermToggle(height)
-    if win_gotoid(g:term_win)
-        hide
-    else
-        botright new
-        exec "resize " . a:height
-        try
-            exec "buffer " . g:term_buf
-        catch
-            call termopen("bash", {"detach": 0})
-            let g:term_buf = bufnr("")
-            set nonumber
-            set norelativenumber
-            set signcolumn=no
-        endtry
-        startinsert!
-        let g:term_win = win_getid()
-    endif
-endfunction
+" Defualt Terminal {{{
+  let g:term_buf = 0
+  let g:term_win = 0
+  function! TermToggle(height)
+      if win_gotoid(g:term_win)
+          hide
+      else
+          botright new
+          exec "resize " . a:height
+          try
+              exec "buffer " . g:term_buf
+          catch
+              call termopen("bash", {"detach": 0})
+              let g:term_buf = bufnr("")
+              set nonumber
+              set norelativenumber
+              set signcolumn=no
+          endtry
+          startinsert!
+          let g:term_win = win_getid()
+      endif
+  endfunction
 
-" Toggle terminal on/off (neovim)
-nnoremap <C-t> :call TermToggle(12)<CR>
-inoremap <C-t> <Esc>:call TermToggle(12)<CR>
-tnoremap <C-t> <C-\><C-n>:call TermToggle(12)<CR>
+  " Toggle terminal on/off (neovim)
+  nnoremap <C-t> :call TermToggle(12)<CR>
+  inoremap <C-t> <Esc>:call TermToggle(12)<CR>
+  tnoremap <C-t> <C-\><C-n>:call TermToggle(12)<CR>
 
-" Terminal go back to normal mode
-tnoremap <Esc> <C-\><C-n>
-tnoremap :q! <C-\><C-n>:q!<CR>
-" }}}
+  " Terminal go back to normal mode
+  tnoremap <Esc> <C-\><C-n>
+  tnoremap :q! <C-\><C-n>:q!<CR>
+  " }}}
 
 
-" Floaterm {{{
-nnoremap <C-l> :FloatermNew --wintype=split lf<CR>
-" }}}
+  " Floaterm {{{
+  nnoremap <C-l> :FloatermNew --wintype=split lf<CR>
+  " }}}
 
-" Neoterm {{{
-let g:neoterm_default_mod='belowright' " open terminal in bottom split
-let g:neoterm_size=16 " terminal split size
-let g:neoterm_autoscroll=1 " scroll to the bottom when running a command
-" }}}
+  " Neoterm {{{
+  let g:neoterm_default_mod='belowright' " open terminal in bottom split
+  let g:neoterm_size=14                  " terminal split size
+  let g:neoterm_autoscroll=1             " scroll to the bottom
+  nnoremap <Leader>rf :T ipython<CR>
+  nnoremap <Leader>rr :Tclear<CR>
+  autocmd FileType python nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>
+  autocmd FileType python inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A
+  autocmd FileType python vnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
+  "}}}
