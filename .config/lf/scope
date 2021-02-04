@@ -53,10 +53,6 @@ handle_mime() {
     esac
 }
 
-## Alternative for text files
-# highlight --replace-tabs="${HIGHLIGHT_TABWIDTH}" --out-format="${highlight_format}" --style="${HIGHLIGHT_STYLE}" --force -- "${FILE_PATH}" ;;
-
-# image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
 
 handle_other() {
     case "${FILE_PATH}" in
@@ -78,7 +74,6 @@ handle_other() {
         *.json) jq --color-output . "${FILE_PATH}";;
         *.asc) bat -Pf --theme gruvbox --style auto "${FILE_PATH}";;
         *.ipynb) jupview "${FILE_PATH}";;
-
     esac
 }
 
@@ -88,7 +83,16 @@ handle_other
 
 exit 1
 
-# image/*) chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
+# jupview
+# jupyter nbconvert --stdout --to html "$1" 2>/dev/null | w3m -dump -T text/html | bat -Pf --theme gruvbox --style auto --language python
+
+
+
+
+### Attempt to use imgcat instead of cafa to view images:
 # image/*) /usr/local/bin/imgcat --width "$(identify -format '%w' "${FILE_PATH}")" --height "$(identify -format '%h' "${FILE_PATH}")" --iterm2 "${FILE_PATH}" || exit 1;;
 
 # fileviewer *.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm /usr/local/bin/imgcat --width %pw --height %ph --iterm2 %c:p %pd
+
+### Alternative for text files
+# highlight --replace-tabs="${HIGHLIGHT_TABWIDTH}" --out-format="${highlight_format}" --style="${HIGHLIGHT_STYLE}" --force -- "${FILE_PATH}" ;;

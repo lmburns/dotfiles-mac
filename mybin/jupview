@@ -24,4 +24,10 @@ if [ ! -f "$1" ]; then
     exit $EX_NOINPUT
 fi
 
-jupyter nbconvert --stdout --to markdown "$1" 2>/dev/null | bat --language python
+
+jupyter nbconvert --stdout --to html "$1" 2>/dev/null | w3m -dump -T text/html | bat -Pf --theme gruvbox --style auto --language python
+
+# base=$(basename -s .ipynb $1)
+# temp="/tmp/$base.html"
+# jupyter nbconvert --output-dir="/tmp/" --to html "$1" >/dev/null 2>&1
+# w3m -dump "${temp}" && rm "${temp}"

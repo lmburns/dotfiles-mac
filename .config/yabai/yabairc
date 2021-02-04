@@ -17,6 +17,7 @@ yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
 yabai -m rule --add app="Fantastical" manage=off
 yabai -m rule --add app=R manage=off
+yabai -m rule --add app=Bear manage=off layer=above
 yabai -m rule --add app="^iTerm2$" manage=on
 yabai -m rule --add app="^Flux$" manage=off
 yabai -m rule --add app="^console$" manage=off
