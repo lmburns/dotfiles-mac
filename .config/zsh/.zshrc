@@ -7,7 +7,6 @@
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
 # History
-export LC_ALL=en_US.UTF-8
 export ZSH_DISABLE_COMPFIX=true
 export HISTSIZE=10000000
 export HISTFILE="$HOME/.cache/zsh/history/.zsh_history"
@@ -100,6 +99,7 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 # Aliases
+# alias sudo='doas'
 alias cp='cp -iv'
 alias rm='rm -iv'
 alias rr='rm -rf'
@@ -161,9 +161,9 @@ alias sudorysnc='sudo rsync -PrugptvENtzl --delete-after --include ".*" --exclud
 alias zath='zathura'
 # export PAGER="less"
 # Colorize man pages with `bat`
-# export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # export MANPAGER="nvim -c 'set ft=man' -"
-export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
+# export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
 alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
@@ -294,5 +294,5 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 [ -f "$XDG_CONFIG_HOME/zsh/lficons" ] && source "$XDG_CONFIG_HOME/zsh/lficons"
 [ -f "$XDG_CONFIG_HOME/broot/launcher/bash/br" ] && source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
 
-killall limelight &> /dev/null
-limelight &> /dev/null &
+# killall limelight &> /dev/null
+# limelight &> /dev/null &

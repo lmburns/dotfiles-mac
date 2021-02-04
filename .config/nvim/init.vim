@@ -5,22 +5,24 @@
 " |_| |_|\___|\___/ \_/ |_|_| |_| |_|
 
 " Plugins {{{
-  set ttyfast
+  " set ttyfast
   set nocompatible
 
   call plug#begin("~/.vim/plugged")
+  " Vim-instant markdown
   Plug 'scrooloose/nerdtree'
   Plug 'ryanoasis/vim-devicons'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
-  Plug 'vim-pandoc/vim-pandoc'
   Plug 'vim-pandoc/vim-pandoc-syntax'
-  Plug 'vim-pandoc/vim-rmarkdown'
   Plug 'plasticboy/vim-markdown'
   Plug 'vimwiki/vimwiki'
+  " Plug 'vim-pandoc/vim-rmarkdown'
+  " Plug 'kevinoid/vim-jsonc'
   Plug 'sheerun/vim-polyglot'           " Syntax highlighting
-  Plug 'kevinoid/vim-jsonc'
   Plug 'zhou13/vim-easyescape'
+  Plug 'kassio/neoterm'
+  Plug 'voldikss/vim-floaterm'
 
   " Themes
   Plug 'sainnhe/gruvbox-material'
@@ -38,15 +40,11 @@
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
-  " Plug 'AlessandroYorba/Sierra'
-  " Plug 'chuling/equinusocio-material.vim'
-  " Plug 'hardcoreplayers/gruvbox9'
-  Plug 'morhetz/gruvbox'
 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
-  Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
-  Plug 'jupyter-vim/jupyter-vim'
+  " Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
+  " Plug 'jupyter-vim/jupyter-vim'
   " Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
 
@@ -55,6 +53,7 @@
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   Plug 'mhinz/vim-startify'
+  Plug 'justinmk/vim-sneak'
 
   " HTML/CSS
   Plug 'shime/vim-livedown'
@@ -68,8 +67,9 @@
   call plug#end()
 " }}}
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
+
 " Function Keys: {{{
   " <F3> = turn on/off relative line numbers
   " <F4> = compile markdown file using pandoc
@@ -101,11 +101,9 @@
     set undofile
   endif
 
-  " use more than base 8 colors
-  if has('nvim')
-     set termguicolors                " enable termguicolors for better highlighting
-     set fillchars+=msgsep:\ ,vert:\│ " customize message separator in neovim
-  endif
+  set termguicolors                " enable termguicolors for better highlighting
+  set fillchars+=msgsep:\ ,vert:\│ " customize message separator in neovim
+  set t_Co=256
 
   syntax enable
   " colorscheme kimbie
@@ -119,14 +117,13 @@
   " colorscheme tokyonight
   " colorscheme material
   " colorscheme srcery
-  " " colorscheme oceanic_material
+  " colorscheme oceanic_material
   " colorscheme dogrun
   " colorscheme neodark
   " colorscheme palenight
   set background=dark
   set path+=**
   set lazyredraw
-  set shell=bash
   set belloff=all                     " turn off bell
   set title
   set noshowmode                      " hide file, it's in airline
@@ -147,7 +144,7 @@
   set foldcolumn=1
   set nofoldenable
   set laststatus=0
-  set scrolloff=5                      " cusor 2 lines from bottom of page
+  set scrolloff=5                      " cusor 5 lines from bottom of page
   set cursorline                       " show line where cursor is
   set mouse=a                          " enable mouse all modes
   set wildmode=longest,list,full       " Autocompletion
@@ -158,9 +155,6 @@
   " set timeoutlen=250                    " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
   filetype plugin indent on
-
-  " make background transparent
-  " hi Normal guibg=NONE ctermbg=NONE
 
   " easier navigation in normal / visual / operator pending mode
   noremap K     {
@@ -198,7 +192,7 @@
   " Make cut not go to clipboard
   nnoremap x "_x
   " Delete line without newline character
-  nnoremap E 0"_D
+  nnoremap E ^"_D
 
   " Annoying when I hit 'q:' and it starts recording
   nmap q: :q<Cr>
@@ -209,6 +203,7 @@
   let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
   map <leader>v :VimwikiIndex
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
+
   autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
   autocmd BufRead,BufNewFile *.tex set filetype=tex
@@ -235,11 +230,6 @@
   " Pandoc
    let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
 
-   command! -bang CheatSheet call fzf#vim#files('~/JupyterNotebook/projects/rstudio/cheatsheet', <bang>0)
-   " Still trying to figure this out
-   nmap <Leader>cs :CheatSheet<CR>
-   nmap <Leader>sc !(nohup xargs -I{%} zathura "{%}" >/dev/null)
-
   command! -nargs=* RunSilent
       \ | execute ':silent !'.'<args>'
       \ | execute ':redraw!'
@@ -247,10 +237,6 @@
   nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
   nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
   nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
-
-  " Markdown {{{
-
-  " }}}
 
   " Inserts a space above or below
   nnoremap <silent> [<space>  :<c-u>put!=repeat([''],v:count)<bar>']+1<cr>
@@ -297,23 +283,15 @@
   endfunction
 
   " FileType specific indents
-    autocmd FileType markdown,python,json call <SID>IndentSize(4)
+    autocmd FileType markdown,python,json call <SID>IndentSize(2)
     autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
 
-  " autocmd Syntax * syntax keyword myTodo INFO NOTES containedin=ALL | highlight def link myTodo TODO
+  autocmd Syntax * syntax keyword myTodo INFO NOTES containedin=ALL | highlight def link myTodo TODO
 
-  augroup HiglightTODO
-    autocmd!
-    autocmd WinEnter,VimEnter * :silent! call matchadd('Todo', 'INFO\|NOTES\|NOTE\|TODO', -1)
-  augroup END
 " }}}
 
-" Earthbound Themes {{{
-  " au BufEnter * :source ~/.vim/customsyntax/extend-syntax.vim
-" }}}
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
 
 " Coc Coding {{{
   set hidden
@@ -416,8 +394,8 @@
   autocmd FileType html let b:coc_pairs_disabled = ['html']
 " }}}
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
 
 " NERDTREE {{{
   let g:NERDTreeShowHidden = 1
@@ -438,10 +416,14 @@
   " nnoremap <C-p> :FZF<CR>
   let g:rg_command = 'rg --vimgrep --hidden'
   let g:rg_highlight = 'true'
-  " let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
+  let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
 
-  map ; :Files<CR>
+  nnoremap <silent> <leader><space> :Files<CR>
+  nnoremap <silent> <leader>a :Buffers<CR>
+  nnoremap <silent> <leader>A :Windows<CR>
+  nnoremap <silent> <leader>; :BLines<CR>
   let g:fzf_preview_window = ''
+  let $FZF_DEFAULT_OPTS = '--ansi'
   let g:fzf_layout         = { 'down': '~20%' }
   let g:fzf_action = {
     \ 'ctrl-t': 'tab split',
@@ -450,8 +432,8 @@
     \}
 " }}}
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
 
 " EasyEscape {{{
   let g:easyescape_chars = { "j": 1, "k": 1 }
@@ -463,8 +445,8 @@
   set t_BE=
 " }}}
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
 
 " Spell check completion behaviour {{{
   " set completeopt+=noinsert  " Auto select the first completion entry
@@ -483,28 +465,28 @@
   " zg = add word to spell list // z= correct error
 " }}}
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
 
 " Python {{{
   " :g/^\s*#\sIn/d = delete nbconvert 'In[0]' lines
   " :g/^$/,/./-j = delete multiple blank lines
-  let g:pymode_options_max_line_length=120
-  let g:syntastic_python_pylint_post_args="--max-line-length=120"
+  " let g:pymode_options_max_line_length=120
+  " let g:syntastic_python_pylint_post_args="--max-line-length=120"
 
 
-  autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
-  autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
+  " autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
+  " autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 
-  if has('nvim')
-      let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
-  else
-      set pyxversion=3
-      set pythonthreedll=/Library/Frameworks/Python.framework/Versions/3.8/Python
-  endif
+  " if has('nvim')
+  "     let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
+  " else
+  "     set pyxversion=3
+  "     set pythonthreedll=/Library/Frameworks/Python.framework/Versions/3.8/Python
+  " endif
 
   " JupyterVim {{{
-  let g:pymode_lint_ignore = "E501,W"
+  " let g:pymode_lint_ignore = "E501,W"
   " let g:vim_virtualenv_path = '/Users/lucasburns/opt/anaconda3'
   " if exists('g:vim_virtualenv_path')
   "     pythonx import os; import vim
@@ -514,15 +496,13 @@
 " }}}
 
   " Vim-Slime
-  let g:slime_target = "tmux"
-  " xmap ,l <Plug>SlimeRegionSend
-  " nmap ,l <Plug>SlimeParagraphSend
+  let g:slime_target = "neovim"
   autocmd FileType python xmap <buffer> ,l <Plug>SlimeRegionSend
   autocmd FileType python nmap <buffer> ,l <Plug>SlimeParagraphSend
 " }}}
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
 
 " Airline {{{
   let g:airline_powerline_fonts = 1
@@ -534,8 +514,8 @@
 " }}}
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
 
 " Vim-Livedown {{{
   nmap gm :LivedownToggle<CR>
@@ -554,10 +534,16 @@
   nmap <leader>r :BraceyReload<CR>
 " }}}
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =====================================================================
+" =====================================================================
 
 " NVim-R {{{
+  " Load the cheatshet of Nvim-R
+   command! -bang CheatSheet call fzf#vim#files('~/JupyterNotebook/projects/rstudio/cheatsheet', <bang>0)
+   " Still trying to figure this out
+   nmap <Leader>cs :CheatSheet<CR>
+   nmap <Leader>sc !(nohup xargs -I{%} zathura "{%}" >/dev/null)
+
 " Autostart
   autocmd FileType r if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
   autocmd FileType rmd if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
@@ -585,7 +571,6 @@
   " let R_external_term = 1                                " OSX use R.app graphical
   " let R_applescript = 1                                  " OSX use R.app graphical
 
-
   nmap <silent> <LocalLeader>t :call RAction("tail")<CR>
   nmap <silent> <LocalLeader>H :call RAction("head")<CR>
 
@@ -606,80 +591,72 @@
   let r_indent_align_args = 0
   " let rout_follow_colorscheme = 1
 
-" Kimbie {{{
+" Gruvbox {{{
 " if has('gui_running') || &termguicolors
-"   let rout_color_input    = 'guifg=#9e9e9e'
-"   let rout_color_normal   = 'guifg=#f79a32'
-"   let rout_color_number   = 'guifg=#889b4a'
-"   let rout_color_integer  = 'guifg=#a3b95a'
-"   let rout_color_float    = 'guifg=#98676a'
-"   let rout_color_complex  = 'guifg=#fcaf00'
-"   let rout_color_negnum   = 'guifg=#d7afff'
-"   let rout_color_negfloat = 'guifg=#d6afff'
-"   let rout_color_date     = 'guifg=#4c96a8'
-"   let rout_color_true     = 'guifg=#088649'
-"   let rout_color_false    = 'guifg=#ff5d5e'
-"   let rout_color_inf      = 'guifg=#f06431'
-"   let rout_color_constant = 'guifg=#5fafcf'
-"   let rout_color_string   = 'guifg=#502166'
-"   let rout_color_error    = 'guifg=#ffffff guibg=#dc3958'
-"   let rout_color_warn     = 'guifg=#f14a68'
+"   let rout_color_input    = 'guifg=#e2cca9'
+"   let rout_color_normal   = 'guifg=#d4be98'
+"   let rout_color_number   = 'guifg=#80aa9e'
+"   let rout_color_integer  = 'guifg=#8bba7f'
+"   let rout_color_float    = 'guifg=#d3869b'
+"   let rout_color_complex  = 'guifg=#e9b143'
+"   let rout_color_negnum   = 'guifg=#f28534'
+"   let rout_color_negfloat = 'guifg=#e78a4e'
+"   let rout_color_date     = 'guifg=#ea6962'
+"   let rout_color_true     = 'guifg=#b0b846'
+"   let rout_color_false    = 'guifg=#f2594b'
+"   let rout_color_inf      = 'guifg=#f28534'
+"   let rout_color_constant = 'guifg=#7daea3'
+"   let rout_color_string   = 'guifg=#266b79'
+"   let rout_color_error    = 'guifg=#d4be98 guibg=#d3869b'
+"   let rout_color_warn     = 'guifg=#fb4934'
 "   let rout_color_index    = 'guifg=#d3af86'
 " endif
 " }}}
 
-" Gruvbox {{{
-if has('gui_running') || &termguicolors
-  let rout_color_input    = 'guifg=#e2cca9'
-  let rout_color_normal   = 'guifg=#d4be98'
-  let rout_color_number   = 'guifg=#80aa9e'
-  let rout_color_integer  = 'guifg=#8bba7f'
-  let rout_color_float    = 'guifg=#d3869b'
-  let rout_color_complex  = 'guifg=#e9b143'
-  let rout_color_negnum   = 'guifg=#f28534'
-  let rout_color_negfloat = 'guifg=#e78a4e'
-  let rout_color_date     = 'guifg=#ea6962'
-  let rout_color_true     = 'guifg=#b0b846'
-  let rout_color_false    = 'guifg=#f2594b'
-  let rout_color_inf      = 'guifg=#f28534'
-  let rout_color_constant = 'guifg=#7daea3'
-  let rout_color_string   = 'guifg=#266b79'
-  let rout_color_error    = 'guifg=#d4be98 guibg=#d3869b'
-  let rout_color_warn     = 'guifg=#fb4934'
-  let rout_color_index    = 'guifg=#d3af86'
-endif
+" =====================================================================
+" =====================================================================
+
+" Terminal {{{
+" let g:neoterm_autoscroll=1
+let g:term_buf = 0
+let g:term_win = 0
+function! TermToggle(height)
+    if win_gotoid(g:term_win)
+        hide
+    else
+        botright new
+        exec "resize " . a:height
+        try
+            exec "buffer " . g:term_buf
+        catch
+            call termopen("bash", {"detach": 0})
+            let g:term_buf = bufnr("")
+            set nonumber
+            set norelativenumber
+            set signcolumn=no
+        endtry
+        startinsert!
+        let g:term_win = win_getid()
+    endif
+endfunction
+
+" Toggle terminal on/off (neovim)
+nnoremap <C-t> :call TermToggle(12)<CR>
+inoremap <C-t> <Esc>:call TermToggle(12)<CR>
+tnoremap <C-t> <C-\><C-n>:call TermToggle(12)<CR>
+
+" Terminal go back to normal mode
+tnoremap <Esc> <C-\><C-n>
+tnoremap :q! <C-\><C-n>:q!<CR>
 " }}}
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-function! s:IsFirenvimActive(event) abort
-  if !exists('*nvim_get_chan_info')
-    return 0
-  endif
-  let l:ui = nvim_get_chan_info(a:event.chan)
-  return has_key(l:ui, 'client') && has_key(l:ui.client, 'name') &&
-      \ l:ui.client.name =~? 'Firenvim'
-endfunction
+" Floaterm {{{
+nnoremap <C-l> :FloatermNew --wintype=split lf<CR>
+" }}}
 
-function! OnUIEnter(event) abort
-  if s:IsFirenvimActive(a:event)
-    set laststatus=0
-  endif
-endfunction
-autocmd UIEnter * call OnUIEnter(deepcopy(v:event))
-
-let g:firenvim_config = {
-    \ 'globalSettings': {
-        \ 'alt': 'all',
-    \  },
-    \ 'localSettings': {
-        \ '.*': {
-            \ 'cmdline': 'neovim',
-            \ 'content': 'text',
-            \ 'priority': 0,
-            \ 'selector': 'textarea',
-            \ 'takeover': 'always',
-        \ },
-    \ }
-\ }
+" Neoterm {{{
+let g:neoterm_default_mod='belowright' " open terminal in bottom split
+let g:neoterm_size=16 " terminal split size
+let g:neoterm_autoscroll=1 " scroll to the bottom when running a command
+" }}}

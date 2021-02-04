@@ -46,9 +46,9 @@ color=1                               # Use color
 color.overdue=red                 # Color of overdue tasks
 color.due=yellow                  # Color of due tasks
 # color.pri.H=bold                       # Color of priority:H tasks
-#color.pri.M=on_yellow                 # Color of priority:M tasks
-#color.pri.L=on_green                  # Color of priority:L tasks
-#color.pri.none=white on_blue          # Color of priority:  tasks
+# color.pri.M=on_yellow                 # Color of priority:M tasks
+# color.pri.L=on_green                  # Color of priority:L tasks
+# color.pri.none=white on_blue          # Color of priority:  tasks
 color.active=green              # Color of active tasks
 color.tagged=yellow                    # Color of tagged tasks
 #color.tag.bug=yellow                  # Color of +bug tasks
@@ -85,7 +85,7 @@ report.list.labels= , ,Project,Pri,Due,Description,Age
 report.list.description=Lists all tasks matching the specified criteria
 # report.list.columns=id,project,priority,due,start.active,age,description
 # report.list.labels=ID,Project,Pri,Due,Active,Age,Description
-report.list.sort=due+,priority-,project+
+report.list.sort=description,due+,priority-,project+
 report.list.filter=status:pending
 
 # task ls

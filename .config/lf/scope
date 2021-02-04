@@ -4,17 +4,15 @@ set -C -f -u
 # #IFS=$'\n'
 IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
 
-# ANSI color codes are supported.
-# STDIN is disabled, so interactive scripts won't work properly
-
-# This script is considered a configuration file and must be updated manually.
-
 # Meanings of exit codes:
 # code | meaning    | action of ranger
 # -----+------------+-------------------------------------------
 # 0    | success    | Display stdout as preview
 # 1    | no preview | Display no preview at all
 # 2    | plain text | Display the plain content of the file
+# 3    | fix width  | Don't reload when width changes
+# 4    | fix height | Don't reload when height changes
+
 
 # Script arguments
 FILE_PATH="${1}"         # Full path of the highlighted file
@@ -30,8 +28,7 @@ FILE_EXTENSION_LOWER="$(printf "%s" "${FILE_EXTENSION}" | tr '[:upper:]' '[:lowe
 # Settings
 HIGHLIGHT_SIZE_MAX=262143  # 256KiB
 HIGHLIGHT_TABWIDTH=8
-HIGHLIGHT_STYLE='pablo'
-
+# HIGHLIGHT_STYLE='pablo'
 
 handle_mime() {
     local mimetype="${1}"
@@ -47,10 +44,8 @@ handle_mime() {
             else
                 local highlight_format='ansi'
             fi
-            highlight --replace-tabs="${HIGHLIGHT_TABWIDTH}" --out-format="${highlight_format}" \
-                --style="${HIGHLIGHT_STYLE}" --force -- "${FILE_PATH}" ;;
+            bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme gruvbox --style auto -- "${FILE_PATH}" ;;
 	application/zip) atool --list -- "${FILE_PATH}" ;;
-  # */x-tar|*/gzip) tar tf "${FILE_PATH}" ;;
   image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
    video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
   */pdf) pdftotext -l 10 -nopgbrk -q -- "${FILE_PATH}" - ;;
@@ -58,10 +53,10 @@ handle_mime() {
     esac
 }
 
-# */pdf) pdftotext -l 10 -nopgbrk -q -- "${FILE_PATH}" - ;;
+## Alternative for text files
+# highlight --replace-tabs="${HIGHLIGHT_TABWIDTH}" --out-format="${highlight_format}" --style="${HIGHLIGHT_STYLE}" --force -- "${FILE_PATH}" ;;
 
 # image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
-
 
 handle_other() {
     case "${FILE_PATH}" in
@@ -81,7 +76,8 @@ handle_other() {
         *.docx) docx2txt "${FILE_PATH}" - ;;
         *.csv) cat "${FILE_PATH}" | sed s/,/\\n/g ;;
         *.json) jq --color-output . "${FILE_PATH}";;
-        *.asc) highlight --out-format=ansi --style="${HIGHLIGHT_STYLE}" "${FILE_PATH}";;
+        *.asc) bat -Pf --theme gruvbox --style auto "${FILE_PATH}";;
+        *.ipynb) jupview "${FILE_PATH}";;
 
     esac
 }

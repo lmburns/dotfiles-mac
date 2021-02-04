@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-source /Users/lucasburns/.config/zsh/.zshrc > /dev/null 2>&1
+source $ZDOTDIR/.zshrc > /dev/null 2>&1
 
-c push home master && c push origin master
-
-
+c push home master && c push origin master && c push gitlab master
