@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+#
+# unstage the selected staged file
+# or reset the commit to certain point
+#
+# @params
+# Globals
+#   ${mydir}: current directory of the script
+#   ${reset_type}: reset type, modified files or commit
+#   ${reset_option}: git reset flag, --mixed | --soft | --hard
+#   ${selected_files}: selected file to reset
+#   ${selected_commit}: selected commit to reset
+#   ${confirm}: confirmation status of the user
+# Arguments
+#   -h|--help: show help message and quit
+#   -c|--commit: reset commit
+#   -S|--soft: use --soft flag
+#   -H|--hard: use --hard flag
+#   -y|--yes: confirm action by default and skip confirmation
+
+set -ef
+
+mydir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${mydir}"/fgit_helper.sh
+
+function usage() {
+  echo -e "Usage: freset [-h] [-c] [-S] [-H] [-y] ...
+
+Reset(unstage) the selected staged files.
+Reset the HEAD to certain commits by using -c flag.
+
+Default: unstage the selected files.
+
+Optional arguments:
+  -h, --help\t\tshow this help message and exit.
+  -c, --commit\t\treset HEAD to certain commit, default --mixed flag, reset HEAD to certain commit put all changes into modified state.
+  -S, --soft\t\treset commit using --soft flag, reset HEAD to certain commit without modify working tree.
+  -H, --hard\t\treset commit using --hard flag, reset HEAD to certain commit discard all changes from the working tree.
+  -y, --yes\t\tacknowledge all actions that will be taken and skip confirmation."
+}
+
+reset_option="--mixed"
+reset_type="modified"
+selected_files=()
+confirm=""
+selected_commit=""
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    -c|--commit) reset_type="commit" shift ;;
+    -S|--soft) reset_option="--soft" shift ;;
+    -H|--hard) reset_option="--hard" shift ;;
+    -y|--yes) confirm='y' shift ;;
+    -h|--help) usage && exit 0 ;;
+    *) echo "Invalid option: $1" >&2 && usage && exit 1 ;;
+  esac
+done
+
+if [[ "${reset_type}" == "commit" ]]; then
+  selected_commit=$(get_commit "select the target commit")
+  [[ -z "${selected_commit}" ]] && exit 1
+  [[ -z "${confirm}" ]] && confirm=$(get_confirmation "Reset HEAD to ${selected_commit} ${reset_option}?")
+  [[ "${confirm}" != 'y' ]] && exit 1
+  git reset "${selected_commit}" "${reset_option}"
+else
+  while IFS= read -r line; do
+    selected_files+=("${line}")
+  done < <(get_modified_file 'select files to unstage' 'staged')
+  [[ "${#selected_files[@]}" -eq 0 ]] && exit 1
+  git reset "${selected_files[@]}"
+fi

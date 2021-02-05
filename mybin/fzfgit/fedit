@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#
+# interactive menu to select file/commit to edit
+#
+# @params
+# Globals
+#   ${mydir}: current directory of the script
+#   ${edit_type}: which type to edit, all files, modified files, commit
+#   ${selected_commit}: selected commit to edit
+#   ${selected_files}: arrays of selected file to edit
+# Arguments
+#   -m|--modified: display modified file only
+#   -c|--commit: edit commit using interactive rebase
+#   -h|--help: show helpe message and exit
+
+set -ef
+
+mydir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${mydir}"/fgit_helper.sh
+
+function usage() {
+  echo -e "Usage: fedit [-h] [-m] [-c] ...
+
+Select files/commits through fzf and edit selected files/commits in EDITOR.
+
+Default: list all tracked dotfiles and edit the selected files.
+
+Optional arguments:
+  -h, --help\t\tshow this help message and exit.
+  -m, --modified\tonly list and edit selected modified files.
+  -c, --commit\t\tlist commit and edit the selected commit through interactive rebase."
+}
+
+edit_type="all"
+selected_files=()
+selected_commit=""
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    -m|--modified) edit_type="modified" shift ;;
+    -c|--commit) edit_type="commit" shift ;;
+    -h|--help) usage && exit 0 ;;
+    *) echo "Invalid option: $1" >&2 && usage && exit 1 ;;
+  esac
+done
+
+if [[ "${edit_type}" == "commit" ]]; then
+  selected_commit=$(get_commit "select a commit to edit")
+  [[ -z "${selected_commit}" ]] && exit 1
+  git rebase -i "${selected_commit}"~
+else
+  while IFS= read -r line; do
+    selected_files+=("${line}")
+  done < <(
+    if [[ "${edit_type}" == "modified" ]]; then
+      get_modified_file "select files to edit"
+    else
+      get_git_file "select files to edit"
+    fi
+  )
+  [[ "${#selected_files[@]}" -eq 0 ]] && exit 1
+  exec "${EDITOR}" "${selected_files[@]}"
+fi

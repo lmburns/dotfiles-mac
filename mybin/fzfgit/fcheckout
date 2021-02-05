@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+#
+# checkout files/commit/branches using fzf
+#
+# @params
+# Globals
+#   ${mydir}: current directory of the script, used for imports
+#   ${action_type}: what type of git commands to use (branch|select|commit|modified)
+#   ${selected_branch}: selected_branch to switch
+#   ${selected_files}: selected_files to checkout
+#   ${selected_commit}: selected commit to checkout
+#   ${confirm}: confirm status of the user
+# Arguments
+#   -h|--help: show help message
+#   -s|--select: search all files instead of just the modified files
+#   -b|--branch: search branch and checkout branch
+#   -c|--commit: search commit and checkout commit
+
+set -ef
+
+mydir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${mydir}"/fgit_helper.sh
+
+function usage() {
+  echo -e "Usage: fcheckout [-h] [-s] [-b] [-c] [-y] ...
+
+Select files/commit/branch through fzf and checkout the selected objects.
+Files: checkout the version in HEAD or in a specific commit (reset files content back to the selected commit).
+Branch: switch to the selected branch.
+Commit: switch to a specific commit.
+
+Default: list all modified files and reset selected files back to HEAD.
+
+Optional arguments:
+  -h, --help\t\tshow this help message and exit.
+  -s, --select\t\tlist all tracked files and select a commit to checkout the selected files.
+  -b, --branch\t\tlist all branch and checkout/switch the selected branch.
+  -c, --commit\t\tlist all commits and checkout selected commit.
+  -y, --yes\t\tacknowledge all actions that will be taken and skip confirmation."
+}
+
+action_type="modified"
+selected_files=()
+confirm=""
+selected_commit=""
+selected_branch=""
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    -s|--select) action_type="select" shift ;;
+    -b|--branch) action_type="branch" shift ;;
+    -c|--commit) action_type="commit" shift ;;
+    -y|--yes) confirm="y" shift ;;
+    -h|--help) usage && exit 0 ;;
+    *) echo "Invalid option: $1" >&2 && usage && exit 1;;
+  esac
+done
+
+if [[ "${action_type}" == "branch" ]]; then
+  # checkout branch
+  selected_branch=$(get_branch 'select a branch to checkout')
+  [[ -z "${selected_branch}" ]] && exit 1
+  git checkout "${selected_branch}"
+elif [[ "${action_type}" == "commit" ]]; then
+  # checkout commit
+  selected_commit=$(get_commit 'select a commit to checkout')
+  [[ -z "${selected_commit}" ]] && exit 1
+  git checkout "${selected_commit}"
+elif [[ "${action_type}" == "modified" ]]; then
+  # checkout modified file back to version in HEAD
+  while IFS= read -r line; do
+    selected_files+=("${line}")
+  done < <(get_modified_file 'select files to checkout version in HEAD')
+  [[ "${#selected_files[@]}" -eq 0 ]] && exit 1
+  [[ -z "${confirm}" ]] && echo "(dryrun) git checkout --" "${selected_files[@]}"
+  [[ -z "${confirm}" ]] && confirm=$(get_confirmation "Confirm?")
+  [[ "${confirm}" != 'y' ]] && exit 1
+  git checkout -- "${selected_files[@]}"
+elif [[ "${action_type}" == "select" ]]; then
+  # checkout selected files to a selected commit
+  while IFS= read -r line; do
+    selected_files+=("${line}")
+  done < <(get_git_file 'select files to checkout to previous commit')
+  [[ "${#selected_files[@]}" -eq 0 ]] && exit 1
+  # continue select a commit and then checkout the file back to the selected commit
+  selected_commit=$(get_commit 'select the target commit' "${selected_files[@]}")
+  [[ -z "${selected_commit}" ]] && exit 1
+  [[ -z "${confirm}" ]] && echo "(dryrun) git checkout ${selected_commit} --" "${selected_files[@]}"
+  [[ -z "${confirm}" ]] && confirm=$(get_confirmation "Confirm?")
+  [[ "${confirm}" != 'y' ]] && exit 0
+  git checkout "${selected_commit}" "${selected_files[@]}"
+fi

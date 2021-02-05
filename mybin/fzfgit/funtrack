@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+#
+# untrack selected files
+#
+# @params
+# Globals
+#   ${mydir}: current dir of the script
+#   ${track_type}: determine method to use for untrack, possible values: untrack, temp, resume
+#   ${confirm}: user confirm status
+#   ${selected_files}: arrays of user selected_files for operation
+
+set -ef
+
+mydir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${mydir}"/fgit_helper.sh
+
+function usage() {
+  echo -e "Usage: funtrack [-h] [-t] [-r] [-y] ...
+
+Untrack selected files from git.
+
+Default: list all tracked files and permanently untrack the selected files (using git rm --cached filename).
+
+Files will be remove from index while keeping the file in your current system.
+However, when your other computers pull down the changes, the untracked files will be deleted.
+Make sure to run fbackup before pulling down the changes.
+
+Alternatively use the -t flag (using git update-index --assume-unchanged [path]) to temporarily
+untrack a file but keeping the files when other computers pull down the changes.
+
+Optional arguments:
+  -h, --help\t\tshow this help message and exit.
+  -t, --temp\t\tlist all tracked files and temporarily ignore changes of the selected files.
+  -r, --resume\t\tlist all tracked files and resume tracking changes of the selected files.
+  -y, --yes\t\tacknowledge all actions that will be taken and skip confirmation."
+}
+
+track_type="untrack"
+selected_files=()
+confirm=""
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    -t|--temp) track_type="temp" shift ;;
+    -r|--resume) track_type="retrack" shift ;;
+    -y|--yes) confirm='y' shift ;;
+    -h|--help) usage && exit 0 ;;
+    *) echo "Invalid option: $1" >&2 && usage && exit 1 ;;
+  esac
+done
+
+while IFS= read -r line; do
+  selected_files+=("${line}")
+done < <(get_git_file "select files to untrack")
+[[ "${#selected_files[@]}" -eq 0 ]] && exit 1
+
+if [[ "${track_type}" == "temp" ]]; then
+  [[ -z "${confirm}" ]] && echo "(dryrun) git update-index --assume-unchanged" "${selected_files[@]}"
+  [[ -z "${confirm}" ]] && confirm=$(get_confirmation "Files will be temporarily stop being tracked for changes, continue?")
+  [[ "${confirm}" != 'y' ]] && exit 1
+  git update-index --assume-unchanged "${selected_files[@]}"
+  echo -e " "
+  echo "Selected files are temporarily untracked by git, use funtrack -r to continue tracking changes."
+  echo "Although funtrack -t won't delete the files on other machines, it is not the recommended way to untrack files."
+  echo "funtrack -t is using git update-index --assume-unchanged under the hood"
+  echo "Please refer to git update-index official documentation for more details"
+elif [[ "${track_type}" == "retrack" ]]; then
+  [[ -z "${confirm}" ]] && echo "(dryrun) git update-index --no-assume-unchanged" "${selected_files[@]}"
+  [[ -z "${confirm}" ]] && confirm=$(get_confirmation "Files will resume being tracked by git, continue?")
+  [[ "${confirm}" != 'y' ]] && exit 1
+  git update-index --no-assume-unchanged "${selected_files[@]}"
+  echo " "
+  echo "Selected files are being resumed for tracking by git."
+  echo "Although funtrack -t won't delete the files on other machines, it is not the recommended way to untrack files."
+  echo "funtrack -t is using git update-index --assume-unchanged under the hood"
+  echo "Please refer to git update-index official documentation for more details"
+else
+  [[ -z "${confirm}" ]] && echo "(dryrun) git rm --cached" "${selected_files[@]}"
+  [[ -z "${confirm}" ]] && confirm=$(get_confirmation "Untrack the selected files?")
+  [[ "${confirm}" != 'y' ]] && exit 1
+  git rm --cached "${selected_files[@]}"
+  echo -e " "
+  echo "Selected files are being untracked by git, make sure to run fbackup on your other systems."
+  echo "When other systems pull down this change, selected files will be deleted on other systems."
+  echo "This is the default behavior of git rm --cached."
+  echo "Please refer to git rm official documentation for more details"
+fi

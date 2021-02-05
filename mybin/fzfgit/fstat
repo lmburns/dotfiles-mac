@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#
+# interactive git status menu
+# toggle stage and unstage
+#
+# @params
+# Globals
+#   ${mydir}: current directory of where the script is running
+#   ${selected_files}: raw selected file (with current git status prepend)
+#   ${selected_filenames}: bash array of names for the selected_files
+#   ${stage_file}: determine if current operation should be staging file or unstage
+
+set -ef
+
+mydir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${mydir}"/fgit_helper.sh
+
+function usage() {
+  echo -e "Usage: fstat [-h] ...
+
+Display interactive git status menu.
+Toggle file stage/unstage interactively.
+
+Optional arguments:
+  -h, --help\t\tshow this help message and exit."
+}
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    -h|--help) usage && exit 0 ;;
+    *) echo "Invalid option: $1" >&2 && usage && exit 1 ;;
+  esac
+done
+
+while :; do
+  # reset all variable and arrays for each loop
+  selected_files=()
+  selected_filenames=()
+  stage_file=""
+
+  while IFS= read -r line; do
+    selected_files+=("${line}")
+  done < <(get_modified_file "select files to stage/unstage" "all" "raw")
+  [[ "${#selected_files[@]}" -eq 0 ]] && break
+
+  # check if current operation should stage file or unstage file
+  # if any file start with M but has char immediately follow it, new changes are made, stage file
+  # if any file start with a space or tab, the file is not staged, stage file
+  # otherwise, we unstage
+  stage_file=$(printf '%s\n' "${selected_files[@]}" | awk '{
+    if ($0 ~ /^[A-Za-z][A-Za-z].*$/) {
+      print "stage"
+    } else if ($0 ~ /^[ \t].*$/) {
+      print "stage"
+    }
+  }')
+
+  while IFS= read -r line; do
+    selected_filenames+=("${line}")
+  done < <(
+    printf '%s\n' "${selected_files[@]}" \
+      | awk -v home="${GTREE}" '{
+          $1=""
+          gsub(/^[ \t]/, "", $0)
+          gsub(/"/, "", $0)
+          print home "/" $0
+        }'
+  )
+
+  if [[ -z "${stage_file}" ]]; then
+    git reset --quiet HEAD "${selected_filenames[@]}"
+  else
+    git add "${selected_filenames[@]}"
+  fi
+done

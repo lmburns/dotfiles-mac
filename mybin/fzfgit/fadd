@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+#
+# Stage the selected file to git bare repo
+#
+# @params
+# Globals
+#   ${mydir}: string, current directory of the executing script
+#   ${stage_type}: modified, new file, or directory to stage
+#   ${selected_files}: bash array of user selected files to stage
+# Arguments
+#   -h|--help: show help message
+#   -f|--file: select a file in PWD to stage
+#   -d|--dir: select a directory in PWD to stage
+
+set -ef
+
+mydir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${mydir}"/fgit_helper.sh
+
+function usage() {
+  echo -e "Usage: fadd [-h] [-f] [-d] ...
+
+Select files/directories or modified files through fzf.
+Stage the selected file to the dotfile gitbare repo.
+
+Default: list all modified files and stage the selected files.
+
+Optional arguments:
+  -h, --help\t\tshow this help message and exit.
+  -f, --file\t\tselect files in current directory and stage the selected files.
+  -d, --dir\t\tselect folders in current directory and stage the selected folders."
+}
+
+#######################################
+# stage file
+# Arguments:
+#   $1: array of files to stage
+#######################################
+
+function stage_file() {
+  local files=("$@")
+  [[ "${#files[@]}" -eq 0 ]] && exit 1
+  git  add "${files[@]}"
+}
+
+stage_type="modified"
+selected_files=()
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    -f|--file) stage_type="file" shift ;;
+    -d|--dir) stage_type="dir" shift ;;
+    -h|--help) usage && exit 0 ;;
+    *) echo "Invalid option: $1" >&2 && usage && exit 1 ;;
+  esac
+done
+
+while IFS= read -r line; do
+  selected_files+=("${line}")
+done < <(
+  if [[ "${stage_type}" == "file" ]]; then
+    search_file 'f'
+  elif [[ "${stage_type}" == "dir" ]]; then
+    search_file 'd'
+  else
+    get_modified_file "select files to stage" "unstaged"
+  fi
+)
+
+stage_file "${selected_files[@]}"
