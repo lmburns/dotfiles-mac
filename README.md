@@ -64,15 +64,25 @@ Options:
 
 View manpages in `zathura`.
 
-#### Usage
+**Usage**: `manp ls`
 
-```sh
-manp ls
-```
 ==========================================================
 ### pzz
 
 Search directory with `fzf` for pdfs to open in `zathura`.
 
-#### Usage
-As simple as calling the command `pzz` in a directory with pdfs.
+**Usage**: As simple as calling the command `pzz` in a directory with pdfs.
+
+==========================================================
+### cps
+
+Whenever you track your dotfiles with a git bare repo you are unable to use `xargs` to push changes to all remotes.
+
+This is setup to work with something like:
+```sh
+alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
+```
+
+The remote names can be changed.
+
+**Usage**: `cps`.
