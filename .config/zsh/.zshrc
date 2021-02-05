@@ -218,20 +218,7 @@ asciir() { asciinema rec $1; }
 pss() { ps aux | rg --color always -i $1 | rg -v rg }
 psgrep() { ps up $(pgrep -f $@) 2>&-; }
 mbn() { (nohup mn $1 >/dev/null &) }
-
-# Use fzf and zathura to open PDFs
-pz () {
-    local zathura
-    open=zathura
-    ag -U -g ".pdf$" \
-    | fast-p \
-    | fzf --read0 --reverse -e -d $'\t'  \
-        --preview-window down:80% --preview '
-            v=$(echo {q} | gtr " " "|");
-            echo -e {1}"\n"{2} | ggrep -E "^|$v" -i --color=always;
-        ' \
-    | gcut -z -f 1 -d $'\t' | gtr -d '\n' | gxargs -r --null $open > /dev/null 2> /dev/null
-}
+jupyt() { jupytext --set-formats ipynb,py $1 }
 
 # Use lf to change directory
 lfcd () {
@@ -257,19 +244,18 @@ export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
 export R_HISTFILE="$XDG_CONFIG_HOME/r/Rhistory"
 export R_PROFILE_USER="$XDG_CONFIG_HOME/r/Rprofile"
 export LESSHISTFILE="-"
-# export OPENSSL_INCLUDE_DIR=`brew --prefix openssl`/include
-# export OPENSSL_LIB_DIR=`brew --prefix openssl`/lib
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
+export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
 
-export FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border"
+export FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border --ansi"
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
 
 alias db='dotbare'
 export DOTBARE_DIR="$XDG_DATA_HOME/cfg"
 export DOTBARE_TREE="$HOME"
 export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare"
-export DOTBARE_FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border"
+export DOTBARE_FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border --ansi"
 
 # NNN
 export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
@@ -282,10 +268,10 @@ export GPG_AGENT_INFO="$HOME/.gnupg/S.gpg-agent"
 export PINENTRY_USER_DATA="USE_CURSES=1"
 
 # Adding Anaconda Python to beginning of $PATH
-export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
+export PATH="$HOME/opt/anaconda3/bin:$PATH"
 
 # Homebrew ruby over system
-export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
+# export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
 # Dragon - drag and drop
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -297,5 +283,4 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # killall limelight &> /dev/null
 # limelight &> /dev/null &
 
-# export PATH="/usr/local/opt/gnu-getopt/bin:$PATH"
-export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
+[ -f ~/opt/forgit/forgit.plugin.zsh ] && source ~/opt/forgit/forgit.plugin.zsh

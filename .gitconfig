@@ -1,7 +1,8 @@
 [user]
 	name = Lucas Burns
 	email = burnsac@me.com
-	signingkey = E93ACCAAAEB024788C106EDEC011CBEF6628B679
+	signingkey = C011CBEF6628B679
+#	signingkey = E93ACCAAAEB024788C106EDEC011CBEF6628B679
 [alias]
 	a = add
 	addurl = remote set-url --add origin
@@ -36,6 +37,7 @@
 [core]
 	autocrlf = input
 	excludesfile = /Users/lucasburns/.gitignore_global
+	pager = delta
 [diff "gpg"]
 	texconv = gpg --no-tty --decrypt --quiet
 [filter "lfs"]
@@ -55,3 +57,22 @@
 	autocorrect = 1
 [pull]
 	rebase = false
+[delta]
+	features = side-by-side unobstrusive-line-numbers decorations
+	syntax-theme = KimbieDark
+	plus-style = syntax "#088649"
+	plus-emph-style = syntax "#088649"
+	minus-style = syntax "#7E5053"
+	minus-empty-line-marker-style = syntax "#7E5053"
+[delta "decorations"]
+	commit-decoration-style = bold magenta box ul
+	file-style = bold magenta ul
+	file-decoration-style = none
+	hunk-header-decoration-style = red box ul
+[delta "line-numbers"]
+	line-numbers-left-style = white
+	line-numbers-right-style = white
+	line-numbers-minus-style = 124
+	line-numbers-plus-style = 28
+[interactive]
+	diffFilter = delta --color-only

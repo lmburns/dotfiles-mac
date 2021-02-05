@@ -415,7 +415,7 @@
   " }}}
 
   " FZF & ripgrep {{{
-  " nnoremap <C-p> :FZF<CR>
+  " :History/ -- :Maps -- :Commands -- :Locate -- :GFiles -- :GFiles?
   let g:rg_command = 'rg --vimgrep --hidden'
   let g:rg_highlight = 'true'
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
@@ -424,6 +424,8 @@
   nnoremap <silent> <Leader>a :Buffers<CR>
   nnoremap <silent> <Leader>A :Windows<CR>
   nnoremap <silent> <Leader>; :BLines<CR>
+  nnoremap <silent> <Leader>H :History:<CR>
+
   let g:fzf_preview_window = ''
   let $FZF_DEFAULT_OPTS = '--ansi'
   let g:fzf_layout         = { 'down': '~20%' }
