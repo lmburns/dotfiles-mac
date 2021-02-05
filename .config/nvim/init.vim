@@ -79,6 +79,11 @@
   " <F6> = compile rmarkdown (only pdf) using `RMarkdown`
   " <F9> = compile python
   " <F10> = spell check
+
+  " g; = previous insertion
+  " ysiw' = add quotes around word
+  " S' = in visual mode add quotes around
+  " ds' = delete quotes
 " }}}
 
 
@@ -215,9 +220,13 @@
   autocmd BufWritePre * %s#\($\n\s*\)\+\%$##e  " End of file
 
   " Disables automatic commenting on newline:
-  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+  autocmd FileType * setlocal formatoptions-=cro
+  nmap <Leader>C :setlocal formatoptions=cro<CR>
 
-  " Open corresponding .pdf/.html or preview
+  " Shellcheck
+  nnoremap <Leader>sc :!shellcheck %<CR>
+
+" Open corresponding .pdf/.html or preview
   nmap <Leader>p :w <Bar> !open %<CR>
 
   " Compile rmarkdown
@@ -531,7 +540,7 @@
    command! -bang CheatSheet call fzf#vim#files('~/JupyterNotebook/projects/rstudio/cheatsheet', <bang>0)
    " Still trying to figure this out
    nmap <Leader>cs :CheatSheet<CR>
-   nmap <Leader>sc !(nohup xargs -I{%} zathura "{%}" >/dev/null)
+   " nmap <Leader>sc !(nohup xargs -I{%} zathura "{%}" >/dev/null)
 
 " Autostart
   autocmd FileType r if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
