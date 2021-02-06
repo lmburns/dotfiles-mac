@@ -1,8 +1,8 @@
-"                        _
-"  _ __   ___  _____   _(_)_ __ ___
-" | '_ \ / _ \/ _ \ \ / / | '_ ` _ \
-" | | | |  __/ (_) \ V /| | | | | | |
-" |_| |_|\___|\___/ \_/ |_|_| |_| |_|
+"  __   __     ______     ______     __   __   __     __    __
+" /\ "-.\ \   /\  ___\   /\  __ \   /\ \ / /  /\ \   /\ "-./  \
+" \ \ \-.  \  \ \  __\   \ \ \/\ \  \ \ \'/   \ \ \  \ \ \-./\ \
+"  \ \_\\"\_\  \ \_____\  \ \_____\  \ \__|    \ \_\  \ \_\ \ \_\
+"   \/_/ \/_/   \/_____/   \/_____/   \/_/      \/_/   \/_/  \/_/
 
 " Plugins {{{
   set ttyfast
@@ -18,11 +18,43 @@
   Plug 'plasticboy/vim-markdown'
   Plug 'vimwiki/vimwiki'
   " Plug 'vim-pandoc/vim-rmarkdown'
-  " Plug 'kevinoid/vim-jsonc'
-  Plug 'sheerun/vim-polyglot'           " Syntax highlighting
+
   Plug 'zhou13/vim-easyescape'
+  Plug 'tpope/vim-surround'
+  Plug 'itchyny/vim-highlighturl'
+  Plug 'PeterRincker/vim-searchlight'
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+  Plug 'mhinz/vim-startify'
+  Plug 'justinmk/vim-sneak'
+  " Plug 'easymotion/vim-easymotion'
+
   Plug 'kassio/neoterm'
   Plug 'voldikss/vim-floaterm'
+
+  " Git
+  Plug 'tpope/vim-fugitive'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'jreybert/vimagit'
+  Plug 'mbbill/undotree'
+
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'jpalardy/vim-slime', { 'for': 'python' }
+  Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
+  Plug 'sheerun/vim-polyglot'                     " More syntax highlighting
+  " Plug 'kevinoid/vim-jsonc'
+
+  " Plug 'autozimu/LanguageClient-neovim', {
+  "   \ 'branch': 'next',
+  "   \ 'do': 'bash install.sh',
+  "   \ }
+
+  " HTML/CSS
+  Plug 'shime/vim-livedown'
+  Plug 'tpope/vim-commentary'
+  Plug 'alvan/vim-closetag'
+  Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
+  Plug 'ap/vim-css-color'
 
   " Themes
   Plug 'sainnhe/gruvbox-material'
@@ -40,31 +72,6 @@
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
-
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'jpalardy/vim-slime', { 'for': 'python' }
-  " Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
-  " Plug 'jupyter-vim/jupyter-vim'
-  " Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
-  Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
-
-  Plug 'tpope/vim-surround'
-  Plug 'itchyny/vim-highlighturl'
-  Plug 'PeterRincker/vim-searchlight'
-  Plug 'vim-airline/vim-airline'
-  Plug 'vim-airline/vim-airline-themes'
-  Plug 'mhinz/vim-startify'
-  Plug 'justinmk/vim-sneak'
-  " Plug 'easymotion/vim-easymotion'
-
-  " HTML/CSS
-  Plug 'shime/vim-livedown'
-  Plug 'tpope/vim-commentary'
-  Plug 'alvan/vim-closetag'
-  Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
-  Plug 'ap/vim-css-color'
-
-  Plug 'jreybert/vimagit'
 
   call plug#end()
 " }}}
@@ -90,8 +97,9 @@
 " General Mappings: {{{
   let mapleader = ' '
   let maplocalleader = ','                      " For NVim-R
-  let g:gruvbox_material_palette = 'mix'
-  let g:gruvbox_material_background = 'medium'
+  let g:gruvbox_material_palette = 'original'
+  let g:gruvbox_material_background = 'hard'
+  let g:gruvbox_material_enable_bold = 1
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
   let g:material_theme_style = 'ocean-community'
@@ -136,7 +144,7 @@
   set noshowmode                      " hide file, it's in airline
   set noshowcmd
   set noswapfile                      " no swap files
-  set list lcs=tab:‣\ ,trail:•        " customize invisibles
+  set list lcs=tab:‣\ ,trail:•,nbsp:␣ " customize invisibles
   set incsearch                       " incremential search highligh
     nnoremap <silent><F7> :set nohlsearch!<CR>
   set encoding=utf-8                  " utf-8 encoding
@@ -219,9 +227,8 @@
   autocmd BufWritePre * %s/\s\+$//e            " End of lines
   autocmd BufWritePre * %s#\($\n\s*\)\+\%$##e  " End of file
 
-  " Disables automatic commenting on newline:
+  " Disables automatic commenting on newline
   autocmd FileType * setlocal formatoptions-=cro
-  nmap <Leader>C :setlocal formatoptions=cro<CR>
 
   " Shellcheck
   nnoremap <Leader>sc :!shellcheck %<CR>
@@ -229,14 +236,11 @@
 " Open corresponding .pdf/.html or preview
   nmap <Leader>p :w <Bar> !open %<CR>
 
-  " Compile rmarkdown
+  " Compile rmarkdown / markdown
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
   autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
   autocmd Filetype rmd map <F6> :RMarkdown pdf latex_engine="xelatex", toc=TRUE<CR>
-
-  " Compile markdown
   autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
-  autocmd FileType md nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
 
   " Pandoc
    let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
@@ -254,16 +258,12 @@
   nnoremap <silent> ]<space>  :<c-u>put =repeat([''],v:count)<bar>'[-1<cr>
 
   " Tabs & Navigation
-  map <Leader>nt :tabnew<cr> 		" To create a new tab.
+  map <Leader>nt :tabnew<cr>      " To create a new tab.
   map <Leader>to :tabonly<cr>     " To close all other tabs (show only the current tab).
   map <Leader>tc :tabclose<cr>    " To close the current tab.
   map <Leader>tm :tabmove<cr>     " To move the current tab to next position.
   map <Leader>tn :tabn<cr>        " To swtich to next tab.
   map <Leader>tp :tabp<cr>        " To switch to previous tab.
-
-  " Buffers
-  map <Leader>bp :bprev<CR>
-  map <Leader>bn :bnext<CR>
 
   " Smart way to move between windows
   map <C-j> <C-W>j
@@ -280,12 +280,6 @@
   endfunction
   command! SQ call s:syntax_query()
 
-  " function! s:o_short()
-  "   exe ":Files ~/JupyterNotebook/projects/rstudio/cheatsheet"<CR>
-  "   exe ":!(nohup xargs -I{} zathura '{}' >/dev/null 2>&1 &)"
-  " endfunction
-  " command! osh call s:o_short()
-
   " IndentSize: Change indent size depending on file type
   function! <SID>IndentSize(amount)
       exe "setlocal expandtab"
@@ -294,11 +288,10 @@
   endfunction
 
   " FileType specific indents
-    autocmd FileType markdown,python,json call <SID>IndentSize(2)
-    autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
+  autocmd FileType markdown,python,json call <SID>IndentSize(2)
+  autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
 
-  " autocmd Syntax * syntax keyword myTodo NOTE INFO NOTES containedin=ALL | highlight def link myTodo Todo
-
+  " Custom syntax groups
   augroup vimTodo
     au!
     au Syntax * syn match myTodo /\v<(FIXME|NOTE|NOTES|INFO|OPTIMIZE|XXX):/
@@ -313,8 +306,6 @@
         \ containedin=vimCommentTitle
   augroup END
   hi def link cmTitle vimCommentTitle
-
-
 " }}}
 
 " =====================================================================
@@ -327,12 +318,34 @@
   set cmdheight=2
   set updatetime=300
   set shortmess+=c
+  set signcolumn=yes
 
-  if has("patch-8.1.1564")
-    set signcolumn=number
-  else
-    set signcolumn=yes
-  endif
+  " prettier command for coc
+  command! -nargs=0 Prettier :CocCommand prettier.formatFile
+  let g:coc_global_extensions = [
+    \ 'coc-snippets',
+    \ 'coc-pairs',
+    \ 'coc-prettier',
+    \ 'coc-html',
+    \ 'coc-css',
+    \ 'coc-json',
+    \ 'coc-pyright',
+    \ 'coc-python',
+    \ 'coc-explorer',
+    \ 'coc-vimtex',
+    \ 'coc-r-lsp',
+    \ 'coc-vimlsp',
+    \ 'coc-sh',
+    \ 'coc-tsserver',
+    \ 'coc-git'
+    \ ]
+
+    let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
+  let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
+  set pyxversion=3
+
+
+  noremap <silent> <Leader>e :CocCommand explorer<CR>
 
   " GoTo code navigation.
   nmap <silent> gd <Plug>(coc-definition)
@@ -340,9 +353,37 @@
   nmap <silent> gi <Plug>(coc-implementation)
   nmap <silent> gr <Plug>(coc-references)
 
+  " Remap for rename current word
+  nmap <rn> <Plug>(coc-rename)
+
   xmap <Leader>f <Plug>(coc-format-selected)
   nmap <Leader>f <Plug>(coc-format-selected)
 
+  xmap <leader>w  <Plug>(coc-codeaction-selected)
+  nmap <leader>w  <Plug>(coc-codeaction-selected)
+
+  " Remap for do codeAction of current line
+  nmap <leader>wc  <Plug>(coc-codeaction)
+  " Fix autofix problem of current line
+  nmap <leader>qf  <Plug>(coc-fix-current)
+
+  " Create mappings for function text object, requires document symbols feature of languageserver.
+  xmap if <Plug>(coc-funcobj-i)
+  xmap af <Plug>(coc-funcobj-a)
+  omap if <Plug>(coc-funcobj-i)
+  omap af <Plug>(coc-funcobj-a)
+
+  " Use `:Format` to format current buffer
+  command! -nargs=0 Format :call CocAction('format')
+
+  " Use `:Fold` to fold current buffer
+  command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+  " use `:OR` for organize import of current buffer
+  command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+  " Add status line support, for integration with other plugin, checkout `:h coc-status`
+  set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
   " Use K to show documentation in preview window.
   nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -356,9 +397,6 @@
       execute '!' . &keywordprg . " " . expand('<cword>')
     endif
   endfunction
-
-  " Highlight the symbol and its references when holding the cursor.
-  autocmd CursorHold * silent call CocActionAsync('highlight')
 
   " Use tab for trigger completion with characters ahead and navigate.
   " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -374,26 +412,20 @@
     return !col || getline('.')[col - 1]  =~# '\s'
   endfunction
 
-  " Use <c-space> to trigger completion.
-  if has('nvim')
-    inoremap <silent><expr> <c-space> coc#refresh()
-  else
-    inoremap <silent><expr> <c-@> coc#refresh()
-  endif
+  " Use <c-space> to trigger completion
+  inoremap <silent><expr> <c-space> coc#refresh()
 
-  " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
   " position. Coc only does snippet and additional edit on confirm.
-  " <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
-  if exists('*complete_info')
-    inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-  else
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-  endif
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
   " For json
   autocmd FileType json syntax match Comment +\/\/.\+$+
   " For coc-pairs
   autocmd FileType html let b:coc_pairs_disabled = ['html']
+  " Highlight the symbol and its references when holding the cursor.
+  autocmd CursorHold * silent call CocActionAsync('highlight')
+
 " }}}
 
 " =====================================================================
@@ -414,7 +446,7 @@
   map <Leader>nf :NERDTreeFind<cr>
   " }}}
 
-  " FZF & ripgrep {{{
+  " --- FZF & Ripgrep --- {{{
   " :History/ -- :Maps -- :Commands -- :Locate -- :GFiles -- :GFiles?
   let g:rg_command = 'rg --vimgrep --hidden'
   let g:rg_highlight = 'true'
@@ -425,9 +457,9 @@
   nnoremap <silent> <Leader>A :Windows<CR>
   nnoremap <silent> <Leader>; :BLines<CR>
   nnoremap <silent> <Leader>H :History:<CR>
+  nnoremap <C-f> :Rg<CR>
 
   let g:fzf_preview_window = ''
-  let $FZF_DEFAULT_OPTS = '--ansi'
   let g:fzf_layout         = { 'down': '~20%' }
   let g:fzf_action = {
     \ 'ctrl-t': 'tab split',
@@ -439,7 +471,7 @@
 " =====================================================================
 " =====================================================================
 
-" EasyEscape {{{
+" --- EasyEscape --- {{{
   let g:easyescape_chars = { "j": 1, "k": 1 }
   let g:easyescape_timeout = 100
   cnoremap jk <ESC>
@@ -452,10 +484,10 @@
 " =====================================================================
 " =====================================================================
 
-" Spell check completion behaviour {{{
+" --- Spell check --- {{{
   " set completeopt+=noinsert  " Auto select the first completion entry
-  set completeopt+=menuone  " Show menu even if there is only one item
-  set completeopt-=preview  " Disable the preview window
+  set completeopt+=menuone,preview  " Show menu even if there is only one item
+  " set completeopt-=preview  " Disable the preview window
   set pumheight=10  " Maximum number of items to show in popup menu
 
   " Insert mode key word completion setting
@@ -472,52 +504,40 @@
 " =====================================================================
 " =====================================================================
 
-" Python {{{
-  " :g/^\s*#\sIn/d = delete nbconvert 'In[0]' lines
-  " :g/^$/,/./-j = delete multiple blank lines
-  " let g:pymode_options_max_line_length=120
-  " let g:syntastic_python_pylint_post_args="--max-line-length=120"
-
-
-  " autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
-  " autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
-
-  let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
-  set pyxversion=3
-
-  " JupyterVim {{{
-  " let g:pymode_lint_ignore = "E501,W"
-  " let g:vim_virtualenv_path = '/Users/lucasburns/opt/anaconda3'
-  " if exists('g:vim_virtualenv_path')
-  "     pythonx import os; import vim
-  "     pythonx activate_this = os.path.join(vim.eval('g:vim_virtualenv_path'), 'bin/activate_this.py')
-  "     pythonx with open(activate_this) as f: exec(f.read(), {'__file__': activate_this})
-  " endif
-" }}}
-
-  " Vim-Slime
-  let g:slime_target = "neovim"
-  autocmd FileType python xmap <buffer> ,l <Plug>SlimeRegionSend
-  autocmd FileType python nmap <buffer> ,l <Plug>SlimeLineSend
-" }}}
-
-" =====================================================================
-" =====================================================================
-
-" Airline {{{
+" --- Airline --- {{{
   let g:airline_powerline_fonts = 1
   let g:airline_theme='srcery'
 " }}}
 
-" Vimagit {{{
+" --- startify --- {{{
+  let g:startify_bookmarks = ['~/.config', '~/JupyterNotebook/projects']
+" }}}
+
+" --- UndoTree ---{{{
+  nnoremap <A-t> :UndotreeToggle<CR>
+
+  let g:undotree_RelativeTimestamp = 1
+  let g:undotree_ShortIndicators = 1
+  let g:undotree_HelpLine = 0
+  let g:undotree_WindowLayout = 2
+"}}}
+
+" --- Vimagit --- {{{
   noremap  <Leader>m :MagitO<Cr>
 " }}}
 
+" -- gitgutter -- {{{
+  nmap ) <Plug>(GitGutterNextHunk)
+  nmap ( <Plug>(GitGutterPrevHunk)
+  let g:gitgutter_enabled = 1
+  let g:gitgutter_map_keys = 0
+  let g:gitgutter_highlight_linenrs = 1
+"}}}
 
 " =====================================================================
 " =====================================================================
 
-" Vim-Livedown {{{
+" --- Vim-Livedown --- {{{
   nmap gm :LivedownToggle<CR>
   " should markdown preview get shown automatically upon opening markdown buffer
   let g:livedown_autorun = 0
@@ -529,7 +549,7 @@
   let g:livedown_browser = "firefox"
 " }}}
 
-" Bracey {{{
+" --- Bracey --- {{{
   nmap <Leadder>br :Bracey<CR>
   nmap <Leadder>r :BraceyReload<CR>
 " }}}
@@ -537,7 +557,7 @@
 " =====================================================================
 " =====================================================================
 
-" NVim-R {{{
+" --- NVim-R --- {{{
   " Load the cheatshet of Nvim-R
    command! -bang CheatSheet call fzf#vim#files('~/JupyterNotebook/projects/rstudio/cheatsheet', <bang>0)
    " Still trying to figure this out
@@ -616,7 +636,7 @@
 " =====================================================================
 " =====================================================================
 
-" Defualt Terminal {{{
+" --- Defualt Terminal --- {{{
   let g:term_buf = 0
   let g:term_win = 0
   function! TermToggle(height)
@@ -649,18 +669,24 @@
   tnoremap :q! <C-\><C-n>:q!<CR>
   " }}}
 
-
-  " Floaterm {{{
+" --- Floaterm --- {{{
   nnoremap <C-l> :FloatermNew --wintype=split lf<CR>
-  " }}}
+" }}}
 
-  " Neoterm {{{
+" --- Neoterm --- {{{
   let g:neoterm_default_mod='belowright' " open terminal in bottom split
   let g:neoterm_size=14                  " terminal split size
   let g:neoterm_autoscroll=1             " scroll to the bottom
-  nnoremap <Leader>rf :T ipython<CR>
+  nnoremap <Leader>rf :T ipython --no-autoindent<CR>
   nnoremap <Leader>rr :Tclear<CR>
   autocmd FileType python nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>
   autocmd FileType python inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A
-  autocmd FileType python vnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
-  "}}}
+  autocmd FileType python xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
+"}}}
+
+" --- Vim-Slime ---
+  let g:slime_target = "neovim"
+  autocmd FileType python xmap <buffer> ,l <Plug>SlimeRegionSend
+  autocmd FileType python nmap <buffer> ,l <Plug>SlimeLineSend
+  autocmd FileType python nmap <buffer> ,p <Plug>SlimeParagraphSend
+" }}}

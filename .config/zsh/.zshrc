@@ -41,7 +41,8 @@ plugins=(git
 		zsh-autosuggestions
 		autojump
 		pass
-    dotbare)
+    dotbare
+    forgit)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -183,7 +184,7 @@ alias ngc='nvim .git/config'
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@lucasburns.xyz:/var/www/lambda'
 alias hangups='hangups -c ~/.config/hangups/hangups.conf'
-alias newsboat='newsboat -C ~/.config/newsboat/newsboat.config'
+alias newsboat='newsboat -C ~/.config/newsboat/config'
 alias ticker='ticker --config ~/.config/ticker/ticker.yaml'
 alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done with task! Exit status: $?"' -activate com.googlecode.iterm2
 alias taskt='taskwarrior-tui'

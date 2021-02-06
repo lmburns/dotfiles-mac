@@ -85,4 +85,4 @@ alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
 
 The remote names can be changed.
 
-**Usage**: `cps`.
+**Usage**: `cps`
