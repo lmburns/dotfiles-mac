@@ -9,7 +9,7 @@
   "python.linting.pylintEnabled": true,
   "python.linting.flake8Enabled": true,
   "python.formatting.provider": "black",
-  "python.jediEnabled": false,
+  "python.jediEnabled": true,
   "python.condaPath": "conda",
   "suggest.disableMenu": false,
   "suggest.snippetIndicator": "",
@@ -20,7 +20,7 @@
   "explorer.file.showHiddenFiles": true,
   "explorer.file.column.clip.copy": "",
   "explorer.file.column.clip.cut": "",
-  "explorer.keyMappings": {
+  "explorer.keyMappings.global": {
     "gk": "expandablePrev",
     "gj": "expandableNext",
 

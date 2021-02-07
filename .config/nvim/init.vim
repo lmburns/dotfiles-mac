@@ -17,6 +17,7 @@
   Plug 'vim-pandoc/vim-pandoc-syntax'
   Plug 'plasticboy/vim-markdown'
   Plug 'vimwiki/vimwiki'
+  " Plug 'vifm/vifm.vim'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
   Plug 'zhou13/vim-easyescape'
@@ -97,6 +98,7 @@
 " General Mappings: {{{
   let mapleader = ' '
   let maplocalleader = ','                      " For NVim-R
+
   let g:gruvbox_material_palette = 'original'
   let g:gruvbox_material_background = 'hard'
   let g:gruvbox_material_enable_bold = 1
@@ -311,7 +313,7 @@
 " =====================================================================
 " =====================================================================
 
-" Coc Coding {{{
+" --- COC --- {{{
   set hidden
   set nobackup
   set nowritebackup
@@ -340,10 +342,10 @@
     \ 'coc-git'
     \ ]
 
-    let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
+  let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
   let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
+  let g:syntastic_python_pylint_post_args="--max-line-length=120"
   set pyxversion=3
-
 
   noremap <silent> <Leader>e :CocCommand explorer<CR>
 
@@ -354,7 +356,7 @@
   nmap <silent> gr <Plug>(coc-references)
 
   " Remap for rename current word
-  nmap <rn> <Plug>(coc-rename)
+  nmap <Leader>rn <Plug>(coc-rename)
 
   xmap <Leader>f <Plug>(coc-format-selected)
   nmap <Leader>f <Plug>(coc-format-selected)
@@ -417,6 +419,8 @@
 
   " position. Coc only does snippet and additional edit on confirm.
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  inoremap <expr> <Tab> pumvisible() ? "\<C-j>" : "\<Tab>" id
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-k>" : "\<S-Tab>"
   " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
   " For json
@@ -679,14 +683,22 @@
   let g:neoterm_autoscroll=1             " scroll to the bottom
   nnoremap <Leader>rf :T ipython --no-autoindent<CR>
   nnoremap <Leader>rr :Tclear<CR>
+  nnoremap <Leader>rt :Ttoggle<CR>
   autocmd FileType python nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>
   autocmd FileType python inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A
   autocmd FileType python xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
 "}}}
 
-" --- Vim-Slime ---
+" --- Vim-Slime --- {{{
   let g:slime_target = "neovim"
   autocmd FileType python xmap <buffer> ,l <Plug>SlimeRegionSend
   autocmd FileType python nmap <buffer> ,l <Plug>SlimeLineSend
   autocmd FileType python nmap <buffer> ,p <Plug>SlimeParagraphSend
 " }}}
+
+" --- Vim-lsp ---{{{
+  let g:markdown_fenced_languages = [
+        \ 'vim',
+        \ 'help'
+        \]
+"}}}
