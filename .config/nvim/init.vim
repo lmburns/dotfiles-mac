@@ -379,10 +379,10 @@
   command! -nargs=0 Format :call CocAction('format')
 
   " Use `:Fold` to fold current buffer
-  command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+  command! -nargs=? Fold :call CocAction('fold', <f-args>)
 
   " use `:OR` for organize import of current buffer
-  command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+  command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
 
   " Add status line support, for integration with other plugin, checkout `:h coc-status`
   set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
@@ -400,13 +400,10 @@
     endif
   endfunction
 
-  " Use tab for trigger completion with characters ahead and navigate.
-  " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-  " other plugin before putting this into your config.
   inoremap <silent><expr> <TAB>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ coc#refresh()
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
   inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
   function! s:check_back_space() abort
@@ -414,13 +411,16 @@
     return !col || getline('.')[col - 1]  =~# '\s'
   endfunction
 
+  " Make <CR> auto-select the first completion item and notify coc.nvim to
+  " format on enter, <cr> could be remapped by other vim plugin
+  inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                                \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
   " Use <c-space> to trigger completion
   inoremap <silent><expr> <c-space> coc#refresh()
 
   " position. Coc only does snippet and additional edit on confirm.
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-  inoremap <expr> <Tab> pumvisible() ? "\<C-j>" : "\<Tab>" id
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-k>" : "\<S-Tab>"
   " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
   " For json

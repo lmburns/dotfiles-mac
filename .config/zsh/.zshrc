@@ -127,7 +127,7 @@ alias sme='mbsync burnsac@me.com'
 alias mwme='mw -y burnsac@me.com'
 alias sgm='mbsync burnsppl@gmail.com'
 alias mwgm='mw -y burnsppl@gmail.com'
-alias smail='mw -y burnsac@me.com && mw -y burnsppl@gmail.com && mw -y lucas@lucasburns.xyz'
+alias smail='mw -y burnsac@me.com && mw -y burnsppl@gmail.com && mw -y lucas@burnsac.xyz'
 
 alias projects='cd ~/JupyterNotebook/projects'
 alias nvimd='cd /usr/local/share/nvim/runtime'
@@ -285,3 +285,8 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # limelight &> /dev/null &
 
 [ -f ~/opt/forgit/forgit.plugin.zsh ] && source ~/opt/forgit/forgit.plugin.zsh
+
+
+pcopy () {
+`cat $1 | tr -d '\n' | pbcopy`;
+}
