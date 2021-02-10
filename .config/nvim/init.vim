@@ -88,7 +88,7 @@
   " <F9> = compile python
   " <F10> = spell check
 
-  " g; = previous insertion
+  " g; / g, = previous/next insertion
   " ysiw' = add quotes around word
   " S' = in visual mode add quotes around
   " ds' = delete quotes
@@ -152,13 +152,11 @@
   set encoding=utf-8                  " utf-8 encoding
   set clipboard+=unnamedplus          " use system clipboard
   set splitbelow splitright           " split screen below and right
-  set tabstop=2 shiftwidth=2 expandtab softtabstop=2
+  set tabstop=2 shiftwidth=2 expandtab smarttab softtabstop=2
   set ignorecase smartcase
   set number
     nnoremap <silent><F3> :set relativenumber!<CR>
 
-  set foldmethod=marker
-  set foldcolumn=1
   set nofoldenable
   set laststatus=0
   set scrolloff=5                      " cusor 5 lines from bottom of page
@@ -261,12 +259,12 @@
   nnoremap <silent> ]<space>  :<c-u>put =repeat([''],v:count)<bar>'[-1<cr>
 
   " Tabs & Navigation
-  map <Leader>nt :tabnew<cr>      " To create a new tab.
-  map <Leader>to :tabonly<cr>     " To close all other tabs (show only the current tab).
-  map <Leader>tc :tabclose<cr>    " To close the current tab.
-  map <Leader>tm :tabmove<cr>     " To move the current tab to next position.
-  map <Leader>tn :tabn<cr>        " To swtich to next tab.
-  map <Leader>tp :tabp<cr>        " To switch to previous tab.
+  map <Leader>nt :tabnew <bar> Files<CR>
+  map <Leader>to :tabonly<CR>
+  map <Leader>tc :tabclose<CR>
+  map <Leader>tm :tabmove<cr>
+  map <Leader>tn :tabn<cr>
+  map <Leader>tp :tabp<cr>
 
   " Smart way to move between windows
   map <C-j> <C-W>j
@@ -317,6 +315,10 @@
 " =====================================================================
 
 " --- COC --- {{{
+  let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
+  let g:syntastic_python_pylint_post_args="--max-line-length=120"
+  set pyxversion=3
+
   set hidden
   set nobackup
   set nowritebackup
@@ -346,11 +348,24 @@
     \ ]
 
   let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
-  let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
-  let g:syntastic_python_pylint_post_args="--max-line-length=120"
-  set pyxversion=3
 
-  noremap <silent> <Leader>e :CocCommand explorer<CR>
+  let g:coc_explorer_global_presets = {
+      \ 'config': {
+      \   'root-uri': '~/.config',
+      \   },
+      \ 'projects': {
+      \   'root-uri': '~/JupyterNotebook/projects',
+      \   },
+        \ 'github': {
+      \   'root-uri': '~/JupyterNotebook/projects/github',
+      \   },
+      \ }
+
+  nmap <silent> <Leader>ee :CocCommand explorer<CR>
+  nmap <silent> <Leader>ec :CocCommand explorer --preset config<CR>
+  nmap <silent> <Leader>ep :CocCommand explorer --preset projects<CR>
+  nmap <silent> <Leader>eg :CocCommand explorer --preset github<CR>
+  nmap <silent> <Leader>el :CocList explPresets
 
   " GoTo code navigation.
   nmap <silent> gd <Plug>(coc-definition)
@@ -454,19 +469,38 @@
   " }}}
 
   " --- FZF & Ripgrep --- {{{
-  " :History/ -- :Maps -- :Commands -- :Locate -- :GFiles -- :GFiles?
+  " :History/ -- :Maps -- :Commands -- :GFiles -- :GFiles?
   let g:rg_command = 'rg --vimgrep --hidden'
   let g:rg_highlight = 'true'
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
 
+  command! -bang Conf call fzf#vim#files('~/.config', <bang>0)
+  " command! -bang Proj call fzf#vim#files('~/JupyterNotebook/projects', fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+  command! -bang Proj call fzf#vim#files('~/JupyterNotebook/projects', fzf#vim#with_preview(), <bang>0)
+
+  " Word completion popup
+  inoremap <expr> <c-k> fzf#vim#complete#word({'window': { 'width': 0.2, 'height': 0.9, 'xoffset': 1 }})
+
+  " Word completion window
+  inoremap <expr> <c-x><c-s> fzf#vim#complete({
+    \ 'source':  'cat /usr/share/dict/words',
+    \ 'options': '--multi --reverse --margin 15%,0',
+    \ 'left':    20})
+
   nnoremap <silent> <Leader><space> :Files<CR>
-  nnoremap <silent> <Leader>a :Buffers<CR>
-  nnoremap <silent> <Leader>A :Windows<CR>
-  nnoremap <silent> <Leader>; :BLines<CR>
-  nnoremap <silent> <Leader>H :History:<CR>
+  nnoremap <Leader>L :Locate .<CR>
   nnoremap <C-f> :Rg<CR>
 
-  let g:fzf_preview_window = ''
+  nnoremap <silent> <Leader>a :Buffers<CR>
+  nnoremap <silent> <Leader>A :Windows<CR>
+  " Lines in current buffer
+  nnoremap <silent> <Leader>; :BLines<CR>
+  " Command history
+  nnoremap <silent> <Leader>hc :History:<CR>
+  " File history
+  nnoremap <silent> <Leader>hf :History<CR>
+
+  " let g:fzf_preview_window = ''
   let g:fzf_layout         = { 'down': '~20%' }
   let g:fzf_action = {
     \ 'ctrl-t': 'tab split',
@@ -679,7 +713,7 @@
   " }}}
 
 " --- Floaterm --- {{{
-  nnoremap <Leader>l :FloatermNew --wintype=split lf<CR>
+  nnoremap <Leader>lf :FloatermNew --wintype=split lf<CR>
 " }}}
 
 " --- Neoterm --- {{{

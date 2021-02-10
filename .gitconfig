@@ -19,6 +19,8 @@
 	d = diff
 	dc = diff --cached
 	l = log -p
+	lc = log ORIG_HEAD.. --stat --no-merges
+	lo = log --oneline --decorate --stat --graph
 	lp = log --graph --pretty=format:'%Cred%h%Creset %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 	lg = log --pretty='format:%h %G? %aN  %s'
 	lss = log --show-signature
@@ -28,13 +30,14 @@
 	psf = push --force
   rao = remote add origin
   rmc = rm --cached
-	s = status --short
+	s = status -sb
+	st = status
 	sh = stash
 	shp = stash pop
-	st = status
 	tr = ls-tree -r master --name-only
 	vd = difftool --tool=vimdiff --no-prompt
 	vdc = difftool --tool=vimdiff --no-prompt --cached
+	hist = log --pretty=format:"%h%Cred %ad%Cgreen | %s%C(yellow)%d%C(magenta) [%an%C(blue)]" --graph --date=short
 [blame "gpg"]
 	texconv = gpg --no-tty --decrypt --quiet
 [core]

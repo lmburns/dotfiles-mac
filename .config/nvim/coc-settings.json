@@ -19,6 +19,7 @@
   "suggest.snippetIndicator": "",
   "suggest.noselect": false,
   "explorer.icon.enableNerdfont": true,
+  "explorer.icon.enableVimDevicons": false,
   "explorer.quitOnOpen": true,
   "explorer.position": "left",
   "explorer.file.showHiddenFiles": true,

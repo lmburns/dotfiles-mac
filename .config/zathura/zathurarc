@@ -1,4 +1,5 @@
 set selection-clipboard clipboard
+set zoom-step 20
 set sandbox none
 set statusbar-h-padding 0
 set statusbar-v-padding 0
