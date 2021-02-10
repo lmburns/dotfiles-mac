@@ -216,10 +216,11 @@
   nmap Q: :q<Cr>
   command! -bang -nargs=* Q q
 
-  " Ensure files are read as what I want:
+  " -- Vim Wiki --
   let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
   map <Leader>v :VimwikiIndex
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
+  let g:vimwiki_table_mappings = 0
 
   autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
@@ -269,7 +270,9 @@
 
   " Smart way to move between windows
   map <C-j> <C-W>j
+  imap <C-j> <C-W>j
   map <C-k> <C-W>k
+  imap <C-k> <C-W>k
   map <C-h> <C-W>h
   map <C-l> <C-W>l
 
@@ -480,6 +483,8 @@
   let g:easyescape_timeout = 100
   cnoremap jk <ESC>
   cnoremap kj <ESC>
+  cnoremap JK <ESC>
+  cnoremap KJ <ESC>
 
   " Fix paste bug triggered by the above inoremaps
   set t_BE=
@@ -518,7 +523,7 @@
 " }}}
 
 " --- UndoTree ---{{{
-  nnoremap <A-t> :UndotreeToggle<CR>
+  nnoremap <Leader>ut :UndotreeToggle<CR>
 
   let g:undotree_RelativeTimestamp = 1
   let g:undotree_ShortIndicators = 1
@@ -674,7 +679,7 @@
   " }}}
 
 " --- Floaterm --- {{{
-  nnoremap <C-l> :FloatermNew --wintype=split lf<CR>
+  nnoremap <Leader>l :FloatermNew --wintype=split lf<CR>
 " }}}
 
 " --- Neoterm --- {{{

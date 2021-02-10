@@ -25,6 +25,7 @@
   "explorer.file.column.clip.copy": "",
   "explorer.file.column.clip.cut": "",
   "explorer.keyMappings.global": {
+    "i": false,
     "gk": "expandablePrev",
     "gj": "expandableNext",
 
@@ -49,12 +50,13 @@
     "<bs>": "gotoParent",
     "gp": "preview:labeling",
 
-    "Y": "copyFile",
-    "X": "cutFile",
-    "P": "pasteFile",
+    "yf": "copyFile",
+    "yy": "copyFilename",
+    "x": "cutFile",
+    "p": "pasteFile",
     "dd": "delete",
 
-    "T": "addFile",
+    "a": "addFile",
     "D": "addDirectory",
     "r": "rename",
 

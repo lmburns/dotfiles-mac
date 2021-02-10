@@ -190,8 +190,8 @@ report.next.filter=status:pending
 #include /usr/local/Cellar/task/2.5.3/share/doc/task/rc/solarized-light-256.theme
 #include /usr/local/Cellar/task/2.5.3/share/doc/task/rc/no-color.theme
 
-taskd.ca=\/Users\/lucasburns\/.config\/task\/taskd\/ca.cert.pem
-taskd.certificate=\/Users\/lucasburns\/.config\/task\/taskd\/Lucas.cert.pem
-taskd.key=\/Users\/lucasburns\/.config\/task\/taskd\/Lucas.key.pem
-taskd.credentials=GROUP\/Lucas\/8191c7c8-b62d-40bc-b49e-a51ea82d4925
-taskd.server=taskd.lucasburns.xyz.:53589
+# taskd.ca=\/Users\/lucasburns\/.config\/task\/taskd\/ca.cert.pem
+# taskd.certificate=\/Users\/lucasburns\/.config\/task\/taskd\/Lucas.cert.pem
+# taskd.key=\/Users\/lucasburns\/.config\/task\/taskd\/Lucas.key.pem
+# taskd.credentials=GROUP\/Lucas\/8191c7c8-b62d-40bc-b49e-a51ea82d4925
+# taskd.server=taskd.lucasburns.xyz.:53589

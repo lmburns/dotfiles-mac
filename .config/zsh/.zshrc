@@ -155,8 +155,8 @@ alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "HOME" --exclude "
 alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" ~/Desktop/unix /Volumes/SSD/manual'
 alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/manual'
 
-alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@lucasburns.xyz:/ /Volumes/SSD/server-full'
-alias wwwpull='rsync -Prugoptczl --delete-after root@lucasburns.xyz:/var/www ~/server'
+alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@burnsac.xyz:/ /Volumes/SSD/server-full'
+alias wwwpull='rsync -Prugoptczl --delete-after root@burnsac.xyz:/var/www ~/server'
 alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" ~/server /Volumes/SSD'
 alias sudorysnc='sudo rsync -PrugptvENtzl --delete-after --include ".*" --exclude ".DS_Store" --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" / /Volumes/SSD/void'
 
@@ -170,19 +170,20 @@ alias pacman='pacaptr'
 alias p='pacaptr'
 alias fd='fd -Hi'
 alias spt='speedtest | rg "(Download:|Upload:)"'
+alias wiki='nvim ~/vimwiki/index.md'
 
 # Github
 alias config='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
 alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
 alias gua='git remote | xargs -L1 git push --all'
-alias grm='ssh git@lucasburns.xyz -- grm'
+alias grm='ssh git@burnsac.xyz -- grm'
 alias nbconvert='jupyter nbconvert --to python'
 alias g='git'
 alias magit='nvim -c MagitOnly'
 alias ngc='nvim .git/config'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
-alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@lucasburns.xyz:/var/www/lambda'
+alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
 alias hangups='hangups -c ~/.config/hangups/hangups.conf'
 alias newsboat='newsboat -C ~/.config/newsboat/config'
 alias ticker='ticker --config ~/.config/ticker/ticker.yaml'
@@ -209,7 +210,7 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 #----- FUNCTIONS -----#
 vf() { fzf | xargs -r -I % $EDITOR % ; }
 dwc() { ls $1 | wc -l ; }
-rsyncweb() { rsync -uvrP $1 root@lucasburns.xyz:$2 ; }
+rsyncweb() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
 fzfd() { find $1 | fzf | xargs -r -I % $EDITOR % ; }
 fzfp() {fd -a -e "pdf" . $1 | fzf | (nohup xargs -I{} zathura "{}" >/dev/null)}
 targz() { tar -zcvf $1.tar.gz $1; rm -r $1; }
