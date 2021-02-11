@@ -58,10 +58,13 @@
   Plug 'ap/vim-css-color'
 
   " Themes
+  Plug 'burnsac5040/kimbox'
+  Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
   Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/edge'
   Plug 'sainnhe/sonokai'
   Plug 'sainnhe/forest-night'
+  Plug 'morhetz/gruvbox'
   Plug 'joshdick/onedark.vim'
   Plug 'embark-theme/vim', { 'as': 'embark' }
   Plug 'ghifarit53/daycula-vim' , {'branch' : 'main'}
@@ -101,7 +104,10 @@
 
   let g:gruvbox_material_palette = 'original'
   let g:gruvbox_material_background = 'hard'
+  let g:kimbox_palette = 'material'
+  let g:kimbox_background = 'hard'
   let g:gruvbox_material_enable_bold = 1
+  let g:oceanic_material_background = "medium"
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
   let g:material_theme_style = 'ocean-community'
@@ -118,13 +124,17 @@
     set undofile
   endif
 
-  set termguicolors                " enable termguicolors for better highlighting
-  set fillchars+=msgsep:\ ,vert:\│ " customize message separator in neovim
   set t_Co=256
+  set termguicolors                " enable termguicolors for better highlighting
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+  set fillchars+=msgsep:\ ,vert:\│ " customize message separator in neovim
 
   syntax enable
-  " colorscheme kimbie
-  colorscheme gruvbox-material
+  " colorscheme spaceduck
+  " colorscheme kimbox
+  " colorscheme gruvbox-material
   " colorscheme edge
   " colorscheme sonokai
   " colorscheme forest-night
@@ -134,7 +144,7 @@
   " colorscheme tokyonight
   " colorscheme material
   " colorscheme srcery
-  " colorscheme oceanic_material
+  colorscheme oceanic_material
   " colorscheme dogrun
   " colorscheme neodark
   " colorscheme palenight
@@ -209,16 +219,14 @@
   " Delete line without newline character
   nnoremap E ^"_D
 
-  " Annoying when I hit 'q:' and it starts recording
-  nmap q: :q<Cr>
-  nmap Q: :q<Cr>
-  command! -bang -nargs=* Q q
-
   " -- Vim Wiki --
   let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
   map <Leader>v :VimwikiIndex
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
   let g:vimwiki_table_mappings = 0
+
+  " <C-x> select pop up menu (vimwiki uses <enter> in markdown)"
+  autocmd FileType markdown inoremap <expr> <C-x> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
   autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
@@ -302,7 +310,7 @@
   augroup END
   hi def link myTodo Todo
 
-  " Have vimCommentTitle equivalency in Python
+  " Have vimCommentTitle everywhere
   augroup ccommtitle
     au!
     au Syntax * syn match cmTitle /#\s*\%([sS]:\|\h\w*#\)\=\u\w*\(\s\+\u\w*\)*:/
@@ -462,7 +470,6 @@
   autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
   " Toggle
-  " nnoremap <silent> <C-b> :NERDTreeToggle<CR>
   map <Leader>nn :NERDTreeToggle<cr>
   map <Leader>nb :NERDTreeFromBookmark
   map <Leader>nf :NERDTreeFind<cr>
@@ -482,10 +489,14 @@
   inoremap <expr> <c-k> fzf#vim#complete#word({'window': { 'width': 0.2, 'height': 0.9, 'xoffset': 1 }})
 
   " Word completion window
-  inoremap <expr> <c-x><c-s> fzf#vim#complete({
+  inoremap <expr> <c-a> fzf#vim#complete({
     \ 'source':  'cat /usr/share/dict/words',
     \ 'options': '--multi --reverse --margin 15%,0',
     \ 'left':    20})
+
+  " Line completion (same as :Bline)
+  imap <C-a> <C-x><C-l>
+  imap <C-f> <Plug>(fzf-complete-line)
 
   nnoremap <silent> <Leader><space> :Files<CR>
   nnoremap <Leader>L :Locate .<CR>
@@ -504,7 +515,7 @@
   let g:fzf_layout         = { 'down': '~20%' }
   let g:fzf_action = {
     \ 'ctrl-t': 'tab split',
-    \ 'ctrl-s': 'split',
+    \ 'ctrl-x': 'split',
     \ 'ctrl-v': 'vsplit'
     \}
 " }}}

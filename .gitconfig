@@ -35,6 +35,7 @@
 	sh = stash
 	shp = stash pop
 	tr = ls-tree -r master --name-only
+	utr = ls-files --other
 	vd = difftool --tool=vimdiff --no-prompt
 	vdc = difftool --tool=vimdiff --no-prompt --cached
 	hist = log --pretty=format:"%h%Cred %ad%Cgreen | %s%C(yellow)%d%C(magenta) [%an%C(blue)]" --graph --date=short

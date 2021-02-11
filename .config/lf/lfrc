@@ -208,6 +208,7 @@ map u $view "$f"
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | vimpager
+map gX $cat ~/.config/lf/mappings | vimpager
 map o push :open-with<space>
 
 # Archive Mappings
@@ -257,7 +258,7 @@ map <c-d> yank-path
 map <enter> open
 map mf push :mkfile<space>
 map md push :mkdir<space>
-map g top
+map gg top
 map G bottom
 map R reload
 map C clear
@@ -274,19 +275,19 @@ map mt whipmove
 map gd cd ~/Documents
 map gD cd ~/Downloads
 map ge cd ~/Desktop
+map gW cd ~/vimwiki
 
 map gv cd ~/.config/nvim
 map gc cd ~/.config
-map gc cd ~/.config
 
-map gC cd ~/.local/share/cell
+map gC cd ~/.local/share
 map gl cd ~/.local
 
 map gE cd /etc
-map gU. cd /usr
-map gUs cd /usr/share
+map gU. cd /usr/local
+map gUs cd /usr/local/share
 
-map \;j cd ~
+map gh cd ~
 
 # map o &mimeopen $f
 # map O $mimeopen --ask $f

@@ -1,11 +1,12 @@
 #!/bin/sh
 
-# fzf man pages
-###################################################################
-# works with macOS
+# fzf man pages macOS
+################################################################
 
-# removed the 'makewhatis: /Library/TeX/texbin/man: Not a directory'
+# removed 'makewhatis: /Library/TeX/texbin/man: Not a directory'
 # that was at the top of my fzf
+
+# removed line numbers from ripgrep if you have them on
 
 manual=$(apropos . 2>/dev/null | \
     cut -d '-' -f 1 | \

@@ -83,16 +83,7 @@ handle_other
 
 exit 1
 
-# jupview
-# jupyter nbconvert --stdout --to html "$1" 2>/dev/null | w3m -dump -T text/html | bat -Pf --theme gruvbox --style auto --language python
-
-
-
-
 ### Attempt to use imgcat instead of cafa to view images:
 # image/*) /usr/local/bin/imgcat --width "$(identify -format '%w' "${FILE_PATH}")" --height "$(identify -format '%h' "${FILE_PATH}")" --iterm2 "${FILE_PATH}" || exit 1;;
 
 # fileviewer *.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm /usr/local/bin/imgcat --width %pw --height %ph --iterm2 %c:p %pd
-
-### Alternative for text files
-# highlight --replace-tabs="${HIGHLIGHT_TABWIDTH}" --out-format="${highlight_format}" --style="${HIGHLIGHT_STYLE}" --force -- "${FILE_PATH}" ;;

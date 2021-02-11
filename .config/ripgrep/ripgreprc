@@ -34,4 +34,6 @@
 # Search case sensitively otherwise.
 --smart-case
 --hidden
---pretty
+# --pretty
+--color=always
+--heading
