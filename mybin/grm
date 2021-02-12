@@ -1,6 +1,8 @@
 #!/bin/sh
 # grm: git repo manager for self-hosted git servers
 
+# TODO: add option to input category
+
 #---------------+----------+-----------------#
 #               |  config  |                 #
 #               +----------+                 #
@@ -9,7 +11,7 @@
 GRM_REPOS_ROOT="/var/www/git"
 
 # default owner
-GRM_OWNER="burnsac5040"
+GRM_OWNER="lmburns"
 
 # default url prefix (without ending slash)
 GRM_URL_PREFIX="https://git.burnsac.xyz"
@@ -85,6 +87,7 @@ grm_new() {
   url_prefix=${GRM_URL_PREFIX:-git://$(hostname -f)}
   postrecv_path=${GRM_POSTRECV_HOOK:-/usr/local/share/doc/stagit/post-receive}
   default_desc="a work in progress"
+  default_cat="Projects"
 
   printf "%b\n> " "${BLUE}repo name${RESET}"
   read -r repo_name
@@ -109,6 +112,19 @@ ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
         exported=1 ;;
   esac
 
+  printf "%b%s%b\n> " "${BLUE}category:
+  1) Projects\n  2) Forks\n  3) Input category
+  ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
+  read -r category
+
+  case $category in
+    1|Projects) ccat="Projects" ;;
+    2|Forks) ccat="Forks" ;;
+    *) printf "%b\n" "${YELLOW}category defaults to ${GREEN}Projects${RESET}"
+       ccat="Projects" ;;
+
+  esac
+
   printf "%b%s%b\n> " "${BLUE}description [${GREEN}" "$default_desc" "${BLUE}]${RESET}"
   read -r repo_desc
   repo_desc=${repo_desc:-$default_desc}
@@ -120,7 +136,7 @@ ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
   printf "%b%s%b\n> " \
     "${BLUE}clone url [${GREEN}" "$url_prefix/$repo_name.git" "${BLUE}]${RESET}"
   read -r clone_url
-  clone_url=${clone_url:-$url_prefix/$repo_name}
+  clone_url=${clone_url:-$url_prefix/$repo_name.git}
 
   # start creating repo
   git init --bare "$repo_path"
@@ -129,6 +145,7 @@ ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
   printf "%s\n" "$repo_desc" > "$repo_path/description"
   printf "%s\n" "$owner" > "$repo_path/owner"
   printf "%s\n" "$clone_url" > "$repo_path/url"
+  printf "%s\n" "$ccat" > "$repo_path/category"
 
   echo "setting visibility..."
   [ "$exported" = "1" ] && : >> "$repo_path/git-daemon-export-ok"
@@ -136,6 +153,9 @@ ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
 
   echo "installing stagit post-receive hook..."
   ln -sf "$postrecv_path" "$repo_path/hooks/post-receive"
+
+  echo "Changing permissions to git user"
+  chown git:git -R $repo_path
 
   echo "done!"
 }

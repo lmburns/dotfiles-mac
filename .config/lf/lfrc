@@ -187,6 +187,7 @@ cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
 cmd yank-path $printf '%s' "$fx" | pbcopy
 cmd open-with %"$@" $fx
 cmd usage $du -h -d1 | less
+cmd rglf $dialog --title "Search" --msgbox "$(rg --color=never ${1})" 40 80
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Mappings                                                                  │
@@ -266,6 +267,7 @@ map U unselect
 map <c-x> $$f															# execute file
 map <c-s> shell
 map <c-u> usage
+map <c-f> push :rglf<space>
 
 map C copyto
 map M moveto
@@ -276,6 +278,8 @@ map gd cd ~/Documents
 map gD cd ~/Downloads
 map ge cd ~/Desktop
 map gW cd ~/vimwiki
+map gG cd ~/JupyterNotebook/projects/github
+map gP cd ~/JupyterNotebook/projects
 
 map gv cd ~/.config/nvim
 map gc cd ~/.config
