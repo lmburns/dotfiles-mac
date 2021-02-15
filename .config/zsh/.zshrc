@@ -41,10 +41,14 @@ plugins=(git
 		autojump
 		pass
     dotbare
-    forgit)
+    forgit
+    vi-mode)
+
+# zsh-vi-mode
 
 source $ZSH/oh-my-zsh.sh
 source $ZDOTDIR/zsh-aliases
+ zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
 
 # --- ZSH Menu ---
 # zstyle ':completion:*' menu select
@@ -110,6 +114,7 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 eval "$(zoxide init zsh)"
+eval $(thefuck --alias)
 
 # export MANPAGER="nvim -c 'set ft=man' -"
 # export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
@@ -122,7 +127,8 @@ export EDITOR='nvim'
 # fzf search for file and open in vim
 vf() { fzf | xargs -r -I % $EDITOR % ; }
 # rsync from local pc to server
-rsyncweb() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
+rsyncto() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
+rsyncfrom() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
 # open fzf in a directory and open file in vim
 fzfd() { find $1 | fzf | xargs -r -I % $EDITOR % ; }
 # fzf pdfs and open with zathura
@@ -139,6 +145,11 @@ psgrep() { ps up $(pgrep -f $@) 2>&-; }
 mbn() { (nohup mn $1 >/dev/null &) }
 # create py file to sync with ipynb
 jupyt() { jupytext --set-formats ipynb,py $1 }
+# howdoi
+# alias h='function hdi(){ howdoi $* -c -n 5; }; hdi'
+h() { howdoi $@ -c -n 5; }
+# alias hless='function hdi(){ howdoi $* -c | less --raw-control-chars --quit-if-one-screen --no-init; }; hdi'
+hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
 
 
 # Use lf to change directory
@@ -168,8 +179,9 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
 
-export FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border --ansi"
+export FZF_DEFAULT_OPTS="--layout=reverse --height 50% --border --ansi"
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
+export NAVI_FZF_OVERRIDES="--height=70%"
 
 alias db='dotbare'
 export DOTBARE_DIR="$XDG_DATA_HOME/cfg"

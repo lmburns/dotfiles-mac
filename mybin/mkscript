@@ -1,0 +1,32 @@
+#!/bin/sh
+# Simple script to generate a script file in my scripts directory
+
+RED="\033[91m"
+GREEN="\033[92m"
+YELLOW="\033[93m"
+BLUE="\033[94m"
+RESET="\033[0m"
+
+printf "%b\n>" "${BLUE}Enter file name:${RESET}"
+
+# Set a name for the script
+while [ -z "$ans" ];
+do
+  read -r ans
+
+  if [ -z "$ans" ]; then
+    printf "%b\n>" "${RED}Empty string, enter file name:${RESET}"
+  fi
+done
+
+file=$HOME/mybin/$ans
+
+if [ -d "$HOME/mybin" ]; then
+  if [ -e "$HOME/mybin/$ans" ]; then
+    $EDITOR "$file"
+  else
+    echo "#!/bin/sh" >> "$file"
+    chmod +x "$file"
+    $EDITOR "$file"
+  fi
+fi

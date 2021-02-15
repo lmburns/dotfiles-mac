@@ -151,11 +151,15 @@ ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
   [ "$exported" = "1" ] && : >> "$repo_path/git-daemon-export-ok"
   [ "$hidden" = "1" ] && : >> "$repo_path/stagit-no-index"
 
-  echo "installing stagit post-receive hook..."
+  echo "installing post-receive hook & post-update hook..."
   ln -sf "$postrecv_path" "$repo_path/hooks/post-receive"
+  mv "$repo_path/hooks/post-update.sample" "$repo_path/hooks/post-update"
 
-  echo "Changing permissions to git user"
+  echo "changing permissions to git user"
   chown git:git -R $repo_path
+
+  echo "linking .git to main folder"
+  ln -s "$repo_path" "$STAGIT_WEB_ROOT"
 
   echo "done!"
 }

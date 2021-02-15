@@ -27,8 +27,7 @@
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   Plug 'mhinz/vim-startify'
-  Plug 'justinmk/vim-sneak'
-  " Plug 'easymotion/vim-easymotion'
+  Plug 'easymotion/vim-easymotion'
 
   Plug 'kassio/neoterm'
   Plug 'voldikss/vim-floaterm'
@@ -88,7 +87,6 @@
   " <F4> = compile markdown file using pandoc
   " <F5> = compile rmarkdown based on `output`
   " <F6> = compile rmarkdown (only pdf) using `RMarkdown`
-  " <F9> = compile python
   " <F10> = spell check
 
   " g; / g, = previous/next insertion
@@ -107,7 +105,8 @@
   let g:kimbox_palette = 'material'
   let g:kimbox_background = 'hard'
   let g:gruvbox_material_enable_bold = 1
-  let g:oceanic_material_background = "medium"
+  let g:oceanic_material_background = "deep"
+  let g:oceanic_material_allow_bold = 1
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
   let g:material_theme_style = 'ocean-community'
@@ -224,6 +223,19 @@
   map <Leader>v :VimwikiIndex
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
   let g:vimwiki_table_mappings = 0
+  hi VimwikiHeader1 guifg=#448488 gui=bold
+  hi VimwikiHeader2 guifg=#d3859a gui=bold
+  hi VimwikiHeader3 guifg=#8ec07b gui=bold
+  hi VimwikiHeader4 guifg=#fabc2e gui=bold
+  hi VimwikiHeader5 guifg=#b8ba25 gui=bold
+  hi VimwikiHeader6 guifg=#fb4833 gui=bold
+  hi VimwikiBold guifg=#a25bc4 gui=bold
+
+  map <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+  \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+  \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+  autocmd FileType markdown nmap <Leader><Leader>m <Plug>VimwikiToggleListItem
 
   " <C-x> select pop up menu (vimwiki uses <enter> in markdown)"
   autocmd FileType markdown inoremap <expr> <C-x> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
@@ -241,6 +253,7 @@
 
   " Shellcheck
   nnoremap <Leader>sc :!shellcheck %<CR>
+  nnoremap <F1> :!./%<CR>
 
 " Open corresponding .pdf/.html or preview
   nmap <Leader>p :w <Bar> !open %<CR>
@@ -322,7 +335,7 @@
 " =====================================================================
 " =====================================================================
 
-" --- COC --- {{{
+" === COC === {{{
   let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
   let g:syntastic_python_pylint_post_args="--max-line-length=120"
   set pyxversion=3
@@ -473,9 +486,19 @@
   map <Leader>nn :NERDTreeToggle<cr>
   map <Leader>nb :NERDTreeFromBookmark
   map <Leader>nf :NERDTreeFind<cr>
+
+  map <Leader><Leader>l <Plug>(easymotion-lineforward)
+  map <Leader><Leader>j <Plug>(easymotion-j)
+  map <Leader><Leader>k <Plug>(easymotion-k)
+  map <Leader><Leader>h <Plug>(easymotion-linebackward)
+
+  map  <Leader><Leader>/ <Plug>(easymotion-sn)
+  omap <Leader><Leader>/ <Plug>(easymotion-tn)
+
+  let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
   " }}}
 
-  " --- FZF & Ripgrep --- {{{
+  " === FZF & Ripgrep === {{{
   " :History/ -- :Maps -- :Commands -- :GFiles -- :GFiles?
   let g:rg_command = 'rg --vimgrep --hidden'
   let g:rg_highlight = 'true'
@@ -512,7 +535,7 @@
   nnoremap <silent> <Leader>hf :History<CR>
 
   " let g:fzf_preview_window = ''
-  let g:fzf_layout         = { 'down': '~20%' }
+  let g:fzf_layout         = { 'down': '~40%' }
   let g:fzf_action = {
     \ 'ctrl-t': 'tab split',
     \ 'ctrl-x': 'split',
@@ -523,7 +546,13 @@
 " =====================================================================
 " =====================================================================
 
-" --- EasyEscape --- {{{
+" === EasyMotion === {{{
+  nmap f <Plug>(easymotion-overwin-f2)
+  map <Leader>/ <Plug>(easymotion-bd-w)
+  nmap <Leader>/ <Plug>(easymotion-overwin-w)
+"}}}
+
+" === EasyEscape === {{{
   let g:easyescape_chars = { "j": 1, "k": 1 }
   let g:easyescape_timeout = 100
   cnoremap jk <ESC>
@@ -538,7 +567,7 @@
 " =====================================================================
 " =====================================================================
 
-" --- Spell check --- {{{
+" === Spell check === {{{
   " set completeopt+=noinsert  " Auto select the first completion entry
   set completeopt+=menuone,preview  " Show menu even if there is only one item
   " set completeopt-=preview  " Disable the preview window
@@ -558,16 +587,16 @@
 " =====================================================================
 " =====================================================================
 
-" --- Airline --- {{{
+" === Airline === {{{
   let g:airline_powerline_fonts = 1
   let g:airline_theme='srcery'
 " }}}
 
-" --- startify --- {{{
+" === startify === {{{
   let g:startify_bookmarks = ['~/.config', '~/JupyterNotebook/projects']
 " }}}
 
-" --- UndoTree ---{{{
+" === UndoTree ==={{{
   nnoremap <Leader>ut :UndotreeToggle<CR>
 
   let g:undotree_RelativeTimestamp = 1
@@ -576,7 +605,7 @@
   let g:undotree_WindowLayout = 2
 "}}}
 
-" --- Vimagit --- {{{
+" === Vimagit === {{{
   noremap  <Leader>m :MagitO<Cr>
 " }}}
 
@@ -591,7 +620,7 @@
 " =====================================================================
 " =====================================================================
 
-" --- Vim-Livedown --- {{{
+" === Vim-Livedown === {{{
   nmap gm :LivedownToggle<CR>
   " should markdown preview get shown automatically upon opening markdown buffer
   let g:livedown_autorun = 0
@@ -603,7 +632,7 @@
   let g:livedown_browser = "firefox"
 " }}}
 
-" --- Bracey --- {{{
+" === Bracey === {{{
   nmap <Leadder>br :Bracey<CR>
   nmap <Leadder>r :BraceyReload<CR>
 " }}}
@@ -611,7 +640,7 @@
 " =====================================================================
 " =====================================================================
 
-" --- NVim-R --- {{{
+" === NVim-R === {{{
   " Load the cheatshet of Nvim-R
    command! -bang CheatSheet call fzf#vim#files('~/JupyterNotebook/projects/rstudio/cheatsheet', <bang>0)
    " Still trying to figure this out
@@ -690,7 +719,7 @@
 " =====================================================================
 " =====================================================================
 
-" --- Defualt Terminal --- {{{
+" === Defualt Terminal === {{{
   let g:term_buf = 0
   let g:term_win = 0
   function! TermToggle(height)
@@ -723,11 +752,11 @@
   tnoremap :q! <C-\><C-n>:q!<CR>
   " }}}
 
-" --- Floaterm --- {{{
+" === Floaterm === {{{
   nnoremap <Leader>lf :FloatermNew --wintype=split lf<CR>
 " }}}
 
-" --- Neoterm --- {{{
+" === Neoterm === {{{
   let g:neoterm_default_mod='belowright' " open terminal in bottom split
   let g:neoterm_size=14                  " terminal split size
   let g:neoterm_autoscroll=1             " scroll to the bottom
@@ -739,14 +768,14 @@
   autocmd FileType python xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
 "}}}
 
-" --- Vim-Slime --- {{{
+" === Vim-Slime === {{{
   let g:slime_target = "neovim"
   autocmd FileType python xmap <buffer> ,l <Plug>SlimeRegionSend
   autocmd FileType python nmap <buffer> ,l <Plug>SlimeLineSend
   autocmd FileType python nmap <buffer> ,p <Plug>SlimeParagraphSend
 " }}}
 
-" --- Vim-lsp ---{{{
+" === Vim-lsp === {{{
   let g:markdown_fenced_languages = [
         \ 'vim',
         \ 'help'

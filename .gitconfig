@@ -5,7 +5,8 @@
 [user]
 	name = Lucas Burns
 	email = burnsac@me.com
-	signingkey = E93ACCAAAEB024788C106EDEC011CBEF6628B679
+	signingkey = C011CBEF6628B679
+#	signingkey = E93ACCAAAEB024788C106EDEC011CBEF6628B679
 [alias]
 	a = add
 	addurl = remote set-url --add origin

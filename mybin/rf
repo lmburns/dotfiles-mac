@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# search directory for files using ripgrep
+
+if [ -z "$2" ]
+then
+    rg --files | rg "$1"
+else
+    rg --files "$2" | rg "$1"
+fi

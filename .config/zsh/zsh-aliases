@@ -1,4 +1,8 @@
 # Aliases
+pdf() { pdftotext -nopgbrk $1 - }
+upp() { cat $1 | up }
+
+
 # alias sudo='doas'
 alias cp='cp -iv'
 alias pb='pbcopy'
@@ -56,6 +60,7 @@ alias pacman='pacaptr'
 alias p='pacaptr'
 alias fd='fd -Hi'
 alias spt='speedtest | rg "(Download:|Upload:)"'
+alias pat='bat -p'
 alias wiki='nvim ~/vimwiki/index.md'
 
 # Github
