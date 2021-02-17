@@ -146,25 +146,16 @@ mbn() { (nohup mn $1 >/dev/null &) }
 # create py file to sync with ipynb
 jupyt() { jupytext --set-formats ipynb,py $1 }
 # howdoi
-# alias h='function hdi(){ howdoi $* -c -n 5; }; hdi'
 h() { howdoi $@ -c -n 5; }
-# alias hless='function hdi(){ howdoi $* -c | less --raw-control-chars --quit-if-one-screen --no-init; }; hdi'
 hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
+pdf() { pdftotext -nopgbrk $1 - }
+# us up pipe with any file
+upp() { cat $1 | up }
+# crypto
+ratesx() { curl rate.sx/$1 }
 
 
-# Use lf to change directory
-lfcd () {
-    tmp="$(mktemp)"
-    lf -last-dir-path="$tmp" "$@"
-    if [ -f "$tmp" ]; then
-        dir="$(cat "$tmp")"
-        rm -f "$tmp" >/dev/null
-        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-    fi
-}
-
-
-#----- VARIABLES -----#
+#===== VARIABLES =====#
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
 export NOTMUCH_CONFIG="$XDG_CONFIG_HOME/notmuch/notmuch-config"
 export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
@@ -189,6 +180,10 @@ export DOTBARE_TREE="$HOME"
 export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare"
 export DOTBARE_FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border --ansi"
 
+# GO
+export GOPATH=$(go env GOPATH)
+export PATH="$GOPATH/bin:$PATH"
+
 # NNN
 export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
 export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
@@ -196,6 +191,8 @@ export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 
 # OpenVPN
 export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
+
+export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
 
 # GPG
 export GPG_TTY=$TTY

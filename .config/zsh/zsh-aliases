@@ -1,7 +1,4 @@
 # Aliases
-pdf() { pdftotext -nopgbrk $1 - }
-upp() { cat $1 | up }
-
 # alias sudo='doas'
 alias cp='cp -iv'
 alias pb='pbcopy'

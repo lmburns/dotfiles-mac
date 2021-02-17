@@ -10,7 +10,6 @@
   set nocompatible
 
   call plug#begin("~/.vim/plugged")
-  " Vim-instant markdown
   Plug 'scrooloose/nerdtree'
   Plug 'ryanoasis/vim-devicons'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -44,12 +43,7 @@
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
   Plug 'sheerun/vim-polyglot'                     " More syntax highlighting
-  " Plug 'kevinoid/vim-jsonc'
-
-  " Plug 'autozimu/LanguageClient-neovim', {
-  "   \ 'branch': 'next',
-  "   \ 'do': 'bash install.sh',
-  "   \ }
+  Plug 'SidOfc/mkdx'
 
   " HTML/CSS
   Plug 'shime/vim-livedown'
@@ -172,6 +166,7 @@
     nnoremap <silent><F3> :set relativenumber!<CR>
 
   set nofoldenable
+  set foldmethod=marker
   set scrolloff=5                      " cusor 5 lines from bottom of page
   set cursorline                       " show line where cursor is
   set mouse=a                          " enable mouse all modes
@@ -498,7 +493,7 @@
   " For json
   autocmd FileType json syntax match Comment +\/\/.\+$+
   " For coc-pairs
-  autocmd FileType html let b:coc_pairs_disabled = ['html']
+  autocmd FileType html let b:coc_pairs_disabled = ['<']
   " Highlight the symbol and its references when holding the cursor.
   autocmd CursorHold * silent call CocActionAsync('highlight')
 
@@ -512,6 +507,19 @@
   let g:NERDTreeMinimalUI = 1
   let g:NERDTreeIgnore = []
   let g:NERDTreeStatusline = ''
+  let g:NERDTreeHijackNetrw = 1
+
+  let NERDTreeBookmarksFile = stdpath('data') . '/NERDTreeBookmarks'
+
+  let NERDTreeMapActivateNode = 'l'         " default o
+  let NERDTreeMapOpenInTab = 't'            " default t
+  let NERDTreeMapOpenSplit = 'gs'           " default i
+  let NERDTreeMapOpenVSplit = 'gv'          " default s
+  let NERDTreeMapOpenExpl = 'e'             " default e
+  let NERDTreeMapUpdir = 'h'                " default u
+  let NERDTreeMapUpdirKeepOpen = 'H'        " default U
+  let NERDTreeMapToggleHidden = '.'         " default I
+
   " Automaticaly close nvim if NERDTree is only thing left open
   autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
@@ -635,9 +643,9 @@
   let g:airline_powerline_fonts = 1
   let g:airline#extensions#tabline#enabled = 2
   let g:airline#extensions#tabline#fnamemod = ':t'
-  " let g:airline#extensions#tabline#show_tab_nr = 0
-  " let g:airline#extensions#tabline#tab_nr_type = 0
-  " let g:airline#extensions#tabline#show_close_button = 0
+  let g:airline#extensions#tabline#show_tab_nr = 0
+  let g:airline#extensions#tabline#tab_nr_type = 0
+  let g:airline#extensions#tabline#show_close_button = 0
   " let g:airline#extensions#tabline#show_tabs = 0
   " let g:airline#extensions#hunks#enabled = 0
   set laststatus=2
@@ -725,7 +733,8 @@
   \   { 'up': [ 'Update Plugins', ':PlugUpdate' ] },
   \   { 'ug': [ 'Upgrade Plugin Manager', ':PlugUpgrade' ] },
   \   { 'uc': [ 'Update CoC Plugins', ':CocUpdate' ] },
-  \   { 'vd': [ 'Make Wiki Entry', ':VimwikiMakeDiaryNote' ] }
+  \   { 'vd': [ 'Make Wiki Entry', ':VimwikiMakeDiaryNote' ] },
+  \   { 'ce': [ 'Start CocExplorer', ':CocCommand explorer' ]}
   \ ]
 
   let g:startify_bookmarks = [
@@ -743,13 +752,8 @@
 " =====================================================================
 
 " === NVim-R === {{{
-  " Load the cheatshet of Nvim-R
-   command! -bang CheatSheet call fzf#vim#files('~/JupyterNotebook/projects/rstudio/cheatsheet', <bang>0)
-   " Still trying to figure this out
-   nmap <Leader>cs :CheatSheet<CR>
-   " nmap <Leader>sc !(nohup xargs -I{%} zathura "{%}" >/dev/null)
 
-" Autostart
+  " Autostart
   autocmd FileType r if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
   autocmd FileType rmd if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
 
@@ -887,3 +891,63 @@
 " === Vim Commentary === {{{
   autocmd FileType hjson setlocal commentstring=#\ %s
 "}}}
+
+" === Mkdx === {{{
+  let g:mkdx#settings     = {
+        \ 'restore_visual': 1,
+        \ 'gf_on_steroids': 1,
+        \ 'highlight': { 'enable':   1 },
+        \ 'enter':     { 'shift':    1 },
+        \ 'map':       { 'prefix': 'm', 'enable': 1 },
+        \ 'links':     { 'external': { 'enable': 1 } },
+        \ 'fold':      { 'enable':   1 },
+        \ 'toc': {
+        \    'text': 'Table of Contents',
+        \    'update_on_write': 1,
+        \    'details': { 'nesting_level': 0 }
+        \ }
+        \ }
+
+  let g:polygot_disabled = ['markdown']
+
+  function! <SID>MkdxGoToHeader(header)
+    call cursor(str2nr(get(matchlist(a:header, ' *\([0-9]\+\)'), 1, '')), 1)
+  endfunction
+
+  function! <SID>MkdxFormatHeader(key, val)
+    let text = get(a:val, 'text', '')
+    let lnum = get(a:val, 'lnum', '')
+
+    if (empty(text) || empty(lnum)) | return text | endif
+    return repeat(' ', 4 - strlen(lnum)) . lnum . ': ' . text
+  endfunction
+
+  function! <SID>MkdxFzfQuickfixHeaders()
+    let headers = filter(
+          \ map(mkdx#QuickfixHeaders(0),function('<SID>MkdxFormatHeader')),
+          \ 'v:val != ""'
+          \ )
+
+    call fzf#run(fzf#wrap({
+          \ 'source': headers,
+          \ 'sink': function('<SID>MkdxGoToHeader')
+          \ }))
+  endfunction
+
+  if (!$VIM_DEV)
+    " when not developing mkdx, use fancier <leader>I which uses fzf
+    " instead of qf to jump to headers in markdown documents.
+    nnoremap <silent> <Leader>I :call <SID>MkdxFzfQuickfixHeaders()<Cr>
+  endif
+
+  nnoremap <Leader>mcs :vs ~/vimwiki/dotfiles/mkdx.md<CR>
+  nnoremap <Leader>nv :e $MYVIMRC<CR>
+" }}}
+
+" Hack to make CocExplorer hijack netwr
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+"     \ execute 'CocCommand explorer' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+
+" Autoload startify
+" autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | Startify | endif
