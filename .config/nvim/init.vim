@@ -4,6 +4,7 @@
 "  \ \_\\"\_\  \ \_____\  \ \_____\  \ \__|    \ \_\  \ \_\ \ \_\
 "   \/_/ \/_/   \/_____/   \/_____/   \/_/      \/_/   \/_/  \/_/
 
+" 
 " Plugins {{{
   set ttyfast
   set nocompatible
@@ -35,6 +36,7 @@
   " Git
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
+  Plug 'mattn/vim-gist'
   Plug 'jreybert/vimagit'
   Plug 'mbbill/undotree'
 
@@ -93,6 +95,9 @@
   " ysiw' = add quotes around word
   " S' = in visual mode add quotes around
   " ds' = delete quotes
+
+  " :!tac = reverse line order
+  " viwU = change to upper case
 " }}}
 
 
@@ -102,9 +107,9 @@
 
   let g:gruvbox_material_palette = 'original'
   let g:gruvbox_material_background = 'hard'
+  let g:gruvbox_material_enable_bold = 1
   let g:kimbox_palette = 'material'
   let g:kimbox_background = 'hard'
-  let g:gruvbox_material_enable_bold = 1
   let g:oceanic_material_background = "deep"
   let g:oceanic_material_allow_bold = 1
   let g:sonokai_style = 'shusia'
@@ -158,7 +163,7 @@
   set list lcs=tab:‣\ ,trail:•,nbsp:␣ " customize invisibles
   set incsearch                       " incremential search highligh
     nnoremap <silent><F7> :set nohlsearch!<CR>
-  set encoding=utf-8                  " utf-8 encoding
+  set encoding=utf-8
   set clipboard+=unnamedplus          " use system clipboard
   set splitbelow splitright           " split screen below and right
   set tabstop=2 shiftwidth=2 expandtab smarttab softtabstop=2
@@ -167,24 +172,26 @@
     nnoremap <silent><F3> :set relativenumber!<CR>
 
   set nofoldenable
-  set laststatus=0
   set scrolloff=5                      " cusor 5 lines from bottom of page
   set cursorline                       " show line where cursor is
   set mouse=a                          " enable mouse all modes
-  set wildmode=longest,list,full       " Autocompletion
+  set wildmode=longest,list:full       " Autocompletion
   set wildmenu                         " Autocompletion
   set wildignore+=.git,.DS_Store,node_modules
   " set nowrap                            " do not wrap text at `textwidth`
   set synmaxcol=1000                    " do not highlight long lines
   " set timeoutlen=250                    " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
+  set confirm                           " confirm when editing readonly
   filetype plugin indent on
 
   " easier navigation in normal / visual / operator pending mode
   noremap K     {
   noremap J     }
-  noremap H     ^
-  noremap L     $
+  noremap H     g^
+  xnoremap H    g^
+  noremap L     g_
+  xnoremap L    g_
 
   " save using <C-s> in every mode
   " when in operator-pending or insert, takes you to normal mode
@@ -218,27 +225,8 @@
   " Delete line without newline character
   nnoremap E ^"_D
 
-  " -- Vim Wiki --
-  let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
-  map <Leader>v :VimwikiIndex
-  let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
-  let g:vimwiki_table_mappings = 0
-  hi VimwikiHeader1 guifg=#448488 gui=bold
-  hi VimwikiHeader2 guifg=#d3859a gui=bold
-  hi VimwikiHeader3 guifg=#8ec07b gui=bold
-  hi VimwikiHeader4 guifg=#fabc2e gui=bold
-  hi VimwikiHeader5 guifg=#b8ba25 gui=bold
-  hi VimwikiHeader6 guifg=#fb4833 gui=bold
-  hi VimwikiBold guifg=#a25bc4 gui=bold
-
-  map <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-  \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-  \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-
-  autocmd FileType markdown nmap <Leader><Leader>m <Plug>VimwikiToggleListItem
-
-  " <C-x> select pop up menu (vimwiki uses <enter> in markdown)"
-  autocmd FileType markdown inoremap <expr> <C-x> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  " Reselect the text that has just been pasted
+  noremap gV `[v`]
 
   autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
@@ -247,6 +235,7 @@
   " Automatically deletes all tralling whitespace on save.
   autocmd BufWritePre * %s/\s\+$//e            " End of lines
   autocmd BufWritePre * %s#\($\n\s*\)\+\%$##e  " End of file
+  " :%s/<1b>\[[0-9;]*m//g " Replae ANSI color codes
 
   " Disables automatic commenting on newline
   autocmd FileType * setlocal formatoptions-=cro
@@ -275,9 +264,9 @@
   nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
   nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
 
-  " Inserts a space above or below
-  nnoremap <silent> [<space>  :<c-u>put!=repeat([''],v:count)<bar>']+1<cr>
-  nnoremap <silent> ]<space>  :<c-u>put =repeat([''],v:count)<bar>'[-1<cr>
+  " Inserts a line above or below
+  nnoremap <expr> oo printf('m`%so<ESC>``', v:count1)
+  nnoremap <expr> OO printf('m`%sO<ESC>``', v:count1)
 
   " Tabs & Navigation
   map <Leader>nt :tabnew <bar> Files<CR>
@@ -295,6 +284,15 @@
   map <C-h> <C-W>h
   map <C-l> <C-W>l
 
+  " Move as you'd expect it to
+  nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+  nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+
+  " === Syntax === {{{
+  map <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+  \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+  \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
   ":verbose hi <name>
   " SyntaxQuery: Display the syntax stack at current cursor position
   function! s:syntax_query() abort
@@ -303,17 +301,6 @@
     endfor
   endfunction
   command! SQ call s:syntax_query()
-
-  " IndentSize: Change indent size depending on file type
-  function! <SID>IndentSize(amount)
-      exe "setlocal expandtab"
-         \ . " ts="  . a:amount
-         \ . " sts=" . a:amount
-  endfunction
-
-  " FileType specific indents
-  autocmd FileType markdown,python,json call <SID>IndentSize(2)
-  autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
 
   " Custom syntax groups
   augroup vimTodo
@@ -331,6 +318,52 @@
   augroup END
   hi def link cmTitle vimCommentTitle
 " }}}
+
+  " Automatically reload buffer if changed outside current buffer
+  augroup auto_read
+    autocmd!
+    autocmd FocusGained,BufEnter,CursorHold,CursorHoldI *
+          \ if mode() == 'n' && getcmdwintype() == '' | checktime | endif
+    autocmd FileChangedShellPost * echohl WarningMsg
+          \ | echo "File changed on disk. Buffer reloaded!" | echohl None
+  augroup END
+
+  " IndentSize: Change indent size depending on file type
+  function! <SID>IndentSize(amount)
+      exe "setlocal expandtab"
+         \ . " ts="  . a:amount
+         \ . " sts=" . a:amount
+  endfunction
+
+  " FileType specific indents
+  autocmd FileType markdown,python,json call <SID>IndentSize(2)
+  autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
+
+" =====================================================================
+" =====================================================================
+
+  " -- Vim Wiki -- {{{
+  let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
+  let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
+  let g:vimwiki_table_mappings = 0
+
+  hi VimwikiHeader1 guifg=#448488 gui=bold
+  hi VimwikiHeader2 guifg=#d3859a gui=bold
+  hi VimwikiHeader3 guifg=#8ec07b gui=bold
+  hi VimwikiHeader4 guifg=#fabc2e gui=bold
+  hi VimwikiHeader5 guifg=#b8ba25 gui=bold
+  hi VimwikiHeader6 guifg=#fb4833 gui=bold
+  hi VimwikiBold    guifg=#a25bc4 gui=bold
+
+  map <Leader>vw :VimwikiIndex<CR>
+
+  " Toggle [ ] todo list items
+  autocmd FileType markdown nmap <Leader><Leader>m <Plug>VimwikiToggleListItem
+  " Bold shortcut for markdown
+  autocmd FileType markdown inoremap ** ****<Left><Left>
+  " <C-x> select pop up menu (vimwiki uses <enter> in to go to another page)
+  autocmd FileType markdown inoremap <expr> <C-x> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+"}}}
 
 " =====================================================================
 " =====================================================================
@@ -456,7 +489,7 @@
                                 \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
   " Use <c-space> to trigger completion
-  inoremap <silent><expr> <c-space> coc#refresh()
+  inoremap <silent><expr> <c-c> coc#refresh()
 
   " position. Coc only does snippet and additional edit on confirm.
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
@@ -500,7 +533,7 @@
 
   " === FZF & Ripgrep === {{{
   " :History/ -- :Maps -- :Commands -- :GFiles -- :GFiles?
-  let g:rg_command = 'rg --vimgrep --hidden'
+  " let g:rg_command = 'rg --vimgrep --hidden'
   let g:rg_highlight = 'true'
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
 
@@ -517,11 +550,22 @@
     \ 'options': '--multi --reverse --margin 15%,0',
     \ 'left':    20})
 
+  " Prevent from searching for file names as well
+  command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+        \ 'rg --column --line-number --hidden --smart-case '
+          \ . '--no-heading --color=always '
+          \ . shellescape(<q-args>),
+        \ 1,
+        \ {'options':  '--delimiter : --nth 4..'},
+        \ 0)
+
   " Line completion (same as :Bline)
   imap <C-a> <C-x><C-l>
   imap <C-f> <Plug>(fzf-complete-line)
 
   nnoremap <silent> <Leader><space> :Files<CR>
+  nnoremap <silent> <Leader>gf :GFiles<CR>
   nnoremap <Leader>L :Locate .<CR>
   nnoremap <C-f> :Rg<CR>
 
@@ -533,6 +577,8 @@
   nnoremap <silent> <Leader>hc :History:<CR>
   " File history
   nnoremap <silent> <Leader>hf :History<CR>
+  " Mappings
+  nnoremap <silent> <Leader>mm :Maps<CR>
 
   " let g:fzf_preview_window = ''
   let g:fzf_layout         = { 'down': '~40%' }
@@ -557,8 +603,6 @@
   let g:easyescape_timeout = 100
   cnoremap jk <ESC>
   cnoremap kj <ESC>
-  cnoremap JK <ESC>
-  cnoremap KJ <ESC>
 
   " Fix paste bug triggered by the above inoremaps
   set t_BE=
@@ -574,7 +618,7 @@
   set pumheight=10  " Maximum number of items to show in popup menu
 
   " Insert mode key word completion setting
-  " set complete+=kspell complete-=w complete-=b complete-=u complete-=t
+  set complete+=kspell complete-=w complete-=b complete-=u complete-=t
   set spelllang=en_us,cjk  " Spell languages
   set spellsuggest+=10  " The number of suggestions shown in the screen for z=
   nnoremap <silent> <F10> :set spell!<cr>
@@ -589,12 +633,17 @@
 
 " === Airline === {{{
   let g:airline_powerline_fonts = 1
+  let g:airline#extensions#tabline#enabled = 2
+  let g:airline#extensions#tabline#fnamemod = ':t'
+  " let g:airline#extensions#tabline#show_tab_nr = 0
+  " let g:airline#extensions#tabline#tab_nr_type = 0
+  " let g:airline#extensions#tabline#show_close_button = 0
+  " let g:airline#extensions#tabline#show_tabs = 0
+  " let g:airline#extensions#hunks#enabled = 0
+  set laststatus=2
   let g:airline_theme='srcery'
 " }}}
 
-" === startify === {{{
-  let g:startify_bookmarks = ['~/.config', '~/JupyterNotebook/projects']
-" }}}
 
 " === UndoTree ==={{{
   nnoremap <Leader>ut :UndotreeToggle<CR>
@@ -606,8 +655,12 @@
 "}}}
 
 " === Vimagit === {{{
-  noremap  <Leader>m :MagitO<Cr>
+  noremap  <Leader>ma :MagitO<Cr>
 " }}}
+
+" === Vim Gist === {{{
+  let g:gist_clip_command = 'pbcopy'
+"}}}
 
 " -- gitgutter -- {{{
   nmap ) <Plug>(GitGutterNextHunk)
@@ -633,8 +686,57 @@
 " }}}
 
 " === Bracey === {{{
-  nmap <Leadder>br :Bracey<CR>
-  nmap <Leadder>r :BraceyReload<CR>
+  nmap <Leader>br :Bracey<CR>
+  nmap <Leader>r :BraceyReload<CR>
+" }}}
+
+" =====================================================================
+" =====================================================================
+
+  " Don't change to directory when selecting a file
+  let g:startify_files_number = 5
+  let g:startify_change_to_dir = 0
+  let g:startify_custom_header = [ ]
+  let g:startify_relative_path = 1
+  let g:startify_use_env = 1
+
+  function! s:gitModified()
+    let files = systemlist('git ls-files -m 2>/dev/null')
+    return map(files, "{'line': v:val, 'path': v:val}")
+  endfunction
+
+" same as above, but show untracked files, honouring .gitignore
+  function! s:gitUntracked()
+    let files = systemlist('git ls-files -o --exclude-standard 2>/dev/null')
+    return map(files, "{'line': v:val, 'path': v:val}")
+  endfunction
+
+  " Custom startup list, only show MRU from current directory/project
+  let g:startify_lists = [
+  \  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
+  \  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
+  \  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
+  \  { 'type': 'commands',  'header': [ 'Commands' ]       },
+  \ { 'type': function('s:gitModified'),  'header': ['   git modified']},
+  \ { 'type': function('s:gitUntracked'), 'header': ['   git untracked']},
+  \ ]
+
+  let g:startify_commands = [
+  \   { 'up': [ 'Update Plugins', ':PlugUpdate' ] },
+  \   { 'ug': [ 'Upgrade Plugin Manager', ':PlugUpgrade' ] },
+  \   { 'uc': [ 'Update CoC Plugins', ':CocUpdate' ] },
+  \   { 'vd': [ 'Make Wiki Entry', ':VimwikiMakeDiaryNote' ] }
+  \ ]
+
+  let g:startify_bookmarks = [
+      \ { 'c': '~/.config/nvim/init.vim' },
+      \ { 'g': '~/.gitconfig' },
+      \ { 'zs': '~/.config/zsh/zshrc' },
+      \ { 'za': '~/.config/zsh/zsh-aliases' },
+      \ { 'vi': '~/vimwiki/index.md' },
+  \ ]
+
+  nmap <leader>st :Startify<cr>
 " }}}
 
 " =====================================================================
@@ -780,4 +882,8 @@
         \ 'vim',
         \ 'help'
         \]
+"}}}
+
+" === Vim Commentary === {{{
+  autocmd FileType hjson setlocal commentstring=#\ %s
 "}}}

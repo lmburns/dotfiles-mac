@@ -2,7 +2,6 @@
 pdf() { pdftotext -nopgbrk $1 - }
 upp() { cat $1 | up }
 
-
 # alias sudo='doas'
 alias cp='cp -iv'
 alias pb='pbcopy'
@@ -24,17 +23,20 @@ alias sha='shasum -a 256'
 alias his='history | grep'
 alias pipup="pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U --user"
 alias gls='gls -Flha --color --group-directories-first'
+
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias azsh="nvim $ZDOTDIR/zsh-aliases"
 alias nvimd='cd /usr/local/share/nvim/runtime'
 alias ninit='nvim ~/.config/nvim/init.vim'
 
+# Mail
 alias sme='mbsync burnsac@me.com'
 alias mwme='mw -y burnsac@me.com'
 alias sgm='mbsync burnspl@gmail.com'
 alias mwgm='mw -y burnsppl@gmail.com'
 alias smail='mw -y burnsac@me.com && mw -y burnsppl@gmail.com && mw -y lucas@burnsac.xyz'
 
+# Locations
 alias projects='cd ~/JupyterNotebook/projects'
 alias unx='cd ~/Desktop/unix/mac'
 alias scripts='cd ~/Desktop/unix/mac/scripts'
@@ -82,6 +84,12 @@ alias ticker='ticker --config ~/.config/ticker/ticker.yaml'
 alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done with task! Exit status: $?"' -activate com.googlecode.iterm2
 alias tt='taskwarrior-tui'
 alias t='task'
+
+alias trp='trash-put'
+alias tre='trash-empty'
+alias trl='trash-list'
+alias trr='trash-restore'
+alias trm='trash-rm'
 
 alias vi='nvim'
 alias vimdiff='nvim -d'

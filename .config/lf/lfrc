@@ -60,10 +60,12 @@ cmd delete ${{
 	fi
 }}
 
+
 cmd trash-list ${{
   trash=$(trash-list)
   whiptail --msgbox --title "Trash List" "$trash" 35 75
 }}
+
 
 cmd trash ${{
   files=$(printf "$fx" | tr '\n' ';')
@@ -85,6 +87,7 @@ cmd trash ${{
  	terminal-notifier -title "🗑️  File(s) deleted" -message "File(s) moved to trash" && echo "$fx deleted"
 }}
 
+
 # Whiptail Move
 cmd whipmove ${{
   dest=$(whiptail --title "title" --inputbox "Where to move to?" 8 40 3>&1 1>&2 2>&3)
@@ -92,8 +95,8 @@ cmd whipmove ${{
     eval mv -iv \"$x\" \"$dest\"
   done &&
  	terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) moved to $dest."
-
 }}
+
 
 # Fuzzy Finder Move - Slow
 cmd movetofuzzy ${{
@@ -104,6 +107,7 @@ cmd movetofuzzy ${{
 	done &&
 	terminal-notifier -title "🚚 File(s) moved." -message "File(s) moved to $dest."
 }}
+
 
 # Fzy Move - local directory
 cmd moveto ${{
@@ -167,17 +171,19 @@ cmd unarchive ${{
   esac
 }}
 
+
 cmd zip %zip -r "$f" "$f"
 cmd tar %tar cvf "$f.tar" "$f"
 cmd targz %tar cvzf "$f.tar.gz" "$f"
 cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
 
-cmd dragon %dragon-drag-and-drop -a -x $fx
-cmd dragon-stay %dragon-drag-and-drop -a $fx
-cmd dragon-individual %dragon-drag-and-drop $fx
-cmd cpdragon %cpdragon
-cmd mvdragon %mvdragon
-cmd dlfile %dlfile
+# TODO: Create dragondrop scripts
+# cmd dragon %dragon-drag-and-drop -a -x $fx
+# cmd dragon-stay %dragon-drag-and-drop -a $fx
+# cmd dragon-individual %dragon-drag-and-drop $fx
+# cmd cpdragon %cpdragon
+# cmd mvdragon %mvdragon
+# cmd dlfile %dlfile
 
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
 cmd fzf $vi $(fd -Hi "$1" . |  fzy)
