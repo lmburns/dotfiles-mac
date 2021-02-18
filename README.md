@@ -37,7 +37,7 @@ dotfiles
 
 | Mapping                               | Action                                  | Mode  |
 | :-----------                          | :------------                           | :---- |
-| <kbd>F1<kbd>                          | run file as `./`                        |       |
+| <kbd>F1</kbd>                         | run file as `./`                        |       |
 | <kbd>F3</kbd>                         | turn on/off relative line numbers       |       |
 | <kbd>F4</kbd>                         | compile markdown using pandoc           |       |
 | <kbd>F9</kbd>                         | get syntnax name / attributes of hover  | n     |
@@ -76,29 +76,29 @@ dotfiles
 | <kbd>Leader</kbd>+<kbd>nn</kbd>       | nerdtree toggle                         | n     |
 | <kbd>ctrl</kbd>+<kbd>k</kbd>          | fuzzy complete word                     | i     |
 | <kbd>ctrl</kbd>+<kbd>f</kbd>          | fuzzy complete line                     | i     |
-| <kbd>Leader</kbd>+<kbd>f</kbd>        | fuzzy :Files                            | n     |
-| <kbd>Leader</kbd>+<kbd>gf</kbd>       | fuzzy :GFiles                           | n     |
-| <kbd>Leader</kbd>+<kbd>L</kbd>        | fuzzy :Locate                           | n     |
-| <kbd>ctrl</kbd>+<kbd>f</kbd>          | fuzzy using ripgrep                     | n     |
-| <kbd>Leader</kbd>+<kbd>a</kbd>        | fuzzy :Buffers                          | n     |
-| <kbd>Leader</kbd>+<kbd>A</kbd>        | fuzzy :Windows                          | n     |
-| <kbd>Leader</kbd>+<kbd>;</kbd>        | fuzzy :BLines  (buffer's lines)         | n     |
-| <kbd>Leader</kbd>+<kbd>hc</kbd>       | fuzzy :History: (command history)       | n     |
-| <kbd>Leader</kbd>+<kbd>hf</kbd>       | fuzzy :History  (file history)          | n     |
-| <kbd>Leader</kbd>+<kbd>mm</kbd>       | fuzzy :Maps (view mappings)             | n     |
+| <kbd>Leader</kbd>+<kbd>f</kbd>        | fuzzy `:Files`                            | n     |
+| <kbd>Leader</kbd>+<kbd>gf</kbd>       | fuzzy `:GFiles`                           | n     |
+| <kbd>Leader</kbd>+<kbd>L</kbd>        | fuzzy `:Locate`                           | n     |
+| <kbd>ctrl</kbd>+<kbd>f</kbd>          | fuzzy using `rg` (ripgrep)                | n     |
+| <kbd>Leader</kbd>+<kbd>a</kbd>        | fuzzy `:Buffers`                          | n     |
+| <kbd>Leader</kbd>+<kbd>A</kbd>        | fuzzy `:Windows`                          | n     |
+| <kbd>Leader</kbd>+<kbd>;</kbd>        | fuzzy `:BLines`  (buffer's lines)         | n     |
+| <kbd>Leader</kbd>+<kbd>hc</kbd>       | fuzzy `:History:` (command history)       | n     |
+| <kbd>Leader</kbd>+<kbd>hf</kbd>       | fuzzy `:History`  (file history)          | n     |
+| <kbd>Leader</kbd>+<kbd>mm</kbd>       | fuzzy `:Maps` (view mappings)             | n     |
 | <kbd>f</kbd>                          | easymotion - forward char               | n     |
 | <kbd>s</kbd>                          | easymotion - vim-sneak                  | n     |
-| <kbd>jk</kbd> / <kbd>kj</kbd>         | \<ESC\>                                 | iv    |
+| <kbd>jk</kbd> / <kbd>kj</kbd>         | <kbd>ESC</kbd>                          | iv    |
 | <kbd>Leader</kbd>+<kbd>ut</kbd>       | view undotree                           | n     |
 | <kbd>Leader</kbd>+<kbd>ma</kbd>       | open vim magit (git diffs)              | n     |
 | <kbd>)</kbd> / <kbd>(</kbd>           | next / prev gitgutter hunk              | n     |
-| <kbd>gm</kbd>                         | :LivedownToggle (preview html)          | n     |
+| <kbd>gm</kbd>                         | `:LivedownToggle` (preview html)          | n     |
 | <kbd>Leader</kbd>+<kbd>br</kbd>       | open bracey (view live html)            | n     |
 | <kbd>Leader</kbd>+<kbd>r</kbd>        | reload bracey window                    | n     |
 | <kbd>Leader</kbd>+<kbd>st</kbd>       | open startify                           | n     |
 | <kbd>ctrl</kbd>+<kbd>t</kbd>          | open native terminal                    | ni    |
-| <kbd>Leader</kbd>+<kbd>lf</kbd>       | open lf file manager in floatterm       | n     |
-| <kbd>Leader</kbd>+<kbd>rf</kbd>       | open ipython split view neoterm         | n     |
+| <kbd>Leader</kbd>+<kbd>lf</kbd>       | open `lf` file manager in floatterm       | n     |
+| <kbd>Leader</kbd>+<kbd>rf</kbd>       | open `ipython` split view neoterm         | n     |
 | <kbd>Leader</kbd>+<kbd>rf</kbd>       | clear neoterm screen                    | n     |
 | <kbd>Leader</kbd>+<kbd>rt</kbd>       | toggle neoterm on and off               | n     |
 | <kbd>Leader</kbd>+<kbd>I</kbd>        | jump between markdown headers           | n     |
