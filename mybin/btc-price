@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
+# send email to myself of current bitcoin price
+# set as a crontab for specified time interval
+
 VAL=$(btc-value | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g")
 PCT=$(btc-value -p h | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g")
 MAIL="burnsac@me.com"
-
-# printf "Price: $VAL Change: $PCT%" | sendmail -f $MAIL $MAIL
-
-# echo "Price: $VAL Change: $PCT" > /tmp/btc
-# sendmail -f $MAIL $MAIL < /tmp/btc
 
 echo "Subject: Price: $VAL Change: $PCT" | sendmail -f $MAIL $MAIL

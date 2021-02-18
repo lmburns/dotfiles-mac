@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# search directory for pdf and open in zathura
+
 open=zathura
 ag -U -g ".pdf$" \
 | fast-p \

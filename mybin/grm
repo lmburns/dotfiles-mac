@@ -1,4 +1,5 @@
 #!/bin/sh
+
 # grm: git repo manager for self-hosted git servers
 
 # TODO: add option to input category

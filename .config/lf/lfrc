@@ -13,12 +13,12 @@ set dircounts
 set info size
 set sortby natural
 set preview           # preview file on the right pane
-set drawbox
+# set drawbox
 set ratios '1:2:3'    # ratio of pane widths
 # set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
 # vars that depend on environmental variables
-$lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
+# $lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Environmental Variables                                                   │

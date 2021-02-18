@@ -60,22 +60,27 @@ source $ZDOTDIR/zsh-aliases
 bindkey '^a' autosuggest-accept
 bindkey '^x' autosuggest-execute
 
+# zsh globbing http://zsh.sourceforge.net/Intro/intro_2.html
+# https://medium.com/better-programming/boost-your-command-line-productivity-with-fuzzy-finder-985aa162ba5d
+# '^t' = fzf current directory
+# '^r' = fzf history
+
+bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
+bindkey -s '^o' 'lfcd\n'
 bindkey 'ESC-h' run-help
 bindkey 'ESC-H' run-help
 bindkey 'ESC-?' which-command
-bindkey '^S' history-incremental-search-backward
-bindkey '^R' history-incremental-search-forward
 
-autoload edit-command-line
-zle -N edit-command-line
+autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
 # --- fzf tab completion ---
-source ~/.config/zsh/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.zsh
+source "${ZSH}"/custom/plugins/fzf-tab/fzf-tab.zsh
 zstyle ":completion:*:git-checkout:*" sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+zstyle ':fzf-tab:*' switch-group ',' '.'
 
 # p10k
 [ ! -f ${XDG_CONFIG_HOME}/zsh/.p10k.zsh ] || source ${XDG_CONFIG_HOME}/zsh/.p10k.zsh
@@ -132,7 +137,7 @@ rsyncfrom() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
 # open fzf in a directory and open file in vim
 fzfd() { find $1 | fzf | xargs -r -I % $EDITOR % ; }
 # fzf pdfs and open with zathura
-fzfp() { fd -a -e "pdf" . $1 | fzf | (nohup xargs -I{} zathura "{}" >/dev/null) }
+fzfz() { fd -a -e "pdf" . $1 | fzf | (nohup xargs -I{} zathura "{}" >/dev/null) }
 # shred and delete file
 sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
 # start asciinema recording
@@ -154,6 +159,18 @@ upp() { cat $1 | up }
 # crypto
 ratesx() { curl rate.sx/$1 }
 
+# use lf to switch directories
+lfcd () {
+    tmp="$(mktemp)"
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp" >/dev/null
+        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+    fi
+}
+
+
 
 #===== VARIABLES =====#
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
@@ -170,15 +187,30 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
 
-export FZF_DEFAULT_OPTS="--layout=reverse --height 50% --border --ansi"
-export FZF_DEFAULT_COMMAND='rg --files --hidden'
+export FZF_DEFAULT_OPTS="--layout=reverse --height 50% --border --ansi --info=inline --multi
+    --preview-window=:hidden
+    --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+    --bind '?:toggle-preview'
+    --bind 'ctrl-a:select-all'
+    --bind 'ctrl-b:execute(bat --paging=always -f {+})'
+    --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
+    --bind 'ctrl-e:execute(echo {+} | xargs -o vim)'
+    --bind 'ctrl-v:execute(code {+})'
+    "
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export NAVI_FZF_OVERRIDES="--height=70%"
 
 alias db='dotbare'
-export DOTBARE_DIR="$XDG_DATA_HOME/cfg"
+# _dotbare_completion_cmd
+_dotbare_completion_git
+bindkey -s '©' "dotbare fedit"^j        # alt g
+bindkey -s '˙' "dotbare fadd"^j         # alt a
+bindkey -s 'ß' "dotbare fstat"^j        # alt s
+export DOTBARE_DIR="$XDG_DATA_HOME/dotfiles"
 export DOTBARE_TREE="$HOME"
-export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare"
-export DOTBARE_FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border --ansi"
+export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare-b"
+# export DOTBARE_FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border --ansi"
 
 # GO
 export GOPATH=$(go env GOPATH)

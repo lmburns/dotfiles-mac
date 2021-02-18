@@ -4,9 +4,9 @@
 ################################################################
 
 # removed 'makewhatis: /Library/TeX/texbin/man: Not a directory'
-# that was at the top of my fzf
-
 # removed line numbers from ripgrep if you have them on
+
+# TODO: add ability to search for a term before opening fzf
 
 manual=$(apropos . 2>/dev/null | \
     cut -d '-' -f 1 | \

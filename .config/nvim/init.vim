@@ -94,8 +94,7 @@
   " viwU = change to upper case
 " }}}
 
-
-" General Mappings: {{{
+" === Theme Settings === {{{
   let mapleader = ' '
   let maplocalleader = ','                      " For NVim-R
 
@@ -109,7 +108,9 @@
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
   let g:material_theme_style = 'ocean-community'
+" }}}
 
+" === General 'set'tings === {{{
   " UndoHistory: store undo history in a file. even after closing and reopening vim
   if has('persistent_undo')
     let target_path = expand('~/.config/vim-persisted-undo/')
@@ -126,8 +127,6 @@
   set termguicolors                " enable termguicolors for better highlighting
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-
-  set fillchars+=msgsep:\ ,vert:\│ " customize message separator in neovim
 
   syntax enable
   " colorscheme spaceduck
@@ -155,18 +154,22 @@
   set noshowcmd
   set noswapfile                      " no swap files
   set list lcs=tab:‣\ ,trail:•,nbsp:␣ " customize invisibles
+  set fillchars+=msgsep:\ ,vert:\│    " customize message separator in neovim
   set incsearch                       " incremential search highligh
     nnoremap <silent><F7> :set nohlsearch!<CR>
   set encoding=utf-8
   set clipboard+=unnamedplus          " use system clipboard
   set splitbelow splitright           " split screen below and right
-  set tabstop=2 shiftwidth=2 expandtab smarttab softtabstop=2
+  set tabstop=2 shiftwidth=2
+  set expandtab smarttab softtabstop=2
   set ignorecase smartcase
   set number
     nnoremap <silent><F3> :set relativenumber!<CR>
 
   set nofoldenable
   set foldmethod=marker
+  hi Folded cterm=bold ctermfg=DarkBlue ctermbg=none
+  hi FoldColumn cterm=bold ctermfg=DarkBlue ctermbg=none
   set scrolloff=5                      " cusor 5 lines from bottom of page
   set cursorline                       " show line where cursor is
   set mouse=a                          " enable mouse all modes
@@ -179,10 +182,12 @@
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
   set confirm                           " confirm when editing readonly
   filetype plugin indent on
+" }}}
 
+" === General Mappings === {{{
   " easier navigation in normal / visual / operator pending mode
-  noremap K     {
-  noremap J     }
+  noremap gkk     {
+  noremap gjj     }
   noremap H     g^
   xnoremap H    g^
   noremap L     g_
@@ -196,8 +201,8 @@
   onoremap <C-s> <Esc>:write<Cr>
 
   " Replace all is aliased to S.
-  " Replace quotes on the line
   nnoremap S :%s//g<Left><Left>
+  " Replace quotes on the line
   nmap <Leader>Q :s/'/"/g<CR>:nohlsearch<CR>
 
   " use tab and shift tab to indent and de-indent code
@@ -210,60 +215,34 @@
   " use `u` to undo, use `U` to redo, mind = blown
   nnoremap U <C-r>
 
-  " Make deleting line not go to clipbard
+  " make deleting line not go to clipbard
   nnoremap d "_d
   vnoremap d "_d
-  " Yank line without newline character
+  " yank line without newline character
   nnoremap Y y$
-  " Make cut not go to clipboard
+  " make cut not go to clipboard
   nnoremap x "_x
-  " Delete line without newline character
+  " delete line without newline character
   nnoremap E ^"_D
-
-  " Reselect the text that has just been pasted
+  " reselect the text that has just been pasted
   noremap gV `[v`]
+  " select characters of line (no new line)
+  nnoremap vv ^vg_
 
-  autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
-  autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
-  autocmd BufRead,BufNewFile *.tex set filetype=tex
+  " replace command history with quit
+  nmap q: :q<Cr>
+  nmap Q: :q<Cr>
+  command! -bang -nargs=* Q q
 
-  " Automatically deletes all tralling whitespace on save.
-  autocmd BufWritePre * %s/\s\+$//e            " End of lines
-  autocmd BufWritePre * %s#\($\n\s*\)\+\%$##e  " End of file
-  " :%s/<1b>\[[0-9;]*m//g " Replae ANSI color codes
+  " use qq to record, q to stop, Q to play a macro
+  nnoremap Q @q
+  vnoremap Q :normal @q
 
-  " Disables automatic commenting on newline
-  autocmd FileType * setlocal formatoptions-=cro
-
-  " Shellcheck
-  nnoremap <Leader>sc :!shellcheck %<CR>
-  nnoremap <F1> :!./%<CR>
-
-" Open corresponding .pdf/.html or preview
-  nmap <Leader>p :w <Bar> !open %<CR>
-
-  " Compile rmarkdown / markdown
-  " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
-  autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
-  autocmd Filetype rmd map <F6> :RMarkdown pdf latex_engine="xelatex", toc=TRUE<CR>
-  autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
-
-  " Pandoc
-   let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
-
-  command! -nargs=* RunSilent
-      \ | execute ':silent !'.'<args>'
-      \ | execute ':redraw!'
-  nmap <Leader>pc :RunSilent pandoc -o /tmp/vim-pandoc-out.pdf %<CR>
-  nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
-  nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
-  nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
-
-  " Inserts a line above or below
+  " inserts a line above or below
   nnoremap <expr> oo printf('m`%so<ESC>``', v:count1)
   nnoremap <expr> OO printf('m`%sO<ESC>``', v:count1)
 
-  " Tabs & Navigation
+  " tabs & navigation
   map <Leader>nt :tabnew <bar> Files<CR>
   map <Leader>to :tabonly<CR>
   map <Leader>tc :tabclose<CR>
@@ -271,7 +250,7 @@
   map <Leader>tn :tabn<cr>
   map <Leader>tp :tabp<cr>
 
-  " Smart way to move between windows
+  " smart way to move between windows
   map <C-j> <C-W>j
   imap <C-j> <C-W>j
   map <C-k> <C-W>k
@@ -279,9 +258,49 @@
   map <C-h> <C-W>h
   map <C-l> <C-W>l
 
-  " Move as you'd expect it to
+  " move through folded lines
   nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
   nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+
+  " set filetypes
+  autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
+  autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
+  autocmd BufRead,BufNewFile *.tex set filetype=tex
+
+  " automatically deletes all tralling whitespace on save.
+  autocmd BufWritePre * %s/\s\+$//e            " End of lines
+  autocmd BufWritePre * %s#\($\n\s*\)\+\%$##e  " End of file
+  " :%s/<1b>\[[0-9;]*m//g                       " replace ANSI color codes
+
+  " disables automatic commenting on newline
+  autocmd FileType * setlocal formatoptions-=cro
+
+  " shellcheck
+  nnoremap <Leader>sc :!shellcheck %<CR>
+  nnoremap <F1> :!./%<CR>
+
+  " open corresponding .pdf/.html or preview
+  nmap <Leader>p :w <Bar> !open %<CR>
+
+  " Compile rmarkdown / markdown
+  " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
+  autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
+  autocmd Filetype rmd map <F6> :RMarkdown pdf latex_engine="xelatex", toc=TRUE<CR>
+  autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
+" }}}
+
+" === Pandoc === {{{
+   let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
+
+  command! -nargs=* RunSilent
+      \ | execute ':silent !'.'<args>'
+      \ | execute ':redraw!'
+
+  nmap <Leader>pc :RunSilent pandoc -o /tmp/vim-pandoc-out.pdf %<CR>
+  nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
+  nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
+  nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
+" }}}
 
   " === Syntax === {{{
   map <F9> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
@@ -314,6 +333,21 @@
   hi def link cmTitle vimCommentTitle
 " }}}
 
+" === Other Functions === {{{
+" E: create file with subdirectories if needed
+  function s:MKDir(...)
+      if         !a:0
+             \|| stridx('`+', a:1[0])!=-1
+             \|| a:1=~#'\v\\@<![ *?[%#]'
+             \|| isdirectory(a:1)
+             \|| filereadable(a:1)
+             \|| isdirectory(fnamemodify(a:1, ':p:h'))
+          return
+      endif
+      return mkdir(fnamemodify(a:1, ':p:h'), 'p')
+  endfunction
+  command -bang -bar -nargs=? -complete=file E :call s:MKDir(<f-args>) | e<bang> <args>
+
   " Automatically reload buffer if changed outside current buffer
   augroup auto_read
     autocmd!
@@ -333,11 +367,12 @@
   " FileType specific indents
   autocmd FileType markdown,python,json call <SID>IndentSize(2)
   autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
+"}}}
 
 " =====================================================================
 " =====================================================================
 
-  " -- Vim Wiki -- {{{
+  " === Vim Wiki === {{{
   let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
   let g:vimwiki_table_mappings = 0
@@ -405,8 +440,11 @@
       \ 'projects': {
       \   'root-uri': '~/JupyterNotebook/projects',
       \   },
-        \ 'github': {
+      \ 'github': {
       \   'root-uri': '~/JupyterNotebook/projects/github',
+      \   },
+      \ 'opt': {
+      \   'root-uri': '~/opt',
       \   },
       \ }
 
@@ -414,6 +452,7 @@
   nmap <silent> <Leader>ec :CocCommand explorer --preset config<CR>
   nmap <silent> <Leader>ep :CocCommand explorer --preset projects<CR>
   nmap <silent> <Leader>eg :CocCommand explorer --preset github<CR>
+  nmap <silent> <Leader>eo :CocCommand explorer --preset opt<CR>
   nmap <silent> <Leader>el :CocList explPresets
 
   " GoTo code navigation.
@@ -425,8 +464,8 @@
   " Remap for rename current word
   nmap <Leader>rn <Plug>(coc-rename)
 
-  xmap <Leader>f <Plug>(coc-format-selected)
-  nmap <Leader>f <Plug>(coc-format-selected)
+  xmap <Leader>fm <Plug>(coc-format-selected)
+  nmap <Leader>fm <Plug>(coc-format-selected)
 
   xmap <leader>w  <Plug>(coc-codeaction-selected)
   nmap <leader>w  <Plug>(coc-codeaction-selected)
@@ -493,7 +532,7 @@
   " For json
   autocmd FileType json syntax match Comment +\/\/.\+$+
   " For coc-pairs
-  autocmd FileType html let b:coc_pairs_disabled = ['<']
+  autocmd FileType * let b:coc_pairs_disabled = ['<']
   " Highlight the symbol and its references when holding the cursor.
   autocmd CursorHold * silent call CocActionAsync('highlight')
 
@@ -502,7 +541,7 @@
 " =====================================================================
 " =====================================================================
 
-" NERDTREE {{{
+" === NERDTREE === {{{
   let g:NERDTreeShowHidden = 1
   let g:NERDTreeMinimalUI = 1
   let g:NERDTreeIgnore = []
@@ -523,21 +562,11 @@
   " Automaticaly close nvim if NERDTree is only thing left open
   autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-  " Toggle
-  map <Leader>nn :NERDTreeToggle<cr>
+  " toggle
+  map <Leader>nn :NERDTreeToggle<CR>
   map <Leader>nb :NERDTreeFromBookmark
-  map <Leader>nf :NERDTreeFind<cr>
-
-  map <Leader><Leader>l <Plug>(easymotion-lineforward)
-  map <Leader><Leader>j <Plug>(easymotion-j)
-  map <Leader><Leader>k <Plug>(easymotion-k)
-  map <Leader><Leader>h <Plug>(easymotion-linebackward)
-
-  map  <Leader><Leader>/ <Plug>(easymotion-sn)
-  omap <Leader><Leader>/ <Plug>(easymotion-tn)
-
-  let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
-  " }}}
+  map <Leader>nf :NERDTreeFind<CR>
+" }}}
 
   " === FZF & Ripgrep === {{{
   " :History/ -- :Maps -- :Commands -- :GFiles -- :GFiles?
@@ -549,16 +578,16 @@
   " command! -bang Proj call fzf#vim#files('~/JupyterNotebook/projects', fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
   command! -bang Proj call fzf#vim#files('~/JupyterNotebook/projects', fzf#vim#with_preview(), <bang>0)
 
-  " Word completion popup
+  " word completion popup
   inoremap <expr> <c-k> fzf#vim#complete#word({'window': { 'width': 0.2, 'height': 0.9, 'xoffset': 1 }})
 
-  " Word completion window
+  " word completion window
   inoremap <expr> <c-a> fzf#vim#complete({
     \ 'source':  'cat /usr/share/dict/words',
     \ 'options': '--multi --reverse --margin 15%,0',
     \ 'left':    20})
 
-  " Prevent from searching for file names as well
+  " prevent from searching for file names as well
   command! -bang -nargs=* Rg
       \ call fzf#vim#grep(
         \ 'rg --column --line-number --hidden --smart-case '
@@ -568,11 +597,18 @@
         \ {'options':  '--delimiter : --nth 4..'},
         \ 0)
 
+  " dotbare (dotfile manager) - edit file
+  command! Dots call fzf#run(fzf#wrap({
+  \ 'source': 'dotbare ls-files --full-name --directory "${DOTBARE_TREE}" | awk -v home="${DOTBARE_TREE}/" "{print home \$0}"',
+  \ 'sink': 'e',
+  \ 'options': [ '--multi', '--preview', 'cat {}' ]
+  \ }))
+
   " Line completion (same as :Bline)
   imap <C-a> <C-x><C-l>
   imap <C-f> <Plug>(fzf-complete-line)
 
-  nnoremap <silent> <Leader><space> :Files<CR>
+  nnoremap <silent> <Leader>F :Files<CR>
   nnoremap <silent> <Leader>gf :GFiles<CR>
   nnoremap <Leader>L :Locate .<CR>
   nnoremap <C-f> :Rg<CR>
@@ -601,9 +637,23 @@
 " =====================================================================
 
 " === EasyMotion === {{{
-  nmap f <Plug>(easymotion-overwin-f2)
+  " move forward characters
+  map f <Plug>(easymotion-bd-f)
+  nmap f <Plug>(easymotion-overwin-f)
+  " move forward line vim-sneak
+  nmap s <Plug>(easymotion-overwin-f2)
+
+  map <Leader><Leader>l <Plug>(easymotion-lineforward)
+  map <Leader><Leader>j <Plug>(easymotion-j)
+  map <Leader><Leader>k <Plug>(easymotion-k)
+  map <Leader><Leader>h <Plug>(easymotion-linebackward)
+
   map <Leader>/ <Plug>(easymotion-bd-w)
   nmap <Leader>/ <Plug>(easymotion-overwin-w)
+  map  <Leader><Leader>/ <Plug>(easymotion-sn)
+  omap <Leader><Leader>/ <Plug>(easymotion-tn)
+
+  let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 "}}}
 
 " === EasyEscape === {{{
@@ -652,7 +702,6 @@
   let g:airline_theme='srcery'
 " }}}
 
-
 " === UndoTree ==={{{
   nnoremap <Leader>ut :UndotreeToggle<CR>
 
@@ -670,7 +719,7 @@
   let g:gist_clip_command = 'pbcopy'
 "}}}
 
-" -- gitgutter -- {{{
+" === gitgutter === {{{
   nmap ) <Plug>(GitGutterNextHunk)
   nmap ( <Plug>(GitGutterPrevHunk)
   let g:gitgutter_enabled = 1
@@ -701,6 +750,7 @@
 " =====================================================================
 " =====================================================================
 
+" === Startify === {{{
   " Don't change to directory when selecting a file
   let g:startify_files_number = 5
   let g:startify_change_to_dir = 0
@@ -746,13 +796,14 @@
   \ ]
 
   nmap <leader>st :Startify<cr>
+  " autoload startify
+  " autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | Startify | endif
 " }}}
 
 " =====================================================================
 " =====================================================================
 
 " === NVim-R === {{{
-
   " Autostart
   autocmd FileType r if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
   autocmd FileType rmd if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
@@ -799,8 +850,9 @@
   let Rout_more_colors = 1                                " Make terminal output more colorful
   let r_indent_align_args = 0
   " let rout_follow_colorscheme = 1
+" }}}
 
-" Gruvbox {{{
+" === Gruvbox Terminal Theme === {{{
 " if has('gui_running') || &termguicolors
 "   let rout_color_input    = 'guifg=#e2cca9'
 "   let rout_color_normal   = 'guifg=#d4be98'
@@ -944,10 +996,8 @@
   nnoremap <Leader>nv :e $MYVIMRC<CR>
 " }}}
 
-" Hack to make CocExplorer hijack netwr
+" === Hack to make CocExplorer hijack Netwr === {{{
 " autocmd StdinReadPre * let s:std_in=1
 " autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
 "     \ execute 'CocCommand explorer' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-
-" Autoload startify
-" autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | Startify | endif
+" }}}

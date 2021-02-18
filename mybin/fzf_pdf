@@ -1,2 +1,0 @@
-#!/bin/bash
-fd -a -e "pdf" . $1 | fzf | (nohup xargs -I{} zathura {} >/dev/null)

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# open script in editor
+
+P=$(which $*)
+ if [ -f "$P" ]
+ then
+   $EDITOR $P
+ else
+   echo $P
+ fi
