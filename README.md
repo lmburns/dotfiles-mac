@@ -46,64 +46,65 @@ dotfiles
 | <kbd>gjj</kbd>                        | move to next blank line                 | n     |
 | <kbd>H</kbd>                          | move to first character on line         | nv    |
 | <kbd>L</kbd>                          | move to last character on line          | nv    |
-| <kbd>ctrl</kbd>+<kbd>s</kbd>          | save file                               | nvi   |
+| <kbd>ctrl</kbd> + <kbd>s</kbd>        | save file                               | nvi   |
 | <kbd>S</kbd>                          | replace all                             | n     |
-| <kbd>Leader</kbd>+<kbd>Q</kbd>        | replace single quotes with double       | n     |
+| <kbd>Leader</kbd> + <kbd>Q</kbd>      | replace single quotes with double       | n     |
 | <kbd>⇥ Tab</kbd>                      | indent                                  | nvi   |
-| <kbd>⇧ Shift</kbd>+<kbd>⇥ Tab</kbd>   | de-indent                               | nvi   |
+| <kbd>⇧ Shift</kbd> + <kbd>⇥ Tab</kbd> | de-indent                               | nvi   |
 | <kbd>d</kbd>                          | delete line not to clipboard            | nv    |
 | <kbd>Y</kbd>                          | yank line without newline               | n     |
 | <kbd>x</kbd>                          | cut not to clipboard                    | n     |
 | <kbd>E</kbd>                          | delete line, keeping cursor on line     | n     |
 | <kbd>gV</kbd>                         | reselect text that has just been pasted | n     |
 | <kbd>vv</kbd>                         | select first char to last char on line  | n     |
+| <kbd>Leader</kbd> + <kbd>sa</kbd>     | add space after character               | n     |
 | <kbd>q:</kbd> / <kbd>Q:</kbd>         | quit                                    | n     |
 | <kbd>Q</kbd>                          | play macro recording                    | nv    |
 | <kbd>qq</kbd> / <kbd>q</kbd>          | start / stop macro                      | n     |
-| <kbd>Leader</kbd>+<kbd>nt</kbd>       | create new tab using FZF                | n     |
-| <kbd>Leader</kbd>+<kbd>to</kbd>       | leave open only current tab             | n     |
-| <kbd>Leader</kbd>+<kbd>tc</kbd>       | close current tab                       | n     |
-| <kbd>Leaader</kbd>+<kbd>tn</kbd>      | next tab                                | n     |
-| <kbd>Leader</kbd>+<kbd>tp</kbd>       | previous tab                            | n     |
-| <kbd>ctrl</kbd>+<kbd>j</kbd>          | move down window                        | ni    |
-| <kbd>ctrl</kbd>+<kbd>k</kbd>          | move up window                          | ni    |
-| <kbd>ctrl</kbd>+<kbd>h</kbd>          | move left window                        | n     |
-| <kbd>ctrl</kbd>+<kbd>l</kbd>          | move right window                       | n     |
+| <kbd>Leader</kbd> + <kbd>nt</kbd>     | create new tab using FZF                | n     |
+| <kbd>Leader</kbd> + <kbd>to</kbd>     | leave open only current tab             | n     |
+| <kbd>Leader</kbd> + <kbd>tc</kbd>     | close current tab                       | n     |
+| <kbd>Leaader</kbd> + <kbd>tn</kbd>    | next tab                                | n     |
+| <kbd>Leader</kbd> + <kbd>tp</kbd>     | previous tab                            | n     |
+| <kbd>ctrl</kbd> + <kbd>j</kbd>        | move down window                        | ni    |
+| <kbd>ctrl</kbd> + <kbd>k</kbd>        | move up window                          | ni    |
+| <kbd>ctrl</kbd> + <kbd>h</kbd>        | move left window                        | n     |
+| <kbd>ctrl</kbd> + <kbd>l</kbd>        | move right window                       | n     |
 | <kbd>j</kbd> / <kbd>k</kbd>           | move through wrapped lines              | n     |
-| <kbd>Leader</kbd>+<kbd>sc</kbd>       | run `shellcheck`                        | n     |
-| <kbd>Leader</kbd>+<kbd>vw</kbd>       | navigate to vimwiki index               | n     |
-| <kbd>Leader</kbd>+<kbd>ee</kbd>       | coc explorer                            | n     |
-| <kbd>Leader</kbd>+<kbd>nn</kbd>       | nerdtree toggle                         | n     |
-| <kbd>ctrl</kbd>+<kbd>k</kbd>          | fuzzy complete word                     | i     |
-| <kbd>ctrl</kbd>+<kbd>f</kbd>          | fuzzy complete line                     | i     |
-| <kbd>Leader</kbd>+<kbd>f</kbd>        | fuzzy `:Files`                            | n     |
-| <kbd>Leader</kbd>+<kbd>gf</kbd>       | fuzzy `:GFiles`                           | n     |
-| <kbd>Leader</kbd>+<kbd>L</kbd>        | fuzzy `:Locate`                           | n     |
-| <kbd>ctrl</kbd>+<kbd>f</kbd>          | fuzzy using `rg` (ripgrep)                | n     |
-| <kbd>Leader</kbd>+<kbd>a</kbd>        | fuzzy `:Buffers`                          | n     |
-| <kbd>Leader</kbd>+<kbd>A</kbd>        | fuzzy `:Windows`                          | n     |
-| <kbd>Leader</kbd>+<kbd>;</kbd>        | fuzzy `:BLines`  (buffer's lines)         | n     |
-| <kbd>Leader</kbd>+<kbd>hc</kbd>       | fuzzy `:History:` (command history)       | n     |
-| <kbd>Leader</kbd>+<kbd>hf</kbd>       | fuzzy `:History`  (file history)          | n     |
-| <kbd>Leader</kbd>+<kbd>mm</kbd>       | fuzzy `:Maps` (view mappings)             | n     |
+| <kbd>Leader</kbd> + <kbd>sc</kbd>     | run `shellcheck`                        | n     |
+| <kbd>Leader</kbd> + <kbd>vw</kbd>     | navigate to vimwiki index               | n     |
+| <kbd>Leader</kbd> + <kbd>ee</kbd>     | coc explorer                            | n     |
+| <kbd>Leader</kbd> + <kbd>nn</kbd>     | nerdtree toggle                         | n     |
+| <kbd>ctrl</kbd> + <kbd>k</kbd>        | fuzzy complete word                     | i     |
+| <kbd>ctrl</kbd> + <kbd>f</kbd>        | fuzzy complete line                     | i     |
+| <kbd>Leader</kbd> + <kbd>f</kbd>      | fuzzy `:Files`                          | n     |
+| <kbd>Leader</kbd> + <kbd>gf</kbd>     | fuzzy `:GFiles`                         | n     |
+| <kbd>Leader</kbd> + <kbd>L</kbd>      | fuzzy `:Locate`                         | n     |
+| <kbd>ctrl</kbd> + <kbd>f</kbd>        | fuzzy using `rg` (ripgrep)              | n     |
+| <kbd>Leader</kbd> + <kbd>a</kbd>      | fuzzy `:Buffers`                        | n     |
+| <kbd>Leader</kbd> + <kbd>A</kbd>      | fuzzy `:Windows`                        | n     |
+| <kbd>Leader</kbd> + <kbd>;</kbd>      | fuzzy `:BLines`  (buffer's lines)       | n     |
+| <kbd>Leader</kbd> + <kbd>hc</kbd>     | fuzzy `:History:` (command history)     | n     |
+| <kbd>Leader</kbd> + <kbd>hf</kbd>     | fuzzy `:History`  (file history)        | n     |
+| <kbd>Leader</kbd> + <kbd>mm</kbd>     | fuzzy `:Maps` (view mappings)           | n     |
 | <kbd>f</kbd>                          | easymotion - forward char               | n     |
 | <kbd>s</kbd>                          | easymotion - vim-sneak                  | n     |
 | <kbd>jk</kbd> / <kbd>kj</kbd>         | <kbd>ESC</kbd>                          | iv    |
-| <kbd>Leader</kbd>+<kbd>ut</kbd>       | view undotree                           | n     |
-| <kbd>Leader</kbd>+<kbd>ma</kbd>       | open vim magit (git diffs)              | n     |
+| <kbd>Leader</kbd> + <kbd>ut</kbd>     | view undotree                           | n     |
+| <kbd>Leader</kbd> + <kbd>ma</kbd>     | open vim magit (git diffs)              | n     |
 | <kbd>)</kbd> / <kbd>(</kbd>           | next / prev gitgutter hunk              | n     |
-| <kbd>gm</kbd>                         | `:LivedownToggle` (preview html)          | n     |
-| <kbd>Leader</kbd>+<kbd>br</kbd>       | open bracey (view live html)            | n     |
-| <kbd>Leader</kbd>+<kbd>r</kbd>        | reload bracey window                    | n     |
-| <kbd>Leader</kbd>+<kbd>st</kbd>       | open startify                           | n     |
-| <kbd>ctrl</kbd>+<kbd>t</kbd>          | open native terminal                    | ni    |
-| <kbd>Leader</kbd>+<kbd>lf</kbd>       | open `lf` file manager in floatterm       | n     |
-| <kbd>Leader</kbd>+<kbd>rf</kbd>       | open `ipython` split view neoterm         | n     |
-| <kbd>Leader</kbd>+<kbd>rf</kbd>       | clear neoterm screen                    | n     |
-| <kbd>Leader</kbd>+<kbd>rt</kbd>       | toggle neoterm on and off               | n     |
-| <kbd>Leader</kbd>+<kbd>I</kbd>        | jump between markdown headers           | n     |
-| <kbd>Leader</kbd>+<kbd>nv</kbd>       | edit `$MYVIMRC`                         | n     |
-| <kbd>Leader</kbd>+<kbd>mcs</kbd>      | open mkdx cheatsheet                    | n     |
+| <kbd>gm</kbd>                         | `:LivedownToggle` (preview html)        | n     |
+| <kbd>Leader</kbd> + <kbd>br</kbd>     | open bracey (view live html)            | n     |
+| <kbd>Leader</kbd> + <kbd>r</kbd>      | reload bracey window                    | n     |
+| <kbd>Leader</kbd> + <kbd>st</kbd>     | open startify                           | n     |
+| <kbd>ctrl</kbd> + <kbd>t</kbd>        | open native terminal                    | ni    |
+| <kbd>Leader</kbd> + <kbd>lf</kbd>     | open `lf` file manager in floatterm     | n     |
+| <kbd>Leader</kbd> + <kbd>rf</kbd>     | open `ipython` split view neoterm       | n     |
+| <kbd>Leader</kbd> + <kbd>rf</kbd>     | clear neoterm screen                    | n     |
+| <kbd>Leader</kbd> + <kbd>rt</kbd>     | toggle neoterm on and off               | n     |
+| <kbd>Leader</kbd> + <kbd>I</kbd>      | jump between markdown headers           | n     |
+| <kbd>Leader</kbd> + <kbd>nv</kbd>     | edit `$MYVIMRC`                         | n     |
+| <kbd>Leader</kbd> + <kbd>mcs</kbd>    | open mkdx cheatsheet                    | n     |
 
 ### Functions
 | Function      | Action                                       |

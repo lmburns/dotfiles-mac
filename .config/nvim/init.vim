@@ -228,6 +228,8 @@
   noremap gV `[v`]
   " select characters of line (no new line)
   nnoremap vv ^vg_
+  " insert a space after current character
+  nnoremap <Leader>sa a<Space><ESC>h
 
   " replace command history with quit
   nmap q: :q<Cr>

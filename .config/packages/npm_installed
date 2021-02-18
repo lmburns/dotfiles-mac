@@ -1,0 +1,27 @@
+/usr/local/lib
+├── @aweary/alder@2.0.0
+├── asciicast2gif@0.2.1
+├── bash-language-server@1.17.0
+├── btc-value-cli@3.0.0
+├── carbon-now-cli@1.4.0
+├── chokidar-cli@2.1.0
+├── coinmon@0.0.27
+├── generator-code@1.3.9
+├── h2m@0.7.0
+├── how-2@1.8.2
+├── instant-markdown-d@0.2.0-rc.2
+├── livedown@2.1.1
+├── mklicense@0.1.5
+├── npm@7.5.0
+├── osx-wifi-cli@2.1.0
+├── parse-columns-cli@2.0.0
+├── svgexport@0.4.1
+├── taskbook@0.3.0
+├── thumbsup@2.15.0
+├── to-markdown-cli@0.4.4
+├── underscore-cli@0.2.19
+├── undollar@1.0.0
+├── vmd@1.34.0
+├── wat@0.1.40
+└── yo@3.1.1
+
