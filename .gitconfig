@@ -29,6 +29,7 @@
   ps = push
   pom = push origin master
 	psf = push --force
+	pushall = '!git remote | xargs -L1 git push --all'
   rao = remote add origin
   rmc = rm --cached
 	s = status -sb

@@ -36,7 +36,7 @@ dotfiles
 ### Mappings
 
 | Mapping         | Action                                  | Mode  |
-| :===========    | :============                           | :==== |
+| :-----------    | :------------                           | :---- |
 | <F1>            | run file as `./`                        |       |
 | <F3>            | turn on/off relative line numbers       |       |
 | <F4>            | compile markdown using pandoc           |       |
@@ -106,7 +106,7 @@ dotfiles
 
 ### Functions
 | Function      | Action                                       |
-| :============ | :==========                                  |
+| :------------ | :----------                                  |
 | SQ            | SyntaxQuery - get syntax attributes of hover |
 | IndentSize    | set file specific indents                    |
 | Format        | format current buffer                        |
