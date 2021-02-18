@@ -35,74 +35,74 @@ dotfiles
 
 ### Mappings
 
-| Mapping         | Action                                  | Mode  |
-| :-----------    | :------------                           | :---- |
-| \<F1\>          | run file as `./`                        |       |
-| <F3>            | turn on/off relative line numbers       |       |
-| <F4>            | compile markdown using pandoc           |       |
-| <F9>            | get syntnax name / attributes of hover  | n     |
-| <F10>           | spellcheck                              |       |
-| gkk             | move to previous blank line             | n     |
-| gjj             | move to next blank line                 | n     |
-| H               | move to first character on line         | nv    |
-| L               | move to last character on line          | nv    |
-| <C-S>           | save file                               | nvi   |
-| S               | replace all                             | n     |
-| <L-Q>           | replace single quotes with double       | n     |
-| <Tab> / <S-Tab> | indent / de-indent                      | nvi   |
-| d               | delete line not to clipboard            | nv    |
-| Y               | yank line without newline               | n     |
-| x               | cut not to clipboard                    | n     |
-| E               | delete line, keeping cursor on line     | n     |
-| gV              | reselect text that has just been pasted | n     |
-| vv              | select first char to last char on line  | n     |
-| q: / Q:         | quit                                    | n     |
-| Q               | play macro recording                    | nv    |
-| qq / q          | start / stop macro                      | n     |
-| <L-nt>          | create new tab using FZF                | n     |
-| <L-to>          | leave open only current tab             | n     |
-| <L-tc>          | close current tab                       | n     |
-| <L-tn>          | next tab                                | n     |
-| <L-tp>          | previous tab                            | n     |
-| <C-j>           | move down window                        | ni    |
-| <C-k>           | move up window                          | ni    |
-| <C-h>           | move left window                        | n     |
-| <C-l>           | move right window                       | n     |
-| j / k           | move through wrapped lines              | n     |
-| <L-sc>          | run `shellcheck`                        | n     |
-| <L-vw>          | navigate to vimwiki index               | n     |
-| <L-ee>          | coc explorer                            | n     |
-| <L-nn>          | nerdtree toggle                         | n     |
-| <C-k>           | fuzzy complete word                     | i     |
-| <C-f>           | fuzzy complete line                     | i     |
-| <L-f>           | fuzzy :Files                            | n     |
-| <L-gf>          | fuzzy :GFiles                           | n     |
-| <L-L>           | fuzzy :Locate                           | n     |
-| <C-f>           | fuzzy using ripgrep                     | n     |
-| <L-a>           | fuzzy :Buffers                          | n     |
-| <L-A>           | fuzzy :Windows                          | n     |
-| <L-;>           | fuzzy :BLines  (buffer's lines)         | n     |
-| <L-hc>          | fuzzy :History: (command history)       | n     |
-| <L-hf>          | fuzzy :History  (file history)          | n     |
-| <L-mm>          | fuzzy :Maps (view mappings)             | n     |
-| f               | easymotion - forward char               | n     |
-| s               | easymotion - vim-sneak                  | n     |
-| jk              | <ESC>                                   | iv    |
-| <L-ut>          | view undotree                           | n     |
-| <L-ma>          | open vim magit (git diffs)              | n     |
-| ) (             | next / prev gitgutter hunk              | n     |
-| gm              | :LivedownToggle (preview html)          | n     |
-| <L-br>          | open bracey (view live html)            | n     |
-| <L-r>           | reload bracey window                    | n     |
-| <L-st>          | open startify                           | n     |
-| <C-t>           | open native terminal                    | ni    |
-| <L-lf>          | open lf file manager in floatterm       | n     |
-| <L-rf>          | open ipython split view neoterm         | n     |
-| <L-rr>          | clear neoterm screen                    | n     |
-| <L-rt>          | toggle neoterm on and off               | n     |
-| <L-I>           | jump between markdown headers           | n     |
-| <L-nv>          | edit $MYVIMRC                           | n     |
-| <L-mcs>         | open mkdx cheatsheet                    | n     |
+| Mapping             | Action                                  | Mode  |
+| :-----------        | :------------                           | :---- |
+| \<F1\>              | run file as `./`                        |       |
+| \<F3>               | turn on/off relative line numbers       |       |
+| \<F4\>              | compile markdown using pandoc           |       |
+| \<F9\>              | get syntnax name / attributes of hover  | n     |
+| \<F10\>             | spellcheck                              |       |
+| gkk                 | move to previous blank line             | n     |
+| gjj                 | move to next blank line                 | n     |
+| H                   | move to first character on line         | nv    |
+| L                   | move to last character on line          | nv    |
+| \<C-S\>             | save file                               | nvi   |
+| S                   | replace all                             | n     |
+| \<L-Q\>             | replace single quotes with double       | n     |
+| \<Tab\> / \<S-Tab\> | indent / de-indent                      | nvi   |
+| d                   | delete line not to clipboard            | nv    |
+| Y                   | yank line without newline               | n     |
+| x                   | cut not to clipboard                    | n     |
+| E                   | delete line, keeping cursor on line     | n     |
+| gV                  | reselect text that has just been pasted | n     |
+| vv                  | select first char to last char on line  | n     |
+| q: / Q:             | quit                                    | n     |
+| Q                   | play macro recording                    | nv    |
+| qq / q              | start / stop macro                      | n     |
+| \<L-nt\>            | create new tab using FZF                | n     |
+| \<L-to\>            | leave open only current tab             | n     |
+| \<L-tc\>            | close current tab                       | n     |
+| \<L-tn\>            | next tab                                | n     |
+| \<L-tp\>            | previous tab                            | n     |
+| \<C-j\>             | move down window                        | ni    |
+| \<C-k\>             | move up window                          | ni    |
+| \<C-h\>             | move left window                        | n     |
+| \<C-l\>             | move right window                       | n     |
+| j / k               | move through wrapped lines              | n     |
+| \<L-sc\>            | run `shellcheck`                        | n     |
+| \<L-vw\>            | navigate to vimwiki index               | n     |
+| \<L-ee\>            | coc explorer                            | n     |
+| \<L-nn\>            | nerdtree toggle                         | n     |
+| \<C-k\>             | fuzzy complete word                     | i     |
+| \<C-f\>             | fuzzy complete line                     | i     |
+| \<L-f\>             | fuzzy :Files                            | n     |
+| \<L-gf\>            | fuzzy :GFiles                           | n     |
+| \<L-L\>             | fuzzy :Locate                           | n     |
+| \<C-f\>             | fuzzy using ripgrep                     | n     |
+| \<L-a\>             | fuzzy :Buffers                          | n     |
+| \<L-A\>             | fuzzy :Windows                          | n     |
+| \<L-;\>             | fuzzy :BLines  (buffer's lines)         | n     |
+| \<L-hc\>            | fuzzy :History: (command history)       | n     |
+| \<L-hf\>            | fuzzy :History  (file history)          | n     |
+| \<L-mm\>            | fuzzy :Maps (view mappings)             | n     |
+| f                   | easymotion - forward char               | n     |
+| s                   | easymotion - vim-sneak                  | n     |
+| jk                  | \<ESC\>                                 | iv    |
+| \<L-ut\>            | view undotree                           | n     |
+| \<L-ma\>            | open vim magit (git diffs)              | n     |
+| ) (                 | next / prev gitgutter hunk              | n     |
+| gm                  | :LivedownToggle (preview html)          | n     |
+| \<L-br\>            | open bracey (view live html)            | n     |
+| \<L-r\>             | reload bracey window                    | n     |
+| \<L-st\>            | open startify                           | n     |
+| \<C-t\>             | open native terminal                    | ni    |
+| \<L-lf\>            | open lf file manager in floatterm       | n     |
+| \<L-rf\>            | open ipython split view neoterm         | n     |
+| \<L-rr\>            | clear neoterm screen                    | n     |
+| \<L-rt\>            | toggle neoterm on and off               | n     |
+| \<L-I\>             | jump between markdown headers           | n     |
+| \<L-nv\>            | edit $MYVIMRC                           | n     |
+| \<L-mcs\>           | open mkdx cheatsheet                    | n     |
 
 ### Functions
 | Function      | Action                                       |
