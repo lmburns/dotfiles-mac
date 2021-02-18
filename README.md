@@ -37,7 +37,7 @@ dotfiles
 
 | Mapping         | Action                                  | Mode  |
 | :-----------    | :------------                           | :---- |
-| <F1>            | run file as `./`                        |       |
+| \<F1\>          | run file as `./`                        |       |
 | <F3>            | turn on/off relative line numbers       |       |
 | <F4>            | compile markdown using pandoc           |       |
 | <F9>            | get syntnax name / attributes of hover  | n     |
