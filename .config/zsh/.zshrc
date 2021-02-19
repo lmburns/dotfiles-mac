@@ -6,65 +6,94 @@
 
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
-# History
+# === general settings === {{{
 export LC_ALL="en_US.UTF-8"
 export ZSH_DISABLE_COMPFIX=true
 export HISTSIZE=10000000
-export HISTFILE="$HOME/.cache/zsh/history/.zsh_history"
+export HISTFILE="$HOME/.cache/zsh/zsh_history"
 export SAVEHIST=10000000
 export HIST_STAMPS="yyyy-mm-dd"
 export HISTORY_IGNORE='(jrnl *| jrnl *)'
+export HISTORY_FILTER_EXCLUDE=("jrnl" "cd")
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
 setopt APPEND_HISTORY
 setopt SHARE_HISTORY
 setopt INC_APPEND_HISTORY
 setopt EXTENDED_HISTORY
-# unsetopt share_history
-
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export ZSH="$XDG_CONFIG_HOME/zsh/oh-my-zsh"
+export ZINIT_HOME="$ZDOTDIR/zinit"
 
-# Path to oh-my-zsh installation.
-export ZSH="$XDG_CONFIG_HOME/zsh/.oh-my-zsh"
+typeset -A ZINIT=(
+    BIN_DIR         $ZDOTDIR/zinit/bin
+    HOME_DIR        $ZDOTDIR/zinit
+    COMPINIT_OPTS   -C
+)
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
-
-plugins=(git
-		zsh-autosuggestions
-		autojump
-		pass
-    dotbare
-    forgit
-    vi-mode)
-
-# zsh-vi-mode
+plugins=(osx)
 
 source $ZSH/oh-my-zsh.sh
 source $ZDOTDIR/zsh-aliases
- zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
+# }}}
 
-# --- ZSH Menu ---
-# zstyle ':completion:*' menu select
-# zmodload zsh/complist
-# bindkey -M menuselect 'h' vi-backward-char
-# bindkey -M menuselect 'k' vi-up-line-or-history
-# bindkey -M menuselect 'l' vi-forward-char
-# bindkey -M menuselect 'j' vi-down-line-or-history
+# === powerlevel10k === {{{
+if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+source ${XDG_CONFIG_HOME}/zsh/.p10k.zsh
+# }}}
+
+# === zinit === {{{
+# http://zdharma.org/zinit/wiki/INTRODUCTION/
+if [[ ! -f $ZINIT_HOME/bin/zinit.zsh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    command mkdir -p "$ZINIT_HOME" && command chmod g-rwX "$ZINIT_HOME"
+    command git clone https://github.com/zdharma/zinit "$ZINIT_HOME/bin" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+fi
+
+source "$ZINIT_HOME/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+zinit light-mode for \
+    zinit-zsh/z-a-rust \
+    zinit-zsh/z-a-as-monitor \
+    zinit-zsh/z-a-patch-dl \
+    zinit-zsh/z-a-bin-gem-node
+
+zinit snippet OMZ::plugins/git/git.plugin.zsh
+zinit snippet OMZ::plugins/autojump/autojump.plugin.zsh
+zinit snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
+zinit snippet PZT::modules/osx/init.zsh
+zinit ice as "completion" zinit snippet OMZ::plugins/pass/_pass
+
+zinit light-mode for \
+    aloxaf/fzf-tab \
+    zsh-users/zsh-syntax-highlighting \
+    wfxr/forgit \
+    michaelaquilina/zsh-history-filter \
+    aloxaf/gencomp \
+    kazhala/dotbare
+
+zinit wait lucid atload'_zsh_autosuggest_start' light-mode for \
+    zsh-users/zsh-autosuggestions
+
+autoload -Uz compinit && compinit
+_dotbare_completion_git
+# }}}
+
+# === zsh keybindings === {{{
 bindkey '^a' autosuggest-accept
 bindkey '^x' autosuggest-execute
-
-# zsh globbing http://zsh.sourceforge.net/Intro/intro_2.html
-# https://medium.com/better-programming/boost-your-command-line-productivity-with-fuzzy-finder-985aa162ba5d
-# '^t' = fzf current directory
-# '^r' = fzf history
-
 bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
 bindkey -s '^o' 'lfcd\n'
 bindkey 'ESC-h' run-help
@@ -74,37 +103,35 @@ bindkey 'ESC-?' which-command
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
-# --- fzf tab completion ---
-source "${ZSH}"/custom/plugins/fzf-tab/fzf-tab.zsh
+# === fzf tab completion ===
 zstyle ":completion:*:git-checkout:*" sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 zstyle ':fzf-tab:*' switch-group ',' '.'
+# }}}
 
-# p10k
-[ ! -f ${XDG_CONFIG_HOME}/zsh/.p10k.zsh ] || source ${XDG_CONFIG_HOME}/zsh/.p10k.zsh
-
+# === fixes / sourcing === {{{
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-# source ~/.bash_profile
-
-# FZF keybindings fix
+# fzf fix
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f "$XDG_CONFIG_HOME/zsh/lficons" ] && source "$XDG_CONFIG_HOME/zsh/lficons"
+[ -f "$XDG_CONFIG_HOME/broot/launcher/bash/br" ] && source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
+# }}}
 
-# AutoJump
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
-# MySQL
+# === $PATH additions {{{
+# === mysql ===
 export PATH=${PATH}:/usr/local/mysql/bin/
 
-# Homebrew
+# === homebrew ===
 export PATH="/usr/local/bin:$PATH"
 
-# mybin
+# === mybin ===
 export PATH="/usr/local/mybin:$PATH"
+# }}}
 
-# >>> conda initialize >>>
+# === conda initialize === {{{
 __conda_setup="$('/Users/lucasburns/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
@@ -116,19 +143,11 @@ else
     fi
 fi
 unset __conda_setup
-# <<< conda initialize <<<
+# }}}
 
-eval "$(zoxide init zsh)"
-eval $(thefuck --alias)
-
-# export MANPAGER="nvim -c 'set ft=man' -"
-# export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-export BROWSER='open -a LibreWolf'
-export RTV_BROWSER="w3m"
-export EDITOR='nvim'
-
-#----- FUNCTIONS -----#
+# === functions === {{{
+# prevent failed commands from being added to history
+zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
 # fzf search for file and open in vim
 vf() { fzf | xargs -r -I % $EDITOR % ; }
 # rsync from local pc to server
@@ -169,10 +188,18 @@ lfcd () {
         [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
     fi
 }
+# }}}
 
+#===== variables ===== {{{
+eval "$(zoxide init zsh)"
+eval $(thefuck --alias)
 
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export BROWSER='open -a LibreWolf'
+export RTV_BROWSER="w3m"
+export EDITOR='nvim'
 
-#===== VARIABLES =====#
+export VIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
 export NOTMUCH_CONFIG="$XDG_CONFIG_HOME/notmuch/notmuch-config"
 export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
@@ -187,7 +214,8 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
 
-export FZF_DEFAULT_OPTS="--layout=reverse --height 50% --border --ansi --info=inline --multi
+export FZF_DEFAULT_OPTS="
+    --reverse --height 50% --border --ansi --info=inline --multi
     --preview-window=:hidden
     --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
     --bind '?:toggle-preview'
@@ -199,11 +227,11 @@ export FZF_DEFAULT_OPTS="--layout=reverse --height 50% --border --ansi --info=in
     "
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FORGIT_FZF_DEFAULT_OPTS="--exact --cycle --border --ansi --reverse
+    --height 70% --info=inline --multi"
 export NAVI_FZF_OVERRIDES="--height=70%"
 
 alias db='dotbare'
-# _dotbare_completion_cmd
-_dotbare_completion_git
 bindkey -s '©' "dotbare fedit"^j        # alt g
 bindkey -s '˙' "dotbare fadd"^j         # alt a
 bindkey -s 'ß' "dotbare fstat"^j        # alt s
@@ -224,8 +252,6 @@ export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 # OpenVPN
 export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 
-export MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
-
 # GPG
 export GPG_TTY=$TTY
 export GPG_AGENT_INFO="$HOME/.gnupg/S.gpg-agent"
@@ -234,17 +260,9 @@ export PINENTRY_USER_DATA="USE_CURSES=1"
 # Adding Anaconda Python to beginning of $PATH
 export PATH="$HOME/opt/anaconda3/bin:$PATH"
 
-# Homebrew ruby over system
-# export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
 # Dragon - drag and drop
 export PATH="$HOME/.local/bin:$PATH"
-
-# Syntax Highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-[ -f "$XDG_CONFIG_HOME/zsh/lficons" ] && source "$XDG_CONFIG_HOME/zsh/lficons"
-[ -f "$XDG_CONFIG_HOME/broot/launcher/bash/br" ] && source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
+# }}}
 
 # killall limelight &> /dev/null
 # limelight &> /dev/null &
-
-[ -f ~/opt/forgit/forgit.plugin.zsh ] && source ~/opt/forgit/forgit.plugin.zsh

@@ -120,9 +120,10 @@ cmd moveto ${{
 }}
 
 
+# copy with fzy prompt
 cmd copyto ${{
 	prompt="Where to copy to?: "
-	dest="$(fd -Hit d . | fzy --prompt="$prompt")" &&
+	dest="$(fd -Hi -t d . '/Users/lucasburns/' | fzy --prompt="$prompt")" &&
 	for x in $fx; do
 		eval cp -ivr \"$x\" \"$dest\"
 	done &&
@@ -130,8 +131,28 @@ cmd copyto ${{
 }}
 
 
+# paste and view progress
+cmd ppaste &{{
+    set -- $(lf -remote load)
+    mode="$1"
+    shift
+    case "$mode" in
+        copy)
+            rsync -av --ignore-existing --progress -- "$@" . |
+            stdbuf -i0 -o0 -e0 tr '\r' '\n' |
+            while IFS= read -r line; do
+                lf -remote "send $id echo $line"
+            done
+            ;;
+        move) mv -n -- "$@" .;;
+    esac
+    lf -remote "send load"
+    lf -remote "send clear"
+}}
+
+
 cmd fzf_jump ${{
-  res="$(fd -Hit d . | fzy --prompt='Jump to location')"
+  res="$(fd -Hit d . | fzy --prompt='Jump to location > ')"
   if [ -f "$res" ]; then
     cmd="select"
   elif [ -d "$res" ]; then
@@ -154,6 +175,19 @@ cmd broot_jump ${{
 }}
 
 
+cmd z ${{
+	set +u
+	prefix=''
+	dest="$(zoxide query "$@")"
+	if test -n "${dest}"; then
+		lf -remote "send $id cd '${dest}'"
+	else
+		lf -remote "send $id echo 'Invalid directory ${dest}'"
+	fi
+}}
+
+
+# zoxide query directory jump
 cmd fzf_z ${{
 	sel="$(zoxide query -l | fzf +s)"
 	[ -d "$sel" ] && lf -remote "send $id cd \"$sel\""
@@ -166,9 +200,97 @@ cmd unarchive ${{
       *.zip) unzip "$f" ;;
       *.tar.gz) tar -xzvf "$f" ;;
       *.tar.bz2) tar -xjvf "$f" ;;
+			*.tar.x) tar -xJvf "$f" ;;
       *.tar) tar -xvf "$f" ;;
       *) echo "Unsupported format" ;;
   esac
+}}
+
+
+# git
+cmd git_branch ${{
+    git branch | fzy | xargs git checkout
+    pwd_shell=$(pwd)
+    lf -remote "send $id updir"
+    lf -remote "send $id cd \"$pwd_shell\""
+}}
+
+
+# symlinks
+# y (select for copy) and P to paste soft-link
+# d (select for cut) and P to paste hard-link
+cmd link %{{
+    set $(lf -remote load)
+		mode="$1"
+    shift
+    if [ "$#" -lt 1 ]; then
+        lf -remote "send $id echo no files to link"
+        exit 0
+    fi
+    case "$mode" in
+        copy) gln -sr -t . "$@";;
+        move) gln -t . "$@";;
+    esac
+}}
+
+
+# symlink without gnu coreutils
+cmd paste-symlink ${{
+	 load=$(lf -remote 'load')
+	 mode=$(echo "$load" | sed -n '1p')
+	 list=$(echo "$load" | sed '1d')
+	 if [ $mode = 'copy' ]; then
+			 s='' && [ ! -w . ] && s='sudo'
+			 for f in $list; do
+					 $s ln -s "$f" "$(pwd)/$(basename $f)"
+			 done
+			 lf -remote 'send load'
+			 lf -remote 'send clear'
+	 fi
+}}
+
+
+# preview the highlighted file with quicklook
+cmd ql_preview &{{
+  qlmanage -p "$fx" &> /dev/null;
+}}
+
+
+# gpg encrypt with recipient
+cmd pgp_encrypt_recipient %{{
+  printf "Recipient: "
+  read -r recipient
+  case "$recipient" in
+    "") printf "Cancelled.";;
+    *) gpg --encrypt --sign --recipient "$recipient" $f;;
+  esac
+}}
+
+# gpg encrypt with only password
+cmd pgp_encrypt_pass ${{
+  gpg --symmetric $f;
+}}
+
+# gpg decrypt
+cmd pgp_decrypt ${{
+  gpg --output ${f%.gpg} --decrypt $f
+}}
+
+# Encode input into  ASCII-armored output with an integrated signature
+cmd pgp_sign ${{
+  gpg --sign $f
+}}
+
+# Wrap input in plaintext signature
+cmd pgp_sign_clear ${{
+  gpg --clearsign $f
+}}
+
+
+# open the lfrc, and source after saving
+cmd edit_config :{{
+  $$EDITOR ~/.config/lf/lfrc
+  source ~/.config/lf/lfrc
 }}
 
 
@@ -186,7 +308,11 @@ cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
 # cmd dlfile %dlfile
 
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
-cmd fzf $vi $(fd -Hi "$1" . |  fzy)
+cmd fzf $nvim $(fd -Hi "$1" . |  fzy)
+cmd fd !fd -Hi "$1"
+cmd rg !rg "$1"
+cmd bulkrename $vidir
+cmd wim $wim "$1"
 # cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
 cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
@@ -204,19 +330,23 @@ map n
 map "'"
 map '"'
 map d
-map c
 map e
+map c
 map f
 map gh
 
 # File Openers
 map ee $$EDITOR "$f"
-map u $view "$f"
+map ec edit_config
+map b $$PAGER "$f"
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | vimpager
-map gX $cat ~/.config/lf/mappings | vimpager
+map gX $cat ~/.config/lf/mappings | $lf -remote "send $id $PAGER"
 map o push :open-with<space>
+
+map as !du -hsx * | sort -rh | bat --paging=always
+map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file -I -b -p $f
 
 # Archive Mappings
 map az zip
@@ -232,7 +362,7 @@ map te %trash-empty
 map tl trash-list
 map tr %trash-restore
 
-# Dragon Mapping
+# Dragon Mapping [CONFIGURE]
 map dr dragon
 map ds dragon-stay
 map di dragon-individual
@@ -245,53 +375,90 @@ map A rename														# at the very end
 map c push A<c-u>												# new rename
 map I push A<c-a>												# at the beginning
 map i push A<a-b><a-b><a-f>							# before extention
-map a push A<a-b>												# after extention
-map B $printf '%s\n' $fx | vidir -
+map aa push A<a-b>											# after extention
+map Bs $printf '%s\n' $fx | vidir -			# rename all selected
+map Bb bulkrename												# bulk rename all in directory
 
 # File movement
-map f push :fzf<space>		# Regular fzf
-map <c-b> broot_jump
-map n push :fzf_z<space>	# Fzf zioxide
+map fo push :fzf<space>		# fzf search and open
+map fd push :fd<space>		# use fd to find file
+map <c-b> broot_jump			# use broot to jump to directory
+map n fzf_z								# Fzf zioxide
+map zz push :z<space>			# very similar to autojump
 map <c-z> fzf_jump				# Fzf jump directory
 map <c-j> push :aj<space> # Auto jump
 map w $lf -remote "send $id select $(fzf)"
 
+map <c-x>w push :wim<space>
+
 # General
 map . set hidden!
-map p paste
+map p ppaste
+map Pl :link
+map Ps :paste-symlink
+map Pp paste
 map x cut
 map y copy
 map <c-d> yank-path
 map <enter> open
 map mf push :mkfile<space>
 map md push :mkdir<space>
+map Ql :ql_preview
+
 map gg top
 map G bottom
 map R reload
 map C clear
 map U unselect
-map <c-x> $$f															# execute file
-map <c-s> shell
-map <c-u> usage
-map <c-f> push :rglf<space>
 
-map C copyto
+map <c-x>x $$f															# execute file
+map <c-x>X !$f															# execute file and $PAGER output
+map <c-x>l $$f | bat --paging=always -f			# execute file and bat output
+map <c-x>p $cat $fx | up										# cat file to up (unix piper)
+map <c-s> shell															# enter shell command
+map <c-u> usage
+map <c-w> push :rglf<space>
+map <c-f> push :rg<space>
+
+map Y copyto
 map M moveto
 map mt whipmove
+
+# gpg
+map te pgp_encrypt_recipient
+map tp pgp_encrypt_pass
+map td pgp_decrypt
+map ts. pgp_sign
+map tsc pgp_sign_clear
+map tsd pgp_sign_detach
+
+# git
+map gtb :git_branch
+map gtp ${{clear; git pull --rebase || true; echo "press ENTER"; read ENTER}}
+map gts ${{clear; git status; echo "press ENTER"; read ENTER}}
+map gtl ${{clear; git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit}}
+map gtt ${{clear; fstat}}
+map gta ${{clear; fadd}}
+map gtx ${{clear; f::add}}
+map gtd ${{clear; f::diff}}
+map gto ${{clear; f::log}}
+map gtc ${{clear; f::clean}}
+map gtu ${{clear; funtrack}}
 
 # Movement
 map gd cd ~/Documents
 map gD cd ~/Downloads
 map ge cd ~/Desktop
 map gW cd ~/vimwiki
-map gG cd ~/JupyterNotebook/projects/github
-map gP cd ~/JupyterNotebook/projects
+map gG cd ~/projects/github
+map gP cd ~/projects
 
-map gv cd ~/.config/nvim
 map gc cd ~/.config
+map gv cd ~/.config/nvim
+map glf cd ~/.config/lf
 
 map gC cd ~/.local/share
-map gl cd ~/.local
+map glo cd ~/.local
 
 map gE cd /etc
 map gU. cd /usr/local

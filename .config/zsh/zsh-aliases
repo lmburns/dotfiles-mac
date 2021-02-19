@@ -1,4 +1,7 @@
 # Aliases
+alias chx='chmod +x'
+alias ald='alder --depth'
+
 # alias sudo='doas'
 alias cp='cp -iv'
 alias pb='pbcopy'
@@ -34,7 +37,7 @@ alias mwgm='mw -y burnsppl@gmail.com'
 alias smail='mw -y burnsac@me.com && mw -y burnsppl@gmail.com && mw -y lucas@burnsac.xyz'
 
 # Locations
-alias projects='cd ~/JupyterNotebook/projects'
+alias projects='cd ~/projects'
 alias unx='cd ~/Desktop/unix/mac'
 alias scripts='cd ~/Desktop/unix/mac/scripts'
 
@@ -60,7 +63,7 @@ alias p='pacaptr'
 alias fd='fd -Hi'
 alias spt='speedtest | rg "(Download:|Upload:)"'
 alias pat='bat -p'
-alias wiki='nvim ~/vimwiki/index.md'
+alias vw='nvim ~/vimwiki/index.md'
 
 # Github
 alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
@@ -95,7 +98,7 @@ alias jrnl=' jrnl'
 # RSync / a=rlptgoD
 alias rsynca='rsync -PruLtcv --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
 alias rsyncjn='rsync -PruLtcv --exclude ".DS_Store" --exclude "projects"  ~/JupyterNotebook /Volumes/SSD/manual'
-alias rsyncpr='rsync -PruLtcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" ~/JupyterNotebook/projects /Volumes/SSD/manual'
+alias rsyncpr='rsync -PruLtcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" ~/projects /Volumes/SSD/manual'
 alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "HOME" --exclude "unix" ~/Desktop /Volumes/SSD/manual'
 alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" ~/Desktop/unix /Volumes/SSD/manual'
 alias rsyncho='rsync -PruLtcv --exclude ".DS_Store" ~/Desktop/HOME /Volumes/SSD/manual'

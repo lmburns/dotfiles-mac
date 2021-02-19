@@ -22,6 +22,7 @@
 
   Plug 'zhou13/vim-easyescape'
   Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-repeat'
   Plug 'itchyny/vim-highlighturl'
   Plug 'PeterRincker/vim-searchlight'
   Plug 'vim-airline/vim-airline'
@@ -430,7 +431,8 @@
     \ 'coc-vimlsp',
     \ 'coc-sh',
     \ 'coc-tsserver',
-    \ 'coc-git'
+    \ 'coc-git',
+    \ 'coc-sql'
     \ ]
 
   let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
@@ -440,10 +442,10 @@
       \   'root-uri': '~/.config',
       \   },
       \ 'projects': {
-      \   'root-uri': '~/JupyterNotebook/projects',
+      \   'root-uri': '~/projects',
       \   },
       \ 'github': {
-      \   'root-uri': '~/JupyterNotebook/projects/github',
+      \   'root-uri': '~/projects/github',
       \   },
       \ 'opt': {
       \   'root-uri': '~/opt',
@@ -455,6 +457,7 @@
   nmap <silent> <Leader>ep :CocCommand explorer --preset projects<CR>
   nmap <silent> <Leader>eg :CocCommand explorer --preset github<CR>
   nmap <silent> <Leader>eo :CocCommand explorer --preset opt<CR>
+  nmap <silent> <Leader> ex :CocCommand explorer
   nmap <silent> <Leader>el :CocList explPresets
 
   " GoTo code navigation.
@@ -577,8 +580,8 @@
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
 
   command! -bang Conf call fzf#vim#files('~/.config', <bang>0)
-  " command! -bang Proj call fzf#vim#files('~/JupyterNotebook/projects', fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
-  command! -bang Proj call fzf#vim#files('~/JupyterNotebook/projects', fzf#vim#with_preview(), <bang>0)
+  " command! -bang Proj call fzf#vim#files('~/projects', fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+  command! -bang Proj call fzf#vim#files('~/projects', fzf#vim#with_preview(), <bang>0)
 
   " word completion popup
   inoremap <expr> <c-k> fzf#vim#complete#word({'window': { 'width': 0.2, 'height': 0.9, 'xoffset': 1 }})
@@ -640,8 +643,8 @@
 
 " === EasyMotion === {{{
   " move forward characters
-  map f <Plug>(easymotion-bd-f)
-  nmap f <Plug>(easymotion-overwin-f)
+  " map f <Plug>(easymotion-bd-f)
+  " nmap f <Plug>(easymotion-overwin-f)
   " move forward line vim-sneak
   nmap s <Plug>(easymotion-overwin-f2)
 
@@ -815,7 +818,7 @@
   autocmd FileType rmd if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
 
   " Open shortcuts
-  nmap <Leader>rs :vs ~/JupyterNotebook/projects/RStudio/nvim-r.md<CR>
+  nmap <Leader>rs :vs ~/projects/RStudio/nvim-r.md<CR>
 
   " Run ;RStop // :RKill to quit
   let R_auto_start = 1                                   " Autostart R when opening .R
@@ -958,7 +961,8 @@
         \ 'enter':     { 'shift':    1 },
         \ 'map':       { 'prefix': 'm', 'enable': 1 },
         \ 'links':     { 'external': { 'enable': 1 } },
-        \ 'fold':      { 'enable':   1 },
+        \ 'fold':      { 'enable':   1,
+        \                'components': ['toc', 'fence'] },
         \ 'toc': {
         \    'text': 'Table of Contents',
         \    'update_on_write': 1,
@@ -999,7 +1003,7 @@
   endif
 
   nnoremap <Leader>mcs :vs ~/vimwiki/dotfiles/mkdx.md<CR>
-  nnoremap <Leader>nv :e $MYVIMRC<CR>
+  nnoremap <Leader>nv :e $VIMRC<CR>
 " }}}
 
 " === Hack to make CocExplorer hijack Netwr === {{{
