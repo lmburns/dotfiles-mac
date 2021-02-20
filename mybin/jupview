@@ -2,9 +2,6 @@
 
 set -eu
 
-readonly EX_USAGE=64
-readonly EX_NOINPUT=66
-
 die() {
     echo "$@"
     exit 1
@@ -73,9 +70,7 @@ jupview_cmd() {
 
     if command_exists bat; then
         bat=1
-    fi
-
-    if command_exists w3m; then
+    elif command_exists w3m; then
         w3m=1
     fi
 
@@ -114,7 +109,7 @@ jupview_cmd() {
 
     if [ ! -f "$1" ]; then
         echo "$(basename "$@"): $1: No such file"
-        exit $EX_NOINPUT
+        exit 2
     fi
 
     if [[ $clear_output = 1 ]]; then

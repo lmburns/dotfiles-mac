@@ -1,6 +1,10 @@
 # Aliases
 alias chx='chmod +x'
 alias ald='alder --depth'
+alias rcp='rsync -av --ignore-existing --progress'
+
+
+alias duso='du -hsx * | sort -rh | bat --paging=always'
 
 # alias sudo='doas'
 alias cp='cp -iv'
@@ -27,7 +31,8 @@ alias gls='gls -Flha --color --group-directories-first'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias azsh="nvim $ZDOTDIR/zsh-aliases"
 alias nvimd='cd /usr/local/share/nvim/runtime'
-alias ninit='nvim ~/.config/nvim/init.vim'
+alias ninit='nvim $XDG_CONFIG_HOME/nvim/init.vim'
+alias nlfr='nvim $XDG_CONFIG_HOME/lf/lfrc'
 
 # Mail
 alias sme='mbsync burnsac@me.com'
@@ -40,8 +45,9 @@ alias smail='mw -y burnsac@me.com && mw -y burnsppl@gmail.com && mw -y lucas@bur
 alias projects='cd ~/projects'
 alias unx='cd ~/Desktop/unix/mac'
 alias scripts='cd ~/Desktop/unix/mac/scripts'
+alias zdotd='cd "$ZDOTDIR"'
 
-alias wget='wget --hsts-file ~/.config/wget/.wget-hsts'
+alias wget='wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts'
 alias tsm='transmission-remote'
 alias tsmd='transmission-daemon'
 alias nnn='nnn -Caxe'
@@ -64,6 +70,7 @@ alias fd='fd -Hi'
 alias spt='speedtest | rg "(Download:|Upload:)"'
 alias pat='bat -p'
 alias vw='nvim ~/vimwiki/index.md'
+alias vwb='nvim ~/vimwiki/scripting/index.md'
 
 # Github
 alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
@@ -77,9 +84,9 @@ alias nbconvert='jupyter nbconvert --to python'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
-alias hangups='hangups -c ~/.config/hangups/hangups.conf'
-alias newsboat='newsboat -C ~/.config/newsboat/config'
-alias ticker='ticker --config ~/.config/ticker/ticker.yaml'
+alias hangups='hangups -c $XDG_CONFIG_HOME/hangups/hangups.conf'
+alias newsboat='newsboat -C $XDG_CONFIG_HOME/newsboat/config'
+alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
 alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done with task! Exit status: $?"' -activate com.googlecode.iterm2
 alias tt='taskwarrior-tui'
 alias t='task'

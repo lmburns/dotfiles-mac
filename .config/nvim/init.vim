@@ -327,10 +327,10 @@
   augroup END
   hi def link myTodo Todo
 
-  " Have vimCommentTitle everywhere
+  " Have vimCommentTitle for python (#) and sql (--)
   augroup ccommtitle
     au!
-    au Syntax * syn match cmTitle /#\s*\%([sS]:\|\h\w*#\)\=\u\w*\(\s\+\u\w*\)*:/
+    au Syntax * syn match cmTitle /\(#\|--\)\s*\%([sS]:\|\h\w*\(#\|--\)\)\=\u\w*\(\s\+\u\w*\)*:/
         \ containedin=vimCommentTitle
   augroup END
   hi def link cmTitle vimCommentTitle
@@ -802,6 +802,7 @@
       \ { 'zs': '~/.config/zsh/zshrc' },
       \ { 'za': '~/.config/zsh/zsh-aliases' },
       \ { 'vi': '~/vimwiki/index.md' },
+      \ { 'vib': '~/vimwiki/scripting/index.md'}
   \ ]
 
   nmap <leader>st :Startify<cr>

@@ -18,7 +18,7 @@ set ratios '1:2:3'    # ratio of pane widths
 # set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
 # vars that depend on environmental variables
-# $lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
+$lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Environmental Variables                                                   │
@@ -120,6 +120,18 @@ cmd moveto ${{
 }}
 
 
+# move based on preloaded directories
+cmd movetopre ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Move to where?"
+	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' )" &&
+	for x in $fx; do
+		eval mv -iv \"$x\" \"$dest\"
+	done &&
+	terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) moved to $dest."
+
+
 # copy with fzy prompt
 cmd copyto ${{
 	prompt="Where to copy to?: "
@@ -129,7 +141,6 @@ cmd copyto ${{
 	done &&
 	terminal-notifier -title "📋 File(s) copied." -message "File(s) copies to $dest."
 }}
-
 
 # paste and view progress
 cmd ppaste &{{
@@ -294,6 +305,13 @@ cmd edit_config :{{
 }}
 
 
+# open the lfrc scope.sh
+cmd edit_scope :{{
+  $$EDITOR ~/.config/lf/scope
+  source ~/.config/lf/scope
+}}
+
+
 cmd zip %zip -r "$f" "$f"
 cmd tar %tar cvf "$f.tar" "$f"
 cmd targz %tar cvzf "$f.tar.gz" "$f"
@@ -338,11 +356,12 @@ map gh
 # File Openers
 map ee $$EDITOR "$f"
 map ec edit_config
+map es edit_scope
 map b $$PAGER "$f"
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | vimpager
-map gX $cat ~/.config/lf/mappings | $lf -remote "send $id $PAGER"
+map gX $bat -f ~/.config/lf/mappings
 map o push :open-with<space>
 
 map as !du -hsx * | sort -rh | bat --paging=always
@@ -421,8 +440,12 @@ map <c-w> push :rglf<space>
 map <c-f> push :rg<space>
 
 map Y copyto
-map M moveto
+map Mm moveto
+map Mp movetopre
 map mt whipmove
+
+map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$fx"
+# $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
 
 # gpg
 map te pgp_encrypt_recipient
@@ -448,10 +471,12 @@ map gtu ${{clear; funtrack}}
 # Movement
 map gd cd ~/Documents
 map gD cd ~/Downloads
+map gP cd ~/Pictures
 map ge cd ~/Desktop
 map gW cd ~/vimwiki
 map gG cd ~/projects/github
-map gP cd ~/projects
+map gp cd ~/projects
+map go cd ~/opt
 
 map gc cd ~/.config
 map gv cd ~/.config/nvim

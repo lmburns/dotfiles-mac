@@ -13,8 +13,7 @@ export HISTSIZE=10000000
 export HISTFILE="$HOME/.cache/zsh/zsh_history"
 export SAVEHIST=10000000
 export HIST_STAMPS="yyyy-mm-dd"
-export HISTORY_IGNORE='(jrnl *| jrnl *)'
-export HISTORY_FILTER_EXCLUDE=("jrnl" "cd")
+export HISTORY_FILTER_EXCLUDE=("jrnl", "cd")
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
 setopt APPEND_HISTORY
@@ -28,12 +27,17 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ZSH="$XDG_CONFIG_HOME/zsh/oh-my-zsh"
 export ZINIT_HOME="$ZDOTDIR/zinit"
+export GENCOMP_DIR="$ZDOTDIR/completions"
 
 typeset -A ZINIT=(
     BIN_DIR         $ZDOTDIR/zinit/bin
     HOME_DIR        $ZDOTDIR/zinit
     COMPINIT_OPTS   -C
 )
+autoload -Uz compinit && compinit
+# compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
+autoload -Uz zmv
+alias zmv='noglob zmv -W'
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(osx)
@@ -73,7 +77,9 @@ zinit light-mode for \
 zinit snippet OMZ::plugins/git/git.plugin.zsh
 zinit snippet OMZ::plugins/autojump/autojump.plugin.zsh
 zinit snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
-zinit snippet PZT::modules/osx/init.zsh
+# Figure out usage
+zinit snippet OMZ::plugins/bgnotify/bgnotify.plugin.zsh
+zinit ice wait lucid; zinit load hlissner/zsh-autopair
 zinit ice as "completion" zinit snippet OMZ::plugins/pass/_pass
 
 zinit light-mode for \
@@ -82,12 +88,18 @@ zinit light-mode for \
     wfxr/forgit \
     michaelaquilina/zsh-history-filter \
     aloxaf/gencomp \
-    kazhala/dotbare
+    kazhala/dotbare \
+    blockf \
+        zsh-users/zsh-completions
+
+zinit ice as"program" pick"$ZPFX/bin/git-*" make"PREFIX=$ZPFX" nocompile
+zinit light tj/git-extras
+
+zinit ice silent wait"1"; zinit light supercrabtree/k
 
 zinit wait lucid atload'_zsh_autosuggest_start' light-mode for \
     zsh-users/zsh-autosuggestions
 
-autoload -Uz compinit && compinit
 _dotbare_completion_git
 # }}}
 
@@ -102,8 +114,13 @@ bindkey 'ESC-?' which-command
 
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
+bindkey -M viins 'jk' vi-cmd-mode
+bindkey -M vicmd 'H' beginning-of-line; bindkey -M vicmd 'L' end-of-line
 
 # === fzf tab completion ===
+zstyle ':fzf-tab:complete:kill:argument-rest' fzf-preview 'ps --pid=$word -o cmd --no-headers -w -w'
+zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags '--preview-window=down:3:wrap'
+zstyle ':fzf-tab:complete:kill:*' popup-pad 0 3
 zstyle ":completion:*:git-checkout:*" sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
@@ -177,6 +194,8 @@ pdf() { pdftotext -nopgbrk $1 - }
 upp() { cat $1 | up }
 # crypto
 ratesx() { curl rate.sx/$1 }
+gstatt() { gstat $1 || stat $1; echo ; du -sh $1 ; echo ; file -I -b -p $1 }
+bak() { /usr/local/bin/gcp --force --suffix=.bak $1 $1 }
 
 # use lf to switch directories
 lfcd () {
@@ -192,7 +211,8 @@ lfcd () {
 
 #===== variables ===== {{{
 eval "$(zoxide init zsh)"
-eval $(thefuck --alias)
+eval "$(thefuck --alias)"
+eval "$(fakedata --completion zsh)"
 
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export BROWSER='open -a LibreWolf'

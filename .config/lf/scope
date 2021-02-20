@@ -14,26 +14,44 @@ IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
 # 4    | fix height | Don't reload when height changes
 
 
-# Script arguments
+# Arguments:
 FILE_PATH="${1}"         # Full path of the highlighted file
-HEIGHT="${2}"
-WIDTH="${3}"
+WIDTH="${2}"
+HEIGHT="${3}"
 IMAGE_CACHE_PATH="${4}"  # Full path that should be used to cache image preview
 
 FILE_EXTENSION="${FILE_PATH##*.}"
-# FILE_EXTENSION_LOWER=$(echo ${FILE_EXTENSION} | tr '[:upper:]' '[:lower:]')
 FILE_EXTENSION_LOWER="$(printf "%s" "${FILE_EXTENSION}" | tr '[:upper:]' '[:lower:]')"
 
+# mimetype=$(file --mime-type -Lb "$path")
+# extension=$(/bin/echo -E "${path##*.}" | tr "[:upper:]" "[:lower:]")
 
-# Settings
+
+# Settings:
 HIGHLIGHT_SIZE_MAX=262143  # 256KiB
 HIGHLIGHT_TABWIDTH=8
+MAXLN=200
 # HIGHLIGHT_STYLE='pablo'
+
+# Functions:
+# runs a command and saves its output into $output.  Useful if you need
+# the return value AND want to use the output in a pipe
+try() { output=$(eval '"$@"'); }
+
+# writes the output of the previously used "try" command
+dump() { /bin/echo -E "$output"; }
+
+# a common post-processing function used after most commands
+trim() { head -n "$maxln"; }
+
+# wraps highlight to treat exit code 141 (killed by SIGPIPE) as success
+highlight() { command highlight "$@"; test $? = 0 -o $? = 141; }
+
 
 handle_mime() {
     local mimetype="${1}"
     case "${mimetype}" in
-	text/html) w3m -dump "${FILE_PATH}" ;;
+	text/html) w3m -dump "${FILE_PATH}" && { dump | trim | fmt -s -w $WIDTH; exit 4; } ;;
 	text/troff) man ./ "${FILE_PATH}" | col -b ;;
 	text/* | */xml)
             if [ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]; then
@@ -48,7 +66,8 @@ handle_mime() {
 	application/zip) atool --list -- "${FILE_PATH}" ;;
   image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
    video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
-  */pdf) pdftotext -nopgbrk -raw "${FILE_PATH}" - ;;
+  */pdf) pdftotext -l 10 -nopgbrk -q "${FILE_PATH}" - && \
+        { dump | trim | fmt -s -w $WIDTH; exit 0; } || exit 1;;
   application/vnd.openxmlformats-officedocument.wordprocessingml.document) docx2txt "${FILE_PATH}" || exit 1;;
     esac
 }
@@ -87,3 +106,4 @@ exit 1
 # image/*) /usr/local/bin/imgcat --width "$(identify -format '%w' "${FILE_PATH}")" --height "$(identify -format '%h' "${FILE_PATH}")" --iterm2 "${FILE_PATH}" || exit 1;;
 
 # fileviewer *.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm /usr/local/bin/imgcat --width %pw --height %ph --iterm2 %c:p %pd
+# image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;

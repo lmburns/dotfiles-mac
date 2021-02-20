@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# deletes .DS_Store and __MACOSX directories
+
+fd -H '^\.DS_Store$' -tf | as-tree && \
+  fd -H '^__MACOSX$' -td | as-tree
+
+fd -H '^\.DS_Store$' -tf -X rm -rf && \
+  fd -H '^__MACOSX$' -td -X rm -rf
