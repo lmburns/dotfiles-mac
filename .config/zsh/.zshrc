@@ -77,6 +77,7 @@ zinit light-mode for \
 zinit snippet OMZ::plugins/git/git.plugin.zsh
 zinit snippet OMZ::plugins/autojump/autojump.plugin.zsh
 zinit snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
+zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
 # Figure out usage
 zinit snippet OMZ::plugins/bgnotify/bgnotify.plugin.zsh
 zinit ice wait lucid; zinit load hlissner/zsh-autopair
@@ -130,6 +131,10 @@ zstyle ':fzf-tab:*' switch-group ',' '.'
 
 # === fixes / sourcing === {{{
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# coommand-not-found
+# HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
+# [ -f "$HB_CNF_HANDLER" ] && source "$HB_CNF_HANDLER"
 
 # fzf fix
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -290,5 +295,5 @@ export PATH="$HOME/opt/anaconda3/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 # }}}
 
-killall limelight &> /dev/null
-limelight &> /dev/null &
+# killall limelight &> /dev/null
+# limelight &> /dev/null &

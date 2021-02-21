@@ -147,6 +147,21 @@ Options:
     -O, --clear-output      Clear output cells of .ipynb file
     -t, --theme             Change syntax highlighting theme (gruvbox default)
 ```
+
+```plain
+==========================================================
+```
+### rmcrap
+
+Deletes `.DS_Store` files and `__MACOSX` directories recursively.
+
+#### Usage
+
+```sh
+Options:
+    -s, --show     Show tree diagram of what rmcrap is removing
+```
+
 ==========================================================
 ### manp
 

@@ -165,7 +165,7 @@
   set clipboard+=unnamedplus          " use system clipboard
   set splitbelow splitright           " split screen below and right
   set tabstop=2 shiftwidth=2
-  set expandtab smarttab softtabstop=2
+  set expandtab softtabstop=2
   set ignorecase smartcase
   set number
     nnoremap <silent><F3> :set relativenumber!<CR>
@@ -299,7 +299,7 @@
   " open corresponding .pdf/.html or preview
   nmap <Leader>p :w <Bar> !open %<CR>
 
-  " autocmd BufWritePost bm-files,bm-dirs !shortcuts
+  autocmd BufWritePost bm-files,bm-dirs !shortcuts
 
   " Compile rmarkdown / markdown
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R

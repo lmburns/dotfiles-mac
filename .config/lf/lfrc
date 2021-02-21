@@ -401,6 +401,7 @@ map ew $nvim ~/vimwiki/index.md
 map es edit_scope
 # map b $$PAGER "$f"
 map b $gcp --force --suffix=.bak "$f" "$f"
+map r $rmcrap
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | vimpager

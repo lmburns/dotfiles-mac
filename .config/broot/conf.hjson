@@ -25,7 +25,7 @@
 	# if you don't want the hidden files you can launch `br -H`)
 	# A popular flag is the `g` one which displays git related info.
 	#
-	default_flags: ihpg
+	default_flags: "hg"
 
 	###############################################################
 	# Date/Time format
@@ -79,19 +79,15 @@
 	# (see https://dystroy.org/broot/icons for installation and
 	# troubleshooting)
 	#
-	# icon_theme: nerd
+	icon_theme: vscode
 
 	###############################################################
-	# Special paths
-	# If some paths must be handled specially, uncomment (and change
-	# this section as per the examples)
 	#
 	# special_paths: {
 	# 	"/media/slow-backup-disk"		: no-enter
 	# 	"/home/dys/useless"			: hide
 	# 	"/home/dys/my-link-I-want-to-explore"	: enter
 	# }
-
 
 	###############################################################
 	# Search modes
@@ -128,14 +124,12 @@
 	# You'll also find below verbs that you can customize or enable.
 	verbs: [
 
-		# Exemple 1: launching `tail -n` on the selected file (leaving broot)
 		{
 			name: tail_lines
 			invocation: tl {lines_count}
 			execution: "tail -f -n {lines_count} {file}"
 		}
 
-		# Exemple 2: creating a new file without leaving broot
 		{
 			name: touch
 			invocation: touch {new_file}
@@ -143,17 +137,38 @@
 			leave_broot: false
 		}
 
-		# A standard recommended command for editing files, that you
-		# can customize.
-		# If $EDITOR isn't set on your computer, you should either set it using
-		#  something similar to
-		#   export EDITOR=nvim
-		#  or just replace it with your editor of choice in the 'execution'
-		#  pattern.
-		#  If your editor is able to open a file on a specific line, use {line}
-		#   so that you may jump directly at the right line from a preview.
-		# Example:
-		#  execution: nvim +{line} {file}
+		{
+			name: edit
+			key: e
+			execution: "$EDITOR {file}"
+		}
+
+		{
+			key: ctrl-c
+			execution: ":quit"
+		}
+
+		{
+			invocation: create {subpath}
+			execution: "$EDITOR {directory}/{subpath}"
+		}
+
+		{
+			name: view
+			invocation: view
+			execution: "bat -f {file}"
+		}
+
+		{
+			key: h
+			execution: ":parent"
+		}
+
+		{
+			key: l
+			execution: ":focus"
+		}
+
 		{
 			invocation: edit
 			key: F2
@@ -162,8 +177,6 @@
 			leave_broot: false
 		}
 
-		# A convenient shortcut to create new text files in
-		# the current directory or below
 		{
 			invocation: create {subpath}
 			execution: "$EDITOR {directory}/{subpath}"
@@ -177,8 +190,6 @@
 			execution: "git difftool -y {file}"
 		}
 
-		# This verb lets you launch a terminal on ctrl-T
-		# (on exit you'll be back in broot)
 		{
 			invocation: terminal
 			key: ctrl-t
@@ -187,15 +198,12 @@
 			leave_broot: false
 		}
 
-		# Here's an example of a shorctut bringing you to your home directory
 		{
 			invocation: home
 			key: ctrl-space
 			execution: ":focus ~"
 		}
 
-		# A popular set of shorctuts for going up and down:
-		#
 		{
 			key: ctrl-k
 			execution: ":line_up"
@@ -213,16 +221,11 @@
 			execution: ":page_down"
 		}
 
-		# If you develop using git, you might like to often switch
-		# to the git status filter:
 		{
 			key: ctrl-g
 			execution: ":toggle_git_status"
 		}
 
-		# You can reproduce the bindings of Norton Commander
-		# on copying or moving to the other panel:
-		#
 		# {
 		# 	key: F5
 		# 	execution: ":copy_to_panel"
@@ -306,20 +309,15 @@
 		hex_non_ascii: ansi(167) None
 	}
 
-	# You may find explanations and other skins on
-	#  https://dystroy.org/broot/skins
-	# for example a skin suitable for white backgrounds
-
-
 	###############################################################
 	# File Extension Colors
 	#
 	# uncomment and modify the next section if you want to color
 	# file name depending on their extension
 	#
-	# ext_colors: {
-	# 	png: rgb(255, 128, 75)
-	# 	rs: yellow
-	# }
+	ext_colors: {
+		png: rgb(255, 128, 75)
+		rs: yellow
+	}
 
 }

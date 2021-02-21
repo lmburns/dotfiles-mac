@@ -1,9 +1,77 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # deletes .DS_Store and __MACOSX directories
 
-fd -H '^\.DS_Store$' -tf | as-tree && \
-  fd -H '^__MACOSX$' -td | as-tree
+set -e
 
-fd -H '^\.DS_Store$' -tf -X rm -rf && \
-  fd -H '^__MACOSX$' -td -X rm -rf
+PROGRAM='rmcrap'
+
+die() {
+    echo "$@"
+    exit 1
+}
+
+
+cmd_usage() {
+    cat <<-_EOF
+    Usage:
+      $PROGRAM [options]
+        Remove '.DS_Store' file and '__MACOSX' directory recursively
+
+    Options:
+        -s, --show     Show tree diagram of what $PROGRAM is removing
+
+    Dependencies:
+      'fd' is required and used as a find replacement
+          brew install fd
+      'as-tree' is used to view what $PROGRAM is removing
+          cargo install -f --git https://github.com/jez/as-tree
+_EOF
+    exit 0
+}
+
+cmd_short_usage() {
+    echo "Usage: rmcrap $COMMAND [--help,-h] [--show,-s]"
+}
+
+command_exists() {
+    command -v "$1" >/dev/null 2>&1 || exit 1
+}
+
+cmd_rmcrap() {
+    local opts fd=0 astree=0
+    local show=0
+    opts="$($GETOPT -o s -l show -- "$@")"
+    local err=$?
+    eval set -- "$opts"
+
+    while true; do case "$1" in
+            -s|--show) show=1; shift ;;
+            --) shift; break ;;
+    esac done
+
+    command_exists fd && fd=1
+    command_exists as-tree && astree=1
+
+    [[ $err -ne 0 ]] && die "$(cmd_short_usage)"
+
+    if [[ $fd=1 ]]; then
+      command_exists fd || die "fd is not in your \$PATH"
+    elif [[ $astree=1 ]]; then
+      command_exists as-tree || die "as-tree is not in your \$PATH"
+    fi
+
+    if [[ $show = 1 ]]; then
+      fd -H '^\.DS_Store$' -tf | as-tree && \
+        fd -H '^__MACOSX$' -td | as-tree
+    fi
+
+    fd -H '^\.DS_Store$' -tf -X rm -rf && \
+      fd -H '^__MACOSX$' -td -X rm -rf
+}
+
+if [[ "$1" == "help" ]] || [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
+    cmd_usage
+fi
+
+cmd_rmcrap "$@"
