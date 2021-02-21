@@ -1,0 +1,11 @@
+ushare /usr/local/share
+ubin /usr/local/bin
+.config ~/.config
+projects ~/projects
+github ~/projects/github
+opt ~/opt
+mybin ~/mybin
+.local ~/.local
+pictures ~/Pictures
+downloads ~/Downloads
+nvim ~/.config/nvim

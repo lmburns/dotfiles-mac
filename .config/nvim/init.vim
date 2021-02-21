@@ -17,6 +17,7 @@
   Plug 'vim-pandoc/vim-pandoc-syntax'
   Plug 'plasticboy/vim-markdown'
   Plug 'vimwiki/vimwiki'
+  Plug 'junegunn/goyo.vim'
   " Plug 'vifm/vifm.vim'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
@@ -80,6 +81,8 @@
 " =====================================================================
 
 " Function Keys: {{{
+  " <F1> = run shell script
+  " <F2> = toggle wrap on and off
   " <F3> = turn on/off relative line numbers
   " <F4> = compile markdown file using pandoc
   " <F5> = compile rmarkdown based on `output`
@@ -167,10 +170,10 @@
   set number
     nnoremap <silent><F3> :set relativenumber!<CR>
 
+  set wrap
+    nnoremap <silent><F2> :set nowrap!<CR>
   set nofoldenable
   set foldmethod=marker
-  hi Folded cterm=bold ctermfg=DarkBlue ctermbg=none
-  hi FoldColumn cterm=bold ctermfg=DarkBlue ctermbg=none
   set scrolloff=5                      " cusor 5 lines from bottom of page
   set cursorline                       " show line where cursor is
   set mouse=a                          " enable mouse all modes
@@ -265,10 +268,21 @@
   nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
   nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 
+  " perform dot commands over visual blocks
+	vnoremap . :normal .<CR>
+  " goyo plugin makes text more readable when writing prose:
+	map <Leader>G :Goyo \| set linebreak<CR>
+
   " set filetypes
   autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
   autocmd BufRead,BufNewFile *.tex set filetype=tex
+
+  " Enable Goyo by default for mutt writing
+	autocmd BufRead,BufNewFile /tmp/neomutt* let g:goyo_width=80
+	autocmd BufRead,BufNewFile /tmp/neomutt* :Goyo | set bg=light
+	autocmd BufRead,BufNewFile /tmp/neomutt* map ZZ :Goyo\|x!<CR>
+	autocmd BufRead,BufNewFile /tmp/neomutt* map ZQ :Goyo\|q!<CR>
 
   " automatically deletes all tralling whitespace on save.
   autocmd BufWritePre * %s/\s\+$//e            " End of lines
@@ -279,16 +293,17 @@
   autocmd FileType * setlocal formatoptions-=cro
 
   " shellcheck
-  nnoremap <Leader>sc :!shellcheck %<CR>
+  nnoremap <Leader>sc :!shellcheck -x %<CR>
   nnoremap <F1> :!./%<CR>
 
   " open corresponding .pdf/.html or preview
   nmap <Leader>p :w <Bar> !open %<CR>
 
+  " autocmd BufWritePost bm-files,bm-dirs !shortcuts
+
   " Compile rmarkdown / markdown
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
   autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
-  autocmd Filetype rmd map <F6> :RMarkdown pdf latex_engine="xelatex", toc=TRUE<CR>
   autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
 " }}}
 
@@ -552,6 +567,8 @@
   let g:NERDTreeIgnore = []
   let g:NERDTreeStatusline = ''
   let g:NERDTreeHijackNetrw = 1
+  let g:NERDTreeDirArrowExpandable = '❱'
+  let g:NERDTreeDirArrowCollapsible = '❰'
 
   let NERDTreeBookmarksFile = stdpath('data') . '/NERDTreeBookmarks'
 
@@ -701,6 +718,9 @@
   let g:airline#extensions#tabline#show_tab_nr = 0
   let g:airline#extensions#tabline#tab_nr_type = 0
   let g:airline#extensions#tabline#show_close_button = 0
+  let g:airline_skip_empty_sections=1
+  let g:airline_highlighting_cache = 1
+
   " let g:airline#extensions#tabline#show_tabs = 0
   " let g:airline#extensions#hunks#enabled = 0
   set laststatus=2

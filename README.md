@@ -37,8 +37,9 @@ dotfiles
 
 | Mapping                               | Action                                  | Mode  |
 | :-----------                          | :------------                           | :---- |
-| <kbd>F1</kbd>                         | run file as `./`                        |       |
-| <kbd>F3</kbd>                         | turn on/off relative line numbers       |       |
+| <kbd>F1</kbd>                         | run file as `./`                        | n     |
+| <kbd>F2</kbd>                         | turn on/off wrapping                    | n     |
+| <kbd>F3</kbd>                         | turn on/off relative line numbers       | n     |
 | <kbd>F4</kbd>                         | compile markdown using pandoc           |       |
 | <kbd>F9</kbd>                         | get syntnax name / attributes of hover  | n     |
 | <kbd>F10</kbd>                        | spellcheck                              |       |
@@ -89,6 +90,7 @@ dotfiles
 | <kbd>Leader</kbd> + <kbd>mm</kbd>     | fuzzy `:Maps` (view mappings)           | n     |
 | <kbd>f</kbd>                          | easymotion - forward char               | n     |
 | <kbd>s</kbd>                          | easymotion - vim-sneak                  | n     |
+| <kbd>Leader</kbd> + <kbd>G</kbd>      | Goyo - on & off                         | n     |
 | <kbd>jk</kbd> / <kbd>kj</kbd>         | <kbd>ESC</kbd>                          | iv    |
 | <kbd>Leader</kbd> + <kbd>ut</kbd>     | view undotree                           | n     |
 | <kbd>Leader</kbd> + <kbd>ma</kbd>     | open vim magit (git diffs)              | n     |

@@ -1,4 +1,4 @@
-# ┌───────────────────────────────────────────────────────────────────────────┐
+o ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Basics / General                                                          │
 # └───────────────────────────────────────────────────────────────────────────┘
 set shell bash				# interpreter for shell commands
@@ -42,7 +42,7 @@ cmd open ${{
 			text/*) $EDITOR $fx;;
 			image/x-xcf) nohup gimp $f >/dev/null 2>&1 ;;
 			image/svg+xml) display -- $f ;;
-			image/*) basename $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | sxiv -aio >/dev/null 2>&1 ;;
+			image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | sxiv -ai 2>/dev/null | lf-select ;;
 			audio/*) mpv --audio-display=no $f >/dev/null ;;
 			video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
         *) for f in $fx; do nohup $OPENER $f > /dev/null 2> /dev/null & done;;
@@ -130,10 +130,35 @@ cmd movetopre ${{
 		eval mv -iv \"$x\" \"$dest\"
 	done &&
 	terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) moved to $dest."
+}}
+
+
+cmd copytopre ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Move to where?"
+	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' )" &&
+	for x in $fx; do
+		eval cp -ivr \"$x\" \"$dest\"
+	done &&
+	terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
+}}
+
+
+cmd copytojump ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Move to where?"
+	dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf)" &&
+	for x in $fx; do
+		eval cp -ivr \"$x\" \"$dest\"
+	done &&
+	terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
+}}
 
 
 # copy with fzy prompt
-cmd copyto ${{
+cmd copytofzf ${{
 	prompt="Where to copy to?: "
 	dest="$(fd -Hi -t d . '/Users/lucasburns/' | fzy --prompt="$prompt")" &&
 	for x in $fx; do
@@ -141,6 +166,7 @@ cmd copyto ${{
 	done &&
 	terminal-notifier -title "📋 File(s) copied." -message "File(s) copies to $dest."
 }}
+
 
 # paste and view progress
 cmd ppaste &{{
@@ -266,6 +292,19 @@ cmd ql_preview &{{
   qlmanage -p "$fx" &> /dev/null;
 }}
 
+# change permissions
+cmd chmod ${{
+  printf "\nPermissions: "
+  read -r ans
+  for file in "$fx"
+  do
+    chmod $ans $file
+  done
+  lf -remote 'send reload'
+	lf -remote 'send clear'
+}}
+
+
 
 # gpg encrypt with recipient
 cmd pgp_encrypt_recipient %{{
@@ -326,6 +365,7 @@ cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
 # cmd dlfile %dlfile
 
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
+cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' | fzf)'"
 cmd fzf $nvim $(fd -Hi "$1" . |  fzy)
 cmd fd !fd -Hi "$1"
 cmd rg !rg "$1"
@@ -345,8 +385,8 @@ cmd rglf $dialog --title "Search" --msgbox "$(rg --color=never ${1})" 40 80
 map m
 map o
 map n
-map "'"
-map '"'
+# map "'"
+# map '"'
 map d
 map e
 map c
@@ -356,8 +396,11 @@ map gh
 # File Openers
 map ee $$EDITOR "$f"
 map ec edit_config
+map ev $nvim ~/.config/nvim/init.vim
+map ew $nvim ~/vimwiki/index.md
 map es edit_scope
-map b $$PAGER "$f"
+# map b $$PAGER "$f"
+map b $gcp --force --suffix=.bak "$f" "$f"
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | vimpager
@@ -391,16 +434,18 @@ map dl dlfile
 
 # Renaming
 map A rename														# at the very end
-map c push A<c-u>												# new rename
+map cn push A<c-u>												# new rename
 map I push A<c-a>												# at the beginning
 map i push A<a-b><a-b><a-f>							# before extention
 map aa push A<a-b>											# after extention
 map Bs $printf '%s\n' $fx | vidir -			# rename all selected
 map Bb bulkrename												# bulk rename all in directory
+map ch chmod
 
 # File movement
 map fo push :fzf<space>		# fzf search and open
 map fd push :fd<space>		# use fd to find file
+map fa ajfzf							# use fzf with autojump
 map <c-b> broot_jump			# use broot to jump to directory
 map n fzf_z								# Fzf zioxide
 map zz push :z<space>			# very similar to autojump
@@ -439,13 +484,14 @@ map <c-u> usage
 map <c-w> push :rglf<space>
 map <c-f> push :rg<space>
 
-map Y copyto
+map Ym copytofzf
+map Yp copytopre
+map Yj copytojump
 map Mm moveto
 map Mp movetopre
-map mt whipmove
+map Mt whipmove
 
-map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$fx"
-# $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
+map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$f"
 
 # gpg
 map te pgp_encrypt_recipient

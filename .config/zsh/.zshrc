@@ -89,6 +89,7 @@ zinit light-mode for \
     michaelaquilina/zsh-history-filter \
     aloxaf/gencomp \
     kazhala/dotbare \
+    andrewferrier/fzf-z \
     blockf \
         zsh-users/zsh-completions
 
@@ -108,9 +109,8 @@ bindkey '^a' autosuggest-accept
 bindkey '^x' autosuggest-execute
 bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
 bindkey -s '^o' 'lfcd\n'
-bindkey 'ESC-h' run-help
-bindkey 'ESC-H' run-help
-bindkey 'ESC-?' which-command
+bindkey -M vicmd '^h' run-help
+bindkey -M vicmd '?' which-command
 
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
@@ -194,8 +194,12 @@ pdf() { pdftotext -nopgbrk $1 - }
 upp() { cat $1 | up }
 # crypto
 ratesx() { curl rate.sx/$1 }
+# directory size information
 gstatt() { gstat $1 || stat $1; echo ; du -sh $1 ; echo ; file -I -b -p $1 }
+# backup files
 bak() { /usr/local/bin/gcp --force --suffix=.bak $1 $1 }
+# link file from mybin to $PATH
+lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
 
 # use lf to switch directories
 lfcd () {
@@ -233,6 +237,8 @@ export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
+export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
+export FZFZ_RECENT_DIRS_TOOL='autojump'
 
 export FZF_DEFAULT_OPTS="
     --reverse --height 50% --border --ansi --info=inline --multi
@@ -284,5 +290,5 @@ export PATH="$HOME/opt/anaconda3/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 # }}}
 
-# killall limelight &> /dev/null
-# limelight &> /dev/null &
+killall limelight &> /dev/null
+limelight &> /dev/null &
