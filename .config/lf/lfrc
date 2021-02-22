@@ -67,6 +67,7 @@ cmd trash-list ${{
 }}
 
 
+# trash; no confirmation
 cmd trash ${{
   files=$(printf "$fx" | tr '\n' ';')
   while [ "$files" ]; do
@@ -98,19 +99,8 @@ cmd whipmove ${{
 }}
 
 
-# Fuzzy Finder Move - Slow
-cmd movetofuzzy ${{
-	prompt="Where to move to?: "
-	dest="$(fd -Hit d . | fzf --prompt="$prompt")" &&
-	for x in $fx; do
-		eval mv -iv \"$x\" \"$dest\"
-	done &&
-	terminal-notifier -title "🚚 File(s) moved." -message "File(s) moved to $dest."
-}}
-
-
 # Fzy Move - local directory
-cmd moveto ${{
+cmd movetolocal ${{
 	prompt="Where to move to?: "
 	dest="$(fd -Hit d . | fzy --prompt="$prompt")" &&
 	for x in $fx; do
@@ -133,10 +123,22 @@ cmd movetopre ${{
 }}
 
 
+cmd movetojump ${{
+	clear
+	prompt="Move to: "
+	dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")" &&
+	for x in $fx; do
+		eval mv -iv \"$x\" \"$dest\"
+	done &&
+	terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
+}}
+
+
+
 cmd copytopre ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
-	clear; echo "Move to where?"
+	clear; echo "Copy to where?"
 	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' )" &&
 	for x in $fx; do
 		eval cp -ivr \"$x\" \"$dest\"
@@ -146,25 +148,13 @@ cmd copytopre ${{
 
 
 cmd copytojump ${{
-	clear; tput cup $(($(tput lines)/3)); tput bold
-	set -f
-	clear; echo "Move to where?"
-	dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf)" &&
+	clear
+	prompt="Copy to: "
+	dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")" &&
 	for x in $fx; do
 		eval cp -ivr \"$x\" \"$dest\"
 	done &&
 	terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
-}}
-
-
-# copy with fzy prompt
-cmd copytofzf ${{
-	prompt="Where to copy to?: "
-	dest="$(fd -Hi -t d . '/Users/lucasburns/' | fzy --prompt="$prompt")" &&
-	for x in $fx; do
-		eval cp -ivr \"$x\" \"$dest\"
-	done &&
-	terminal-notifier -title "📋 File(s) copied." -message "File(s) copies to $dest."
 }}
 
 
@@ -394,21 +384,20 @@ map f
 map gh
 
 # File Openers
-map ee $$EDITOR "$f"
-map ec edit_config
-map ev $nvim ~/.config/nvim/init.vim
-map ew $nvim ~/vimwiki/index.md
-map es edit_scope
-# map b $$PAGER "$f"
-map b $gcp --force --suffix=.bak "$f" "$f"
-map r $rmcrap
+map ee $$EDITOR "$f"														# open file in editor
+map ec edit_config															# edit & source lfrc
+map ev $nvim ~/.config/nvim/init.vim						# open nvim config
+map ew $nvim ~/vimwiki/index.md									# open vimwiki
+map es edit_scope																# edit lfrc scope
+map b $gcp --force --suffix=.bak "$f" "$f"			# backup file
+map r $rmcrap																		# delete .DS_Store etc
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
-map ? $lf -doc | vimpager
-map gX $bat -f ~/.config/lf/mappings
-map o push :open-with<space>
+map ? $lf -doc | bat -f													# open lfrc docs
+map gX $bat -f ~/.config/lf/mappings						# open these mappings
+map o push :open-with<space>										# open w/ specified program
 
-map as !du -hsx * | sort -rh | bat --paging=always
+map as !du -hsx * | sort -rh | bat --paging=always	# directory info
 map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file -I -b -p $f
 
 # Archive Mappings
@@ -420,7 +409,7 @@ map au unarchive
 
 # Trash Mappings
 map dd trash
-map D delete
+map D delete														# confirmation with whiptail
 map te %trash-empty
 map tl trash-list
 map tr %trash-restore
@@ -435,40 +424,38 @@ map dl dlfile
 
 # Renaming
 map A rename														# at the very end
-map cn push A<c-u>												# new rename
+map cn push A<c-u>											# new rename
 map I push A<c-a>												# at the beginning
 map i push A<a-b><a-b><a-f>							# before extention
 map aa push A<a-b>											# after extention
 map Bs $printf '%s\n' $fx | vidir -			# rename all selected
 map Bb bulkrename												# bulk rename all in directory
-map ch chmod
+map ch chmod														# change file permissions
 
 # File movement
 map fo push :fzf<space>		# fzf search and open
 map fd push :fd<space>		# use fd to find file
 map fa ajfzf							# use fzf with autojump
 map <c-b> broot_jump			# use broot to jump to directory
-map n fzf_z								# Fzf zioxide
+map n fzf_z								# fzf zioxide
 map zz push :z<space>			# very similar to autojump
-map <c-z> fzf_jump				# Fzf jump directory
-map <c-j> push :aj<space> # Auto jump
+map <c-z> fzf_jump				# fzf jump directory
+map <c-j> push :aj<space> # auto jump
 map w $lf -remote "send $id select $(fzf)"
-
-map <c-x>w push :wim<space>
 
 # General
 map . set hidden!
-map p ppaste
-map Pl :link
-map Ps :paste-symlink
-map Pp paste
+map p ppaste							# paste and preview progress
+map Pl :link							# paste a symlink
+map Ps :paste-symlink			# another paste symlink w/o needing gnucoreutils
+map Pp paste							# regular paste
 map x cut
 map y copy
-map <c-d> yank-path
+map <c-d> yank-path				# yank file path
 map <enter> open
 map mf push :mkfile<space>
 map md push :mkdir<space>
-map Ql :ql_preview
+map Ql :ql_preview				# open in quicklook (macOS)
 
 map gg top
 map G bottom
@@ -479,20 +466,22 @@ map U unselect
 map <c-x>x $$f															# execute file
 map <c-x>X !$f															# execute file and $PAGER output
 map <c-x>l $$f | bat --paging=always -f			# execute file and bat output
+map <c-x>w push :wim<space>									# open script source code
+map <c-v> $jupview -P "$f"
 map <c-x>p $cat $fx | up										# cat file to up (unix piper)
 map <c-s> shell															# enter shell command
 map <c-u> usage
-map <c-w> push :rglf<space>
-map <c-f> push :rg<space>
+map <c-w> push :rglf<space>									# search with rg in dialog box
+map <c-f> push :rg<space>										# search with rg
 
-map Ym copytofzf
-map Yp copytopre
-map Yj copytojump
-map Mm moveto
-map Mp movetopre
-map Mt whipmove
+map Yp copytopre			  # copy with predfined list of dirs from file
+map Yj copytojump				# similary to fzf-z (best choice)
+map Mp movetopre				# move with predfined list of dirs from file
+map Ml movetoloc				# move to a directory within current directory
+map Mj movetojump				# similiar to fzf-z
+map Mt whipmove					# move with a whiptail dialog box
 
-map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$f"
+map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$f"		# attempt to preview all imgs
 
 # gpg
 map te pgp_encrypt_recipient

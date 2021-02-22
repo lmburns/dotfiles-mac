@@ -148,10 +148,8 @@ Options:
     -t, --theme             Change syntax highlighting theme (gruvbox default)
 ```
 
-```plain
-==========================================================
-```
-### rmcrap
+================================================
+### `rmcrap`
 
 Deletes `.DS_Store` files and `__MACOSX` directories recursively.
 
@@ -162,31 +160,31 @@ Options:
     -s, --show     Show tree diagram of what rmcrap is removing
 ```
 
-==========================================================
-### manp
+================================================
+### `manp`
 
 View manpages in `zathura`.
 
 **Usage**: `manp ls`
 
-==========================================================
-### macho & macho-pdf
+================================================
+### `macho` & `macho-pdf`
 
 Search manpages using fuzzy finder.
 
 `macho-pdf` will open the file in zathura.
 
-**Usage**: macho
+**Usage**: `macho`
 
-==========================================================
-### pzz
+================================================
+### `pzz`
 
 Search directory with `fzf` for pdfs to open in `zathura`.
 
 **Usage**: As simple as calling the command `pzz` in a directory with pdfs.
 
-==========================================================
-### cps
+================================================
+### `cps`
 
 Whenever you track your dotfiles with a git bare repo you are unable to use `xargs` to push changes to all remotes.
 
@@ -199,20 +197,20 @@ The remote names can be changed.
 
 **Usage**: `cps`
 
-==========================================================
-### lockscreen
+================================================
+### `lockscreen`
 
 Capture a screenshot of current screen, lock computer, modify the image a little and set it as the wallpaper.
 
 **Usage**: `lockscreen`
 
-==========================================================
-### osx-cmds
+================================================
+### `osx-cmds`
 
 A list of commands to setup your Mac. It is a script, but I would recommend reading through the file and copying and pasting individual ones that you would want to use.
 
-==========================================================
-### grm, index-gen, & post-receive
+================================================
+### `grm`, `index-gen`, & `post-receive`
 
 `grm` is a git repo manager that I modified to fit my needs. It can create repos, list repos, recompile repos for `stagit`. See `grm -h` for help with all the commands.
 
@@ -220,22 +218,26 @@ A list of commands to setup your Mac. It is a script, but I would recommend read
 
 `index-gen` is used in combination with `grm` to generate an index.html file for my website.
 
-==========================================================
-### rf
+================================================
+### `rf`
 
 Search directory for files using `rg` (ripgrep). This command is very similar to `fd`.
 
 **Usage**: `rf <term>`
 
-==========================================================
-### rglf
+================================================
+### `rglf`
 
 Used in conjunction with `lf` to search a directory with `rg` and return the resuls in a `dialog` box.
 
-**Usage**: set a mapping in lfrc file
+**Usage**: set a mapping in lfrc file, or set a cmd like such:
 
-==========================================================
-### tordone & transadd
+```sh
+cmd rglf $dialog --title "Search" --msgbox "$(rg --color=never ${1})" 40 80
+```
+
+================================================
+### `tordone` & `transadd`
 
 Taken from [Luke Smith](https://github.com/LukeSmithxyz/voidrice) and modified for macOS.
 
@@ -243,15 +245,15 @@ Taken from [Luke Smith](https://github.com/LukeSmithxyz/voidrice) and modified f
 
 `tordone` is a script used in `transmission`'s settings to run when a torrent is finished.
 
-==========================================================
-### webpull
+================================================
+### `webpull`
 
 Download a websites files to a local space.
 
 **Usage**: `webpull <url>`
 
-==========================================================
-### wim
+================================================
+### `wim`
 
 Open a script in `$EDITOR`
 

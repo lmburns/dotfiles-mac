@@ -6,6 +6,8 @@
 # sudo yabai --load-sa
 # yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 
+# csrutil enable --without debug --without fs
+
 # apps to ignore
 yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-Elements$" sticky=on layer=above manage=off
@@ -16,6 +18,8 @@ yabai -m rule --add app="^Disk Utility$" sticky=on layer=above manage=off
 yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
 yabai -m rule --add app="Fantastical" manage=off
+yabai -m rule --add app="Discord" sticky=on layer=above manage=off
+yabai -m rule --add app="^Messages$" sticky=on layer=above manage=off
 yabai -m rule --add app=R manage=off
 yabai -m rule --add app=Bear manage=off layer=above
 yabai -m rule --add app="^iTerm2$" manage=on
@@ -35,8 +39,7 @@ yabai -m config active_window_opacity         1.0
 
 # limelight is separate
 yabai -m config window_border                 off
-killall limelight &> /dev/null
-limelight &> /dev/null &
+killall limelight &> /dev/null && (limelight &> /dev/null &)
 
 ## some other settings
 yabai -m config auto_balance                  off

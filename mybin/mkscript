@@ -1,32 +1,30 @@
-#!/bin/sh
-# Simple script to generate a script file in my scripts directory
+#!/usr/bin/env bash
 
-RED="\033[91m"
-GREEN="\033[92m"
-YELLOW="\033[93m"
-BLUE="\033[94m"
-RESET="\033[0m"
+# generate a script in script directory
+# set bin_dir (doesn't have to exist yet)
 
-printf "%b\n>" "${BLUE}Enter file name:${RESET}"
+BIN_DIR="$HOME/mybin"
 
-# Set a name for the script
-while [ -z "$ans" ];
-do
-  read -r ans
+ANS=$(\
+  dialog --title "Create a Script" \
+        --clear \
+        --cancel-label "Exit" \
+        --inputbox 'Enter FILE name: ' 8 40 \
+  3>&1 1>&2 2>&3 3>&- \
+)
 
-  if [ -z "$ans" ]; then
-    printf "%b\n>" "${RED}Empty string, enter file name:${RESET}"
-  fi
-done
+FILE=$BIN_DIR/$ANS
 
-file=$HOME/mybin/$ans
-
-if [ -d "$HOME/mybin" ]; then
-  if [ -e "$HOME/mybin/$ans" ]; then
-    $EDITOR "$file"
+if [ -d "$BIN_DIR" ]; then
+  if [ -e "$BIN_DIR/$ANS" ]; then
+    $EDITOR "$FILE"
   else
-    echo "#!/bin/sh" >> "$file"
-    chmod +x "$file"
-    $EDITOR "$file"
+    printf "#!/bin/sh\n\n\n" >> "$FILE"
+    chmod +x "$FILE"
+    if [ $EDITOR = "nvim" ]; then
+      $EDITOR +3 "$FILE"
+    else
+      $EDITOR "$FILE"
+    fi
   fi
 fi

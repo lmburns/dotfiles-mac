@@ -1,6 +1,7 @@
 # Aliases
 alias chx='chmod +x'
-alias ald='alder --depth'
+# alias ald='alder --depth'
+alias treed='exa -TL'
 alias rcp='rsync -av --ignore-existing --progress'
 
 
@@ -14,9 +15,10 @@ alias rr='rm -rf'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
 alias ..='cd ..'
-alias l='exa'
+alias l='exa -1'
 alias ll='exa -FlahH'
-alias ls='exa -Flh'
+# alias ls='exa -Flh'
+alias ls='exa -Flh --git'
 alias lss='exa -Flh --group-directories-first'
 alias lsd='exa -FlhD'
 alias ka='killall'
@@ -77,9 +79,9 @@ alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOM
 alias gua='git remote | xargs -L1 git push --all'
 alias grm='ssh git@burnsac.xyz -- grm'
 alias g='git'
+alias gtrr='git ls-tree -r master --name-only | as-tree'
 alias magit='nvim -c MagitOnly'
 alias ngc='nvim .git/config'
-alias lsg='ls --git'
 alias nbconvert='jupyter nbconvert --to python'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
@@ -89,7 +91,6 @@ alias newsboat='newsboat -C $XDG_CONFIG_HOME/newsboat/config'
 alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
 alias notifyDone='tput bel; terminal-notifier -title "Terminal" -message "Done with task! Exit status: $?"' -activate com.googlecode.iterm2
 alias tt='taskwarrior-tui'
-alias t='task'
 
 alias trp='trash-put'
 alias tre='trash-empty'

@@ -78,8 +78,7 @@ zinit snippet OMZ::plugins/git/git.plugin.zsh
 zinit snippet OMZ::plugins/autojump/autojump.plugin.zsh
 zinit snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
 zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
-# Figure out usage
-zinit snippet OMZ::plugins/bgnotify/bgnotify.plugin.zsh
+zinit snippet OMZ::plugins/zsh_reload/zsh_reload.plugin.zsh
 zinit ice wait lucid; zinit load hlissner/zsh-autopair
 zinit ice as "completion" zinit snippet OMZ::plugins/pass/_pass
 
@@ -242,6 +241,7 @@ export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
+export HOMEBREW_NO_ANALYTICS=1
 export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
 export FZFZ_RECENT_DIRS_TOOL='autojump'
 
@@ -291,9 +291,17 @@ export PINENTRY_USER_DATA="USE_CURSES=1"
 # Adding Anaconda Python to beginning of $PATH
 export PATH="$HOME/opt/anaconda3/bin:$PATH"
 
+# overriding macOS default ruby
+# export PATH="/usr/local/opt/ruby/bin:$PATH"
+# export PATH="/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
+
+export GEM_HOME="$XDG_DATA_HOME/gem"
+export PATH="$HOME/.rbenv/version/3.0.0/bin:$PATH"
+eval "$(rbenv init -)"
+
 # Dragon - drag and drop
 export PATH="$HOME/.local/bin:$PATH"
 # }}}
 
-# killall limelight &> /dev/null
-# limelight &> /dev/null &
+killall limelight &> /dev/null
+(limelight &> /dev/null &)

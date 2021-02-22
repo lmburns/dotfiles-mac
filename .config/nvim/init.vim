@@ -108,6 +108,7 @@
   let g:kimbox_palette = 'material'
   let g:kimbox_background = 'hard'
   let g:oceanic_material_background = "deep"
+  " let g:oceanic_material_background = "medium"
   let g:oceanic_material_allow_bold = 1
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'

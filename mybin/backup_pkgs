@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+NPM_FILE="npm_$(date +'%Y%m%d')"
+GEM_FILE="gem_$(date +'%Y%m%d')"
+BREW_FILE="brew_$(date +'%Y%m%d')"
+PIP_FILE="pip_$(date +'%Y%m%d')"
+
+DIR="$HOME/backup/packages"
+
+mkdir -p "$DIR"
+
+npm list -g --depth=0 > "${DIR}/${NPM_FILE}"
+brew bundle dump --file="${DIR}/${BREW_FILE}" >/dev/null 2>&1
+pip list > "${DIR}/${PIP_FILE}"
+gem list > "${DIR}/${GEM_FILE}"
+
+ln -sf "${DIR}/${NPM_FILE}" "${XDG_CONFIG_HOME}/packages"
+ln -sf "${DIR}/${BREW_FILE}" "${XDG_CONFIG_HOME}/packages"
+ln -sf "${DIR}/${PIP_FILE}" "${XDG_CONFIG_HOME}/packages"
+ln -sf "${DIR}/${GEM_FILE}" "${XDG_CONFIG_HOME}/packages"
