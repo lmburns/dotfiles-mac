@@ -301,6 +301,7 @@
   nmap <Leader>p :w <Bar> !open %<CR>
 
   autocmd BufWritePost bm-files,bm-dirs !shortcuts
+  autocmd Filetype gitcommit setlocal spell textwidth=72
 
   " Compile rmarkdown / markdown
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R

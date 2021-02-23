@@ -17,6 +17,7 @@
 	cm = commit -m
 	co = checkout
 	csm = commit -S -m
+	cs = commit -S
 	d = diff
 	dc = diff --cached
 	l = log -p
@@ -46,7 +47,7 @@
 	texconv = gpg --no-tty --decrypt --quiet
 [core]
 	autocrlf = input
-	excludesfile = /Users/lucasburns/.gitignore_global
+	excludesfile = ~/.config/git/gitignore_global
 	pager = delta
 [diff "gpg"]
 	texconv = gpg --no-tty --decrypt --quiet
@@ -61,7 +62,7 @@
 	defaultBranch = master
 [commit]
 	gpgsign = true
-	template = "$XDG_CONFIG_HOME/git/.gitmessage"
+	template = ~/.config/git/gitmessage
 [gpg]
 	program = /usr/local/bin/gpg
 [help]
