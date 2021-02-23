@@ -34,7 +34,7 @@ typeset -A ZINIT=(
     HOME_DIR        $ZDOTDIR/zinit
     COMPINIT_OPTS   -C
 )
-autoload -Uz compinit && compinit
+
 # compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
 autoload -Uz zmv
 alias zmv='noglob zmv -W'
@@ -42,8 +42,8 @@ alias zmv='noglob zmv -W'
 ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(osx)
 
-source $ZSH/oh-my-zsh.sh
-source $ZDOTDIR/zsh-aliases
+[ -f "$ZSH/oh-my-zsh.sh" ] && source $ZSH/oh-my-zsh.sh
+[ -f "$ZDOTDIR/zsh-aliases" ] && source "$ZDOTDIR/zsh-aliases"
 # }}}
 
 # === powerlevel10k === {{{
@@ -51,7 +51,7 @@ if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-source ${XDG_CONFIG_HOME}/zsh/.p10k.zsh
+[ -f "$ZDOTDIR/.p10k.zsh" ] && source "$ZDOTDIR/.p10k.zsh"
 # }}}
 
 # === zinit === {{{
@@ -101,7 +101,9 @@ zinit ice silent wait"1"; zinit light supercrabtree/k
 zinit wait lucid atload'_zsh_autosuggest_start' light-mode for \
     zsh-users/zsh-autosuggestions
 
-_dotbare_completion_git
+compdef _dotbare_completion_git dotbare
+autoload -Uz compinit && compinit
+# zinit cdreplay -q
 # }}}
 
 # === zsh keybindings === {{{
@@ -126,6 +128,7 @@ zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 zstyle ':fzf-tab:*' switch-group ',' '.'
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 # }}}
 
 # === fixes / sourcing === {{{
