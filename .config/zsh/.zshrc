@@ -36,7 +36,7 @@ typeset -A ZINIT=(
 )
 
 # compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
-autoload -Uz zmv
+autoload -Uz zmv zcalc
 alias zmv='noglob zmv -W'
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
@@ -91,10 +91,12 @@ zinit light-mode for \
     kazhala/dotbare \
     andrewferrier/fzf-z \
     blockf \
-        zsh-users/zsh-completions
+        zsh-users/zsh-completions \
+    src="etc/git-extras-completion.zsh" \
+        tj/git-extras
 
-zinit ice as"program" pick"$ZPFX/bin/git-*" make"PREFIX=$ZPFX" nocompile
-zinit light tj/git-extras
+# zinit ice as"program" pick"$ZPFX/bin/git-*" make"PREFIX=$ZPFX" nocompile
+# zinit light tj/git-extras
 
 zinit ice silent wait"1"; zinit light supercrabtree/k
 

@@ -16,6 +16,7 @@
   Plug 'junegunn/fzf.vim'
   Plug 'vim-pandoc/vim-pandoc-syntax'
   Plug 'plasticboy/vim-markdown'
+  Plug 'dhruvasagar/vim-table-mode'
   Plug 'vimwiki/vimwiki'
   Plug 'junegunn/goyo.vim'
   " Plug 'vifm/vifm.vim'
@@ -134,7 +135,7 @@
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
   syntax enable
-  " colorscheme spaceduck
+  colorscheme spaceduck
   " colorscheme kimbox
   " colorscheme gruvbox-material
   " colorscheme edge
@@ -146,7 +147,7 @@
   " colorscheme tokyonight
   " colorscheme material
   " colorscheme srcery
-  colorscheme oceanic_material
+  " colorscheme oceanic_material
   " colorscheme dogrun
   " colorscheme neodark
   " colorscheme palenight
@@ -250,12 +251,12 @@
   nnoremap <expr> OO printf('m`%sO<ESC>``', v:count1)
 
   " tabs & navigation
-  map <Leader>nt :tabnew <bar> Files<CR>
-  map <Leader>to :tabonly<CR>
-  map <Leader>tc :tabclose<CR>
-  map <Leader>tm :tabmove<cr>
-  map <Leader>tn :tabn<cr>
-  map <Leader>tp :tabp<cr>
+  " map <Leader>nt :tabnew <bar> Files<CR>
+  " map <Leader>to :tabonly<CR>
+  " map <Leader>tc :tabclose<CR>
+  " map <Leader>tm :tabmove<cr>
+  " map <Leader>tn :tabn<cr>
+  " map <Leader>tp :tabp<cr>
 
   " smart way to move between windows
   map <C-j> <C-W>j
@@ -302,6 +303,7 @@
 
   autocmd BufWritePost bm-files,bm-dirs !shortcuts
   autocmd Filetype gitcommit setlocal spell textwidth=72
+  noremap <Leader>ur :w<Home>silent <End> !urlview<CR>
 
   " Compile rmarkdown / markdown
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
@@ -953,6 +955,7 @@
   nnoremap <Leader>rf :T ipython --no-autoindent<CR>
   nnoremap <Leader>rr :Tclear<CR>
   nnoremap <Leader>rt :Ttoggle<CR>
+  nnoremap <Leader>ro :Ttoggle<CR> :Ttoggle<CR>
   autocmd FileType python nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>
   autocmd FileType python inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A
   autocmd FileType python xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
@@ -1034,3 +1037,39 @@
 " autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
 "     \ execute 'CocCommand explorer' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
 " }}}
+
+" == vim-table-mode === {{{
+  let g:table_mode_map_prefix = '<Leader>t'
+  let g:table_mode_realign_map = '<Leader>tr'
+  let g:table_mode_delete_row_map = '<Leader>tdd'
+  let g:table_mode_delete_column_map = '<Leader>tdc'
+  let g:table_mode_insert_column_after_map = '<Leader>tic'
+  let g:table_mode_echo_cell_map = '<Leader>t?'
+  let g:table_mode_sort_map = '<Leader>ts'
+  let g:table_mode_tableize_map = '<Leader>tt'
+  let g:table_mode_tableize_d_map = '<Leader>T'           " visual mode
+
+  " <Leader>tt    =
+
+  let g:table_mode_tableize_auto_border = 1
+  " let g:table_mode_corner_corner='+'
+  " let g:table_mode_header_fillchar='='
+  let g:table_mode_corner='|'
+  let g:table_mode_fillchar = '-'
+  let g:table_mode_separator = '|'
+
+
+  function! s:isAtStartOfLine(mapping)
+    let text_before_cursor = getline('.')[0 : col('.')-1]
+    let mapping_pattern = '\V' . escape(a:mapping, '\')
+    let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
+    return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
+  endfunction
+
+  inoreabbrev <expr> <bar><bar>
+            \ <SID>isAtStartOfLine('\|\|') ?
+            \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
+  inoreabbrev <expr> __
+            \ <SID>isAtStartOfLine('__') ?
+            \ '<c-o>:silent! TableModeDisable<cr>' : '__'
+ " }}}

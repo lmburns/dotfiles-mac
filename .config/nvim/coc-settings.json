@@ -6,7 +6,7 @@
   "diagnostic.warningSign": "⚠",
   "diagnostic.infoSign": ">>",
   "diagnostic.hintSign": ">>",
-  "diagnostic.checkCurrentLine": true,
+  "diagnostic.checkCurrentLine": false,
   "codeLens.enable": true,
   "signature.enable": true,
   "sh.enable": true,

@@ -1,8 +1,7 @@
 ########50 characters############################
-Subject
+# Subject:
 ########72 characters##################################################
-Problem
-# Problem, Task, Reason for CommitSolution
-# Solution or List of ChangesNote
-# Special instructions, testing steps, rake, etc
-Authored-by: Lucas Burns <burnsac@me.com>
+Problem:
+# Solution:
+# Notes:
+# Authored-by: Lucas Burns <lucas@burnsac.xyz>

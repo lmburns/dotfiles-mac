@@ -104,6 +104,7 @@ dotfiles
 | <kbd>Leader</kbd> + <kbd>rf</kbd>     | open `ipython` split view neoterm       | n     |
 | <kbd>Leader</kbd> + <kbd>rf</kbd>     | clear neoterm screen                    | n     |
 | <kbd>Leader</kbd> + <kbd>rt</kbd>     | toggle neoterm on and off               | n     |
+| <kbd>Leader</kbd> + <kbd>ro</kbd>     | reset neoterm size                      | n     |
 | <kbd>Leader</kbd> + <kbd>I</kbd>      | jump between markdown headers           | n     |
 | <kbd>Leader</kbd> + <kbd>nv</kbd>     | edit `$MYVIMRC`                         | n     |
 | <kbd>Leader</kbd> + <kbd>mcs</kbd>    | open mkdx cheatsheet                    | n     |

@@ -1,6 +1,6 @@
 ushare /usr/local/share
 ubin /usr/local/bin
-.config ~/.config
+config ~/.config
 projects ~/projects
 github ~/projects/github
 opt ~/opt

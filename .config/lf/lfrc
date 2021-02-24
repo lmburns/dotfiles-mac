@@ -15,7 +15,7 @@ set sortby natural
 set preview           # preview file on the right pane
 # set drawbox
 set ratios '1:2:3'    # ratio of pane widths
-# set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
+set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
 # vars that depend on environmental variables
 $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
@@ -39,6 +39,7 @@ $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
 cmd open ${{
     case $(file --mime-type $f -b) in
 			application/pdf) nohup zathura $fx >/dev/null 2>&1 ;;
+			application/csv) vd $fx ;;
 			text/*) $EDITOR $fx;;
 			image/x-xcf) nohup gimp $f >/dev/null 2>&1 ;;
 			image/svg+xml) display -- $f ;;
@@ -359,7 +360,7 @@ cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' |
 cmd fzf $nvim $(fd -Hi "$1" . |  fzy)
 cmd fd !fd -Hi "$1"
 cmd rg !rg "$1"
-cmd bulkrename $vidir
+cmd bulkrename $fd . | vidir -
 cmd wim $wim "$1"
 # cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
