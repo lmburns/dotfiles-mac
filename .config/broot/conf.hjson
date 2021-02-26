@@ -184,6 +184,14 @@
 		}
 
 		{
+			invocation: cd
+			key: ctrl-j
+			shortcut: cd
+			execution: "cd"
+		}
+
+
+		{
 			invocation: git_diff
 			shortcut: gd
 			leave_broot: false

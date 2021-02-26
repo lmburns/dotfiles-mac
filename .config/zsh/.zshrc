@@ -209,6 +209,10 @@ gstatt() { gstat $1 || stat $1; echo ; du -sh $1 ; echo ; file -I -b -p $1 }
 bak() { /usr/local/bin/gcp --force --suffix=.bak $1 $1 }
 # link file from mybin to $PATH
 lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
+# broot fuzzy jump
+dcd() { br --only-folders --cmd "$1;:cd" }
+btree() { br -c :pt "$@" }
+
 
 # use lf to switch directories
 lfcd () {
@@ -227,7 +231,9 @@ eval "$(zoxide init zsh)"
 eval "$(thefuck --alias)"
 eval "$(fakedata --completion zsh)"
 
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+# export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+# export MANPAGER="nvim -c 'set ft=man' -"
+export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
 export BROWSER='open -a LibreWolf'
 export RTV_BROWSER="w3m"
 export EDITOR='nvim'
@@ -310,3 +316,5 @@ export PATH="$HOME/.local/bin:$PATH"
 
 killall limelight &> /dev/null
 (limelight &> /dev/null &)
+
+source /Users/lucasburns/.config/broot/launcher/bash/br

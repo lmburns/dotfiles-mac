@@ -10,9 +10,9 @@ die() {
 jupview_usage() {
     cat <<-_EOF
     $(jupview_short_usage)
-        Provide a way to view Jupyter Notebooks in the terminal.
-        This is able to be used with lf, ranger, nnn terminal file managers by
-        default (no parameters given).
+        Provides a way to view Jupyter Notebooks in the terminal.
+        This is able to be used as a previewer with terminal file managers
+        like lf, ranger, and nnn by default with no parameters given.
 
         The .ipynb file is converted to HTML and then is viewed with w3m.
         Bat is used for colorizing the ouput.
@@ -23,11 +23,11 @@ jupview_usage() {
             bat
 
         Options:
-            -P, --pager             View .ipynb file with a pager instead of stdout
-            -I, --no-input          Clear input cells of .ipynb file
-            -p, --no-prompt         Clear input / output prompts
-            -O, --clear-output      Clear output cells of .ipynb file
-            -t, --theme             Change syntax highlighting theme (gruvbox default)
+            -P, --pager             view .ipynb file with a pager instead of stdout
+            -I, --no-input          clear input cells of .ipynb file
+            -p, --no-prompt         clear input / output prompt markers (In[1]:)
+            -O, --clear-output      clear output cells of .ipynb file
+            -t, --theme             change syntax highlighting theme (gruvbox default)
 _EOF
     exit 0
 }

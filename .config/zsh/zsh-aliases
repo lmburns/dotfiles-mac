@@ -1,5 +1,6 @@
 # Aliases
 alias duso='du -hsx * | sort -rh | bat --paging=always'
+alias bo='br --conf $XDG_CONFIG_HOME/broot/select.toml'
 
 # alias sudo='doas'
 alias zn='zinit'

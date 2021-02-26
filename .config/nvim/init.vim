@@ -18,6 +18,7 @@
   Plug 'plasticboy/vim-markdown'
   Plug 'dhruvasagar/vim-table-mode'
   Plug 'vimwiki/vimwiki'
+  Plug 'SidOfc/mkdx'
   Plug 'junegunn/goyo.vim'
   " Plug 'vifm/vifm.vim'
   " Plug 'vim-pandoc/vim-rmarkdown'
@@ -46,7 +47,6 @@
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
   Plug 'sheerun/vim-polyglot'                     " More syntax highlighting
-  Plug 'SidOfc/mkdx'
 
   " HTML/CSS
   Plug 'shime/vim-livedown'
@@ -104,7 +104,8 @@
   let maplocalleader = ','                      " For NVim-R
 
   let g:gruvbox_material_palette = 'original'
-  let g:gruvbox_material_background = 'hard'
+  " let g:gruvbox_material_background = 'hard'
+  let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
   let g:kimbox_palette = 'material'
   let g:kimbox_background = 'hard'
@@ -164,6 +165,7 @@
   set incsearch                       " incremential search highligh
     nnoremap <silent><F7> :set nohlsearch!<CR>
   set encoding=utf-8
+  set magic
   set clipboard+=unnamedplus          " use system clipboard
   set splitbelow splitright           " split screen below and right
   set tabstop=2 shiftwidth=2
@@ -302,8 +304,7 @@
   nmap <Leader>p :w <Bar> !open %<CR>
 
   autocmd BufWritePost bm-files,bm-dirs !shortcuts
-  autocmd Filetype gitcommit setlocal spell textwidth=72
-  noremap <Leader>ur :w<Home>silent <End> !urlview<CR>
+  " noremap <Leader>ur :w<Home>silent <End> !urlview<CR>
 
   " Compile rmarkdown / markdown
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
@@ -687,6 +688,8 @@
   let g:easyescape_timeout = 100
   cnoremap jk <ESC>
   cnoremap kj <ESC>
+  tnoremap jk <C-\><C-n>
+  tnoremap kj <C-\><C-n>
 
   " Fix paste bug triggered by the above inoremaps
   set t_BE=
@@ -777,7 +780,7 @@
 
 " === Bracey === {{{
   nmap <Leader>br :Bracey<CR>
-  nmap <Leader>r :BraceyReload<CR>
+  nmap <Leader>bR :BraceyReload<CR>
 " }}}
 
 " =====================================================================
@@ -884,28 +887,6 @@
   let Rout_more_colors = 1                                " Make terminal output more colorful
   let r_indent_align_args = 0
   " let rout_follow_colorscheme = 1
-" }}}
-
-" === Gruvbox Terminal Theme === {{{
-" if has('gui_running') || &termguicolors
-"   let rout_color_input    = 'guifg=#e2cca9'
-"   let rout_color_normal   = 'guifg=#d4be98'
-"   let rout_color_number   = 'guifg=#80aa9e'
-"   let rout_color_integer  = 'guifg=#8bba7f'
-"   let rout_color_float    = 'guifg=#d3869b'
-"   let rout_color_complex  = 'guifg=#e9b143'
-"   let rout_color_negnum   = 'guifg=#f28534'
-"   let rout_color_negfloat = 'guifg=#e78a4e'
-"   let rout_color_date     = 'guifg=#ea6962'
-"   let rout_color_true     = 'guifg=#b0b846'
-"   let rout_color_false    = 'guifg=#f2594b'
-"   let rout_color_inf      = 'guifg=#f28534'
-"   let rout_color_constant = 'guifg=#7daea3'
-"   let rout_color_string   = 'guifg=#266b79'
-"   let rout_color_error    = 'guifg=#d4be98 guibg=#d3869b'
-"   let rout_color_warn     = 'guifg=#fb4934'
-"   let rout_color_index    = 'guifg=#d3af86'
-" endif
 " }}}
 
 " =====================================================================
@@ -1052,9 +1033,9 @@
   " <Leader>tt    =
 
   let g:table_mode_tableize_auto_border = 1
-  " let g:table_mode_corner_corner='+'
-  " let g:table_mode_header_fillchar='='
-  let g:table_mode_corner='|'
+  let g:table_mode_corner_corner='+'
+  let g:table_mode_header_fillchar='='
+  " let g:table_mode_corner='|'
   let g:table_mode_fillchar = '-'
   let g:table_mode_separator = '|'
 

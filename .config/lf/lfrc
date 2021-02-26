@@ -53,6 +53,7 @@ cmd open ${{
 
 # Delete single file
 cmd delete ${{
+	clear
 	if (whiptail --title "$(echo $fx | xargs -r basename -a)" --yesno "Delete?[y/N]" --defaultno 8 40); then
 		trash-put $fx && echo "$fx deleted" && 	terminal-notifier -title "🗑️  Fle deleted" -message "$(echo $fx | xargs -r basename -a) moved to trash"
 
@@ -63,6 +64,7 @@ cmd delete ${{
 
 
 cmd trash-list ${{
+	clear
   trash=$(trash-list)
   whiptail --msgbox --title "Trash List" "$trash" 35 75
 }}
@@ -70,6 +72,7 @@ cmd trash-list ${{
 
 # trash; no confirmation
 cmd trash ${{
+	clear
   files=$(printf "$fx" | tr '\n' ';')
   while [ "$files" ]; do
     # extract the substring from start of string up to delimiter.
@@ -116,7 +119,7 @@ cmd movetopre ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
 	clear; echo "Move to where?"
-	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' )" &&
+	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' | awk '{print $2}')" &&
 	for x in $fx; do
 		eval mv -iv \"$x\" \"$dest\"
 	done &&
@@ -140,7 +143,7 @@ cmd copytopre ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
 	clear; echo "Copy to where?"
-	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' )" &&
+	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' | awk '{print $2}')" &&
 	for x in $fx; do
 		eval cp -ivr \"$x\" \"$dest\"
 	done &&
@@ -180,6 +183,7 @@ cmd ppaste &{{
 
 
 cmd fzf_jump ${{
+	clear
   res="$(fd -Hit d . | fzy --prompt='Jump to location > ')"
   if [ -f "$res" ]; then
     cmd="select"
@@ -190,9 +194,10 @@ cmd fzf_jump ${{
 }}
 
 
-cmd broot_jump ${{
+cmd br_dir ${{
+	clear
   f=$(mktemp)
-  res="$(broot --outcmd $f && cat $f | sed 's/cd //')"
+	res="$(broot --only-folders')"
   rm -f "$f"
   if [ -f "$res" ]; then
     cmd="select"
@@ -437,7 +442,8 @@ map ch chmod														# change file permissions
 map fo push :fzf<space>		# fzf search and open
 map fd push :fd<space>		# use fd to find file
 map fa ajfzf							# use fzf with autojump
-map <c-b> broot_jump			# use broot to jump to directory
+# map <c-b> broot_jump			# use broot to jump to directory
+map <c-b> br_ch
 map n fzf_z								# fzf zioxide
 map zz push :z<space>			# very similar to autojump
 map <c-z> fzf_jump				# fzf jump directory
