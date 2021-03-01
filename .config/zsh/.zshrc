@@ -316,5 +316,3 @@ export PATH="$HOME/.local/bin:$PATH"
 
 killall limelight &> /dev/null
 (limelight &> /dev/null &)
-
-source /Users/lucasburns/.config/broot/launcher/bash/br
