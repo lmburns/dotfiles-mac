@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+[ "$nvim" ] || nvim=nvim
+[ "$oldfiles" ] || oldfiles=/tmp/nv-oldfiles.tmp
+
+$nvim --headless -c "call append(0, v:oldfiles)" -c "write! /tmp/nv-oldfiles.tmp" -c exit 1>/dev/null 2>&1
+
+$nvim "$(rg -v 'term' "$oldfiles" | fzf)"

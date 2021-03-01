@@ -168,8 +168,8 @@
   set magic
   set clipboard+=unnamedplus          " use system clipboard
   set splitbelow splitright           " split screen below and right
-  set tabstop=2 shiftwidth=2
-  set expandtab softtabstop=2
+  set tabstop=2 shiftwidth=0
+  set expandtab softtabstop=2 smartindent
   set ignorecase smartcase
   set number
     nnoremap <silent><F3> :set relativenumber!<CR>
@@ -211,7 +211,9 @@
   " Replace all is aliased to S.
   nnoremap S :%s//g<Left><Left>
   " Replace quotes on the line
-  nmap <Leader>Q :s/'/"/g<CR>:nohlsearch<CR>
+  nnoremap <Leader>Q :s/'/"/g<CR>:nohlsearch<CR>
+  " convert python 2 print to python3
+  nnoremap <Leader>3 :%s/^\(\s*print\)\s\+\(.*\)/\1(\2)<CR>
 
   " use tab and shift tab to indent and de-indent code
   nnoremap <Tab>   >>
@@ -310,6 +312,9 @@
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
   autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
   autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
+
+  " check html syntax
+  nmap <Leader>h5 :!html5check %<CR>
 " }}}
 
 " === Pandoc === {{{
@@ -388,8 +393,9 @@
   endfunction
 
   " FileType specific indents
-  autocmd FileType markdown,python,json call <SID>IndentSize(2)
-  autocmd FileType r,R setlocal sw=2 softtabstop=2 expandtab
+  autocmd FileType markdown,python,json,javascript call <SID>IndentSize(4)
+  autocmd BufRead,BufNewFile *.htm,*.html call <SID>IndentSize(2)
+  autocmd FileType r call <SID>IndentSize(2)
 "}}}
 
 " =====================================================================
@@ -620,9 +626,9 @@
         \ 'rg --column --line-number --hidden --smart-case '
           \ . '--no-heading --color=always '
           \ . shellescape(<q-args>),
-        \ 1,
-        \ {'options':  '--delimiter : --nth 4..'},
-        \ 0)
+          \ 1,
+          \ {'options':  '--delimiter : --nth 4..'},
+          \ 0)
 
   " dotbare (dotfile manager) - edit file
   command! Dots call fzf#run(fzf#wrap({
@@ -630,6 +636,7 @@
   \ 'sink': 'e',
   \ 'options': [ '--multi', '--preview', 'cat {}' ]
   \ }))
+
 
   " Line completion (same as :Bline)
   imap <C-a> <C-x><C-l>
@@ -1033,9 +1040,9 @@
   " <Leader>tt    =
 
   let g:table_mode_tableize_auto_border = 1
-  let g:table_mode_corner_corner='+'
-  let g:table_mode_header_fillchar='='
-  " let g:table_mode_corner='|'
+  " let g:table_mode_corner_corner='+'
+  " let g:table_mode_header_fillchar='='
+  let g:table_mode_corner='|'
   let g:table_mode_fillchar = '-'
   let g:table_mode_separator = '|'
 

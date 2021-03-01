@@ -6,7 +6,7 @@ set shellopts '-eu'		# exit on error
 set ifs "\n"					# internal field separator / split $fs, $fx
 set scrolloff 10			# space on top and bottom of screen
 set icons             # show icons next to files
-set period 1          # interval to check for directory updates
+# set period 1          # interval to check for directory updates
 set hidden            # show hidden files by default
 set incsearch         # jump to first match after each keystroke in search
 set dircounts
@@ -105,6 +105,7 @@ cmd whipmove ${{
 
 # Fzy Move - local directory
 cmd movetolocal ${{
+	clear
 	prompt="Where to move to?: "
 	dest="$(fd -Hit d . | fzy --prompt="$prompt")" &&
 	for x in $fx; do
@@ -360,12 +361,16 @@ cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
 # cmd mvdragon %mvdragon
 # cmd dlfile %dlfile
 
+cmd rsyncto ${{ rsync -uvrP $fx root@burnsac.xyz:"$1" }}
+cmd rsyncfrom ${{ rsync -uvrP root@burnsac.xyz:"$1" "$2" }}
+
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
 cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' | fzf)'"
-cmd fzf $nvim $(fd -Hi "$1" . |  fzy)
-cmd fd !fd -Hi "$1"
-cmd rg !rg "$1"
+cmd fzf $clear; nvim $(fd -Hi "$1" . |  fzy)
+cmd fd !clear; fd -Hi "$1"
+cmd rg !clear; rg "$1"
 cmd bulkrename $fd . | vidir -
+cmd massren $massren
 cmd wim $wim "$1"
 # cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
@@ -395,6 +400,8 @@ map ec edit_config															# edit & source lfrc
 map ev $nvim ~/.config/nvim/init.vim						# open nvim config
 map ew $nvim ~/vimwiki/index.md									# open vimwiki
 map es edit_scope																# edit lfrc scope
+map ez $nvim $ZDOTDIR/.zshrc										# edit zshrc
+map ea $nvim $ZDOTDIR/zsh-aliases								# edit zsh aliases
 map b $gcp --force --suffix=.bak "$f" "$f"			# backup file
 map r $rmcrap																		# delete .DS_Store etc
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
@@ -436,6 +443,7 @@ map i push A<a-b><a-b><a-f>							# before extention
 map aa push A<a-b>											# after extention
 map Bs $printf '%s\n' $fx | vidir -			# rename all selected
 map Bb bulkrename												# bulk rename all in directory
+map Bm massren													# bulk rename with massren
 map ch chmod														# change file permissions
 
 # File movement
@@ -451,7 +459,7 @@ map <c-j> push :aj<space> # auto jump
 map w $lf -remote "send $id select $(fzf)"
 
 # General
-map . set hidden!
+map . :set hidden!
 map p ppaste							# paste and preview progress
 map Pl :link							# paste a symlink
 map Ps :paste-symlink			# another paste symlink w/o needing gnucoreutils
@@ -486,7 +494,10 @@ map Yj copytojump				# similary to fzf-z (best choice)
 map Mp movetopre				# move with predfined list of dirs from file
 map Ml movetoloc				# move to a directory within current directory
 map Mj movetojump				# similiar to fzf-z
-map Mt whipmove					# move with a whiptail dialog box
+map Mw whipmove					# move with a whiptail dialog box
+
+map Mt push :rsyncto<space>											# move things to the server
+map Mf push :rsyncfrom<space>										# move things from the server
 
 map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$f"		# attempt to preview all imgs
 

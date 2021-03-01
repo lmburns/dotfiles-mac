@@ -1,6 +1,7 @@
 # Aliases
 alias duso='du -hsx * | sort -rh | bat --paging=always'
 alias bo='br --conf $XDG_CONFIG_HOME/broot/select.toml'
+alias mpd='mpd ~/.config/mpd/mpd.conf'
 
 # alias sudo='doas'
 alias zn='zinit'
@@ -39,7 +40,8 @@ alias nlfr='nvim $XDG_CONFIG_HOME/lf/lfrc'
 # Mail
 alias mwme='mw -y burnsac@me.com'
 alias mwgm='mw -y burnsppl@gmail.com'
-alias smail='mw -y burnsac@me.com && mw -y burnsppl@gmail.com && mw -y lucas@burnsac.xyz'
+alias mwmail='mw -Y'
+alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@burnsac.xyz'
 
 # Locations
 alias projects='cd $HOME/projects'
