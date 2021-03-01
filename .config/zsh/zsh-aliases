@@ -78,12 +78,7 @@ alias vwb='nvim $HOME/vimwiki/scripting/index.md'
 
 # Github
 alias c="/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME"
-alias cv="GIT_DIR=$XDG_DATA_HOME/dotfiles-private GIT_WORK_TREE=$HOME nvim -c Git -c only"
-c-populate() {
-  c update-index --no-skip-worktree README.md COPYING
-  c checkout README.md COPYING
-}
-
+alias xav="/usr/bin/git --git-dir=$XDG_DATA_HOME/dottest --work-tree=$HOME"
 
 alias gua='git remote | xargs -L1 git push --all'
 alias grm='ssh git@burnsac.xyz -- grm'
