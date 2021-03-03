@@ -159,6 +159,7 @@ Deletes `.DS_Store` files and `__MACOSX` directories recursively.
 ```sh
 Options:
     -s, --show     Show tree diagram of what rmcrap is removing
+    -c, --count    Show count of .DS_Store and __MACOSX removed
 ```
 
 ================================================
@@ -204,6 +205,16 @@ The remote names can be changed.
 Capture a screenshot of current screen, lock computer, modify the image a little and set it as the wallpaper.
 
 **Usage**: `lockscreen`
+================================================
+### `mkscript`
+
+Create a script and place it in the specified directory.
+One can uncomment the `zentiy` dialog section to use it over regular `dialog`.
+
+================================================
+### `nv`
+
+Search recent files opened in `nvim` in `fzf`, and when hitting enter on the file it opens it in `nvim`.
 
 ================================================
 ### `osx-cmds`

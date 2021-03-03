@@ -47,7 +47,7 @@ handle_mime() {
     case "${mimetype}" in
 	text/html) w3m -dump "${FILE_PATH}" && { dump | trim | fmt -s -w $WIDTH; exit 4; } ;;
 	text/troff) man ./ "${FILE_PATH}" | col -b ;;
-	text/* | */xml) bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme gruvbox --style auto -- "${FILE_PATH}" ;;
+	text/* | */xml) bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme KimbieDark --style auto -- "${FILE_PATH}" ;;
 	application/zip) atool --list -- "${FILE_PATH}" ;;
   image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
    video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
@@ -77,7 +77,7 @@ handle_other() {
         *.csv) cat "${FILE_PATH}" | sed s/,/\\n/g ;;
         *.json) jq --color-output . "${FILE_PATH}";;
         *.asc) bat -Pf --theme gruvbox --style auto "${FILE_PATH}";;
-        *.ipynb) jupview "${FILE_PATH}";;
+        *.ipynb) jupview -t gruvbox-N "${FILE_PATH}";;
     esac
 }
 

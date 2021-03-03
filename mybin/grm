@@ -1,5 +1,4 @@
 #!/bin/sh
-
 # grm: git repo manager for self-hosted git servers
 
 # TODO: add option to input category
@@ -22,6 +21,9 @@ GRM_POSTRECV_HOOK="/var/www/post-receive"
 
 # root directory of stagit web pages
 STAGIT_WEB_ROOT="/var/www/git.burns"
+
+# directory where this was cloned
+DEFAULT_DIR="/root/stagit-alt/stagit-md"
 
 #                                            #
 #                                            #
@@ -48,7 +50,7 @@ recompile_repo() {
   rm -rf "commit" "file"             && \
   stagit -c "$cachefile" "$repo_dir" && \
   ln -sf log.html index.html         && \
-  ln -sf ../style.css style.css      && \
+  ln -sf ../styles/style.css style.css      && \
   ln -sf ../logo.png logo.png        && \
   ln -sf ../favicon.png favicon.png
   echo "[$1] done!"
@@ -122,8 +124,7 @@ ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
     1|Projects) ccat="Projects" ;;
     2|Forks) ccat="Forks" ;;
     *) printf "%b\n" "${YELLOW}category defaults to ${GREEN}Projects${RESET}"
-       ccat="Projects" ;;
-
+       ccat=$default_cat ;;
   esac
 
   printf "%b%s%b\n> " "${BLUE}description [${GREEN}" "$default_desc" "${BLUE}]${RESET}"
@@ -161,6 +162,10 @@ ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
 
   echo "linking .git to main folder"
   ln -s "$repo_path" "$STAGIT_WEB_ROOT"
+
+  echo "generating index.html for .git page"
+  $DEFAULT_DIR/index-gen $repo_name $repo_desc > $repo_path/index.html
+  chown git:git $repo_path/index.html
 
   echo "done!"
 }

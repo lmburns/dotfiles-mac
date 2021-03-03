@@ -9,3 +9,4 @@ mybin ~/mybin
 pictures ~/Pictures
 downloads ~/Downloads
 nvim ~/.config/nvim
+vimwiki ~/vimwiki

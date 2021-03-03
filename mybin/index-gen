@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# generate index.html for git repo of my website
-
 REPO=${1}
 TITLE=${2}
 
@@ -12,7 +10,7 @@ index_gen() {
 <head>
 <title>$TITLE</title>
 <link rel="icon" type="image/png" href="favicon.png" />
- <link rel="stylesheet" type="text/css" href="style.css" />
+ <link rel="stylesheet" type="text/css" href="../styles/style.css" />
 </head>
 <body>
 	<h3>$TITLE</h3>

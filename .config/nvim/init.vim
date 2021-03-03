@@ -107,8 +107,7 @@
   " let g:gruvbox_material_background = 'hard'
   let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
-  let g:kimbox_palette = 'material'
-  let g:kimbox_background = 'hard'
+  let g:kimbox_background = 'medium'
   let g:oceanic_material_background = "deep"
   " let g:oceanic_material_background = "medium"
   let g:oceanic_material_allow_bold = 1
@@ -136,8 +135,8 @@
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
   syntax enable
-  colorscheme spaceduck
-  " colorscheme kimbox
+  " colorscheme spaceduck
+  colorscheme kimbox
   " colorscheme gruvbox-material
   " colorscheme edge
   " colorscheme sonokai
@@ -285,10 +284,10 @@
   autocmd BufRead,BufNewFile *.tex set filetype=tex
 
   " Enable Goyo by default for mutt writing
-	autocmd BufRead,BufNewFile /tmp/neomutt* let g:goyo_width=80
-	autocmd BufRead,BufNewFile /tmp/neomutt* :Goyo | set bg=light
-	autocmd BufRead,BufNewFile /tmp/neomutt* map ZZ :Goyo\|x!<CR>
-	autocmd BufRead,BufNewFile /tmp/neomutt* map ZQ :Goyo\|q!<CR>
+	autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
+	autocmd BufRead,BufNewFile neomutt-void* :Goyo | set bg=light
+	autocmd BufRead,BufNewFile neomutt-void* map ZZ :Goyo\|x!<CR>
+	autocmd BufRead,BufNewFile neomutt-void* map ZQ :Goyo\|q!<CR>
 
   " automatically deletes all tralling whitespace on save.
   autocmd BufWritePre * %s/\s\+$//e            " End of lines
@@ -695,8 +694,8 @@
   let g:easyescape_timeout = 100
   cnoremap jk <ESC>
   cnoremap kj <ESC>
-  tnoremap jk <C-\><C-n>
-  tnoremap kj <C-\><C-n>
+  " tnoremap jk <C-\><C-n>
+  " tnoremap kj <C-\><C-n>
 
   " Fix paste bug triggered by the above inoremaps
   set t_BE=

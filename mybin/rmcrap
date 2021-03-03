@@ -20,6 +20,7 @@ cmd_usage() {
 
     Options:
         -s, --show     Show tree diagram of what $PROGRAM is removing
+        -c, --count    Show count of .DS_Store and __MACOSX removed
 
     Dependencies:
       'fd' is required and used as a find replacement
@@ -38,15 +39,20 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1 || exit 1
 }
 
+count_cmd() {
+  echo "$1 $(wc -l)"
+}
+
 cmd_rmcrap() {
     local opts fd=0 astree=0
-    local show=0
-    opts="$($GETOPT -o s -l show -- "$@")"
+    local show=0 count=0
+    opts="$($GETOPT -o s,c -l show,count -- "$@")"
     local err=$?
     eval set -- "$opts"
 
     while true; do case "$1" in
             -s|--show) show=1; shift ;;
+            -c|--count) count=1; shift ;;
             --) shift; break ;;
     esac done
 
@@ -61,13 +67,25 @@ cmd_rmcrap() {
       command_exists as-tree || die "as-tree is not in your \$PATH"
     fi
 
-    if [[ $show = 1 ]]; then
-      fd -H '^\.DS_Store$' -tf | as-tree && \
-        fd -H '^__MACOSX$' -td | as-tree
+    local rm_ds="fd -H ^.DS_Store$ -tf"
+    local rm_mac="fd -H ^__MACOSX$ -td"
+
+     if [[ $show = 1 ]] && [[ $count = 1 ]]; then
+      $rm_ds | as-tree && \
+        $rm_mac | as-tree && \
+      $rm_ds | count_cmd ".DS_Store:" && \
+        $rm_mac | count_cmd "__MACOSX:"
+    elif [[ $show = 1 ]]; then
+      $rm_ds | as-tree && \
+        $rm_mac | as-tree
+      echo 'done'
+    elif [[ $count = 1 ]]; then
+      $rm_ds | count_cmd ".DS_Store:" | as-tree && \
+        $rm_mac | count_cmd "__MACOSX:" | as-tree
     fi
 
-    fd -H '^\.DS_Store$' -tf -X rm -rf && \
-      fd -H '^__MACOSX$' -td -X rm -rf
+    $rm_ds -X rm -rf && \
+      $rm_mac -X rm -rf
 }
 
 if [[ "$1" == "help" ]] || [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then

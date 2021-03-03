@@ -2,11 +2,13 @@
 alias duso='du -hsx * | sort -rh | bat --paging=always'
 alias bo='br --conf $XDG_CONFIG_HOME/broot/select.toml'
 alias mpd='mpd ~/.config/mpd/mpd.conf'
+alias kc='keychain'
 
 # alias sudo='doas'
 alias zn='zinit'
 alias f='pushd'
 alias b='popd'
+alias dirs='dirs -v'
 alias cp='cp -iv'
 alias rcp='rsync -av --ignore-existing --progress'
 alias pb='pbcopy'
@@ -50,6 +52,7 @@ alias scripts='cd $HOME/Desktop/unix/mac/scripts'
 alias zdotd='cd "$ZDOTDIR"'
 alias gitd='cd $HOME/projects/github'
 alias optd='cd $HOME/opt'
+alias confd='cd $XDG_CONFIG_HOME'
 
 alias wget='wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts'
 alias tsm='transmission-remote'
@@ -74,7 +77,9 @@ alias fd='fd -Hi'
 alias spt='speedtest | rg "(Download:|Upload:)"'
 alias pat='bat -p'
 alias vw='nvim $HOME/vimwiki/index.md'
+alias vwd='nvim $HOME/vimwiki/dotfiles/index.md'
 alias vwb='nvim $HOME/vimwiki/scripting/index.md'
+alias vwg='nvim $HOME/vimwiki/ghost/index.md'
 
 # Github
 alias c="/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME"

@@ -5,6 +5,7 @@
 
 BIN_DIR="$HOME/mybin"
 
+# dialog
 ANS=$(\
   dialog --title "Create a Script" \
         --clear \
@@ -12,6 +13,14 @@ ANS=$(\
         --inputbox 'Enter FILE name: ' 8 40 \
   3>&1 1>&2 2>&3 3>&- \
 )
+
+# zenity pop up
+# ANS=$(\
+#   zenity --title="Create a Script" \
+#   --cancel-label "Exit" \
+#   --entry \
+#   --text "Enter file name: "
+# )
 
 FILE=$BIN_DIR/$ANS
 

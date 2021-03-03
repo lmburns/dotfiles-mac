@@ -11,8 +11,6 @@
 # if name is not set the basename of the current directory is used,
 # this is the directory of the repo when called from the post-receive script.
 
-# NOTE: needs to be set for correct locale (expects UTF-8) otherwise the
-#       default is LC_CTYPE="POSIX".
 export LC_CTYPE="en_US.UTF-8"
 
 name="$1"
@@ -25,6 +23,12 @@ reposdir="/var/www/git"
 dir="${reposdir}/${name}"
 destdir="/var/www/git.burns"
 cachefile=".stagit-build-cache"
+defaultdir="/root/stagit-alt/stagit-md"
+
+ln -s "$defaultdir/style.css" "$destdir/style/style.css" 2> /dev/null
+ln -s "$defaultdir/logo.png" "$destdir/logo.png" 2> /dev/null
+ln -s "$defaultdir/favicon.png" "$destdir/favicon.png" 2> /dev/null
+
 
 if ! test -d "${dir}"; then
     echo "${dir} does not exist" >&2

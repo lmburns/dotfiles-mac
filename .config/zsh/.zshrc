@@ -91,12 +91,7 @@ zinit light-mode for \
     kazhala/dotbare \
     andrewferrier/fzf-z \
     blockf \
-        zsh-users/zsh-completions \
-    src="etc/git-extras-completion.zsh" \
-        tj/git-extras
-
-# zinit ice as"program" pick"$ZPFX/bin/git-*" make"PREFIX=$ZPFX" nocompile
-# zinit light tj/git-extras
+        zsh-users/zsh-completions
 
 zinit ice silent wait"1"; zinit light supercrabtree/k
 
@@ -180,9 +175,9 @@ vf() { fzf | xargs -r -I % $EDITOR % ; }
 rsyncto() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
 rsyncfrom() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
 # open fzf in a directory and open file in vim
-fzfd() { find $1 | fzf | xargs -r -I % $EDITOR % ; }
+fzfd() { fd $1 | fzf | xargs -r -I % $EDITOR % ; }
 # fzf pdfs and open with zathura
-fzfz() { fd -a -e "pdf" . $1 | fzf | (nohup xargs -I{} zathura "{}" >/dev/null) }
+fzfza() { fd -a -e "pdf" . $1 | fzf | (nohup xargs -I{} zathura "{}" >/dev/null) }
 # shred and delete file
 sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
 # start asciinema recording
@@ -198,13 +193,12 @@ jupyt() { jupytext --set-formats ipynb,py $1 }
 # howdoi
 h() { howdoi $@ -c -n 5; }
 hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
-pdf() { pdftotext -nopgbrk $1 - }
-# us up pipe with any file
+# use up pipe with any file
 upp() { cat $1 | up }
 # crypto
 ratesx() { curl rate.sx/$1 }
 # directory size information
-gstatt() { gstat $1 || stat $1; echo ; du -sh $1 ; echo ; file -I -b -p $1 }
+gstatd() { gstat $1 || stat $1; echo ; du -sh $1 ; echo ; file -I -b -p $1 }
 # backup files
 bak() { /usr/local/bin/gcp --force --suffix=.bak $1 $1 }
 # link file from mybin to $PATH
@@ -212,7 +206,6 @@ lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
 # broot fuzzy jump
 dcd() { br --only-folders --cmd "$1;:cd" }
 btree() { br -c :pt "$@" }
-
 
 # use lf to switch directories
 lfcd () {
@@ -228,6 +221,8 @@ lfcd () {
 
 #===== variables ===== {{{
 eval "$(zoxide init zsh)"
+eval "$(keychain --eval -q --inherit any id_rsa git gitlab-new burnsac && \
+        keychain --agents gpg -q --eval 6628B679)"
 eval "$(thefuck --alias)"
 eval "$(fakedata --completion zsh)"
 

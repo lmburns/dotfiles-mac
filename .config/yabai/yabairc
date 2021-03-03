@@ -11,6 +11,8 @@
 # apps to ignore
 yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Adobe Photoshop 2020" sticky=on layer=above manage=off
+yabai -m rule --add app="^CleanMyMac" sticky=on layer=above manage=off
+yabai -m rule --add app="^App Uninstaller$" sticky=on layer=above manage=off
 yabai -m rule --add app="Photoshop" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-Elements$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-EventViewer$" sticky=on layer=above manage=off

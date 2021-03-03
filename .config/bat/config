@@ -1,4 +1,4 @@
---theme="KimbieLight"
+--theme="ansi"
 #--italic-text=always
 # Disable automatic paging:
 #--paging=never
