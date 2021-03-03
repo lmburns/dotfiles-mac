@@ -88,6 +88,7 @@ cmd_rmcrap() {
       $rm_mac -X rm -rf
 }
 
+
 if [[ "$1" == "help" ]] || [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
     cmd_usage
 fi
