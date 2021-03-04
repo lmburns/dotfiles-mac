@@ -108,8 +108,9 @@
   let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
   let g:kimbox_background = 'medium'
-  let g:oceanic_material_background = "deep"
-  " let g:oceanic_material_background = "medium"
+  let g:kimbox_allow_bold = 1
+  " let g:oceanic_material_background = "deep"
+  let g:oceanic_material_background = "ocean"
   let g:oceanic_material_allow_bold = 1
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
@@ -136,7 +137,8 @@
 
   syntax enable
   " colorscheme spaceduck
-  colorscheme kimbox
+  " colorscheme kimbox
+  colorscheme oceanic_material
   " colorscheme gruvbox-material
   " colorscheme edge
   " colorscheme sonokai
@@ -147,7 +149,6 @@
   " colorscheme tokyonight
   " colorscheme material
   " colorscheme srcery
-  " colorscheme oceanic_material
   " colorscheme dogrun
   " colorscheme neodark
   " colorscheme palenight

@@ -67,8 +67,8 @@ cmd_rmcrap() {
       command_exists as-tree || die "as-tree is not in your \$PATH"
     fi
 
-    local rm_ds="fd -H ^.DS_Store$ -tf"
-    local rm_mac="fd -H ^__MACOSX$ -td"
+    local rm_ds="fd -HI ^.DS_Store$ -tf"
+    local rm_mac="fd -HI ^__MACOSX$ -td"
 
      if [[ $show = 1 ]] && [[ $count = 1 ]]; then
       $rm_ds | as-tree && \

@@ -41,7 +41,7 @@ dotfiles
 | <kbd>F2</kbd>                         | turn on/off wrapping                    | n     |
 | <kbd>F3</kbd>                         | turn on/off relative line numbers       | n     |
 | <kbd>F4</kbd>                         | compile markdown using pandoc           |       |
-| <kbd>F9</kbd>                         | get syntnax name / attributes of hover  | n     |
+| <kbd>F9</kbd>                         | get syntax name / attributes of hover  | n     |
 | <kbd>F10</kbd>                        | spellcheck                              |       |
 | <kbd>gkk</kbd>                        | move to previous blank line             | n     |
 | <kbd>gjj</kbd>                        | move to next blank line                 | n     |

@@ -113,7 +113,6 @@ alias jrnl=' jrnl'
 
 # RSync / a=rlptgoD
 alias rsynca='rsync -PruLtcv --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
-alias rsyncjn='rsync -PruLtcv --exclude ".DS_Store" --exclude "projects"  $HOME/JupyterNotebook /Volumes/SSD/manual'
 alias rsyncpr='rsync -PruLtcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" $HOME/projects /Volumes/SSD/manual'
 alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "MYHOME" --exclude "unix" $HOME/Desktop /Volumes/SSD/manual'
 alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" $HOME/Desktop/unix /Volumes/SSD/manual'

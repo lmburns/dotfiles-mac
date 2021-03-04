@@ -203,9 +203,6 @@ gstatd() { gstat $1 || stat $1; echo ; du -sh $1 ; echo ; file -I -b -p $1 }
 bak() { /usr/local/bin/gcp --force --suffix=.bak $1 $1 }
 # link file from mybin to $PATH
 lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
-# broot fuzzy jump
-dcd() { br --only-folders --cmd "$1;:cd" }
-btree() { br -c :pt "$@" }
 
 # use lf to switch directories
 lfcd () {

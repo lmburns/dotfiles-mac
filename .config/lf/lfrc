@@ -103,11 +103,11 @@ cmd whipmove ${{
 }}
 
 
-# Fzy Move - local directory
+# Fzf Move - local directory
 cmd movetolocal ${{
 	clear
 	prompt="Where to move to?: "
-	dest="$(fd -Hit d . | fzy --prompt="$prompt")" &&
+	dest="$(fd -Hit d . | fzf --prompt="$prompt")" &&
 	for x in $fx; do
 		eval mv -iv \"$x\" \"$dest\"
 	done &&
@@ -115,7 +115,7 @@ cmd movetolocal ${{
 }}
 
 
-# move based on preloaded directories
+# move to directories listed in a file
 cmd movetopre ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
@@ -128,6 +128,7 @@ cmd movetopre ${{
 }}
 
 
+# move to directory from autojump
 cmd movetojump ${{
 	clear
 	prompt="Move to: "
@@ -139,7 +140,7 @@ cmd movetojump ${{
 }}
 
 
-
+# copy to directories listed in a file
 cmd copytopre ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
@@ -152,6 +153,7 @@ cmd copytopre ${{
 }}
 
 
+# copy to directory from autojump
 cmd copytojump ${{
 	clear
 	prompt="Copy to: "
@@ -183,9 +185,11 @@ cmd ppaste &{{
 }}
 
 
-cmd fzf_jump ${{
+cmd br_dir ${{
 	clear
-  res="$(fd -Hit d . | fzy --prompt='Jump to location > ')"
+  f=$(mktemp)
+	res="$(broot --only-folders')"
+  rm -f "$f"
   if [ -f "$res" ]; then
     cmd="select"
   elif [ -d "$res" ]; then
@@ -194,11 +198,9 @@ cmd fzf_jump ${{
   lf -remote "send $id $cmd \"$res\""
 }}
 
-
-cmd br_dir ${{
-	clear
+cmd broot_jump ${{
   f=$(mktemp)
-	res="$(broot --only-folders')"
+  res="$(broot --outcmd $f && cat $f | sed 's/cd //')"
   rm -f "$f"
   if [ -f "$res" ]; then
     cmd="select"
@@ -366,7 +368,7 @@ cmd rsyncfrom ${{ rsync -uvrP root@burnsac.xyz:"$1" "$2" }}
 
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
 cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' | fzf)'"
-cmd fzf $clear; nvim $(fd -Hi "$1" . |  fzy)
+cmd fzf $clear; nvim $(fd -Hi "$1" . |  fzf)
 cmd fd !clear; fd -Hi "$1"
 cmd rg !clear; rg "$1"
 cmd bulkrename $fd . | vidir -
@@ -428,12 +430,12 @@ map tl trash-list
 map tr %trash-restore
 
 # Dragon Mapping [CONFIGURE]
-map dr dragon
-map ds dragon-stay
-map di dragon-individual
-map dm mvdragon
-map dc cpdragon
-map dl dlfile
+# map dr dragon
+# map ds dragon-stay
+# map di dragon-individual
+# map dm mvdragon
+# map dc cpdragon
+# map dl dlfile
 
 # Renaming
 map A rename														# at the very end
@@ -441,7 +443,6 @@ map cn push A<c-u>											# new rename
 map I push A<c-a>												# at the beginning
 map i push A<a-b><a-b><a-f>							# before extention
 map aa push A<a-b>											# after extention
-map Bs $printf '%s\n' $fx | vidir -			# rename all selected
 map Bb bulkrename												# bulk rename all in directory
 map Bm massren													# bulk rename with massren
 map ch chmod														# change file permissions
@@ -450,11 +451,9 @@ map ch chmod														# change file permissions
 map fo push :fzf<space>		# fzf search and open
 map fd push :fd<space>		# use fd to find file
 map fa ajfzf							# use fzf with autojump
-# map <c-b> broot_jump			# use broot to jump to directory
-map <c-b> br_ch
+map <c-b> broot_jump			# use broot to jump to directory
 map n fzf_z								# fzf zioxide
 map zz push :z<space>			# very similar to autojump
-map <c-z> fzf_jump				# fzf jump directory
 map <c-j> push :aj<space> # auto jump
 map w $lf -remote "send $id select $(fzf)"
 
