@@ -29,7 +29,7 @@ dotfiles
 | <kbd>p</kbd>  | highlight all words to the right |
 | <kbd>yy</kbd> | copy                             |
 
-## Neovim Mappings
+## [Neovim Mappings](.config/nvim/init.vim)
 
 **Leader**: `<Space>`
 
@@ -121,7 +121,7 @@ dotfiles
 | `Dots`          | dotbare (dotfile manager) edit files         |
 
 ==========================================================
-## Scripts
+## [Scripts](mybin)
 ### `jupview`
 
 Meant to be used with terminal file managers (`lf`, `nnn`, `ranger`, `vifm`) without any parameters given. For example:
@@ -207,6 +207,7 @@ The remote names can be changed.
 Capture a screenshot of current screen, lock computer, modify the image a little and set it as the wallpaper.
 
 **Usage**: `lockscreen`
+
 ================================================
 ### `mkscript`
 
