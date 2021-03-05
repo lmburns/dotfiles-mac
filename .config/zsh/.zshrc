@@ -147,6 +147,7 @@ export PATH=${PATH}:/usr/local/mysql/bin/
 
 # === homebrew ===
 export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
 
 # === mybin ===
 export PATH="/usr/local/mybin:$PATH"

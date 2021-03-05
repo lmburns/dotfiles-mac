@@ -14,6 +14,7 @@ yabai -m rule --add app="^Adobe Photoshop 2020" sticky=on layer=above manage=off
 yabai -m rule --add app="^LibreOffice" sticky=on layer=above manage=off
 yabai -m rule --add app="^CleanMyMac" sticky=on layer=above manage=off
 yabai -m rule --add app="^App Uninstaller$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Font Book$" sticky=on layer=above manage=off
 yabai -m rule --add app="Photoshop" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-Elements$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-EventViewer$" sticky=on layer=above manage=off

@@ -138,6 +138,8 @@ handle_other() {
 
 This will show a preview of the .ipynb file in the terminal.
 
+![jupview preview](https://burnsac.xyz/gallery/media/large/jupview-preview.png)
+
 #### Usage
 
 ```sh
@@ -225,6 +227,11 @@ A list of commands to setup your Mac. It is a script, but I would recommend read
 ### `grm`, `index-gen`, & `post-receive`
 
 `grm` is a git repo manager that I modified to fit my needs. It can create repos, list repos, recompile repos for `stagit`. See `grm -h` for help with all the commands.
+
+For use on home machine:
+```sh
+alias grm='ssh git@host_name -- grm'
+```
 
 `post-receive` is a post-receive git hook that is ran after pushing a commit.
 

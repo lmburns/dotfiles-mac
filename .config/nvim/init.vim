@@ -319,11 +319,12 @@
   let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,*.oxt,*.kmz,*.wsz,*.xap,*.docm,*.dotx,*.dotm,*.potx,*.potm,*.ppsx,*.ppsm,*.pptx,*.pptm,*.ppam,*.sldx,*.thmx,*.xlam,*.xlsx,*.xlsm,*.xlsb,*.xltx,*.xltm,*.xlam,*.crtx,*.vdw,*.glox,*.gcsx,*.gqsx'
 
   " autocmd BufReadPost *.odt :%!odt2txt %
-  autocmd BufReadPost *.odt silent %!pandoc "%" -tmarkdown -o /dev/stdout
-  autocmd BufWritePost *.odt :%!pandoc -f markdown "%" -o "%:r".odt
 
-  " autocmd BufReadPre *.odt silent set ro
-  " autocmd BufEnter *.odt silent  %!pandoc --columns=78 -f odt -t markdown "%"
+  " autocmd BufReadPost *.odt silent %!pandoc "%" -tmarkdown -o /dev/stdout
+  " autocmd BufWritePost *.odt :%!pandoc -f markdown "%" -o "%:r".odt
+
+    autocmd BufReadPre *.odt silent set ro
+    autocmd BufEnter *.odt silent  %!pandoc --columns=78 -f odt -t markdown "%"
   " }}}
 
   " Compile rmarkdown / markdown
