@@ -308,6 +308,24 @@
   autocmd BufWritePost bm-files,bm-dirs !shortcuts
   " noremap <Leader>ur :w<Home>silent <End> !urlview<CR>
 
+  " === docs === {{{
+  autocmd BufReadPre *.docx silent set ro
+  autocmd BufEnter *.docx silent set modifiable
+  autocmd BufEnter *.docx silent  %!pandoc --columns=78 -f docx -t markdown "%"
+  autocmd BufWritePost *.docx :!pandoc -f markdown -t docx % > tmp.docx
+
+  " autocmd BufReadPost *.doc,*.docx,*.rtf,*.odp,*.odt silent %!pandoc "%" -tplain -o /dev/stdout
+
+  let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,*.oxt,*.kmz,*.wsz,*.xap,*.docm,*.dotx,*.dotm,*.potx,*.potm,*.ppsx,*.ppsm,*.pptx,*.pptm,*.ppam,*.sldx,*.thmx,*.xlam,*.xlsx,*.xlsm,*.xlsb,*.xltx,*.xltm,*.xlam,*.crtx,*.vdw,*.glox,*.gcsx,*.gqsx'
+
+  " autocmd BufReadPost *.odt :%!odt2txt %
+  autocmd BufReadPost *.odt silent %!pandoc "%" -tmarkdown -o /dev/stdout
+  autocmd BufWritePost *.odt :%!pandoc -f markdown "%" -o "%:r".odt
+
+  " autocmd BufReadPre *.odt silent set ro
+  " autocmd BufEnter *.odt silent  %!pandoc --columns=78 -f odt -t markdown "%"
+  " }}}
+
   " Compile rmarkdown / markdown
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
   autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
@@ -328,6 +346,8 @@
   nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
   nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
   nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
+
+  nmap <Leader>c :w! \| !compiler "<c-r>%<CR>"
 " }}}
 
   " === Syntax === {{{

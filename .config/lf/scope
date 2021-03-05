@@ -71,7 +71,7 @@ handle_other() {
         *.o) nm "${FILE_PATH}" | less ;;
         *.torrent) transmission-show "${FILE_PATH}";;
         *.iso) iso-info --no-header -l "${FILE_PATH}";;
-        *odt,*.ods,*.odp,*.sxw) odt2txt "${FILE_PATH}";;
+        *odt) odt2txt "${FILE_PATH}";;
         *.doc) catdoc "${FILE_PATH}" ;;
         *.docx) docx2txt "${FILE_PATH}" - ;;
         *.csv) cat "${FILE_PATH}" | sed s/,/\\n/g ;;

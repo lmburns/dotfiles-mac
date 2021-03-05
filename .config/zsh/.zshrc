@@ -172,8 +172,8 @@ zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
 # fzf search for file and open in vim
 vf() { fzf | xargs -r -I % $EDITOR % ; }
 # rsync from local pc to server
-rsyncto() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
-rsyncfrom() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
+rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
+rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
 # open fzf in a directory and open file in vim
 fzfd() { fd $1 | fzf | xargs -r -I % $EDITOR % ; }
 # fzf pdfs and open with zathura

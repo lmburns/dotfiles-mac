@@ -94,7 +94,7 @@ alias ngc='nvim .git/config'
 alias nbconvert='jupyter nbconvert --to python'
 
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
-alias thumb='thumbsup --input ./img --output ./gallery --title "images" --theme cards && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
+alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
 alias hangups='hangups -c $XDG_CONFIG_HOME/hangups/hangups.conf'
 alias newsboat='newsboat -C $XDG_CONFIG_HOME/newsboat/config'
 alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
