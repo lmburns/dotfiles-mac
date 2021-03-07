@@ -84,8 +84,8 @@ cmd_rmcrap() {
         $rm_mac | count_cmd "__MACOSX:" | as-tree
     fi
 
-    $rm_ds -X rm -rf && \
-      $rm_mac -X rm -rf
+    $rm_ds -X rm && \
+      $rm_mac -X rm
 }
 
 

@@ -10,3 +10,4 @@ pictures ~/Pictures
 downloads ~/Downloads
 nvim ~/.config/nvim
 vimwiki ~/vimwiki
+vimwiki-index ~/vimwiki/index.md

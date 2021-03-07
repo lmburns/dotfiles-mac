@@ -821,6 +821,7 @@
   let g:startify_custom_header = [ ]
   let g:startify_relative_path = 1
   let g:startify_use_env = 1
+  let g:startify_update_oldfiles = 1
 
   function! s:gitModified()
     let files = systemlist('git ls-files -m 2>/dev/null')
@@ -828,19 +829,21 @@
   endfunction
 
 " same as above, but show untracked files, honouring .gitignore
-  function! s:gitUntracked()
-    let files = systemlist('git ls-files -o --exclude-standard 2>/dev/null')
+  function! s:gitTracked()
+    let files = systemlist('git --exclude-standard 2>/dev/null')
     return map(files, "{'line': v:val, 'path': v:val}")
   endfunction
 
+
   " Custom startup list, only show MRU from current directory/project
   let g:startify_lists = [
+  \  { 'type': 'files',     'header': ['MRU'] },
   \  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
   \  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
   \  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
   \  { 'type': 'commands',  'header': [ 'Commands' ]       },
-  \ { 'type': function('s:gitModified'),  'header': ['   git modified']},
-  \ { 'type': function('s:gitUntracked'), 'header': ['   git untracked']},
+  \  { 'type':  function('s:gitModified'),  'header': ['git modified']},
+  \  { 'type':  function('s:gitTracked'), 'header': ['git untracked']}
   \ ]
 
   let g:startify_commands = [

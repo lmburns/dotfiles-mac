@@ -309,3 +309,11 @@ export PATH="$HOME/.local/bin:$PATH"
 
 killall limelight &> /dev/null
 (limelight &> /dev/null &)
+
+export PATH="/usr/local/opt/expat/bin:$PATH"
+export LDFLAGS="-L/usr/local/opt/expat/lib"
+export CPPFLAGS="-I/usr/local/opt/expat/include"
+export PKG_CONFIG_PATH="/usr/local/opt/expat/lib/pkgconfig"
+# export CFLAGS="-I$(xcrun --show-sdk-path)/usr/include $CFLAGS"
+# export LDFLAGS="-L/usr/local/opt/readline/lib"
+# export CPPFLAGS="-I/usr/local/opt/readline/include"
