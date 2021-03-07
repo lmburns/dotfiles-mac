@@ -20,7 +20,7 @@
   Plug 'vimwiki/vimwiki'
   Plug 'SidOfc/mkdx'
   Plug 'junegunn/goyo.vim'
-  " Plug 'vifm/vifm.vim'
+  Plug 'vifm/vifm.vim'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
   Plug 'zhou13/vim-easyescape'
@@ -54,6 +54,7 @@
   Plug 'alvan/vim-closetag'
   Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
   Plug 'ap/vim-css-color'
+  Plug 'yggdroot/indentline'
 
   " Themes
   Plug 'burnsac5040/kimbox'
@@ -254,13 +255,16 @@
   nnoremap <expr> oo printf('m`%so<ESC>``', v:count1)
   nnoremap <expr> OO printf('m`%sO<ESC>``', v:count1)
 
-  " tabs & navigation
-  " map <Leader>nt :tabnew <bar> Files<CR>
-  " map <Leader>to :tabonly<CR>
-  " map <Leader>tc :tabclose<CR>
-  " map <Leader>tm :tabmove<cr>
-  " map <Leader>tn :tabn<cr>
-  " map <Leader>tp :tabp<cr>
+  cnoreabbrev W! w!
+  cnoreabbrev Q! q!
+  cnoreabbrev Qall! qall!
+  cnoreabbrev Wq wq
+  cnoreabbrev Wa wa
+  cnoreabbrev wQ wq
+  cnoreabbrev WQ wq
+  cnoreabbrev W w
+  cnoreabbrev Q q
+  cnoreabbrev Qall qall
 
   " smart way to move between windows
   map <C-j> <C-W>j
@@ -331,6 +335,9 @@
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
   autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
   autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
+
+  " insert template to blog post
+  autocmd FileType markdown noremap <Leader>r itags:<Space>macOS<CR>title:<CR>author:<Space>Lucas<Space>Burns<CR>date:<Space><C-r>=strftime('%F')<CR><CR>aside:<CR><CR>#
 
   " check html syntax
   nmap <Leader>h5 :!html5check %<CR>
@@ -598,7 +605,7 @@
   let g:NERDTreeMinimalUI = 1
   let g:NERDTreeIgnore = []
   let g:NERDTreeStatusline = ''
-  let g:NERDTreeHijackNetrw = 1
+  let g:NERDTreeHijackNetrw = 0
   let g:NERDTreeDirArrowExpandable = '❱'
   let g:NERDTreeDirArrowCollapsible = '❰'
 
@@ -697,6 +704,7 @@
   " nmap f <Plug>(easymotion-overwin-f)
   " move forward line vim-sneak
   nmap s <Plug>(easymotion-overwin-f2)
+  map <Leader><Leader>. <Plug>(easymotion-repeat)
 
   map <Leader><Leader>l <Plug>(easymotion-lineforward)
   map <Leader><Leader>j <Plug>(easymotion-j)
@@ -1085,3 +1093,50 @@
             \ <SID>isAtStartOfLine('__') ?
             \ '<c-o>:silent! TableModeDisable<cr>' : '__'
  " }}}
+
+ " === vifm === {{{
+let g:vifm_replace_netrw = 1
+let g:vifm_replace_netrw_cmd = "Vifm"
+"let g:vifm_embed_term = 1
+"let g:vifm_embed_split = 1
+
+"let g:vifm_exec_args =
+" }}}
+
+" === vim indentline === {{{
+"let g:indentLine_showFirstIndentLevel = 1
+"let g:indentLine_fileType = ['javascript', 'c']
+let g:indentLine_fileTypeExclude = ["vimwiki", "coc-explorer", "help", "undotree", "diff"]
+let g:indentLine_bufTypeExclude = ["help", "terminal"]
+"let g:indentLine_bufNameExclude = []
+let g:indentLine_indentLevel = 10
+
+" Conceal settings
+let g:indentLine_setConceal = 1
+let g:indentLine_concealcursor = "incv"
+let g:indentLine_conceallevel = 2
+
+let g:indentLine_char = '|'
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
+" Leading Space
+"let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_leadingSpaceChar = "•"
+
+" Use Theme Colors
+let g:indentLine_setColors = 1
+
+" 16 Color
+let g:indentLine_color_tty_light = 7 " (default: 4)
+let g:indentLine_color_dark = 1 " (default: 2)
+
+" 256
+let g:indentLine_color_term = 239
+
+" True Color
+let g:indentLine_color_gui = '#616161'
+
+" Background (256, True)
+"let g:indentLine_bgcolor_term = 202
+"let g:indentLine_bgcolor_gui = '#FF5F00'
+" }}}
