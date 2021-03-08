@@ -113,6 +113,7 @@
   " let g:oceanic_material_background = "deep"
   let g:oceanic_material_background = "ocean"
   let g:oceanic_material_allow_bold = 1
+  let g:gruvbox_contrast_dark = 'medium'
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
   let g:material_theme_style = 'ocean-community'
@@ -139,8 +140,8 @@
   syntax enable
   " colorscheme spaceduck
   " colorscheme kimbox
-  colorscheme oceanic_material
-  " colorscheme gruvbox-material
+  " colorscheme oceanic_material
+  colorscheme gruvbox-material
   " colorscheme edge
   " colorscheme sonokai
   " colorscheme forest-night
@@ -289,10 +290,10 @@
   autocmd BufRead,BufNewFile *.tex set filetype=tex
 
   " Enable Goyo by default for mutt writing
-	autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
-	autocmd BufRead,BufNewFile neomutt-void* :Goyo | set bg=light
-	autocmd BufRead,BufNewFile neomutt-void* map ZZ :Goyo\|x!<CR>
-	autocmd BufRead,BufNewFile neomutt-void* map ZQ :Goyo\|q!<CR>
+	" autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
+	" autocmd BufRead,BufNewFile neomutt-void* :Goyo | set bg=light
+	" autocmd BufRead,BufNewFile neomutt-void* map ZZ :Goyo\|x!<CR>
+	" autocmd BufRead,BufNewFile neomutt-void* map ZQ :Goyo\|q!<CR>
 
   " automatically deletes all tralling whitespace on save.
   autocmd BufWritePre * %s/\s\+$//e            " End of lines

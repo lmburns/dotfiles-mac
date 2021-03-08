@@ -15,7 +15,7 @@
 # use_emoji=true                              # uncomment this line to use an emoji
 home_path=$HOME/Library/LaunchAgents/         # uncomment this line to list User LaunchAgents
 glob_agent_path=/Library/LaunchAgents/        # uncomment this line to list Global LaunchAgents
-# glob_daemon_path=/Library/LaunchDaemons/    # uncomment this line to list Global LaunchDaemons
+glob_daemon_path=/Library/LaunchDaemons/    # uncomment this line to list Global LaunchDaemons
 
 # ==============================================================================
 

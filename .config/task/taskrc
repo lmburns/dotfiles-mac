@@ -20,7 +20,7 @@ confirmation=yes
 echo.command=yes
 next=2                                  # Number of tasks per project report
 bulk=2                                  # More than 2 tasks confirmation
-nag=You have higher priority tasks
+nag=
 
 # Header and footer are missing
 verbose=blank,footnote,label,new-id,affected,edit,special,project,sync,unwait
@@ -56,14 +56,14 @@ color.project.imp=blue
 #color.keyword.car=on_blue             # Color of description.contains:car tasks
 #color.recurring=on_red                # Color of recur.any: tasks
 #color.header=bold_green               # Color of header messages
-color.footnote=on green             # Color of footnote messages
+color.footnote=on red             # Color of footnote messages
 
 #shadow.file=/tmp/shadow.txt           # Location of shadow file
 #shadow.command=list                   # Task command for shadow file
 #shadow.notify=on                      # Footnote when updated
 
 default.project=general                # Unless otherwise specified
-#default.priority=M                    # Unless otherwise specified
+default.priority=M                    # Unless otherwise specified
 default.command=list                   # Unless otherwise specified
 
 # Fields: id,uuid,project,priority,entry,start,due,recur,recur_ind,age,

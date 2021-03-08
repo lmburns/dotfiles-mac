@@ -116,6 +116,9 @@ bindkey '^e' edit-command-line
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey -M vicmd 'H' beginning-of-line; bindkey -M vicmd 'L' end-of-line
 
+# fixes macOS consumption of ^O command
+stty discard undef
+
 # === fzf tab completion ===
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-preview 'ps --pid=$word -o cmd --no-headers -w -w'
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags '--preview-window=down:3:wrap'
@@ -307,13 +310,5 @@ eval "$(rbenv init -)"
 export PATH="$HOME/.local/bin:$PATH"
 # }}}
 
-killall limelight &> /dev/null
-(limelight &> /dev/null &)
-
-export PATH="/usr/local/opt/expat/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/expat/lib"
-export CPPFLAGS="-I/usr/local/opt/expat/include"
-export PKG_CONFIG_PATH="/usr/local/opt/expat/lib/pkgconfig"
-# export CFLAGS="-I$(xcrun --show-sdk-path)/usr/include $CFLAGS"
-# export LDFLAGS="-L/usr/local/opt/readline/lib"
-# export CPPFLAGS="-I/usr/local/opt/readline/include"
+# killall limelight &> /dev/null
+# (limelight &> /dev/null &)
