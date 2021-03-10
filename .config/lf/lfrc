@@ -293,6 +293,7 @@ cmd ql_preview &{{
 
 # change permissions
 cmd chmod ${{
+  clear;
   printf "\nPermissions: "
   read -r ans
   for file in "$fx"
@@ -469,6 +470,7 @@ map <c-d> yank-path				# yank file path
 map <enter> open
 map mf push :mkfile<space>
 map md push :mkdir<space>
+map ms $mkscript
 map Ql :ql_preview				# open in quicklook (macOS)
 
 map gg top

@@ -86,7 +86,7 @@ alias c="/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOM
 alias xav="/usr/bin/git --git-dir=$XDG_DATA_HOME/dottest --work-tree=$HOME"
 
 alias gua='git remote | xargs -L1 git push --all'
-alias grm='ssh git@burnsac.xyz -- grm'
+alias grmssh='ssh git@burnsac.xyz -- grm'
 alias g='git'
 alias gtrr='git ls-tree -r master --name-only | as-tree'
 alias magit='nvim -c MagitOnly'

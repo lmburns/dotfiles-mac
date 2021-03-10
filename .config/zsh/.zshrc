@@ -91,7 +91,11 @@ zinit light-mode for \
     kazhala/dotbare \
     andrewferrier/fzf-z \
     blockf \
-        zsh-users/zsh-completions
+        zsh-users/zsh-completions \
+    src="etc/git-extras-completion.zsh" \
+      tj/git-extras
+
+zinit ice lucid ver'master' wait'0b' as'completion' has'git-extras' blockf
 
 zinit ice silent wait"1"; zinit light supercrabtree/k
 
@@ -299,11 +303,9 @@ export PINENTRY_USER_DATA="USE_CURSES=1"
 export PATH="$HOME/opt/anaconda3/bin:$PATH"
 
 # overriding macOS default ruby
-# export PATH="/usr/local/opt/ruby/bin:$PATH"
-# export PATH="/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
-
 export GEM_HOME="$XDG_DATA_HOME/gem"
 export PATH="$HOME/.rbenv/version/3.0.0/bin:$PATH"
+export PATH="$XDG_DATA_HOME/gem/bin:$PATH"
 eval "$(rbenv init -)"
 
 # Dragon - drag and drop

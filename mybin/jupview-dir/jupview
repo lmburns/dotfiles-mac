@@ -2,15 +2,12 @@
 
 set -eu
 
-die() {
-    echo "$@"
-    exit 1
-}
+prog=${0##*/}
 
 jupview_usage() {
     cat <<-_EOF
     $(jupview_short_usage)
-        Provides a way to view Jupyter Notebooks in the terminal.
+        ${prog} provides a way to view Jupyter Notebooks in the terminal.
         This is able to be used as a previewer with terminal file managers
         like lf, ranger, and nnn by default with no parameters given.
 
@@ -33,18 +30,13 @@ _EOF
 }
 
 jupview_short_usage() {
-    echo "Usage: jupview [--help,-h]" \
+    echo "Usage: ${prog} [--help,-h]" \
         "[--pager,-P]" \
         "[--no-input,-I]" \
         "[--no-prompt,-p]" \
         "[--clear-output,-O]" \
         "[--theme,-t]"
 }
-
-command_exists() {
-    command -v "$1" >/dev/null 2>&1 || exit 1
-}
-
 
 jupview_cmd() {
     local opts page=0
@@ -68,19 +60,13 @@ jupview_cmd() {
         --) shift; break ;;
     esac done
 
-    if command_exists bat; then
-        bat=1
-    elif command_exists w3m; then
-        w3m=1
+    if [ -x "$(command -v bat)" ]; then
+      bat=1 || (echo "bat is not in your \$PATH" && exit 1)
+    elif [ -x "$(command -v w3m)" ]; then
+      w3m=1 || (echo "w3m is not in your \$PATH" && exit 1)
     fi
 
-    [[ $err -ne 0 ]] && die "$(jupview_short_usage)"
-
-    if [[ $bat = 1 ]]; then
-        command_exists bat || die "bat is not in your \$PATH"
-    elif [[ $w3m = 1 ]]; then
-        command_exists w3m || die "w3m is not in your \$PATH"
-    fi
+    [ $err -ne 0 ] && "${jupview_short_usage}" && exit 1
 
     local nb_cmd="jupyter nbconvert --stdout --to html"
     local w3m_cmd="w3m -dump -T text/html"
@@ -96,7 +82,6 @@ jupview_cmd() {
         nb_cmd="${nb_cmd}"
     fi
 
-
     if [[ -n "$bat_theme" ]] && [[ $page = 1 ]]; then
         bat_cmd="bat -f --theme ${bat_theme} --style auto --language python"
     elif [[ -n "$bat_theme" ]] && [[ $page = 0 ]]; then
@@ -107,15 +92,22 @@ jupview_cmd() {
         bat_cmd=${bat_cmd}
     fi
 
+    file="$(basename "$1")"
+    ext=${file##*.}
+
     if [ ! -f "$1" ]; then
         echo "$(basename "$@"): $1: No such file"
         exit 2
     fi
 
+    if [ "$ext" != "ipynb" ]; then
+      echo "File type must be '.ipynb'"
+      exit 2
+    fi
+
     if [[ $clear_output = 1 ]]; then
-        base=$(basename $1)
-        temp="/tmp/$base"
-        jupyter nbconvert --clear-output --to notebook --output="/tmp/${base}" "$1" >/dev/null 2>&1
+        temp="/tmp/${file}"
+        jupyter nbconvert --clear-output --to notebook --output="/tmp/${file}" "$1" >/dev/null 2>&1
         $nb_cmd $temp 2>/dev/null | $w3m_cmd | $bat_cmd && rm -rf $temp
     else
         $nb_cmd $1 2>/dev/null | $w3m_cmd | $bat_cmd
@@ -123,7 +115,7 @@ jupview_cmd() {
 }
 
 
-if [[ "$1" == "help" ]] || [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
+if [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     jupview_usage
 fi
 

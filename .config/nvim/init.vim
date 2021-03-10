@@ -188,7 +188,7 @@
   set wildignore+=.git,.DS_Store,node_modules
   " set nowrap                            " do not wrap text at `textwidth`
   set synmaxcol=1000                    " do not highlight long lines
-  " set timeoutlen=250                    " keycode delay
+  set timeoutlen=350                    " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
   set confirm                           " confirm when editing readonly
   filetype plugin indent on
@@ -512,7 +512,7 @@
   nmap <silent> <Leader>ep :CocCommand explorer --preset projects<CR>
   nmap <silent> <Leader>eg :CocCommand explorer --preset github<CR>
   nmap <silent> <Leader>eo :CocCommand explorer --preset opt<CR>
-  nmap <silent> <Leader> ex :CocCommand explorer
+  nmap <silent> <Leader>ex :CocCommand explorer
   nmap <silent> <Leader>el :CocList explPresets
 
   " GoTo code navigation.
@@ -606,7 +606,7 @@
   let g:NERDTreeMinimalUI = 1
   let g:NERDTreeIgnore = []
   let g:NERDTreeStatusline = ''
-  let g:NERDTreeHijackNetrw = 0
+  let g:NERDTreeHijackNetrw = 1
   let g:NERDTreeDirArrowExpandable = '❱'
   let g:NERDTreeDirArrowCollapsible = '❰'
 
@@ -1050,7 +1050,7 @@
   endif
 
   nnoremap <Leader>mcs :vs ~/vimwiki/dotfiles/mkdx.md<CR>
-  nnoremap <Leader>nv :e $VIMRC<CR>
+  nnoremap <Leader>ev :e $VIMRC<CR>
 " }}}
 
 " === Hack to make CocExplorer hijack Netwr === {{{
@@ -1096,48 +1096,12 @@
  " }}}
 
  " === vifm === {{{
-let g:vifm_replace_netrw = 1
-let g:vifm_replace_netrw_cmd = "Vifm"
+" let g:vifm_replace_netrw = 1
+" let g:vifm_replace_netrw_cmd = "Vifm"
 "let g:vifm_embed_term = 1
 "let g:vifm_embed_split = 1
 
 "let g:vifm_exec_args =
 " }}}
 
-" === vim indentline === {{{
-"let g:indentLine_showFirstIndentLevel = 1
-"let g:indentLine_fileType = ['javascript', 'c']
-let g:indentLine_fileTypeExclude = ["vimwiki", "coc-explorer", "help", "undotree", "diff"]
-let g:indentLine_bufTypeExclude = ["help", "terminal"]
-"let g:indentLine_bufNameExclude = []
-let g:indentLine_indentLevel = 10
-
-" Conceal settings
-let g:indentLine_setConceal = 1
-let g:indentLine_concealcursor = "incv"
-let g:indentLine_conceallevel = 2
-
-let g:indentLine_char = '|'
-let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-
-" Leading Space
-"let g:indentLine_leadingSpaceEnabled = 1
-let g:indentLine_leadingSpaceChar = "•"
-
-" Use Theme Colors
-let g:indentLine_setColors = 1
-
-" 16 Color
-let g:indentLine_color_tty_light = 7 " (default: 4)
-let g:indentLine_color_dark = 1 " (default: 2)
-
-" 256
-let g:indentLine_color_term = 239
-
-" True Color
-let g:indentLine_color_gui = '#616161'
-
-" Background (256, True)
-"let g:indentLine_bgcolor_term = 202
-"let g:indentLine_bgcolor_gui = '#FF5F00'
-" }}}
+source ~/.config/nvim/indentline.vim
