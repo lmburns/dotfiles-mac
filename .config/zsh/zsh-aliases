@@ -4,6 +4,8 @@ alias bo='br --conf $XDG_CONFIG_HOME/broot/select.toml'
 alias mpd='mpd ~/.config/mpd/mpd.conf'
 alias kc='keychain'
 
+alias updateblock='curl --silent https://hosts.oisd.nl | grep '^0\.0\.0\.0' | sort | awk '{print "address=/"$2"/"}' > /usr/local/etc/dnsmasq.d/ads.conf'
+
 # alias sudo='doas'
 alias zn='zinit'
 alias f='pushd'
@@ -46,13 +48,13 @@ alias mwmail='mw -Y'
 alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@burnsac.xyz'
 
 # Locations
-alias projects='cd $HOME/projects'
+alias projd='cd $HOME/projects'
 alias unx='cd $HOME/Desktop/unix/mac'
-alias scripts='cd $HOME/Desktop/unix/mac/scripts'
 alias zdotd='cd "$ZDOTDIR"'
 alias gitd='cd $HOME/projects/github'
 alias optd='cd $HOME/opt'
 alias confd='cd $XDG_CONFIG_HOME'
+alias docd='cd $HOME/Documents'
 
 alias wget='wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts'
 alias tsm='transmission-remote'
@@ -109,16 +111,17 @@ alias trm='trash-rm'
 alias vi='nvim'
 alias vimdiff='nvim -d'
 alias jrnl=' jrnl'
-# alias pandoc='pandoc --highlight-style zenburn'
+
+alias ume='um edit'
 
 # RSync / a=rlptgoD
-alias rsynca='rsync -Prultcv --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
+alias rsynca='rsync -Pyuazv --info=progress2 --name=name0 --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
 alias rsyncpr='rsync -Prultcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" $HOME/projects /Volumes/SSD/manual'
 alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "MYHOME" --exclude "unix" $HOME/Desktop /Volumes/SSD/manual'
 alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" $HOME/Desktop/unix /Volumes/SSD/manual'
 alias rsyncho='rsync -Prultcv --exclude ".DS_Store" $HOME/Desktop/MYHOME /Volumes/SSD/manual'
 
-alias rsyncsrv='rsync -Prugoptczl --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@burnsac.xyz:/ /Volumes/SSD/server-full'
-alias wwwpull='rsync -Prugoptczl --delete-after root@burnsac.xyz:/var/www $HOME/server'
-alias wwwpush='rsync -Prugoptczl --delete-after --exclude ".DS_Store" $HOME/server /Volumes/SSD'
+alias rsyncsrv='rsync -Prugoptczl --info=progress2 --info=name0 --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@burnsac.xyz:/ /Volumes/SSD/server-full'
+alias wwwpull='rsync -rugoptczl --info=progress2 --info=name0 --delete-after root@burnsac.xyz:/var/www $HOME/server'
+alias wwwpush='rsync -rugoptczl --info=progress2 --info=name0 --delete-after --exclude ".DS_Store" $HOME/server /Volumes/SSD'
 alias sudorysnc='sudo rsync -PrugptvENtzl --delete-after --include ".*" --exclude ".DS_Store" --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" / /Volumes/SSD/void'

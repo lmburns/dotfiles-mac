@@ -485,12 +485,11 @@
     \ 'coc-r-lsp',
     \ 'coc-vimlsp',
     \ 'coc-sh',
-    \ 'coc-tsserver',
     \ 'coc-git',
     \ 'coc-sql'
     \ ]
 
-  let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
+  " let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
 
   let g:coc_explorer_global_presets = {
       \ 'config': {
@@ -973,7 +972,7 @@
   let g:neoterm_default_mod='belowright' " open terminal in bottom split
   let g:neoterm_size=14                  " terminal split size
   let g:neoterm_autoscroll=1             " scroll to the bottom
-  nnoremap <Leader>rf :T ipython --no-autoindent<CR>
+  nnoremap <Leader>rf :T ipython --no-autoindent --colors=Linux --matplotlib<CR>
   nnoremap <Leader>rr :Tclear<CR>
   nnoremap <Leader>rt :Ttoggle<CR>
   nnoremap <Leader>ro :Ttoggle<CR> :Ttoggle<CR>
@@ -1078,21 +1077,6 @@
   let g:table_mode_corner='|'
   let g:table_mode_fillchar = '-'
   let g:table_mode_separator = '|'
-
-
-  function! s:isAtStartOfLine(mapping)
-    let text_before_cursor = getline('.')[0 : col('.')-1]
-    let mapping_pattern = '\V' . escape(a:mapping, '\')
-    let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
-    return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
-  endfunction
-
-  inoreabbrev <expr> <bar><bar>
-            \ <SID>isAtStartOfLine('\|\|') ?
-            \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
-  inoreabbrev <expr> __
-            \ <SID>isAtStartOfLine('__') ?
-            \ '<c-o>:silent! TableModeDisable<cr>' : '__'
  " }}}
 
  " === vifm === {{{

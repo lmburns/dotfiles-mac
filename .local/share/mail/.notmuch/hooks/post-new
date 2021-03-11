@@ -1,6 +1,6 @@
 #!/bin/sh
 
-$HOME/opt/anaconda3/bin/afew --tag --new
+# $HOME/opt/anaconda3/bin/afew --tag --new
 
 echo "Importing new mail"
 # notmuch new
@@ -21,8 +21,8 @@ notmuch tag +apple to:burnsac at me.com and not tag:apple
 notmuch tag +xyz to:lucas at burnsac.xyz and not tag:xyz
 notmuch tag +gmail to:burnsppl at gmail.com and not tag:gmail
 
-notmuch tag -new -- tag:new and from:burnsac@me.com
-notmuch tag -new -- tag:new and from:lucas@burnsac.xyz
-notmuch tag -new -- tag:new and from:burnsppl@gmail.com
+# notmuch tag -new -- tag:new and from:burnsac@me.com
+# notmuch tag -new -- tag:new and from:lucas@burnsac.xyz
+# notmuch tag -new -- tag:new and from:burnsppl@gmail.com
 
 echo "Done"

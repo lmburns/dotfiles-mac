@@ -40,7 +40,7 @@ recompile_repo() {
   echo "[$1] recompiling stagit pages..."
   repo_dir="${repos_root}/${1}.git"
   repo_web_dir="${web_root}/${repo_name}"
-  cachefile="${repo_dir}/.htmlcache"
+  cachefile="${repo_dir}/.stagit-build-cache"
 
   [ -d "$repo_dir" ] || { echo "[$1] repo not found"; return 1; }
   mkdir -p "$repo_web_dir"
@@ -49,33 +49,68 @@ recompile_repo() {
   rm -f "$cachefile"                 && \
   rm -rf "commit" "file"             && \
   stagit -c "$cachefile" "$repo_dir" && \
-  ln -sf log.html index.html         && \
+  (ln -sf about.html index.html      || \
+  ln -sf log.html index.html)        && \
   ln -sf ../styles/style.css style.css      && \
   ln -sf ../logo.png logo.png        && \
   ln -sf ../favicon.png favicon.png
   echo "[$1] done!"
 }
 
-rebuild_index() {
-  echo "[index] rebuilding index..."
+# OLD REBUILD INDEX
+# rebuild_index() {
+#   echo "[index] rebuilding index..."
+#   mkdir -p "${web_root}" || return 1;
+#   # 1. find all directories in $repos_root ending with .git
+#   # 2. filter all the public repos (with git-daemon-export-ok)
+#   # 3. exclude any repo marked with stagit-no-index
+#   # 4. sort the result
+#   # 5. hack for posix compatibility
+#   # 6. run stagit-index on the result
+#   # 7. export result to index.html
+#   find "${repos_root}/." ! -name . -prune     \
+#     -type d -name "*.git"                     \
+#     -exec test -e "{}/git-daemon-export-ok" \;\
+#     -exec test ! -e "{}/stagit-no-index" \;   \
+#     -print                                    \
+#     | sort -f                                 \
+#     | sed -e 's/"/"\\""/g' -e 's/.*/"&"/'     \
+#     | xargs stagit-index                      \
+#     > "${web_root}/index.html" && \
+#   echo "[index] done!"
+# }
+
+run_post_receive() {
+  echo "[index] rebuilding index with hook..."
   mkdir -p "${web_root}" || return 1;
-  # 1. find all directories in $repos_root ending with .git
-  # 2. filter all the public repos (with git-daemon-export-ok)
-  # 3. exclude any repo marked with stagit-no-index
-  # 4. sort the result
-  # 5. hack for posix compatibility
-  # 6. run stagit-index on the result
-  # 7. export result to index.html
-  find "${repos_root}/." ! -name . -prune     \
-    -type d -name "*.git"                     \
-    -exec test -e "{}/git-daemon-export-ok" \;\
-    -exec test ! -e "{}/stagit-no-index" \;   \
-    -print                                    \
-    | sort -f                                 \
-    | sed -e 's/"/"\\""/g' -e 's/.*/"&"/'     \
-    | xargs stagit-index                      \
-    > "${web_root}/index.html" && \
-  echo "[index] done!"
+
+  args=""
+  for cat in "Projects" "Forks"; do
+      args="$args -c $cat"
+      for dir in "$repos_root/"*.git; do
+        dir="${dir%/}"
+        [ ! -f "$dir/git-daemon-export-ok" ] && continue
+        if [ -f "$dir/category" ]; then
+          [ "$(cat "$dir/category")" = "$cat" ] && args="$args $dir"
+        else
+          stagit_uncat="$1"
+        fi
+      done
+    done
+
+  if [ -n "$stagit_uncat" ]; then
+      args="$args -c Other"
+      for dir in "$repos_root/"*.git/; do
+          dir="${dir%/}"
+          [ -f "$dir/git-daemon-export-ok" ] && [ ! -f "$dir/category" ] && \
+              args="$args $dir"
+      done
+  fi
+
+  # make index
+  echo "$args" | xargs stagit-index > "${web_root}/index.html"
+
+  echo "done"
 }
 
 RED="\033[91m"
@@ -217,7 +252,7 @@ grm_recompile() {
   do
     recompile_repo "$repo_name" &
   done
-  rebuild_index &
+  run_post_receive &
   wait
   echo "recompilation done!"
 }

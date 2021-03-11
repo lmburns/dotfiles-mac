@@ -294,6 +294,9 @@ export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 # OpenVPN
 export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 
+# add GNU coreutils to path with no 'g' prefix
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
 # GPG
 export GPG_TTY=$TTY
 export GPG_AGENT_INFO="$HOME/.gnupg/S.gpg-agent"
@@ -312,5 +315,15 @@ eval "$(rbenv init -)"
 export PATH="$HOME/.local/bin:$PATH"
 # }}}
 
-# killall limelight &> /dev/null
-# (limelight &> /dev/null &)
+killall limelight &> /dev/null
+(limelight &> /dev/null &)
+
+listening() {
+    if [ $# -eq 0 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P
+    elif [ $# -eq 1 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
+    else
+        echo "Usage: listening [pattern]"
+    fi
+}

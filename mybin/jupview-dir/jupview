@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-set -eu
+# set -eu
 
-prog=${0##*/}
+prog="${0##*/}"
 
 jupview_usage() {
     cat <<-_EOF
@@ -39,15 +39,13 @@ jupview_short_usage() {
 }
 
 jupview_cmd() {
-    local opts page=0
-    local no_input=0
-    local no_prompt=0
-    local clear_output=0
-    local bat_theme=""
-    local bat=0
-    local w3m=0
-    opts="$($GETOPT -o PIpOt: -l pager,no-input,no-prompt,clear-output,theme: -- "$@")"
-    local err=$?
+    page=0
+    no_input=0
+    no_prompt=0
+    clear_output=0
+    bat_theme=""
+    opts=$($GETOPT -o PIpOt: -l pager,no-input,no-prompt,clear-output,theme: -- "$@")
+    err=$?
 
     eval set -- "$opts"
 
@@ -60,37 +58,40 @@ jupview_cmd() {
         --) shift; break ;;
     esac done
 
-    if [ -x "$(command -v bat)" ]; then
-      bat=1 || (echo "bat is not in your \$PATH" && exit 1)
-    elif [ -x "$(command -v w3m)" ]; then
-      w3m=1 || (echo "w3m is not in your \$PATH" && exit 1)
-    fi
+    [ -x "$(command -v bat)" ] || (echo "bat is not in your \$PATH" && exit 1)
+    [ -x "$(command -v w3m)" ] || (echo "w3m is not in your \$PATH" && exit 1)
 
-    [ $err -ne 0 ] && "${jupview_short_usage}" && exit 1
+    [ $err -ne 0 ] && jupview_short_usage && exit 1
 
-    local nb_cmd="jupyter nbconvert --stdout --to html"
-    local w3m_cmd="w3m -dump -T text/html"
-    local bat_cmd="bat -Pf --theme gruvbox --style auto --language python"
+    nb_cmd="jupyter nbconvert --stdout --to html"
+    w3m_cmd="w3m -dump -T text/html"
+    bat_cmd="bat -Pf --theme gruvbox-dark --style auto --language python"
 
-    if [[ $no_input = 1 ]] && [[ $no_prompt = 1 ]]; then
-        nb_cmd="${nb_cmd} --no-input --no-prompt"
-    elif [[ $no_input = 1 ]] && [[ $no_prompt = 0 ]]; then
-        nb_cmd="${nb_cmd} --no-input"
-    elif [[ $no_input = 0 ]] && [[ $no_prompt = 1 ]]; then
-        nb_cmd="${nb_cmd} --no-prompt"
-    else
-        nb_cmd="${nb_cmd}"
-    fi
+    case "$no_input" in
+      1)
+        case "$no_prompt" in
+          1) nb_cmd="${nb_cmd} --no-input --no-prompt" ;;
+          0) nb_cmd="${nb_cmd} --no-input" ;;
+        esac ;;
+      0)
+        case "$no_prompt" in
+          1) nb_cmd="${nb_cmd} --no-prompt" ;;
+          0) nb_cmd="${nb_cmd}" ;;
+        esac ;;
+    esac
 
-    if [[ -n "$bat_theme" ]] && [[ $page = 1 ]]; then
-        bat_cmd="bat -f --theme ${bat_theme} --style auto --language python"
-    elif [[ -n "$bat_theme" ]] && [[ $page = 0 ]]; then
-        bat_cmd="bat -Pf --theme ${bat_theme} --style auto --language python"
-    elif [[ -z $bat_theme ]] && [[ $page = 1 ]]; then
-        bat_cmd="bat -f --theme gruvbox --style auto --language python"
-    else
-        bat_cmd=${bat_cmd}
-    fi
+    case "$page" in
+      1)
+        case "$bat_theme" in
+          "") bat_cmd="bat -f --theme gruvbox-dark --style auto --language python" ;;
+           *) bat_cmd="bat -f --theme ${bat_theme} --style auto --language python" ;;
+        esac ;;
+      0)
+        case "$bat_theme" in
+          "") bat_cmd=${bat_cmd} ;;
+           *) bat_cmd="bat -Pf --theme ${bat_theme} --style auto --language python" ;;
+        esac ;;
+    esac
 
     file="$(basename "$1")"
     ext=${file##*.}
@@ -105,12 +106,12 @@ jupview_cmd() {
       exit 2
     fi
 
-    if [[ $clear_output = 1 ]]; then
+    if [ $clear_output = 1 ]; then
         temp="/tmp/${file}"
         jupyter nbconvert --clear-output --to notebook --output="/tmp/${file}" "$1" >/dev/null 2>&1
-        $nb_cmd $temp 2>/dev/null | $w3m_cmd | $bat_cmd && rm -rf $temp
+        eval "$nb_cmd $temp 2>/dev/null | $w3m_cmd | $bat_cmd && rm -rf $temp"
     else
-        $nb_cmd $1 2>/dev/null | $w3m_cmd | $bat_cmd
+        eval "$nb_cmd $1 2>/dev/null | $w3m_cmd | $bat_cmd"
     fi
 }
 
