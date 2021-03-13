@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # generate a script in script directory
 # set bin_dir (doesn't have to exist yet)
 
-BIN_DIR="$HOME/mybin"
+BIN_DIR="${HOME}/mybin"
 
 # dialog
 ANS=$(\
@@ -30,10 +30,12 @@ if [ -d "$BIN_DIR" ]; then
   else
     printf "#!/bin/sh\n\n\n" >> "$FILE"
     chmod +x "$FILE"
-    if [ $EDITOR = "nvim" ]; then
+    if [ "$EDITOR" = "nvim" ]; then
       $EDITOR +3 "$FILE"
     else
       $EDITOR "$FILE"
     fi
   fi
 fi
+
+ln -siv "${BIN_DIR}/${ANS}" /usr/local/mybin

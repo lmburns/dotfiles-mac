@@ -435,12 +435,12 @@
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
   let g:vimwiki_table_mappings = 0
 
-  hi VimwikiHeader1 guifg=#448488 gui=bold
-  hi VimwikiHeader2 guifg=#d3859a gui=bold
-  hi VimwikiHeader3 guifg=#8ec07b gui=bold
-  hi VimwikiHeader4 guifg=#fabc2e gui=bold
-  hi VimwikiHeader5 guifg=#b8ba25 gui=bold
-  hi VimwikiHeader6 guifg=#fb4833 gui=bold
+  hi VimwikiHeader1 guifg=#cc241d gui=bold
+  hi VimwikiHeader2 guifg=#fe8019 gui=bold
+  hi VimwikiHeader3 guifg=#fabc2e gui=bold
+  hi VimwikiHeader4 guifg=#b8ba25 gui=bold
+  hi VimwikiHeader5 guifg=#b16286 gui=bold
+  hi VimwikiHeader6 guifg=#458588 gui=bold
   hi VimwikiBold    guifg=#a25bc4 gui=bold
 
   map <Leader>vw :VimwikiIndex<CR>
@@ -830,6 +830,7 @@
   let g:startify_relative_path = 1
   let g:startify_use_env = 1
   let g:startify_update_oldfiles = 1
+  let g:webdevicons_enable_startify = 1
 
   function! s:gitModified()
     let files = systemlist('git ls-files -m 2>/dev/null')

@@ -1,28 +1,143 @@
-#!/bin/sh
+#!/bin/bash
 
-# $HOME/opt/anaconda3/bin/afew --tag --new
+set -e
 
-echo "Importing new mail"
-# notmuch new
+echo -n Filtering new messages
+## All messages
 
-echo "Running global tag additions to tag new mail"
+## Poor man's progress bar. adjust for number of steps
+STEPS=30
+echo -n '   ['
+for n in `seq $STEPS`; do
+        echo -n '.'
+done
+echo -ne ']\b'
+# Backspace
+for n in `seq $STEPS`; do
+        echo -ne '\b'
+done
 
-# sent from me
-notmuch tag +sent from:burnsac@me.com and not tag:sent
-notmuch tag +sent from:lucas@burnsac.xyz and not tag:sent
-notmuch tag +sent from:burnsppl@gmail.com and not tag:sent
+## notmuch post-processing script
 
-# sent to me (all)
-notmuch tag +to-me to:burnsac at me.com and not tag:to-me
-notmuch tag +to-me to:lucas at burnsac.xyz and not tag:to-me
-notmuch tag +to-me to:burnppl at gmail.com and not tag:to-me
+## Folder-based sorting (ignoring tag:new)
+echo -n j
+notmuch tag -new -inbox +junk "folder:/burnsac@me.com/*Junk.*/"
+notmuch tag -new -inbox +junk "folder:/burnsppl@gmail.com/*Junk.*/"
+notmuch tag -new -inbox +junk "folder:/lucas@burnsac.xyz/*Junk.*/"
+# already archived - no longer unread or inbox
+echo -n a
+notmuch tag -new -unread -inbox "folder:/burnsac@me.com/Archive/"
+notmuch tag -new -unread -inbox "folder:/burnsppl@gmail.com/Archive/"
+notmuch tag -new -unread -inbox "folder:/lucas@burnsac.xyz/Archive/"
+##
 
+# The below rule all focus on (not yet filtered) messages
+
+## First we'll deal with services that send straight to us
+
+# **Github** processing is two-stage as we need to filter
+# Github notifications can be quite noisy, hopefully we'll
+echo -n 'g('
+notmuch tag +github tag:new '(from:notifications@github.com)'
+# Mentions us, better have a look
+echo -n p
+notmuch tag -new +inbox +personal tag:new '(tag:github @lmburns)'
+# Some of the projects we carea bout
+echo -n c
+notmuch tag -new +inbox +project1 tag:new '(tag:github project1)'
+echo -n t
+notmuch tag -new +inbox +project2 tag:new '(tag:github project2)'
+echo -n b
+notmuch tag -new +inbox +project3 tag:new '(tag:github project3)'
+echo -n u
+# rest of GitHub messages are for other projects and stay out of inbox
+notmuch tag -new tag:new '(tag:github)'
+## end GitHub
+echo -n ')'
+
+# we should look at right away
+echo -n e
+notmuch tag -new +inbox +flagged +eu tag:new from:Accredo@orders.accredo.com from:postmaster@mac.com from:burnsac@me.com from:expiry@letsencrypt.org from:root@burnsac.xyz
+notmuch tag +rss from:lucas@burnsac.xyz and not tag:rss
+
+## individual emails
+echo -n 0
 notmuch tag +apple to:burnsac at me.com and not tag:apple
 notmuch tag +xyz to:lucas at burnsac.xyz and not tag:xyz
 notmuch tag +gmail to:burnsppl at gmail.com and not tag:gmail
+echo -n X
 
-# notmuch tag -new -- tag:new and from:burnsac@me.com
-# notmuch tag -new -- tag:new and from:lucas@burnsac.xyz
-# notmuch tag -new -- tag:new and from:burnsppl@gmail.com
+# Notification from project1's issue tracker and chat systems
+# not really personal even though they are sent to:me@example.com
 
-echo "Done"
+# echo -n b
+# notmuch tag -new +inbox +project1 tag:new from:notifications@tasks.example.com from:noreply@example.com from:chat.example.org
+
+## End of services
+
+# To/Cc one of my addresses
+echo -n p
+notmuch tag -new +inbox +personal tag:new '(to:Burns OR to:burnsac@me.com OR to:lucas@burnsac.xyz OR to:Lucas)'
+
+# Might not be personal, but it mentions our uniquish name inside.
+# Flag, but continue processing
+echo -n s
+notmuch tag +inbox +personal tag:new '(Burns OR Lucas Burns)'
+
+# other general emails
+echo -n g
+notmuch tag -new +general tag:new 'to:@general'
+# private@ for any other list go to INBOX
+echo -n P
+notmuch tag +inbox +private tag:new 'to:private@'
+# Flag anything with "project1"
+echo -n 1
+
+echo -n t
+
+## Sent
+echo -n x
+notmuch tag +sent from:burnsac@me.com and not tag:sent
+echo -n x
+notmuch tag +sent from:lucas@burnsac.xyz and not tag:sent
+echo -n x
+notmuch tag +sent from:burnsppl@gmail.com and not tag:sent
+echo -n 0
+
+
+# **Threads to watch**
+# We sent something
+echo -n w
+notmuch tag +watch -new tag:new 'folder:/.*Sent.*/'
+# Boss is involved
+echo -n B
+notmuch tag +watch +inbox +boss tag:new '(from:boss@example.com OR to:boss@example.com OR cc:boss@example.com)'
+# Look for new message in watched threads.
+# Previously flagged once also count (we intended to reply but didn't)
+echo -n W
+notmuch search --output=threads tag:watch OR tag:replied OR tag:flagged  | xargs notmuch tag +inbox +watch -new tag:new
+##
+
+
+## Undo potential false INBOX positives from ourself
+# (keep the other tags like watch)
+echo -n -
+notmuch tag -inbox -new tag:inbox from:lucas@burnsac.xyz from:burnsac@me.com
+##
+
+# Anything else sent to @company is still in inbox, but
+# marked as unsorted
+echo -n i
+notmuch tag +inbox +unsorted -new tag:new "folder:burnsac@me.com/INBOX"
+notmuch tag +inbox +unsorted -new tag:new "folder:burnsppl@gmail.com/INBOX"
+notmuch tag +inbox +unsorted -new tag:new "folder:lucas@burnsac.xyz/INBOX"
+
+# the rest (other accounts and folders) are just unsorted
+echo -n u
+notmuch tag +unsorted -new tag:new
+
+# Tip: To sort unsorted again after updating these rules, do:
+#    notmuch tag -unsorted +new tag:unsorted
+#    notmuch tag -github +new tag:github
+
+echo ']'

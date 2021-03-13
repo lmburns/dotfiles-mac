@@ -20,6 +20,7 @@ setopt APPEND_HISTORY
 setopt SHARE_HISTORY
 setopt INC_APPEND_HISTORY
 setopt EXTENDED_HISTORY
+export PROMPT_EOL_MARK=''
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -75,6 +76,7 @@ zinit light-mode for \
     zinit-zsh/z-a-bin-gem-node
 
 zinit snippet OMZ::plugins/git/git.plugin.zsh
+zinit snippet OMZ::plugins/iterm2/iterm2.plugin.zsh
 zinit snippet OMZ::plugins/autojump/autojump.plugin.zsh
 zinit snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
 zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
@@ -90,6 +92,7 @@ zinit light-mode for \
     aloxaf/gencomp \
     kazhala/dotbare \
     andrewferrier/fzf-z \
+    tarrasch/zsh-bd \
     blockf \
         zsh-users/zsh-completions \
     src="etc/git-extras-completion.zsh" \
@@ -182,16 +185,16 @@ vf() { fzf | xargs -r -I % $EDITOR % ; }
 # rsync from local pc to server
 rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
 rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
-# open fzf in a directory and open file in vim
-fzfd() { fd $1 | fzf | xargs -r -I % $EDITOR % ; }
 # fzf pdfs and open with zathura
-fzfza() { fd -a -e "pdf" . $1 | fzf | (nohup xargs -I{} zathura "{}" >/dev/null) }
+fzfza() { fd -a -e "pdf" | fzf | xargs -I{} zathura "{}" >/dev/null }
 # shred and delete file
 sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
 # start asciinema recording
 asciir() { asciinema rec $1; }
 # grep processes with color
 pss() { ps aux | rg --color always -i $1 | rg -v rg }
+# search and kill process with fzf
+ppkill() { ps aux | fzf --height=70% | awk '{print $2}' | xargs -I{} kill -KILL "{}" }
 # grep processes with headers
 psgrep() { ps up $(pgrep -f $@) 2>&-; }
 # menubar notifier
@@ -209,8 +212,10 @@ ratesx() { curl rate.sx/$1 }
 gstatd() { gstat $1 || stat $1; echo ; du -sh $1 ; echo ; file -I -b -p $1 }
 # backup files
 bak() { /usr/local/bin/gcp --force --suffix=.bak $1 $1 }
-# link file from mybin to $PATH
+# link unlink file from mybin to $PATH
 lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
+unlbin() { rm -v /usr/local/mybin/$1 }
+
 
 # use lf to switch directories
 lfcd () {
@@ -220,6 +225,17 @@ lfcd () {
         dir="$(cat "$tmp")"
         rm -f "$tmp" >/dev/null
         [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+    fi
+}
+
+# find what's using a certain port
+listening() {
+    if [ $# -eq 0 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P
+    elif [ $# -eq 1 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
+    else
+        echo "Usage: listening [pattern]"
     fi
 }
 # }}}
@@ -296,6 +312,7 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 
 # add GNU coreutils to path with no 'g' prefix
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 
 # GPG
 export GPG_TTY=$TTY
@@ -317,13 +334,3 @@ export PATH="$HOME/.local/bin:$PATH"
 
 killall limelight &> /dev/null
 (limelight &> /dev/null &)
-
-listening() {
-    if [ $# -eq 0 ]; then
-        sudo lsof -iTCP -sTCP:LISTEN -n -P
-    elif [ $# -eq 1 ]; then
-        sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
-    else
-        echo "Usage: listening [pattern]"
-    fi
-}

@@ -4,14 +4,84 @@
 #   - man-pages(7)
 #   - groff(7)
 ---
-name: Man Page (groff/troff)
-scope: text.groff
-file_extensions: [man, groff, troff, '1', '2', '3', '4', '5', '6', '7']
+name: Manpage
+file_extensions:
+  - [man, groff, troff, '1', '2', '3', '4', '5', '6', '7']
+scope: source.man
+
+variables:
+  section_heading: '^(?!#)\S.*$'
+  command_line_option: '(--?[A-Za-z0-9][_A-Za-z0-9-]*)'
 
 contexts:
+  prototype:
+    # ignore syntax test lines
+    - match: '^#'
+      push:
+        - meta_scope: comment.syntax-test.man
+        - match: $\n?
+          pop: true
   main:
+    - match: ^
+      push: first_line
     - include: commands
     - include: text
+
+  first_line:
+    - match: '([A-Z0-9_\-]+)(\()([^)]+)(\))\s*'
+      captures:
+        1: meta.preprocessor.man
+        2: keyword.operator.man
+        3: string.quoted.other.man
+        4: keyword.operator.man
+      push:
+        - match: (?:[\w'-]+|\s(?!\s))
+          scope: markup.heading.title.man
+        - match: \s\s
+          pop: true
+        - match: '(?=\S|$)'
+          pop: true
+
+    - match: '$'
+      set: body
+
+  body:
+    - match: '^(SYNOPSIS|SYNTAX)'
+      push: Packages/C/C.sublime-syntax
+      scope: markup.heading.synopsis.man
+      embed: synopsis
+      with_prototype:
+        - match: '(?={{section_heading}})'
+          pop: true
+
+    - match: '^(?:USAGE)'
+      scope: markup.heading.synopsis.man
+      embed: synopsis
+      escape: '(?={{section_heading}})'
+
+    - match: '{{section_heading}}'
+      scope: markup.heading.other.man
+      embed: options # some man pages put command line options under the description heading
+      escape: '(?={{section_heading}})'
+
+    - match: '^\S.*$'
+      scope: markup.heading.synopsis.man
+
+    - match: '\b([a-z0-9_]+)(\()([^)]*)(\))'
+      captures:
+        1: entity.name.function
+        2: keyword.operator
+        3: constant.numeric
+        4: keyword.operator
+
+  function-call:
+    - match: '\b([A-Za-z0-9_\-]+\.)?([A-Za-z0-9_\-]+)(\()([^)]*)(\))'
+      captures:
+        1: entity.name.function.man
+        2: entity.name.function.man
+        3: keyword.operator.man
+        4: constant.numeric.man
+        5: keyword.operator.man
 
   commands:
     - match: ^[\.'']\\"

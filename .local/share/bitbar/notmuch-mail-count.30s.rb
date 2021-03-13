@@ -11,7 +11,7 @@ Encoding.default_internal = Encoding::UTF_8
 # <bitbar.image>https://www.dropbox.com/s/cgkjb7hv6s1yx1a/Screenshot%202017-02-08%2020.40.02.png?raw=1</bitbar.image>
 # <bitbar.dependencies>mutt,notmuch</bitbar.dependencies>
 
-inbox = `/usr/local/bin/notmuch --config=/Users/lucasburns/.config/notmuch/notmuch-config search tag:new`
+inbox = `/usr/local/bin/notmuch --config=/Users/lucasburns/.config/notmuch/notmuch-config search tag:unread`
 
 mails = inbox.split("\n")
 count = mails.length

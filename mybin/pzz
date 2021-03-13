@@ -3,7 +3,7 @@
 # search directory for pdf and open in zathura
 
 open=zathura
-ag -U -g ".pdf$" \
+fd --no-ignore-vcs -e "pdf" \
 | fast-p \
 | fzf --read0 --reverse -e -d $'\t'  \
     --preview-window down:80% --preview '
