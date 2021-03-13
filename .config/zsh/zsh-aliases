@@ -58,6 +58,7 @@ alias gitd='cd $HOME/projects/github'
 alias optd='cd $HOME/opt'
 alias confd='cd $XDG_CONFIG_HOME'
 alias docd='cd $HOME/Documents'
+alias mybin='cd $HOME/mybin'
 
 alias wget='wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts'
 alias tsm='transmission-remote'

@@ -127,7 +127,7 @@ dotfiles
 Meant to be used with terminal file managers (`lf`, `nnn`, `ranger`, `vifm`) without any parameters given. For example:
 
 ```sh
-#!/bin/bash
+#!/bin/sh
 
 handle_other() {
   case "${1}" in
@@ -264,6 +264,11 @@ Taken from [Luke Smith](https://github.com/LukeSmithxyz/voidrice) and modified f
 `transadd` will add a torrent to `transmission-remote`.
 
 `tordone` is a script used in `transmission`'s settings to run when a torrent is finished.
+
+================================================
+### `update_block`
+
+A script that updates block lists for `dnsmasq`, prints out the date the block list was updated, sets the DNS servers to `127.0.0.1` and `::1`, and then checks my website for DNSSEC validation by printing the flags needed for verification.
 
 ================================================
 ### `webpull`

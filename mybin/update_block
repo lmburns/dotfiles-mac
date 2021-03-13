@@ -1,0 +1,27 @@
+#!/bin/bash
+
+dnsmasq_dir="/usr/local/etc/dnsmasq.d"
+
+ads="$(curl -s https://hosts.oisd.nl/)"
+ads1="$(curl -s https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts)"
+
+rg -o "TimeUpdated: .*$" <(echo "$ads") | tee -a /usr/local/etc/dnsmasq-updated
+rg -o "Date: .*$" <(echo "$ads1") | tee -a /usr/local/etc/dnsmasq-updated
+
+rg --color=never '^0\.0\.0\.0' <(echo "$ads") | awk '{print "address=/"$2"/"}' > ${dnsmasq_dir}/ads.conf
+rg --color=never '^0\.0\.0\.0' <(echo "$ads1") | awk '{print "address=/"$2"/"}' > ${dnsmasq_dir}/ads1.conf
+
+printf "$(tput setaf 5)\nTesting dnsmasq syntax: "
+sudo dnsmasq --test
+
+printf "$(tput setaf 1)\nTesting stubby syntax: "
+stubby -i 2>&1 | rg -o 'Result: .*$'
+
+printf "$(tput setaf 3)\nSetting DNS servers: "
+networksetup -setdnsservers Wi-Fi 127.0.0.1 ::1
+printf "$(tput setaf 6) $(networksetup -getdnsservers Wi-Fi  | tr '\n' ' ')\n"
+
+printf "$(tput setaf 2)\nChecking DNSSEC valdation: "
+dig +dnssec burnsac.xyz | rg -o '(\bad\b|\bRRSIG\b|\bNOERROR\b)' | tr '\n' ' '
+
+printf "\n\n$(tput setaf 1)Finished $(tput setaf 2)updating $(tput setaf 3)block $(tput setaf 4)lists"
