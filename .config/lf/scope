@@ -49,7 +49,7 @@ handle_mime() {
 	text/troff) man ./ "${FILE_PATH}" | col -b ;;
 	text/* | */xml) bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme KimbieDark --style auto -- "${FILE_PATH}" ;;
 	application/zip) atool --list -- "${FILE_PATH}" ;;
-  image/*) chafa --symbols=all --fill=block -O 3 --color-space=din99d -c 240 -s "${WIDTH}"x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
+  image/*) /usr/local/bin/imgcat --iterm2 "${FILE_PATH}" || exit 1;;
    video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
   */pdf) pdftotext -l 10 -nopgbrk -q "${FILE_PATH}" - && \
         { dump | trim | fmt -s -w $WIDTH; exit 0; } || exit 1;;
@@ -81,9 +81,15 @@ handle_other() {
     esac
 }
 
+handle_fallback() {
+    echo '----- File Type Classification -----' && file --dereference --brief -- "${FILE_PATH}"
+    exit 1
+}
+
 MIMETYPE="$( file --dereference --brief --mime-type -- "${FILE_PATH}" )"
 handle_mime "${MIMETYPE}"
 handle_other
+handle_fallback
 
 exit 1
 

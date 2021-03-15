@@ -10,17 +10,18 @@
   set nocompatible
 
   call plug#begin("~/.vim/plugged")
-  Plug 'scrooloose/nerdtree'
   Plug 'ryanoasis/vim-devicons'
+  Plug 'scrooloose/nerdtree'
+  Plug 'vifm/vifm.vim'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
+  Plug 'lervag/vimtex'
   Plug 'vim-pandoc/vim-pandoc-syntax'
   Plug 'plasticboy/vim-markdown'
   Plug 'dhruvasagar/vim-table-mode'
   Plug 'vimwiki/vimwiki'
   Plug 'SidOfc/mkdx'
   Plug 'junegunn/goyo.vim'
-  Plug 'vifm/vifm.vim'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
   Plug 'zhou13/vim-easyescape'
@@ -108,7 +109,8 @@
   " let g:gruvbox_material_background = 'hard'
   let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
-  let g:kimbox_background = 'medium'
+  " let g:kimbox_background = 'medium'
+  let g:kimbox_background = 'darker'
   let g:kimbox_allow_bold = 1
   " let g:oceanic_material_background = "deep"
   let g:oceanic_material_background = "ocean"
@@ -139,9 +141,9 @@
 
   syntax enable
   " colorscheme spaceduck
-  " colorscheme kimbox
+  colorscheme kimbox
   " colorscheme oceanic_material
-  colorscheme gruvbox-material
+  " colorscheme gruvbox-material
   " colorscheme edge
   " colorscheme sonokai
   " colorscheme forest-night
@@ -330,12 +332,6 @@
 
     autocmd BufReadPre *.odt silent set ro
     autocmd BufEnter *.odt silent  %!pandoc --columns=78 -f odt -t markdown "%"
-  " }}}
-
-  " Compile rmarkdown / markdown
-  " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
-  autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
-  autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
 
   " insert template to blog post
   autocmd FileType markdown noremap <Leader>r itags:<Space>macOS<CR>title:<CR>author:<Space>Lucas<Space>Burns<CR>date:<Space><C-r>=strftime('%F')<CR><CR>aside:<CR><CR>#
@@ -345,18 +341,11 @@
 " }}}
 
 " === Pandoc === {{{
-   let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
+  let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
 
-  command! -nargs=* RunSilent
-      \ | execute ':silent !'.'<args>'
-      \ | execute ':redraw!'
-
-  nmap <Leader>pc :RunSilent pandoc -o /tmp/vim-pandoc-out.pdf %<CR>
-  nmap <Leader>pp :RunSilent open -a Preview /tmp/vim-pandoc-out.pdf<CR>
-  nmap <Leader>rc :!Rscript -e "rmarkdown::render('<c-r>%', output_file='render.pdf', output_dir='/tmp')"<CR>
-  nmap <Leader>rp :RunSilent open -a Preview /tmp/render.pdf<CR>
-
-  nmap <Leader>c :w! \| !compiler "<c-r>%<CR>"
+  nmap <Leader>c :w! <bar> !compiler %<CR>
+  nmap <Leader>pr :!opout <c-r>%<CR><CR>
+  autocmd VimLeave *.tex !texclear %
 " }}}
 
   " === Syntax === {{{
@@ -724,6 +713,8 @@
   let g:easyescape_timeout = 100
   cnoremap jk <ESC>
   cnoremap kj <ESC>
+  inoremap JK <ESC>
+  inoremap KJ <ESC>
   " tnoremap jk <C-\><C-n>
   " tnoremap kj <C-\><C-n>
 
@@ -1080,13 +1071,18 @@
   let g:table_mode_separator = '|'
  " }}}
 
- " === vifm === {{{
-" let g:vifm_replace_netrw = 1
-" let g:vifm_replace_netrw_cmd = "Vifm"
-"let g:vifm_embed_term = 1
-"let g:vifm_embed_split = 1
+" === vifm === {{{
+  " let g:vifm_replace_netrw = 1
+  " let g:vifm_replace_netrw_cmd = "Vifm"
+  "let g:vifm_embed_term = 1
+  "let g:vifm_embed_split = 1
 
-"let g:vifm_exec_args =
+  "let g:vifm_exec_args =
 " }}}
+
+" === vimtext === {{{
+  let g:vimtex_view_method = 'zathura'
+"}}}
+
 
 source ~/.config/nvim/indentline.vim

@@ -37,6 +37,7 @@ typeset -A ZINIT=(
 )
 
 # compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
+typeset -U PATH path
 autoload -Uz zmv zcalc
 alias zmv='noglob zmv -W'
 
@@ -121,6 +122,7 @@ bindkey -M vicmd '?' which-command
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 bindkey -M viins 'jk' vi-cmd-mode
+bindkey -M viins 'kj' vi-cmd-mode
 bindkey -M vicmd 'H' beginning-of-line; bindkey -M vicmd 'L' end-of-line
 
 # fixes macOS consumption of ^O command
@@ -247,9 +249,9 @@ eval "$(keychain --eval -q --inherit any id_rsa git gitlab-new burnsac && \
 eval "$(thefuck --alias)"
 eval "$(fakedata --completion zsh)"
 
-# export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # export MANPAGER="nvim -c 'set ft=man' -"
-export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
+# export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
 export BROWSER='open -a LibreWolf'
 export RTV_BROWSER="w3m"
 export EDITOR='nvim'
@@ -313,6 +315,7 @@ export PATH="/usr/local/Cellar/openvpn/2.5.0/sbin:$PATH"
 # add GNU coreutils to path with no 'g' prefix
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+export PATH="/usr/local/opt/util-linux/bin:$PATH"
 
 # GPG
 export GPG_TTY=$TTY
@@ -330,7 +333,19 @@ eval "$(rbenv init -)"
 
 # Dragon - drag and drop
 export PATH="$HOME/.local/bin:$PATH"
+
+# fontpreview
+# export FONTPREVIEW_BG_COLOR="#000000"
+# export FONTPREVIEW_FG_COLOR="#ffffff"
+
+# dbus
+export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
 # }}}
 
 killall limelight &> /dev/null
 (limelight &> /dev/null &)
+
+export C_INCLUDE_PATH='~/opt/anaconda3/include/python3.8'
+export CPLUS_INCLUDE_PATH='~/opt/anaconda3/include/python3.8'
+
+export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"

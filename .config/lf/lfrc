@@ -305,7 +305,6 @@ cmd chmod ${{
 }}
 
 
-
 # gpg encrypt with recipient
 cmd pgp_encrypt_recipient %{{
   printf "Recipient: "
@@ -314,6 +313,14 @@ cmd pgp_encrypt_recipient %{{
     "") printf "Cancelled.";;
     *) gpg --encrypt --sign --recipient "$recipient" $f;;
   esac
+}}
+
+
+# preview video thumbnails
+cmd video_preview ${{
+    cache="$(mktemp "${TMPDIR:-/tmp}/thumb_cache.XXXXX")"
+    ffmpegthumbnailer -i "$f" -o "$cache" -s 0
+    ~/.config/lf/other/draw_img.sh "$cache"
 }}
 
 # gpg encrypt with only password
@@ -348,6 +355,33 @@ cmd edit_config :{{
 cmd edit_scope :{{
   $$EDITOR ~/.config/lf/scope
   source ~/.config/lf/scope
+}}
+
+
+# select all file in directory
+cmd select-files ${{
+    { echo "$fs"; fd --full-path -L "$(pwd)" --min-depth 1 -d 1 -tf; } |
+        if [ "$lf_hidden" = "false" ]; then
+          # remove any hidden files so you only select files you can see.
+          rg -v '/\.[^/]\+$'
+        else
+          cat
+        fi |
+        gsed '/^$/d' | sort | uniq -u |
+        gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+}}
+
+
+# select all directories in current directory
+cmd select-dirs ${{
+    { echo "$fs"; fd --full-path -L "$(pwd)" --min-depth 1 -d 1 -td; } |
+        if [ "$lf_hidden" = "false" ]; then
+          rg -v '/\.[^/]\+$'
+        else
+          cat
+        fi |
+        gsed '/^$/d' | sort | uniq -u |
+        gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
 }}
 
 
@@ -387,7 +421,6 @@ cmd rglf $dialog --title "Search" --msgbox "$(rg --color=never ${1})" 40 80
 # │ Mappings                                                                  │
 # └───────────────────────────────────────────────────────────────────────────┘
 map m
-map o
 map n
 # map "'"
 # map '"'
@@ -415,6 +448,9 @@ map o push :open-with<space>										# open w/ specified program
 
 map as !du -hsx * | sort -rh | bat --paging=always	# directory info
 map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file -I -b -p $f
+
+map sf select-files
+map sd select-dirs
 
 # Archive Mappings
 map az zip
