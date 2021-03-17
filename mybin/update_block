@@ -2,7 +2,11 @@
 
 dnsmasq_dir="/usr/local/etc/dnsmasq.d"
 
-ads="$(curl -s https://hosts.oisd.nl/)"
+echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
+
+[ $? -eq 0 ] || (printf "$(tput setaf 1)No internet connection\n" && exit 1)
+
+ads="$(curl -s https://hosts.oisd.nl/ || printf "No internet connection\n")"
 ads1="$(curl -s https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts)"
 
 rg -o "TimeUpdated: .*$" <(echo "$ads") | tee -a /usr/local/etc/dnsmasq-updated

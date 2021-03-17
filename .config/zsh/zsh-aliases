@@ -1,19 +1,8 @@
 # Aliases
-alias duso='du -hsx * | sort -rh | bat --paging=always'
-alias mpd='mpd ~/.config/mpd/mpd.conf'
-alias kc='keychain'
 
-alias updateblock="curl --silent https://hosts.oisd.nl | grep '^0\.0\.0\.0' | sort | awk '{print "address=/"$2"/"}' > /usr/local/etc/dnsmasq.d/ads.conf"
-
-alias bundleident='mdls -name kMDItemCFBundleIdentifier -r'
-# bundlei() { osascript -e 'id of app "$1"' }
-alias uti='mdls -name kMDItemContentType -name kMDItemContentTypeTree -name kMDItemKind'
-
+# === general ===================================================================
 # alias sudo='doas'
 alias zn='zinit'
-alias f='pushd'
-alias b='popd'
-alias dirs='dirs -v'
 alias cp='cp -iv'
 alias rcp='rsync -av --ignore-existing --progress'
 alias pb='pbcopy'
@@ -38,19 +27,20 @@ alias diff='diff --color=auto'
 alias sha='shasum -a 256'
 alias his='history | grep'
 
+# === configs ===================================================================
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias azsh="nvim $ZDOTDIR/zsh-aliases"
 alias nvimd='cd /usr/local/share/nvim/runtime'
 alias ninit='nvim $XDG_CONFIG_HOME/nvim/init.vim'
 alias nlfr='nvim $XDG_CONFIG_HOME/lf/lfrc'
 
-# Mail
+# === mail ======================================================================
 alias mwme='mw -y burnsac@me.com'
 alias mwgm='mw -y burnsppl@gmail.com'
 alias mwmail='mw -Y'
 alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@burnsac.xyz'
 
-# Locations
+# ===locations ==================================================================
 alias projd='cd $HOME/projects'
 alias unx='cd $HOME/Desktop/unix/mac'
 alias zdotd='cd "$ZDOTDIR"'
@@ -58,20 +48,58 @@ alias gitd='cd $HOME/projects/github'
 alias optd='cd $HOME/opt'
 alias confd='cd $XDG_CONFIG_HOME'
 alias docd='cd $HOME/Documents'
+alias downd='cd $HOME/Downloads'
 alias mybin='cd $HOME/mybin'
 
+alias f='pushd'
+alias b='popd'
+alias dirs='dirs -v'
+
+# === internet / vpn / etc ======================================================
 alias wget='wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts'
 alias tsm='transmission-remote'
 alias tsmd='transmission-daemon'
-alias nnn='nnn -Caxe'
-alias lsn='nnn -deH'
-alias dmenu='open -a dmenu-mac'
+alias qbt='qbt torrent'
+
 alias getip='ipconfig getifaddr en0 &&  curl ipecho.net/plain; echo'
 alias cpumem="ps -A -o %cpu,%mem | awk '{ cpu += \$1; mem += \$2} END {print \"CPU: \"  cpu,\"MEM: \"  mem}'"
-alias qbt='qbt torrent'
+
 alias pyn='openpyn'
 alias oconn='openpyn us -t 10'
+alias spt='speedtest | rg "(Download:|Upload:)"'
 alias essh='eval $(ssh-add)'
+alias kc='keychain'
+alias wifi='osx-wifi-cli'
+
+# === wiki ======================================================================
+alias vw='nvim $HOME/vimwiki/index.md'
+alias vwd='nvim $HOME/vimwiki/dotfiles/index.md'
+alias vws='nvim $HOME/vimwiki/scripting/index.md'
+alias vwb='nvim $HOME/vimwiki/blog/index.md'
+alias vwl='nvim $HOME/vimwiki/languages/index.md'
+
+# === github ====================================================================
+alias c="/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME"
+alias xav="/usr/bin/git --git-dir=$XDG_DATA_HOME/dottest --work-tree=$HOME"
+
+alias gua='git remote | xargs -L1 git push --all'
+alias grmssh='ssh git@burnsac.xyz -- grm'
+alias g='git'
+alias gtrr='git ls-tree -r master --name-only | as-tree'
+
+alias magit='nvim -c MagitOnly'
+alias ngc='nvim .git/config'
+alias nbconvert='jupyter nbconvert --to python'
+
+# === other =====================================================================
+alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
+
+alias mpd='mpd ~/.config/mpd/mpd.conf'
+alias hangups='hangups -c $XDG_CONFIG_HOME/hangups/hangups.conf'
+alias newsboat='newsboat -C $XDG_CONFIG_HOME/newsboat/config'
+alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
+alias tt='taskwarrior-tui'
+alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 
 alias zath='zathura'
 alias n='man'
@@ -80,33 +108,14 @@ alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
 alias fd='fd -Hi'
-alias spt='speedtest | rg "(Download:|Upload:)"'
 alias pat='bat -p'
-alias vw='nvim $HOME/vimwiki/index.md'
-alias vwd='nvim $HOME/vimwiki/dotfiles/index.md'
-alias vws='nvim $HOME/vimwiki/scripting/index.md'
-alias vwb='nvim $HOME/vimwiki/blog/index.md'
-alias vwl='nvim $HOME/vimwiki/languages/index.md'
+alias duso='du -hsx * | sort -rh | bat --paging=always'
 
-# Github
-alias c="/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME"
-alias xav="/usr/bin/git --git-dir=$XDG_DATA_HOME/dottest --work-tree=$HOME"
+alias nnn='nnn -Caxe'
+alias lsn='nnn -deH'
+alias dmenu='open -a dmenu-mac'
 
-alias gua='git remote | xargs -L1 git push --all'
-alias grmssh='ssh git@burnsac.xyz -- grm'
-alias g='git'
-alias gtrr='git ls-tree -r master --name-only | as-tree'
-alias magit='nvim -c MagitOnly'
-alias ngc='nvim .git/config'
-alias nbconvert='jupyter nbconvert --to python'
-
-alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
-alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
-alias hangups='hangups -c $XDG_CONFIG_HOME/hangups/hangups.conf'
-alias newsboat='newsboat -C $XDG_CONFIG_HOME/newsboat/config'
-alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
-alias tt='taskwarrior-tui'
-
+# === trash =====================================================================
 alias trp='trash-put'
 alias tre='trash-empty'
 alias trl='trash-list'
@@ -119,7 +128,11 @@ alias jrnl=' jrnl'
 
 alias ume='um edit'
 
-# RSync / a=rlptgoD
+alias bundleident='mdls -name kMDItemCFBundleIdentifier -r'
+# bundlei() { osascript -e 'id of app "$1"' }
+alias uti='mdls -name kMDItemContentType -name kMDItemContentTypeTree -name kMDItemKind'
+
+# === rsync =====================================================================
 alias rsynca='rsync -Pyuazv --info=progress2 --name=name0 --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
 alias rsyncpr='rsync -Prultcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" $HOME/projects /Volumes/SSD/manual'
 alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "MYHOME" --exclude "unix" $HOME/Desktop /Volumes/SSD/manual'
@@ -131,7 +144,7 @@ alias wwwpull='rsync -rugoptczl --info=progress2 --info=name0 --delete-after roo
 alias wwwpush='rsync -rugoptczl --info=progress2 --info=name0 --delete-after --exclude ".DS_Store" $HOME/server /Volumes/SSD'
 alias sudorysnc='sudo rsync -PrugptvENtzl --delete-after --include ".*" --exclude ".DS_Store" --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" / /Volumes/SSD/void'
 
-## HOMEBREW
+# === homebrew =====================================================================
 alias br="brew"
 alias brana='br analytics'
 alias brcat='br cat'
@@ -187,4 +200,4 @@ alias bruse='br uses'
 alias bruta='br untap'
 alias brse='br services'
 alias brseli='brse list'
-alias sbrse='sudo brse'
+alias sbrse='sudo brew services'

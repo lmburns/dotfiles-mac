@@ -12,7 +12,8 @@
   call plug#begin("~/.vim/plugged")
   Plug 'ryanoasis/vim-devicons'
   Plug 'scrooloose/nerdtree'
-  Plug 'vifm/vifm.vim'
+  " Plug 'vifm/vifm.vim'
+  Plug 'ptzz/lf.vim'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   Plug 'lervag/vimtex'
@@ -177,7 +178,6 @@
   set ignorecase smartcase
   set number
     nnoremap <silent><F3> :set relativenumber!<CR>
-
   set wrap
     nnoremap <silent><F2> :set nowrap!<CR>
   set nofoldenable
@@ -188,11 +188,12 @@
   set wildmode=longest,list:full       " Autocompletion
   set wildmenu                         " Autocompletion
   set wildignore+=.git,.DS_Store,node_modules
-  " set nowrap                            " do not wrap text at `textwidth`
   set synmaxcol=1000                    " do not highlight long lines
   set timeoutlen=350                    " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
   set confirm                           " confirm when editing readonly
+  set noerrorbells
+  set belloff=all
   filetype plugin indent on
 " }}}
 
@@ -277,6 +278,12 @@
   map <C-h> <C-W>h
   map <C-l> <C-W>l
 
+  " resize windows
+  nnoremap + :vertical resize +5<CR>
+  nnoremap - :vertical resize -5<CR>
+  nnoremap s+ :resize +5<CR>
+  nnoremap s- :resize -5<CR>
+
   " move through folded lines
   nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
   nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
@@ -338,10 +345,12 @@
 
   " check html syntax
   nmap <Leader>h5 :!html5check %<CR>
-" }}}
 
-" === Pandoc === {{{
   let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
+
+  " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
+  autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
+  autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
 
   nmap <Leader>c :w! <bar> !compiler %<CR>
   nmap <Leader>pr :!opout <c-r>%<CR><CR>
@@ -957,7 +966,8 @@
   " }}}
 
 " === Floaterm === {{{
-  nnoremap <Leader>lf :FloatermNew --wintype=split lf<CR>
+  " nnoremap <Leader>lf :FloatermNew --wintype=split lf<CR>
+  let g:floaterm_wintype = 'split'
 " }}}
 
 " === Neoterm === {{{
@@ -1074,14 +1084,36 @@
 " === vifm === {{{
   " let g:vifm_replace_netrw = 1
   " let g:vifm_replace_netrw_cmd = "Vifm"
-  "let g:vifm_embed_term = 1
-  "let g:vifm_embed_split = 1
+  " let g:vifm_embed_term = 1
+  " let g:vifm_embed_split = 1
 
-  "let g:vifm_exec_args =
+  " let g:vifm_exec_args =
 " }}}
 
-" === vimtext === {{{
+" === lf === {{{
+  let g:lf_map_keys = 0
+  nnoremap <Leader>lf :Lf<CR>
+  let g:lf_replace_netrw = 1
+" }}}
+
+" === vimtex === {{{
   let g:vimtex_view_method = 'zathura'
+  let g:tex_flavor='latex'
+  " set conceallevel=1
+  " let g:vimtex_compiler_latexmk = {
+  "       \ 'executable' : 'latexmk',
+  "       \ 'options' : [
+  "       \   '-xelatex',
+  "       \   '-file-line-error',
+  "       \   '-synctex=1',
+  "       \   '-interaction=nonstopmode',
+  "       \ ],
+  "       \}
+  augroup vimrc
+    autocmd!
+    autocmd InsertEnter *.tex set conceallevel=0
+    autocmd InsertLeave *.tex set conceallevel=2
+  augroup END
 "}}}
 
 

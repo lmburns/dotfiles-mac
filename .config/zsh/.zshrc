@@ -92,8 +92,7 @@ zinit light-mode for \
     michaelaquilina/zsh-history-filter \
     aloxaf/gencomp \
     kazhala/dotbare \
-    andrewferrier/fzf-z \
-    tarrasch/zsh-bd \
+      andrewferrier/fzf-z \
     blockf \
         zsh-users/zsh-completions \
     src="etc/git-extras-completion.zsh" \
@@ -217,6 +216,8 @@ bak() { /usr/local/bin/gcp --force --suffix=.bak $1 $1 }
 # link unlink file from mybin to $PATH
 lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
 unlbin() { rm -v /usr/local/mybin/$1 }
+# latex documenation serch (as best I can)
+latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
 
 
 # use lf to switch directories
@@ -248,6 +249,7 @@ eval "$(keychain --eval -q --inherit any id_rsa git gitlab-new burnsac && \
         keychain --agents gpg -q --eval 6628B679)"
 eval "$(thefuck --alias)"
 eval "$(fakedata --completion zsh)"
+# eval "$(fasd --init posix-alias zsh-hook)"
 
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # export MANPAGER="nvim -c 'set ft=man' -"
@@ -334,6 +336,9 @@ eval "$(rbenv init -)"
 # Dragon - drag and drop
 export PATH="$HOME/.local/bin:$PATH"
 
+# texdoc pdfviewer
+export PDFVIEWER='zathura'
+
 # fontpreview
 # export FONTPREVIEW_BG_COLOR="#000000"
 # export FONTPREVIEW_FG_COLOR="#ffffff"
@@ -344,8 +349,3 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
 
 killall limelight &> /dev/null
 (limelight &> /dev/null &)
-
-export C_INCLUDE_PATH='~/opt/anaconda3/include/python3.8'
-export CPLUS_INCLUDE_PATH='~/opt/anaconda3/include/python3.8'
-
-export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"

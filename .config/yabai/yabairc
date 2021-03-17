@@ -10,6 +10,7 @@
 
 # apps to ignore
 yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Console$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Adobe Photoshop 2020" sticky=on layer=above manage=off
 yabai -m rule --add app="^LibreOffice" sticky=on layer=above manage=off
 yabai -m rule --add app="^CleanMyMac" sticky=on layer=above manage=off
