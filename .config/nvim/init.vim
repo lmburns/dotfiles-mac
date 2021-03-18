@@ -294,7 +294,7 @@
 	map <Leader>G :Goyo \| set linebreak<CR>
 
   " set filetypes
-  autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
+  autocmd BufRead,BufNewFile calcurse-note*,~/.local/share/calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
   autocmd BufRead,BufNewFile *.tex set filetype=tex
 
@@ -484,7 +484,8 @@
     \ 'coc-vimlsp',
     \ 'coc-sh',
     \ 'coc-git',
-    \ 'coc-sql'
+    \ 'coc-sql',
+    \ 'coc-perl'
     \ ]
 
   " let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
@@ -1074,9 +1075,9 @@
   " <Leader>tt    =
 
   let g:table_mode_tableize_auto_border = 1
-  " let g:table_mode_corner_corner='+'
-  " let g:table_mode_header_fillchar='='
-  let g:table_mode_corner='|'
+  let g:table_mode_corner_corner='+'
+  let g:table_mode_header_fillchar='='
+  " let g:table_mode_corner='|'
   let g:table_mode_fillchar = '-'
   let g:table_mode_separator = '|'
  " }}}

@@ -339,6 +339,8 @@ export PATH="$HOME/.local/bin:$PATH"
 # texdoc pdfviewer
 export PDFVIEWER='zathura'
 
+source "${HOME}"/perl5/perlbrew/etc/bashrc
+
 # fontpreview
 # export FONTPREVIEW_BG_COLOR="#000000"
 # export FONTPREVIEW_FG_COLOR="#ffffff"

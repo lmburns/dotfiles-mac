@@ -50,6 +50,7 @@ alias confd='cd $XDG_CONFIG_HOME'
 alias docd='cd $HOME/Documents'
 alias downd='cd $HOME/Downloads'
 alias mybin='cd $HOME/mybin'
+alias vwdir='cd $HOME/vimwiki'
 
 alias f='pushd'
 alias b='popd'
@@ -116,7 +117,8 @@ alias lsn='nnn -deH'
 alias dmenu='open -a dmenu-mac'
 
 # === trash =====================================================================
-alias trp='trash-put'
+# alias trp='trash-put'
+alias rt='trash-put'
 alias tre='trash-empty'
 alias trl='trash-list'
 alias trr='trash-restore'

@@ -28,6 +28,7 @@ dotfiles
 | <kbd>o</kbd>  | highlight one word the right     |
 | <kbd>p</kbd>  | highlight all words to the right |
 | <kbd>yy</kbd> | copy                             |
+| <kbd>tt</kbd> | close window                     |
 
 ## [Neovim Mappings](.config/nvim/init.vim)
 
