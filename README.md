@@ -11,24 +11,89 @@ dotfiles
 - To get <kbd>⇪ Caps lock</kbd> you need to press left <kbd>⇧ Shift</kbd> then right <kbd>⇧ Shift</kbd>
 - While holding <kbd>⇪ Caps lock</kbd>, pressing the following keys will do these actions:
 
-| Key           | Action                           |
-| :-----        | :-----                           |
-| <kbd>j</kbd>  | down                             |
-| <kbd>k</kbd>  | up                               |
-| <kbd>h</kbd>  | left                             |
-| <kbd>l</kbd>  | right                            |
-| <kbd>0</kbd>  | beginning of line                |
-| <kbd>4</kbd>  | end of line (close enough to $)  |
-| <kbd>gg</kbd> | beginning of document            |
-| <kbd>G</kbd>  | end of document                  |
-| <kbd>b</kbd>  | move backwards a word            |
-| <kbd>w</kbd>  | move forward a word              |
-| <kbd>u</kbd>  | highlight all words to the left  |
-| <kbd>i</kbd>  | highlight one word to the left   |
-| <kbd>o</kbd>  | highlight one word the right     |
-| <kbd>p</kbd>  | highlight all words to the right |
-| <kbd>yy</kbd> | copy                             |
-| <kbd>tt</kbd> | close window                     |
+| Key           | Action                                                                    |
+| :-----        | :-----                                                                    |
+| <kbd>j</kbd>  | down                                                                      |
+| <kbd>k</kbd>  | up                                                                        |
+| <kbd>h</kbd>  | left                                                                      |
+| <kbd>l</kbd>  | right                                                                     |
+| <kbd>0</kbd>  | beginning of line                                                         |
+| <kbd>4</kbd>  | end of line (close enough to $)                                           |
+| <kbd>gg</kbd> | beginning of document                                                     |
+| <kbd>G</kbd>  | end of document                                                           |
+| <kbd>b</kbd>  | move backwards a word                                                     |
+| <kbd>w</kbd>  | move forward a word                                                       |
+| <kbd>u</kbd>  | highlight all words to the left                                           |
+| <kbd>i</kbd>  | highlight one word to the left                                            |
+| <kbd>o</kbd>  | highlight one word the right                                              |
+| <kbd>p</kbd>  | highlight all words to the right                                          |
+| <kbd>yy</kbd> | copy                                                                      |
+| <kbd>tt</kbd> | close window (because <kbd>Cmd</kbd> + <kbd>w</kbd> is mapped to nothing) |
+| <kbd>J</kbd>  | <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>←</kbd>                  |
+| <kbd>K</kbd>  | <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>→</kbd>                  |
+
+The <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings are significant if you have this sequence mapped to changing tabs in iTerm.  I just find this a little easier to do instead of moving my fingers off of the home row.
+
+----
+
+## [skhd](.config/skhd/skhdrc) Keybindings
+
+<kbd>Hyper</kbd> = <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Cmd</kbd> + <kbd>Shift</kbd>
+
+| Keys                                                               | Action        |
+|--------------------------------------------------------------------|---------------|
+| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Cmd</kbd> + <kbd>r</kbd>   | Restart yabai |
+| <kbd>Hyper</kbd> + <kbd>Backspace</kbd>                            | Close window  |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>g</kbd>                  | Toggle gaps   |
+
+| Swapping                        |            |
+|---------------------------------|------------|
+| <kbd>Hyper</kbd> + <kbd>=</kbd> | Swap south |
+| <kbd>Hyper</kbd> + <kbd>-</kbd> | Swap north |
+| <kbd>Hyper</kbd> + <kbd>[</kbd> | Swap west  |
+| <kbd>Hyper</kbd> + <kbd>]</kbd> | Swap east  |
+
+| Focusing                      |             |
+|-------------------------------|-------------|
+| <kbd>Alt</kbd> + <kbd>h</kbd> | Focus west  |
+| <kbd>Alt</kbd> + <kbd>j</kbd> | Focus south |
+| <kbd>Alt</kbd> + <kbd>k</kbd> | Focus north |
+| <kbd>Alt</kbd> + <kbd>l</kbd> | Focus east  |
+
+| Resizing                                          |                  |
+|---------------------------------------------------|------------------|
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>h</kbd> | Resize -20 left  |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>h</kbd> | Resize -20 right |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>j</kbd> | Resize 20 bottom |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>j</kbd> | Resize 20 top    |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>k</kbd> | Resize -20 right |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>k</kbd> | Resize -20 right |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>l</kbd> | Resize 20 right  |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>l</kbd> | Resize 20 right  |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> | Equalize         |
+
+| Floating                                             |                            |
+|------------------------------------------------------|----------------------------|
+| <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>Space</kbd> | Toggle float               |
+| <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>c</kbd>     | Float & Center             |
+| <kbd>Hyper</kbd> + <kbd>e</kbd>                      | Resize floating window     |
+| <kbd>Hyper</kbd> + <kbd>1</kbd>                      | Float & keep same position |
+
+| Moving Window                                    |                   |
+|--------------------------------------------------|-------------------|
+| <kbd>Hyper</kbd> + <kbd>f</kbd>                  | Fullscreen        |
+| <kbd>Hyper</kbd> + <kbd>r</kbd>                  | Rotate 90 degrees |
+| <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>x</kbd> | Mirror x-axis     |
+| <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>y</kbd> | Mirror y-axis     |
+
+| Stacks                              |                                        |
+|-------------------------------------|----------------------------------------|
+| <kbd>Hyper</kbd> + <kbd>s</kbd>     | Toggle stack                           |
+| <kbd>Hyper</kbd> + <kbd>m</kbd>     | Go to next window (in or out of stack) |
+| <kbd>Hyper</kbd> + <kbd>n</kbd>     | Go to prev window (in or out of stack) |
+| <kbd>Hyper</kbd> + <kbd>Space</kbd> | Toggle focus on stack                  |
+
+----
 
 ## [Neovim Mappings](.config/nvim/init.vim)
 
