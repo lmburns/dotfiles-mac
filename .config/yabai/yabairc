@@ -22,6 +22,8 @@ yabai -m rule --add app="^CleanMyMac" sticky=on layer=above manage=off
 yabai -m rule --add app="^App Uninstaller$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Font Book$" sticky=on layer=above manage=off
 yabai -m rule --add app="Photoshop" sticky=on layer=above manage=off
+yabai -m rule --add app="^Keychain Access$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Bartender 4$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-Elements$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-EventViewer$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
@@ -36,7 +38,6 @@ yabai -m rule --add app=R manage=off
 yabai -m rule --add app=Bear manage=off layer=above
 yabai -m rule --add app="^iTerm2$" manage=on
 yabai -m rule --add app="^Flux$" manage=off
-yabai -m rule --add app="^console$" manage=off
 
 # === global settings ========================================================
 # yabai -m config focus_follows_mouse         autoraise

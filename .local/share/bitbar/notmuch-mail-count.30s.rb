@@ -16,7 +16,7 @@ inbox = `/usr/local/bin/notmuch --config=/Users/lucasburns/.config/notmuch/notmu
 mails = inbox.split("\n")
 count = mails.length
 if count > 0
-  puts "📮 #{count} | color=red size=12"
+  puts "📬 #{count} | color=#f06431 size=12"
 else
   puts ''
 end
@@ -25,5 +25,5 @@ puts "---"
 
 mails.each do |m|
   mail = m.gsub(/thread.*\]/,'')[0..25].gsub(/\|/,':')
-  puts "#{mail} | color=green size=12 bash='/usr/local/bin/mutt' "
+  puts "#{mail} | color=#4c96a8 size=12 bash='/usr/local/bin/mutt' "
 end

@@ -46,19 +46,24 @@ The <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings ar
 | <kbd>Hyper</kbd> + <kbd>Backspace</kbd>                            | Close window  |
 | <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>g</kbd>                  | Toggle gaps   |
 
-| Swapping                        |            |
-|---------------------------------|------------|
-| <kbd>Hyper</kbd> + <kbd>=</kbd> | Swap south |
-| <kbd>Hyper</kbd> + <kbd>-</kbd> | Swap north |
-| <kbd>Hyper</kbd> + <kbd>[</kbd> | Swap west  |
-| <kbd>Hyper</kbd> + <kbd>]</kbd> | Swap east  |
+| Swapping                                       |            |
+|------------------------------------------------|------------|
+| <kbd>Hyper</kbd> + <kbd>=</kbd>                | Swap south |
+| <kbd>Hyper</kbd> + <kbd>-</kbd>                | Swap north |
+| <kbd>Hyper</kbd> + <kbd>[</kbd>                | Swap west  |
+| <kbd>Hyper</kbd> + <kbd>]</kbd>                | Swap east  |
+| <kbd>Shift</kbd> + <kbd>Alt</kbd> <kbd>h</kbd> | Swap west  |
+| <kbd>Shift</kbd> + <kbd>Alt</kbd> <kbd>j</kbd> | Swap south |
+| <kbd>Shift</kbd> + <kbd>Alt</kbd> <kbd>k</kbd> | Swap north |
+| <kbd>Shift</kbd> + <kbd>Alt</kbd> <kbd>l</kbd> | Swap east  |
 
-| Focusing                      |             |
-|-------------------------------|-------------|
-| <kbd>Alt</kbd> + <kbd>h</kbd> | Focus west  |
-| <kbd>Alt</kbd> + <kbd>j</kbd> | Focus south |
-| <kbd>Alt</kbd> + <kbd>k</kbd> | Focus north |
-| <kbd>Alt</kbd> + <kbd>l</kbd> | Focus east  |
+| Focusing                        |              |
+|---------------------------------|--------------|
+| <kbd>Alt</kbd> + <kbd>h</kbd>   | Focus west   |
+| <kbd>Alt</kbd> + <kbd>j</kbd>   | Focus south  |
+| <kbd>Alt</kbd> + <kbd>k</kbd>   | Focus north  |
+| <kbd>Alt</kbd> + <kbd>l</kbd>   | Focus east   |
+| <kbd>Hyper</kbd> + <kbd>a</kbd> | Focus recent |
 
 | Resizing                                          |                  |
 |---------------------------------------------------|------------------|
@@ -215,6 +220,25 @@ Options:
     -p, --no-prompt         Clear input / output prompts
     -O, --clear-output      Clear output cells of .ipynb file
     -t, --theme             Change syntax highlighting theme (gruvbox default)
+```
+
+================================================
+## `chgmac`
+
+Change MAC address randomly or interactively. Can specify interface as well.
+
+#### Usage
+
+```sh
+[Options](Options):
+    -r, --restore           Restore to system default MAC
+    -m, --manual            Manually enter the MAC address in dialog box
+                              Optionally enter <MAC> on CLI without invoking dialog
+                              Type '-m x' (anything not a MAC) to be prompted for randomized addresses
+    -i, --interface         Select the interface with FZF (default en0)
+                              Optionally enter <interface> on CLI without invoking FZF
+    -v, --version           Show version information
+    -h, --help              Print this help message and exit
 ```
 
 ================================================

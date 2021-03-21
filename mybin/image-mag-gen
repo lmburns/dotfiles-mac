@@ -1,0 +1,5 @@
+#!/bin/sh
+
+fd --search-path ~/Library/Fonts -e otf -e ttf \
+  | perl ~/.local/share/imagemagick/type_gen.pl -f \
+  > /usr/local/Cellar/imagemagick/7.0.11-3/etc/ImageMagick-7/type-mine.xml

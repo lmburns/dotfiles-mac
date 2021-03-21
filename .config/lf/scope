@@ -49,7 +49,7 @@ handle_mime() {
 	text/troff) man ./ "${FILE_PATH}" | col -b ;;
 	text/* | */xml) bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme KimbieDark --style auto -- "${FILE_PATH}" ;;
 	application/zip) atool --list -- "${FILE_PATH}" ;;
-  image/*) /usr/local/bin/imgcat --iterm2 "${FILE_PATH}" || exit 1;;
+  image/*) chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
    video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
   */pdf) pdftotext -l 10 -nopgbrk -q "${FILE_PATH}" - && \
         { dump | trim | fmt -s -w $WIDTH; exit 0; } || exit 1;;
@@ -74,10 +74,11 @@ handle_other() {
         *odt) odt2txt "${FILE_PATH}";;
         *.doc) catdoc "${FILE_PATH}" ;;
         *.docx) docx2txt "${FILE_PATH}" - ;;
-        *.csv) cat "${FILE_PATH}" | sed s/,/\\n/g ;;
+        *.csv) bat "${FILE_PATH}" | sed s/,/\\n/g ;;
         *.json) jq --color-output . "${FILE_PATH}";;
         *.asc) bat -Pf --theme gruvbox --style auto "${FILE_PATH}";;
         *.ipynb) jupview -t gruvbox-N "${FILE_PATH}";;
+        *.sha1|*.sha256|*.sha512|*.md5) rhash -c "${FILE_PATH}" ;;
     esac
 }
 

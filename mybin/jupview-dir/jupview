@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# set -eu
+set -eu
 
 prog="${0##*/}"
 
 jupview_usage() {
+    jupview_short_usage
     cat <<-_EOF
-    $(jupview_short_usage)
         ${prog} provides a way to view Jupyter Notebooks in the terminal.
         This is able to be used as a previewer with terminal file managers
         like lf, ranger, and nnn by default with no parameters given.
@@ -35,7 +35,7 @@ jupview_short_usage() {
         "[--no-input,-I]" \
         "[--no-prompt,-p]" \
         "[--clear-output,-O]" \
-        "[--theme,-t]"
+        "[--theme <theme>,-t <theme>]"
 }
 
 jupview_cmd() {
@@ -44,7 +44,7 @@ jupview_cmd() {
     no_prompt=0
     clear_output=0
     bat_theme=""
-    opts=$($GETOPT -o PIpOt: -l pager,no-input,no-prompt,clear-output,theme: -- "$@")
+    opts=$($GETOPT -o "PIpOt:" -l "pager,no-input,no-prompt,clear-output,theme:" -a -- "${@}")
     err=$?
 
     eval set -- "$opts"

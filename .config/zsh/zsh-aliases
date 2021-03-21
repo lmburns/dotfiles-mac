@@ -1,4 +1,7 @@
-# Aliases
+# lucas' aliases
+
+alias img='/usr/local/bin/imgcat'
+alias getmime='file --dereference --brief --mime-type'
 
 # === general ===================================================================
 # alias sudo='doas'
@@ -6,14 +9,13 @@ alias zn='zinit'
 alias cp='cp -iv'
 alias rcp='rsync -av --ignore-existing --progress'
 alias pb='pbcopy'
-alias rm='rm -iv'
-alias rr='rm -rf'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
 alias l='exa -1F'
 alias ll='exa -FlahH'
 alias ls='exa -Flh --git'
 alias lse='exa -Flh --git --sort=extension'
+alias lsm='exa -Flh --git --sort=modified'
 alias lss='exa -Flh --git --group-directories-first'
 alias lsd='exa -FlhD'
 alias treed='exa -TL'
@@ -117,8 +119,9 @@ alias lsn='nnn -deH'
 alias dmenu='open -a dmenu-mac'
 
 # === trash =====================================================================
-# alias trp='trash-put'
-alias rt='trash-put'
+alias rm='rm -iv'
+# alias rr='rm -rf'
+alias rr='trash-put'
 alias tre='trash-empty'
 alias trl='trash-list'
 alias trr='trash-restore'
@@ -202,4 +205,4 @@ alias bruse='br uses'
 alias bruta='br untap'
 alias brse='br services'
 alias brseli='brse list'
-alias sbrse='sudo brew services'
+alias sbrse='doas brew services'

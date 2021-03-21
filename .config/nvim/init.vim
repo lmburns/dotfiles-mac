@@ -844,14 +844,19 @@
     return map(files, "{'line': v:val, 'path': v:val}")
   endfunction
 
+  function! s:explore()
+    sleep 350m
+    call execute('CocCommand explorer')
+  endfunction
 
   " Custom startup list, only show MRU from current directory/project
   let g:startify_lists = [
-  \  { 'type': 'files',     'header': ['MRU'] },
-  \  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
   \  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
+  \  { 'type':  function('s:explore'), 'header':    ['coc']},
   \  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
   \  { 'type': 'commands',  'header': [ 'Commands' ]       },
+  \  { 'type': 'files',     'header': ['MRU'] },
+  \  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
   \  { 'type':  function('s:gitModified'),  'header': ['git modified']},
   \  { 'type':  function('s:gitTracked'), 'header': ['git untracked']}
   \ ]

@@ -7,6 +7,7 @@
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
 # === general settings === {{{
+export DISPLAY=:0
 export LC_ALL="en_US.UTF-8"
 export ZSH_DISABLE_COMPFIX=true
 export HISTSIZE=10000000
@@ -218,7 +219,14 @@ lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
 unlbin() { rm -v /usr/local/mybin/$1 }
 # latex documenation serch (as best I can)
 latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
+# get help on builtin commands
+bashman () { man zshbuiltins | less -p "^       $1 "; }
+unalias run-help && autoload run-help && alias help=run-help
+# man zshcontrib | zshall | zshle
 
+# font search
+fsearch() { fc-list : file family | sed -n -e 's#/Users/lucasburns/Library/Fonts##p' | rg '^/' | sort | rg "$1" }
+# system_profiler SPFontsDataType | rg "$1"
 
 # use lf to switch directories
 lfcd () {
@@ -339,7 +347,11 @@ export PATH="$HOME/.local/bin:$PATH"
 # texdoc pdfviewer
 export PDFVIEWER='zathura'
 
+# perlbrew
 source "${HOME}"/perl5/perlbrew/etc/bashrc
+
+# xdg-utils
+export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 
 # fontpreview
 # export FONTPREVIEW_BG_COLOR="#000000"
@@ -351,3 +363,24 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
 
 killall limelight &> /dev/null
 (limelight &> /dev/null &)
+
+# Input prompt of fuzzy searcher
+export FONTPREVIEW_SEARCH_PROMPT="❯ "
+
+# Size of the font preview window
+export FONTPREVIEW_SIZE=532x365
+
+# The position where the font preview window should be displayed
+export FONTPREVIEW_POSITION="+0+0"
+
+# Font size
+export FONTPREVIEW_FONT_SIZE=38
+
+# Background color of the font preview window
+export FONTPREVIEW_BG_COLOR="#ffffff"
+
+# Foreground color of the font preview window
+export FONTPREVIEW_FG_COLOR="#000000"
+
+# Preview text that should be displayed in the font preview window
+export FONTPREVIEW_PREVIEW_TEXT="ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\nabcdefghijklm\nnopqrstuvwxyz\n1234567890\n!@$\%(){}[]"

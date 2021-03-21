@@ -9,11 +9,11 @@ echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
 ads="$(curl -s https://hosts.oisd.nl/ || printf "No internet connection\n")"
 ads1="$(curl -s https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts)"
 
-rg -o "TimeUpdated: .*$" <(echo "$ads") | tee -a /usr/local/etc/dnsmasq-updated
+rg -o "TimeUpdated: .*$" < <(echo "$ads") | tee -a /usr/local/etc/dnsmasq-updated
 rg -o "Date: .*$" <(echo "$ads1") | tee -a /usr/local/etc/dnsmasq-updated
 
-rg --color=never '^0\.0\.0\.0' <(echo "$ads") | awk '{print "address=/"$2"/"}' > ${dnsmasq_dir}/ads.conf
-rg --color=never '^0\.0\.0\.0' <(echo "$ads1") | awk '{print "address=/"$2"/"}' > ${dnsmasq_dir}/ads1.conf
+rg --color=never '^0\.0\.0\.0' < <(echo "$ads") | awk '{print "address=/"$2"/"}' > ${dnsmasq_dir}/ads.conf
+rg --color=never '^0\.0\.0\.0' < <(echo "$ads1") | awk '{print "address=/"$2"/"}' > ${dnsmasq_dir}/ads1.conf
 
 printf "$(tput setaf 5)\nTesting dnsmasq syntax: "
 sudo dnsmasq --test

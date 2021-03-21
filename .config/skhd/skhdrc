@@ -3,14 +3,19 @@ ctrl + alt + cmd - r :
   /usr/local/bin/terminal-notifier -title "Restarted yabai"; \
   launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
 
+# === open mpv from clip =====================================================
+cmd + alt - m : open -na /Applications/mpv.app $(pbpaste)
+shift + cmd - m : "${HOME}"/mybin/open-mutt
+
 # === debug yabai== =========================================================
 # lshift - x : terminal-notifier -message "lshift - x"
-# lshift - x : terminal-notifier -message "$(yabai -m query --windows --window | jq -re ".id")"
+# lshift - x : terminal-notifier -message "$(yabai -m query --windows --window \
+#   | jq -re ".id")"
 
 # === scripts ==============================================================
-fn + lalt - 1 : "${HOME}"/mybin/yabai/scripts/show_cpu.sh
-fn + lalt - 2 : "${HOME}"/mybin/yabai/scripts/show_mem.sh
-fn + lalt - 3 : "${HOME}"/mybin/yabai/scripts/show_disk.sh
+shift + lctrl - 1 : "${HOME}"/mybin/yabai/show_cpu.sh
+shift + lctrl - 2 : "${HOME}"/mybin/yabai/show_mem.sh
+shift + lctrl - 3 : "${HOME}"/mybin/yabai/show_disk.sh
 
 # === close application ====================================================
 hyper - backspace : $(yabai -m window $(yabai -m query --windows --window | jq -re ".id") --close)
@@ -25,10 +30,10 @@ hyper - 0x21 : yabai -m window --swap west        # 0x21 = "["
 hyper - 0x1E : yabai -m window --swap east        # 0x1E = "]"
 
 # === swap window ==========================================================
-# shift + alt - h : yabai -m window --warp west
-# shift + alt - j : yabai -m window --warp south
-# shift + alt - k : yabai -m window --warp north
-# shift + alt - l : yabai -m window --warp east
+shift + alt - h : yabai -m window --warp west
+shift + alt - j : yabai -m window --warp south
+shift + alt - k : yabai -m window --warp north
+shift + alt - l : yabai -m window --warp east
 
 # === focus windows ========================================================
 alt - h : yabai -m window --focus west
