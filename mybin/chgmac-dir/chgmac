@@ -271,7 +271,7 @@ main() {
 
   shift $((OPTIND - 1))
 
-  # sudo ifconfig "$INTERFACE" ether "$NMAC"
+  sudo ifconfig "$INTERFACE" ether "$NMAC"
   notify
 }
 
