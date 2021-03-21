@@ -251,8 +251,6 @@ main() {
         if [ "$INTERFACE" = "M" ]; then
           printf "%$(tput cols)s" | tr " " "="
           printf "%b\n" "${BOLD}${YELLOW}Enter a number for an interface:${RESET}\n"
-          # echo $(get_interfaces) | tr ' ' '\n' | while read i; do
-          # done
           echo "$(get_interfaces)" | tr ' ' '\n' | awk '{printf "[%d] %s\n", NR, $0}'
 
           # read -r -p ">> " INTNAME
