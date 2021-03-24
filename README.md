@@ -28,9 +28,13 @@ dotfiles
 | <kbd>o</kbd>  | highlight one word the right                                              |
 | <kbd>p</kbd>  | highlight all words to the right                                          |
 | <kbd>yy</kbd> | copy                                                                      |
-| <kbd>tt</kbd> | close window (because <kbd>Cmd</kbd> + <kbd>w</kbd> is mapped to nothing) |
 | <kbd>J</kbd>  | <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>←</kbd>                  |
 | <kbd>K</kbd>  | <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>→</kbd>                  |
+
+- Other mappings:
+
+| <kbd>Cmd</kbd> + <kbd>qq</kbd> | quit app            |
+| <kbd>Cmd</kbd> + <kbd>ww</kbd> | close window of app |
 
 The <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings are significant if you have this sequence mapped to changing tabs in iTerm.  I just find this a little easier to do instead of moving my fingers off of the home row.
 

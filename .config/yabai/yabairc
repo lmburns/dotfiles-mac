@@ -14,6 +14,9 @@ preselect_border_color="98676a"
 # csrutil enable --without debug --without fs
 
 # === apps to ignore ========================================================
+yabai -m rule --add app="R" manage=off
+yabai -m rule --add app="^mpv$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Automator$" sticky=on layer=above manage=off
 yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Console$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Adobe Photoshop 2020" sticky=on layer=above manage=off
@@ -34,8 +37,7 @@ yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
 yabai -m rule --add app="Fantastical" manage=off
 yabai -m rule --add app="Discord" sticky=on layer=above manage=off
 yabai -m rule --add app="^Messages$" sticky=on layer=above manage=off
-yabai -m rule --add app=R manage=off
-yabai -m rule --add app=Bear manage=off layer=above
+yabai -m rule --add app="Bear" manage=off layer=above
 yabai -m rule --add app="^iTerm2$" manage=on
 yabai -m rule --add app="^Flux$" manage=off
 
@@ -56,7 +58,6 @@ yabai -m config window_border               off
 # yabai -m config active_window_border_color  "0xE0${focused_border_color}"
 # yabai -m config insert_window_border_color  "0xE0${preselect_border_color}"
 # yabai -m config normal_window_border_color  "0x00${normal_border_color}"
-killall limelight &> /dev/null && (limelight &> /dev/null &)
 
 # === other settings ========================================================
 yabai -m config auto_balance                  off
@@ -78,6 +79,4 @@ yabai -m config right_padding                   "${gaps}"
 yabai -m config window_gap                      "${gaps_inner}"
 
 # focus on next window when closing
-yabai -m signal --add event=window_destroyed action="bash "$HOME/mybin/yabai/winfocus.sh""
-
-echo "yabai configuration loaded.."
+# yabai -m signal --add event=window_destroyed action="bash "$HOME/mybin/yabai/winfocus.sh""

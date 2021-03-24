@@ -1,7 +1,7 @@
 # lucas' aliases
 
-alias img='/usr/local/bin/imgcat'
-alias getmime='file --dereference --brief --mime-type'
+alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
+alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
 # === general ===================================================================
 # alias sudo='doas'
@@ -19,15 +19,16 @@ alias lsm='exa -Flh --git --sort=modified'
 alias lss='exa -Flh --git --group-directories-first'
 alias lsd='exa -FlhD'
 alias treed='exa -TL'
-# alias ald='alder --depth'
 alias chx='chmod +x'
 alias lns='ln -siv'
 alias ka='killall'
+alias kid='kill -KILL'
 alias yt='youtube-dl --add-metadata -i'
 alias grep='grep --color=auto'
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
 alias his='history | grep'
+# alias ofd='open $PWD'
 
 # === configs ===================================================================
 alias nzsh="nvim $ZDOTDIR/.zshrc"
@@ -72,6 +73,7 @@ alias oconn='openpyn us -t 10'
 alias spt='speedtest | rg "(Download:|Upload:)"'
 alias essh='eval $(ssh-add)'
 alias kc='keychain'
+alias kck='keychain -k all'
 alias wifi='osx-wifi-cli'
 
 # === wiki ======================================================================
@@ -103,6 +105,10 @@ alias newsboat='newsboat -C $XDG_CONFIG_HOME/newsboat/config'
 alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
 alias tt='taskwarrior-tui'
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
+
+alias img='/usr/local/bin/imgcat'
+alias getmime='file --dereference --brief --mime-type'
+alias cleanzsh='sudo rm -rf /private/var/log/asl/*.asl'
 
 alias zath='zathura'
 alias n='man'
@@ -205,4 +211,4 @@ alias bruse='br uses'
 alias bruta='br untap'
 alias brse='br services'
 alias brseli='brse list'
-alias sbrse='doas brew services'
+alias sbrse='sudo brew services'

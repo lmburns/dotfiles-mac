@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 dnsmasq_dir="/usr/local/etc/dnsmasq.d"
 
@@ -24,8 +24,12 @@ stubby -i 2>&1 | rg -o 'Result: .*$'
 printf "$(tput setaf 3)\nSetting DNS servers: "
 networksetup -setdnsservers Wi-Fi 127.0.0.1 ::1
 printf "$(tput setaf 6) $(networksetup -getdnsservers Wi-Fi  | tr '\n' ' ')\n"
+printf "$(tput setaf 2) $(scutil --dns | head | rg 'nameserver')\n"
 
 printf "$(tput setaf 2)\nChecking DNSSEC valdation: "
-dig +dnssec burnsac.xyz | rg -o '(\bad\b|\bRRSIG\b|\bNOERROR\b)' | tr '\n' ' '
+printf "$(tput setaf 3) $(dig +dnssec burnsac.xyz | rg -o '(\bad\b|\bRRSIG\b|\bNOERROR\b)' | tr '\n' ' ')"
+
+printf "$(tput setaf 4)\nChecking QNAME minimization: "
+printf "$(tput setaf 5) $(dig +short txt qnamemintest.internet.nl | sed -n '$p')"
 
 printf "\n\n$(tput setaf 1)Finished $(tput setaf 2)updating $(tput setaf 3)block $(tput setaf 4)lists"

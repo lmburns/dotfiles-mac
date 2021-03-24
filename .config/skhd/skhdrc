@@ -1,10 +1,12 @@
 # === restart yabai =========================================================
 ctrl + alt + cmd - r :
   /usr/local/bin/terminal-notifier -title "Restarted yabai"; \
-  launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
+  launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"; \
+  killall limelight &> /dev/null; \
+  /usr/local/mybin/limelight &> /dev/null &
 
 # === open mpv from clip =====================================================
-cmd + alt - m : open -na /Applications/mpv.app $(pbpaste)
+shift + cmd - m : open -na /Applications/mpv.app $(pbpaste)
 shift + cmd - m : "${HOME}"/mybin/open-mutt
 
 # === debug yabai== =========================================================

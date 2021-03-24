@@ -20,7 +20,7 @@ set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 # vars that depend on environmental variables
 $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
 
-lfimg
+# lfimg
 # $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/preview"
 # $lf -remote "send $id set cleaner ${XDG_CONFIG_HOME}/lf/cleaner"
 
@@ -514,7 +514,7 @@ map Ps :paste-symlink			# another paste symlink w/o needing gnucoreutils
 map Pp paste							# regular paste
 map x cut
 map y copy
-map <c-d> yank-path				# yank file path
+map <c-y> yank-path				# yank file path
 map <enter> open
 map mf push :mkfile<space>
 map md push :mkdir<space>

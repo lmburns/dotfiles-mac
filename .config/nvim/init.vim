@@ -110,8 +110,9 @@
   " let g:gruvbox_material_background = 'hard'
   let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
-  " let g:kimbox_background = 'medium'
-  let g:kimbox_background = 'darker'
+  " let g:kimbox_background = 'medium' " brown
+  " let g:kimbox_background = 'darker' " dark dark purple
+  let g:kimbox_background = 'ocean' " dark purple
   let g:kimbox_allow_bold = 1
   " let g:oceanic_material_background = "deep"
   let g:oceanic_material_background = "ocean"
@@ -892,7 +893,7 @@
   autocmd FileType rmd if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
 
   " Open shortcuts
-  nmap <Leader>rs :vs ~/projects/RStudio/nvim-r.md<CR>
+  nmap <Leader>rs :vs ~/projects/r/rstudio/nvim-r.md<CR>
 
   " Run ;RStop // :RKill to quit
   let R_auto_start = 1                                   " Autostart R when opening .R
@@ -933,6 +934,28 @@
   let Rout_more_colors = 1                                " Make terminal output more colorful
   let r_indent_align_args = 0
   " let rout_follow_colorscheme = 1
+
+" Kimbie {{{
+if has('gui_running') || &termguicolors
+  let rout_color_input    = 'guifg=#9e9e9e'
+  let rout_color_normal   = 'guifg=#f79a32'
+  let rout_color_number   = 'guifg=#889b4a'
+  let rout_color_integer  = 'guifg=#a3b95a'
+  let rout_color_float    = 'guifg=#98676a'
+  let rout_color_complex  = 'guifg=#fcaf00'
+  let rout_color_negnum   = 'guifg=#d7afff'
+  let rout_color_negfloat = 'guifg=#d6afff'
+  let rout_color_date     = 'guifg=#4c96a8'
+  let rout_color_true     = 'guifg=#088649'
+  let rout_color_false    = 'guifg=#ff5d5e'
+  let rout_color_inf      = 'guifg=#f06431'
+  let rout_color_constant = 'guifg=#5fafcf'
+  let rout_color_string   = 'guifg=#502166'
+  let rout_color_error    = 'guifg=#ffffff guibg=#dc3958'
+  let rout_color_warn     = 'guifg=#f14a68'
+  let rout_color_index    = 'guifg=#d3af86'
+endif
+" }}}
 " }}}
 
 " =====================================================================
