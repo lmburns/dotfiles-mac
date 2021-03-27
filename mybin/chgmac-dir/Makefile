@@ -16,6 +16,7 @@ install:
 	@install -vd "$(DESTDIR)/$(MANDIR)/man1"
 	@install -vm644 chgmac.1 "$(DESTDIR)/$(MANDIR)/man1/$(PROG).1"
 	@install -vm755 chgmac "$(PREFIX)/bin/$(PROG)"
+	@install -vm755 mn "$(PREFIX)/bin/$(PROG)"
 	@echo
 	@echo "$(PROG) is installed succesfully"
 	@echo

@@ -1,5 +1,3 @@
- # ______     ______     __  __     ______     ______
-# /\___  \   /\  ___\   /\ \_\ \   /\  == \   /\  ___\
 # \/_/  /__  \ \___  \  \ \  __ \  \ \  __<   \ \ \____
  #  /\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \ \_____\
  #  \/_____/   \/_____/   \/_/\/_/   \/_/ /_/   \/_____/
@@ -38,7 +36,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ZINIT_HOME="$ZDOTDIR/zinit"
 export GENCOMP_DIR="$ZDOTDIR/completions"
-FPATH=$ZDOTDIR/functions:$ZDOTDIR/completions:$FPATH
+fpath+=("$ZDOTDIR/functions" "$ZDOTDIR/completions:$FPATH")
 
 # to load all omz lib
 # export ZSH="$XDG_CONFIG_HOME/zsh/oh-my-zsh"
@@ -51,7 +49,6 @@ typeset -A ZINIT=(
 )
 
 # compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
-typeset -U PATH path
 autoload -Uz $ZDOTDIR/functions/*
 autoload +X zman
 autoload -Uz zmv zcalc zargs
@@ -93,6 +90,7 @@ zinit for \
   OMZ::lib/history.zsh \
   OMZ::lib/clipboard.zsh \
   OMZ::lib/correction.zsh \
+  OMZ::lib/completion.zsh \
   OMZ::plugins/git/git.plugin.zsh \
   OMZ::plugins/iterm2/iterm2.plugin.zsh \
   OMZ::plugins/osx/osx.plugin.zsh \
@@ -103,19 +101,22 @@ zinit for \
   as"completion" \
     OMZ::plugins/pass/_pass
 
-zinit ice wait'1' lucid; zinit load hlissner/zsh-autopair
+# zinit ice wait'1' lucid; zinit load hlissner/zsh-autopair
+
+zinit wait'1' lucid light-mode for \
+    hlissner/zsh-autopair \
+    aloxaf/gencomp \
+    wfxr/forgit \
+    tarrasch/zsh-bd
 
 zinit light-mode for \
     aloxaf/fzf-tab \
     zsh-users/zsh-syntax-highlighting \
-    wfxr/forgit \
     michaelaquilina/zsh-history-filter \
     michaelaquilina/zsh-you-should-use \
-    aloxaf/gencomp \
     kazhala/dotbare \
     ael-code/zsh-colored-man-pages \
     andrewferrier/fzf-z \
-    tarrasch/zsh-bd \
     blockf \
       zsh-users/zsh-completions \
     src="etc/git-extras-completion.zsh" \
@@ -154,21 +155,25 @@ stty discard undef <$TTY >$TTY
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-preview 'ps --pid=$word -o cmd --no-headers -w -w'
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags '--preview-window=down:3:wrap'
 zstyle ':fzf-tab:complete:kill:*' popup-pad 0 3
-zstyle ":completion:*:git-checkout:*" sort false
-zstyle ':completion:*:descriptions' format '[%d]'
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:complete:_zlua:*' query-string input
+zstyle ':fzf-tab:complete:cd:*' popup-pad 30 0
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 zstyle ':fzf-tab:*' switch-group ',' '.'
-zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*:git-checkout:*' sort false
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*:exa' file-sort modification
+zstyle ':completion:*:exa' sort false
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 # }}}
 
 # === fixes / sourcing === {{{
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # fzf fix
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-[ -f "$XDG_CONFIG_HOME/zsh/lficons" ] && source "$XDG_CONFIG_HOME/zsh/lficons"
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+[ -f "$ZDOTDIR/lficons" ] && source "$ZDOTDIR/lficons"
 [ -f "$XDG_CONFIG_HOME/broot/launcher/bash/br" ] && source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
 # }}}
 
@@ -221,7 +226,7 @@ upp() { cat $1 | up }
 # crypto
 ratesx() { curl rate.sx/$1 }
 # backup files
-bak() { /usr/local/bin/gcp --force --suffix=.bak $1 $1 }
+bak() { /usr/local/bin/gcp -r --force --suffix=.bak $1 $1.bak }
 # link unlink file from mybin to $PATH
 lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
 unlbin() { rm -v /usr/local/mybin/$1 }
@@ -233,10 +238,13 @@ unalias run-help && autoload run-help && alias help=run-help
 # man zshcontrib | zshall | zshle
 # cd into directory
 take() { mkdir -p $@ && cd ${@:$#} }
+# fzf recent directories
+rdir() { cd "$(dirs -lp | fzf)" }
 
 # font search
 fsearch() { fc-list : file family | sed -n -e 's#/Users/lucasburns/Library/Fonts##p' | rg '^/' | sort | rg "$1" }
 # system_profiler SPFontsDataType | rg "$1"
+# atsutil fonts -list
 
 # use lf to switch directories
 lc() {
@@ -275,8 +283,12 @@ export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 export RTV_BROWSER="w3m"
 export EDITOR='nvim'
 
-# PAGER="less -g -s '+/^       "$1"'" man ${2:-zshall}
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+ZSH_AUTOSUGGEST_COMPLETION_IGNORE='( |man )*'
 
+d="$XDG_CONFIG_HOME/dircolors/gruv.dircolors"; test -r $d && eval "$(dircolors $d)"
 export VIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
 export NOTMUCH_CONFIG="$XDG_CONFIG_HOME/notmuch/notmuch-config"
@@ -290,6 +302,7 @@ export R_PROFILE_USER="$XDG_CONFIG_HOME/r/Rprofile"
 export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
+export PASSWORD_STORE_EXTENSIONS_DIR="$(brew --prefix)/lib/password-store/extensions"
 export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
 export HOMEBREW_NO_ANALYTICS=1
 export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
@@ -368,7 +381,10 @@ export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
 # }}}
 
-killall limelight &> /dev/null
-(limelight &> /dev/null &)
+# killall limelight &> /dev/null
+# (limelight &> /dev/null &)
 
 export PATH
+typeset -U PATH path
+
+# export PATH="/usr/bin:$PATH"

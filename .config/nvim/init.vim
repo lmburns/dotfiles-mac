@@ -486,7 +486,8 @@
     \ 'coc-sh',
     \ 'coc-git',
     \ 'coc-sql',
-    \ 'coc-perl'
+    \ 'coc-perl',
+    \ 'coc-xml'
     \ ]
 
   " let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']

@@ -9,7 +9,6 @@ check() {
   [ -x "$(command -v system_profiler)" ] || (echo "system_profiler is not in your \$PATH" && exit 1)
   [ -x "$(command -v ifconfig)" ] || (echo "ifconfig is not in your \$PATH" && exit 1)
   [ -x "$(command -v fzf)" ] || (echo "fzf is not in your \$PATH" && exit 1)
-  [ -x "$(command -v terminal-notifier)" ] || (echo "terminal-notifier is not in your \$PATH" && exit 1)
 
   [ $(uname) == "Darwin" ] || (echo "Not on macOS" && exit 1)
 }
@@ -97,11 +96,10 @@ get_new_mac() {
 }
 
 notify() {
-  terminal-notifier \
-    -title "MAC Address" \
-    -message "Interface ===== $INTERFACE
-Old ========== $MAC
-New ========== $NMAC"
+  osascript -e "display notification \"Old: $MAC\" with title \"Interface: $INTERFACE\" subtitle \"New: $NMAC\""
+
+  location="$(dirname $(readlink -f -- "$0"))"
+  (nohup "$location/mn" "$NMAC" > /dev/null 2>&1 &)
 }
 
 get_interfaces() {
@@ -271,9 +269,9 @@ main() {
 
   shift $((OPTIND - 1))
 
-  sudo ifconfig "$INTERFACE" ether "$NMAC"
+  # sudo ifconfig "$INTERFACE" ether "$NMAC"
   notify
 }
 
-# [ "$(dirname "$(readlink -f -- "$@")")" ] && \
+[ "$(dirname "$(readlink -f -- "$0")")" ] && \
 main "$@"
