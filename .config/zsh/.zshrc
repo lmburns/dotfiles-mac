@@ -5,7 +5,6 @@
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
 # === general settings === {{{
-export DISPLAY=:0
 export LC_ALL="en_US.UTF-8"
 export ZSH_DISABLE_COMPFIX=true
 export HISTSIZE=10000000
@@ -57,12 +56,6 @@ alias zmv='noglob zmv -W'
 [ -f "$ZDOTDIR/zsh-aliases" ] && source "$ZDOTDIR/zsh-aliases"
 # }}}
 
-# === powerlevel10k === {{{
-if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-# }}}
-
 # === zinit === {{{
 if [[ ! -f $ZINIT_HOME/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
@@ -85,6 +78,7 @@ zinit light-mode for \
 # zinit snippet OMZ::lib/misc.zsh
 # zinit snippet OMZ::lib/functions.zsh
 # zinit snippet OMZ::lib/key-bindings.zsh
+# depth=1 jeffreytse/zsh-vi-mode
 
 zinit for \
   OMZ::lib/history.zsh \
@@ -93,15 +87,13 @@ zinit for \
   OMZ::lib/completion.zsh \
   OMZ::plugins/git/git.plugin.zsh \
   OMZ::plugins/iterm2/iterm2.plugin.zsh \
+  OMZ::plugins/vi-mode/vi-mode.plugin.zsh \
   OMZ::plugins/osx/osx.plugin.zsh \
   OMZ::plugins/autojump/autojump.plugin.zsh \
-  OMZ::plugins/vi-mode/vi-mode.plugin.zsh \
   OMZ::plugins/command-not-found/command-not-found.plugin.zsh \
   OMZ::plugins/zsh_reload/zsh_reload.plugin.zsh \
   as"completion" \
     OMZ::plugins/pass/_pass
-
-# zinit ice wait'1' lucid; zinit load hlissner/zsh-autopair
 
 zinit wait'1' lucid light-mode for \
     hlissner/zsh-autopair \
@@ -135,6 +127,12 @@ autoload -Uz compinit && compinit
 # zinit cdreplay -q
 # }}}
 
+# === powerlevel10k === {{{
+if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+# }}}
+
 # === zsh keybindings === {{{
 bindkey '^a' autosuggest-accept
 bindkey '^x' autosuggest-execute
@@ -144,9 +142,9 @@ bindkey -M vicmd '^h' run-help
 bindkey -M vicmd '?' which-command
 
 autoload edit-command-line; zle -N edit-command-line
-bindkey '^e' edit-command-line
-bindkey -M viins 'jk' vi-cmd-mode;      bindkey -M viins 'kj' vi-cmd-mode
-bindkey -M vicmd 'H' beginning-of-line; bindkey -M vicmd 'L' end-of-line
+bindkey -M vicmd '^e' edit-command-line;  bindkey -M viins '^e' edit-command-line
+bindkey -M viins 'jk' vi-cmd-mode;        bindkey -M viins 'kj' vi-cmd-mode
+bindkey -M vicmd 'H' beginning-of-line;   bindkey -M vicmd 'L' end-of-line
 
 # fixes macOS consumption of ^O command
 stty discard undef <$TTY >$TTY
@@ -210,10 +208,8 @@ rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
 fzfza() { fd -a -e "pdf" | fzf | xargs -I{} zathura "{}" >/dev/null }
 # shred and delete file
 sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
-# start asciinema recording
-asciir() { asciinema rec $1; }
 # search and kill process with fzf
-ppkill() { ps aux | fzf --height=70% | awk '{print $2}' | xargs -I{} kill -KILL "{}" }
+ppkill() { px | awk 'BEGIN{OFS="\t"}{print $1, $2, $NF}' | fzf --height=70% | awk '{print $1}' | xargs -I{} kill -KILL "{}"}
 # grep processes with headers
 psgrep() { ps up $(pgrep -f $@) 2>&-; }
 # create py file to sync with ipynb
@@ -270,9 +266,9 @@ listening() {
 # }}}
 
 #===== variables ===== {{{
-eval "$(zoxide init zsh)"
-eval "$(keychain --eval -q --inherit any id_rsa git gitlab-new burnsac && \
-        keychain --agents gpg -q --eval 6628B679)"
+eval "$(zoxide init zsh --cmd x)"
+eval "$(keychain --agents ssh -q --inherit any --eval id_rsa git gitlab-new burnsac && \
+        keychain --agents gpg -q --eval 0xC011CBEF6628B679)"
 eval "$(thefuck --alias)"
 eval "$(fakedata --completion zsh)"
 
@@ -283,12 +279,6 @@ export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 export RTV_BROWSER="w3m"
 export EDITOR='nvim'
 
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-ZSH_AUTOSUGGEST_USE_ASYNC=1
-ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-ZSH_AUTOSUGGEST_COMPLETION_IGNORE='( |man )*'
-
-d="$XDG_CONFIG_HOME/dircolors/gruv.dircolors"; test -r $d && eval "$(dircolors $d)"
 export VIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
 export NOTMUCH_CONFIG="$XDG_CONFIG_HOME/notmuch/notmuch-config"
@@ -346,6 +336,7 @@ path=("/usr/local/opt/coreutils/libexec/gnubin"
       "/usr/local/Cellar/openvpn/2.5.0/sbin" "$path[@]"
 )
 
+d="$XDG_CONFIG_HOME/dircolors/gruv.dircolors"; test -r $d && eval "$(dircolors $d)"
 export MANPATH="/usr/local/opt/findutils/libexec/gnuman:$MANPATH"
 
 # GPG
@@ -383,6 +374,8 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
 
 # killall limelight &> /dev/null
 # (limelight &> /dev/null &)
+
+(pueue clean && pueue status | rg 'limelight' || pueue add limelight) >/dev/null
 
 export PATH
 typeset -U PATH path

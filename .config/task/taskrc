@@ -1,7 +1,4 @@
 # [Created by task 2.5.3 12/25/2020 21:33:08]
-# Taskwarrior program configuration file.
-# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-color',
-# 'man task-sync' or 'man taskrc'
 
 # Here is an example of entries that use the default, override and blank values
 #   variable=foo   -- By specifying a value, this overrides the default
@@ -56,7 +53,7 @@ color.project.imp=blue
 #color.keyword.car=on_blue             # Color of description.contains:car tasks
 #color.recurring=on_red                # Color of recur.any: tasks
 #color.header=bold_green               # Color of header messages
-color.footnote=on red             # Color of footnote messages
+color.footnote=on blue             # Color of footnote messages
 
 #shadow.file=/tmp/shadow.txt           # Location of shadow file
 #shadow.command=list                   # Task command for shadow file

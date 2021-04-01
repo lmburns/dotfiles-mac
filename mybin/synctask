@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# Sync tasks from taskwarrior to Reminders.app
+
+outfile="$HOME/backup/task/tasklist"
+remind_outfile="$HOME/backup/task/remindlist"
+
+list="taskwarrior"
+
+
+get_taskwarrior() {
+  task status:pending export rc.json.array=off \
+    | jq --raw-output '.description' \
+    > "$outfile"
+}
+
+add_remind() {
+  local reminder="$1"
+
+  osascript - "$reminder" <<END
+  on run arg
+      tell application "Reminders"
+        tell list "$list"
+          make new reminder with properties {name:item 1 of arg}
+        end tell
+      end tell
+  end run
+END
+}
+
+get_remind() {
+  osascript <<END
+    tell application "Reminders"
+      set AppleScript's text item delimiters to "\n"
+      set _body to (name of reminders in list "$list" whose completed is false) as string
+    end tell
+END
+
+}
+
+# get current reminders from reminders.app
+get_remind > "$remind_outfile"
+
+# get taskwarrior reminders
+get_taskwarrior
+
+# get things in taskwarrior that are not in reminders currently
+file_diff="$(comm -23 <(sort "$outfile") <(sort "$remind_outfile"))"
+arr=( $file_diff )
+
+# add reminders from taskwarrior
+[[ -n "$file_diff" ]] &&
+  while IFS= read -r p; do
+    add_remind "$p"
+    echo "$p"
+  done <<< "$file_diff"

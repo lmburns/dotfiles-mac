@@ -5,10 +5,12 @@ alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
 alias loginwindow='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
 alias spot='sudo mdutil -a -i'
+alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
+
+alias keuze="keuze -fs 12 -fn Monaco"
 
 # === general ===================================================================
 # alias sudo='doas'
-alias zn='zinit'
 alias cp='cp -iv'
 alias rcp='rsync -av --ignore-existing --progress'
 alias pb='pbcopy'
