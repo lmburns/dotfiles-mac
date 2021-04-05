@@ -161,19 +161,19 @@
   set background=dark
   set path+=**
   set lazyredraw
-  set belloff=all                     " turn off bell
+set belloff=all                             " turn off bell
   set title
-  set noshowmode                      " hide file, it's in airline
+  set noshowmode                            " hide file, it's in airline
   set noshowcmd
-  set noswapfile                      " no swap files
+  set noswapfile                            " no swap files
   set list lcs=tab:‣\ ,trail:•,nbsp:␣ " customize invisibles
-  set fillchars+=msgsep:\ ,vert:\│    " customize message separator in neovim
-  set incsearch                       " incremential search highligh
+  set fillchars+=msgsep:\ ,vert:\│          " customize message separator in neovim
+  set incsearch                             " incremential search highligh
     nnoremap <silent><F7> :set nohlsearch!<CR>
   set encoding=utf-8
   set magic
-  set clipboard+=unnamedplus          " use system clipboard
-  set splitbelow splitright           " split screen below and right
+  set clipboard+=unnamedplus                " use system clipboard
+  set splitbelow splitright                 " split screen below and right
   set tabstop=2 shiftwidth=0
   set expandtab softtabstop=2 smartindent
   set ignorecase smartcase
@@ -183,16 +183,16 @@
     nnoremap <silent><F2> :set nowrap!<CR>
   set nofoldenable
   set foldmethod=marker
-  set scrolloff=5                      " cusor 5 lines from bottom of page
-  set cursorline                       " show line where cursor is
-  set mouse=a                          " enable mouse all modes
-  set wildmode=longest,list:full       " Autocompletion
-  set wildmenu                         " Autocompletion
+  set scrolloff=5                         " cusor 5 lines from bottom of page
+  set cursorline                          " show line where cursor is
+  set mouse=a                             " enable mouse all modes
+  set wildmode=longest,list:full          " autocompletion
+  set wildmenu                            " autocompletion
   set wildignore+=.git,.DS_Store,node_modules
-  set synmaxcol=1000                    " do not highlight long lines
-  set timeoutlen=350                    " keycode delay
+  set synmaxcol=1000                      " do not highlight long lines
+  set timeoutlen=350                      " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
-  set confirm                           " confirm when editing readonly
+  set confirm                             " confirm when editing readonly
   set noerrorbells
   set belloff=all
   filetype plugin indent on

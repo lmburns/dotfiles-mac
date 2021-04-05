@@ -1,14 +1,20 @@
+#  ______     ______     __  __     ______     ______
+# /\___  \   /\  ___\   /\ \_\ \   /\  == \   /\  ___\
 # \/_/  /__  \ \___  \  \ \  __ \  \ \  __<   \ \ \____
- #  /\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \ \_____\
- #  \/_____/   \/_____/   \/_/\/_/   \/_/ /_/   \/_____/
+#   /\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \ \_____\
+#   \/_____/   \/_____/   \/_/\/_/   \/_/ /_/   \/_____/
 
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
 # === general settings === {{{
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
 export LC_ALL="en_US.UTF-8"
 export ZSH_DISABLE_COMPFIX=true
 export HISTSIZE=10000000
-export HISTFILE="$HOME/.cache/zsh/zsh_history"
+export HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history"
 export SAVEHIST=10000000
 export HIST_STAMPS="yyyy-mm-dd"
 export HISTORY_FILTER_EXCLUDE=("jrnl", "cd")
@@ -19,19 +25,20 @@ setopt append_history
 setopt share_history
 setopt inc_append_history
 setopt extended_history
-setopt auto_menu         # show completion menu on successive tab press
+setopt auto_menu
 setopt complete_in_word
 setopt always_to_end
-unsetopt menu_complete
-unsetopt flowcontrol
 setopt autocd
 setopt auto_pushd
 setopt pushd_ignore_dups
 setopt pushdminus
+unsetopt menu_complete
+unsetopt flowcontrol
+unsetopt case_glob
 
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
+# setopt correct
+# setopt correct_all
+
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ZINIT_HOME="$ZDOTDIR/zinit"
 export GENCOMP_DIR="$ZDOTDIR/completions"
@@ -49,7 +56,7 @@ typeset -A ZINIT=(
 
 # compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
 autoload -Uz $ZDOTDIR/functions/*
-autoload +X zman
+autoload +X zman pslist
 autoload -Uz zmv zcalc zargs
 alias zmv='noglob zmv -W'
 
@@ -178,7 +185,7 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 # === homebrew, custom bins === {{{
 path=("$HOME/.local/bin" "/usr/local/mybin"
       "/usr/local/bin" "/usr/local/sbin"
-      "$path[@]"
+      "${path[@]}"
 )
 # }}}
 
@@ -295,6 +302,8 @@ export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 export PASSWORD_STORE_EXTENSIONS_DIR="$(brew --prefix)/lib/password-store/extensions"
 export GETOPT="/usr/local/opt/gnu-getopt/bin/getopt"
 export HOMEBREW_NO_ANALYTICS=1
+export HOMEBREW_BAT=1
+export HOMEBREW_BAT_CONFIG_PATH="$XDG_CONFIG_HOME/bat/config"
 export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
 export FZFZ_RECENT_DIRS_TOOL='autojump'
 
@@ -333,7 +342,7 @@ path=("/usr/local/opt/coreutils/libexec/gnubin"
       "/usr/local/opt/gnu-sed/libexec/gnubin"
       "/usr/local/opt/util-linux/bin"
       "/usr/local/opt/findutils/libexec/gnubin"
-      "/usr/local/Cellar/openvpn/2.5.0/sbin" "$path[@]"
+      "/usr/local/Cellar/openvpn/2.5.0/sbin" "${path[@]}"
 )
 
 d="$XDG_CONFIG_HOME/dircolors/gruv.dircolors"; test -r $d && eval "$(dircolors $d)"
@@ -351,7 +360,7 @@ path=("$HOME/.rbenv/version/3.0.0/bin"
       "$XDG_DATA_HOME/gem/bin"
       "$HOME/opt/anaconda3/bin"
       "/usr/local/mysql/bin/"
-      "$GOPATH/bin" "$path[@]"
+      "$GOPATH/bin" "${path[@]}"
 )
 eval "$(rbenv init -)"
 

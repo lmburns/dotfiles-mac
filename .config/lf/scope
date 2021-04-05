@@ -13,7 +13,6 @@ IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
 # 3    | fix width  | Don't reload when width changes
 # 4    | fix height | Don't reload when height changes
 
-
 # Arguments:
 FILE_PATH="${1}"         # Full path of the highlighted file
 WIDTH="${2}"
@@ -74,6 +73,7 @@ handle_other() {
         *odt) odt2txt "${FILE_PATH}";;
         *.doc) catdoc "${FILE_PATH}" ;;
         *.docx) docx2txt "${FILE_PATH}" - ;;
+        *.md) mdv "${FILE_PATH}" ;;
         *.csv) bat "${FILE_PATH}" | sed s/,/\\n/g ;;
         *.json) jq --color-output . "${FILE_PATH}";;
         *.asc) bat -Pf --theme gruvbox --style auto "${FILE_PATH}";;

@@ -1,18 +1,24 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # generate a script in script directory
 # set bin_dir (doesn't have to exist yet)
 
-BIN_DIR="${HOME}/mybin"
+MAGENTA="$(tput setaf 5)"
+CYAN="$(tput setaf 6)"
+GREEN="$(tput setaf 2)"
+BLUE="$(tput setaf 4)"
+YELLOW="$(tput setaf 3)"
+RESET="$(tput sgr0)"
 
-# dialog
-ANS=$(\
-  dialog --title "Create a Script" \
-        --clear \
-        --cancel-label "Exit" \
-        --inputbox 'Enter FILE name: ' 8 40 \
-  3>&1 1>&2 2>&3 3>&- \
-)
+# ===========================
+# # dialog
+# ANS=$(\
+#   dialog --title "Create a Script" \
+#         --clear \
+#         --cancel-label "Exit" \
+#         --inputbox 'Enter FILE name: ' 8 40 \
+#   3>&1 1>&2 2>&3 3>&- \
+# )
 
 # zenity pop up
 # ANS=$(\
@@ -21,21 +27,39 @@ ANS=$(\
 #   --entry \
 #   --text "Enter file name: "
 # )
+# ===========================
 
-FILE=$BIN_DIR/$ANS
+BIN_DIR="${HOME}/mybin"
 
 if [ -d "$BIN_DIR" ]; then
-  if [ -e "$BIN_DIR/$ANS" ]; then
+  printf "%b\n> " "${MAGENTA}Enter a title: ${RESET}" ; read -r ANS
+  ANS=${ANS// /_}
+  ANS=${ANS,,}
+  FILE="${BIN_DIR}/${ANS}"
+  if [ -e "$FILE" ]; then
     $EDITOR "$FILE"
   else
-    printf "#!/bin/sh\n\n\n" >> "$FILE"
+    printf "%b\n> " "${MAGENTA}Enter a description: ${RESET}" ; read -r dscrpt
+
+    printf "%b\n> " "${MAGENTA}Type:${RESET}
+    (1) /bin/sh\n (2) /usr/bin/env bash\n
+    ${BLUE}Enter index [default: ${GREEN}1${BLUE}]${RESET}"
+    read -r type
+
+  case $type in
+     1|shell) printf "#!/bin/sh\n\n# ${dscrpt}\n\n\n" >> "$FILE" ;;
+     2|bash) printf "#!/usr/bin/env bash\n\n# ${dscrpt}\n\n\n" >> "$FILE" ;;
+     *) printf "%b\n" "${YELLOW}Script type defaults to ${GREEN}shell${RESET}"
+       printf "#!/bin/sh\n\n\n# ${dscrpt}\n\n\n" >> "$FILE" ;;
+  esac
+
     chmod +x "$FILE"
     if [ "$EDITOR" = "nvim" ]; then
-      $EDITOR +3 "$FILE"
+      $EDITOR +5 "$FILE"
     else
       $EDITOR "$FILE"
     fi
   fi
 fi
 
-ln -siv "${BIN_DIR}/${ANS}" /usr/local/mybin
+# ln -siv "${BIN_DIR}/${ANS}" /usr/local/mybin

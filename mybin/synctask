@@ -7,7 +7,6 @@ remind_outfile="$HOME/backup/task/remindlist"
 
 list="taskwarrior"
 
-
 get_taskwarrior() {
   task status:pending export rc.json.array=off \
     | jq --raw-output '.description' \
@@ -52,5 +51,5 @@ arr=( $file_diff )
 [[ -n "$file_diff" ]] &&
   while IFS= read -r p; do
     add_remind "$p"
-    echo "$p"
+    printf "%b%s\n" "$(tput setaf 6)" "$p"
   done <<< "$file_diff"
