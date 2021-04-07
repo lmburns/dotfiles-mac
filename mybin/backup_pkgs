@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# desc: backup packages from brew, cargo, gem, go, npm, pip
+
 BREW_FILE="brew_$(date +'%Y%m%d')"
 CARGO_FILE="cargo_$(date +'%Y%m%d')"
 GEM_FILE="gem_$(date +'%Y%m%d')"

@@ -1,0 +1,5 @@
+# desc: Searches zshall with special keyword ($1) matching
+
+PAGER="less -g -s '+/^       "$1"'" man ${2:-zshall}
+
+# vim:ft=zsh:et

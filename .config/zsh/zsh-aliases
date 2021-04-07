@@ -3,10 +3,16 @@
 alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
+# === mac specific ===============================================================
 alias loginwindow='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
-alias spot='sudo mdutil -a -i'
+alias x1mute="osascript -e 'set volume output muted true'"
+alias x1lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
 alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
+alias spot='sudo mdutil -a -i'
 alias PlistBuddy='/usr/libexec/PlistBuddy'
+alias slocate='/usr/bin/locate'
+
+alias pl='print -rl --'
 
 alias keuze="keuze -fs 12 -fn Monaco"
 
@@ -17,15 +23,17 @@ alias rcp='rsync -av --ignore-existing --progress'
 alias pb='pbcopy'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
-alias l='launchctl'
+alias lct='launchctl'
+alias l='exa -FH --git --icons'
+alias l.='l -d .*'
 alias lp='exa -1F'
 alias ll='exa -FlahH'
-alias ls='exa -Flh --git'
-alias lse='exa -Flh --git --sort=extension'
-alias lsm='exa -Flh --git --sort=modified'
-alias lss='exa -Flh --git --group-directories-first'
-alias lsd='exa -FlhD'
-alias treed='exa -TL'
+alias ls='exa -Fh --git --icons'
+alias lse='exa -Flh --git --sort=extension --icons'
+alias lsm='exa -Flh --git --sort=modified --icons'
+alias lss='exa -Flh --git --group-directories-first --icons'
+alias lsd='exa -D --icons'
+alias treed='exa -TL --icons'
 alias chx='chmod +x'
 alias lns='ln -siv'
 alias ka='killall'
@@ -73,6 +81,9 @@ alias tsmd='transmission-daemon'
 alias qbt='qbt torrent'
 
 alias getip='ipconfig getifaddr en0 &&  curl ipecho.net/plain; echo'
+alias dnsflush="dscacheutil -flushcache && killall -HUP mDNSResponder"
+alias n1sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias n1httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 alias cpumem="ps -A -o %cpu,%mem | awk '{ cpu += \$1; mem += \$2} END {print \"CPU: \"  cpu,\"MEM: \"  mem}'"
 
 alias pyn='openpyn'

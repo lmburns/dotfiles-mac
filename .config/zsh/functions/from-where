@@ -1,0 +1,10 @@
+
+function from-where {
+    echo $^fpath/$_comps[$1](N)
+    whence -v $_comps[$1]
+    #which $_comps[$1] 2>&1 | head
+}
+
+from-where "$@"
+
+# vim:ft=zsh:

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# desc: whitelist/blacklist apps with santactl
+
+typeset -a apps
+
+apps=("Image Capture" "News" "Music" "QuickTime Player" "Siri" "Books" "Photo Booth" "Stickies" "TV" "Stocks" "Chess" "Maps")
+
+case "$1" in
+  blacklist)
+    for app in "${apps[@]}"; do
+      sudo santactl rule --blacklist --path /System/Applications/"$app".app
+    done
+    ;;
+  whitelist)
+    for app in "${apps[@]}"; do
+      sudo santactl rule --whitelist --path /System/Applications/"$app".app
+    done
+    ;;
+esac

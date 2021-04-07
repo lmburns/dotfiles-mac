@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# fzf man pages macOS - view in zathura
+# desc: fzf man pages macOS - view in zathura
 ################################################################
 
 # removed 'makewhatis: /Library/TeX/texbin/man: Not a directory'

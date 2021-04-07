@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# desc: update block lists
+
 dnsmasq_dir="/usr/local/etc/dnsmasq.d"
 
 echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1

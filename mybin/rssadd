@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# desc: add rss feed to newsboat
+
 ! echo "$1" | grep "https*://\S\+\.[A-Za-z]\+\S*" >/dev/null &&
 	terminal-notifier -message "That doesn't look like a full URL." && exit
 RSSFILE="${XDG_CONFIG_HOME:-$HOME/.config}/newsboat/urls"

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# get different macs differnt interface
+# desc: select mac address for anyinterface
 
 set -e
 unset -v restore manual interface help version
@@ -263,7 +263,9 @@ main() {
 
   shift $((OPTIND - 1))
 
-  # sudo ifconfig "$INTERFACE" ether "$NMAC"
+  sudo ifconfig "$INTERFACE" ether "$NMAC"
+  sudo ifconfig "$INTERFACE" down
+  sudo ifconfig "$INTERFACE" up
   notify
 }
 

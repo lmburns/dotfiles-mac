@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Sync tasks from taskwarrior to Reminders.app
+# desc: sync tasks from taskwarrior to Reminders.app
 
 outfile="$HOME/backup/task/tasklist"
 remind_outfile="$HOME/backup/task/remindlist"

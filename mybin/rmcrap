@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# deletes .DS_Store and __MACOSX directories
+# desc: deletes .DS_Store and __MACOSX directories
 
 set -e
 

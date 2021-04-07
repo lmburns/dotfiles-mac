@@ -1,5 +1,6 @@
 #!/bin/sh
-# generic git post-receive hook.
+
+# desc: generic git post-receive hook
 # change the config options below and call this script in your post-receive
 # hook or symlink it.
 #
@@ -25,7 +26,7 @@ destdir="/var/www/git.burns"
 cachefile=".stagit-build-cache"
 defaultdir="/root/stagit-alt/stagit-md"
 
-ln -s "$defaultdir/style.css" "$destdir/style/style.css" 2> /dev/null
+ln -s "$defaultdir/style.css" "$destdir/style.css" 2> /dev/null
 ln -s "$defaultdir/logo.png" "$destdir/logo.png" 2> /dev/null
 ln -s "$defaultdir/favicon.png" "$destdir/favicon.png" 2> /dev/null
 
@@ -51,10 +52,14 @@ while read -r old new ref; do
     fi
 done
 
+readonly green='\e[0;32m' yellow='\e[0;33m' magenta='\e[0;35m'
+readonly Bred='\e[1;31m' Bgreen='\e[1;32m' Byellow='\e[1;33m'
+readonly Bmagenta='\e[1;35m' Bold='\e[1m' reset='\e[0m'
+
 # strip .git suffix
 r="$(basename "${name}")"
 d="$(basename "${name}" ".git")"
-printf "[%s] stagit HTML pages... " "${d}"
+printf "[%b%s%b] %b" "${magenta}" "${d}" "${reset}" "${green}stagit HTML pages... ${reset}"
 
 # remove folder if forced update
 [ "${force}" = "1" ] && printf "forced update... " && rm -rf "${destdir}/${d}"

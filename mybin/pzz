@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# search directory for pdf and open in zathura
+# desc: search directory for pdf and open in zathura
 
 open=zathura
 fd --no-ignore-vcs -e "pdf" \

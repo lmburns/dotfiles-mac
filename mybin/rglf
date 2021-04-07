@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# ripgrep search directory for lf file manager
+# desc: ripgrep search directory for lf file manager
 
 dialog --title "Search" --msgbox "$(rg --color=never ${1})" 40 60

@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# desc: notifier of finished torrent
+
 # * TR_APP_VERSION
 # * TR_TIME_LOCALTIME
 # * TR_TORREN_DIR

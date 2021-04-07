@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# desc: lockscreen, change wallpaper
+
 timeout="10000"
 
 screencapture /tmp/screen.png

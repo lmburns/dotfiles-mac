@@ -42,7 +42,7 @@ unsetopt case_glob
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ZINIT_HOME="$ZDOTDIR/zinit"
 export GENCOMP_DIR="$ZDOTDIR/completions"
-fpath+=("$ZDOTDIR/functions" "$ZDOTDIR/completions:$FPATH")
+fpath+=( ${ZDOTDIR}/{functions,completions} )
 
 # to load all omz lib
 # export ZSH="$XDG_CONFIG_HOME/zsh/oh-my-zsh"
@@ -55,8 +55,8 @@ typeset -A ZINIT=(
 )
 
 # compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
-autoload -Uz $ZDOTDIR/functions/*
-autoload +X zman pslist
+autoload -Uz $ZDOTDIR/functions/*(:t)
+autoload +X zman
 autoload -Uz zmv zcalc zargs
 alias zmv='noglob zmv -W'
 
@@ -85,22 +85,26 @@ zinit light-mode for \
 # zinit snippet OMZ::lib/misc.zsh
 # zinit snippet OMZ::lib/functions.zsh
 # zinit snippet OMZ::lib/key-bindings.zsh
+# zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
 # depth=1 jeffreytse/zsh-vi-mode
 
-zinit for \
-  OMZ::lib/history.zsh \
-  OMZ::lib/clipboard.zsh \
-  OMZ::lib/correction.zsh \
+# OMZ::lib/clipboard.zsh \
+
+zinit wait lucid for \
   OMZ::lib/completion.zsh \
+  OMZ::lib/history.zsh \
   OMZ::plugins/git/git.plugin.zsh \
   OMZ::plugins/iterm2/iterm2.plugin.zsh \
-  OMZ::plugins/vi-mode/vi-mode.plugin.zsh \
   OMZ::plugins/osx/osx.plugin.zsh \
   OMZ::plugins/autojump/autojump.plugin.zsh \
-  OMZ::plugins/command-not-found/command-not-found.plugin.zsh \
-  OMZ::plugins/zsh_reload/zsh_reload.plugin.zsh \
-  as"completion" \
-    OMZ::plugins/pass/_pass
+  OMZ::plugins/zsh_reload/zsh_reload.plugin.zsh
+
+  # as"completion" \
+  #   OMZ::plugins/pass/_pass
+
+zinit is-snippet for \
+  $ZDOTDIR/csnippets/*.zsh \
+  OMZ::plugins/vi-mode/vi-mode.plugin.zsh
 
 zinit wait'1' lucid light-mode for \
     hlissner/zsh-autopair \
@@ -216,7 +220,7 @@ fzfza() { fd -a -e "pdf" | fzf | xargs -I{} zathura "{}" >/dev/null }
 # shred and delete file
 sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
 # search and kill process with fzf
-ppkill() { px | awk 'BEGIN{OFS="\t"}{print $1, $2, $NF}' | fzf --height=70% | awk '{print $1}' | xargs -I{} kill -KILL "{}"}
+ppkill() { px | sed 1d | awk 'BEGIN{OFS="\t"}{print $1, $2, $NF}' | fzf --height=70% | awk '{print $1}' | xargs -I{} kill -KILL "{}"}
 # grep processes with headers
 psgrep() { ps up $(pgrep -f $@) 2>&-; }
 # create py file to sync with ipynb
@@ -228,6 +232,8 @@ hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init
 upp() { cat $1 | up }
 # crypto
 ratesx() { curl rate.sx/$1 }
+# copy directory
+pbcopydir() { pwd | tr -d "\r\n" | pbcopy; }
 # backup files
 bak() { /usr/local/bin/gcp -r --force --suffix=.bak $1 $1.bak }
 # link unlink file from mybin to $PATH
@@ -236,7 +242,7 @@ unlbin() { rm -v /usr/local/mybin/$1 }
 # latex documenation serch (as best I can)
 latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
 # get help on builtin commands
-zshman () { man zshbuiltins | less -p "^       $1 "; }
+zm() { man zshbuiltins | less -p "^       $1 "; }
 unalias run-help && autoload run-help && alias help=run-help
 # man zshcontrib | zshall | zshle
 # cd into directory
@@ -277,7 +283,7 @@ eval "$(zoxide init zsh --cmd x)"
 eval "$(keychain --agents ssh -q --inherit any --eval id_rsa git gitlab-new burnsac && \
         keychain --agents gpg -q --eval 0xC011CBEF6628B679)"
 eval "$(thefuck --alias)"
-eval "$(fakedata --completion zsh)"
+# eval "$(fakedata --completion zsh)"
 
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # export MANPAGER="nvim -c 'set ft=man' -"
@@ -307,42 +313,64 @@ export HOMEBREW_BAT_CONFIG_PATH="$XDG_CONFIG_HOME/bat/config"
 export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
 export FZFZ_RECENT_DIRS_TOOL='autojump'
 
+# ❱❯❮
 export FZF_DEFAULT_OPTS="
-    --reverse --height 50% --border --ansi --info=inline --multi
-    --preview-window=:hidden
-    --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
-    --bind '?:toggle-preview'
-    --bind 'ctrl-a:select-all'
-    --bind 'ctrl-b:execute(bat --paging=always -f {+})'
-    --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
-    --bind 'ctrl-e:execute(echo {+} | xargs -o vim)'
-    --bind 'ctrl-v:execute(code {+})'
-    "
-export FZF_DEFAULT_COMMAND='rg --files --hidden --follow'
+  --prompt '❱❱ '
+  --marker='+'
+  --color=fg:#d5c4a1,fg+:#ebdbb2,hl:#458588,hl+:#b16286
+  --color=info:#689d6a,pointer:#d79921,marker:#fe8019,spinner:#b8bb26
+  --color=header:#cc241d,gutter:-1,prompt:#fb4934
+  --reverse --height 50% --border --ansi --info=inline --multi
+  --preview-window=:hidden
+  --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+  --bind '?:toggle-preview'
+  --bind 'ctrl-a:select-all'
+  --bind 'ctrl-b:execute(bat --paging=always -f {+})'
+  --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
+  --bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
+  --bind 'ctrl-v:execute(code {+})'
+"
+
+# pointer='|>'
+# --color=dark
+# --color=fg:250,fg+:15,hl:203,hl+:203
+# --color=info:100,pointer:15,marker:220,spinner:11,header:-1,gutter:-1,prompt:15
+# export FZF_DEFAULT_COMMAND='rg --files --hidden --follow'
+export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --fllow --exclude ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FORGIT_FZF_DEFAULT_OPTS="--exact --cycle --border --ansi --reverse
     --height 70% --info=inline --multi"
 export NAVI_FZF_OVERRIDES="--height=70%"
 
 alias db='dotbare'
-bindkey -s '©' "dotbare fedit"^j        # alt g
-bindkey -s '˙' "dotbare fadd"^j         # alt a
-bindkey -s 'ß' "dotbare fstat"^j        # alt s
 export DOTBARE_DIR="$XDG_DATA_HOME/dotfiles"
 export DOTBARE_TREE="$HOME"
 export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare-b"
-# export DOTBARE_FZF_DEFAULT_OPTS="--layout=reverse --height 40% --border --ansi"
+export DOTBARE_FZF_DEFAULT_OPTS="
+  --prompt '❱❱ '
+  --marker='+'
+  --color=header:#cc241d,gutter:-1,prompt:#fb4934
+  --header='A:select-all, B:pager, Y:copy, E:nvim'
+  --header-lines=1
+  --reverse --height 50% --border --ansi --info=inline --multi
+  --preview-window=nohidden
+  --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+  --bind 'ctrl-a:select-all'
+  --bind 'ctrl-b:execute(bat --paging=always -f {+})'
+  --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
+  --bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
+"
 
 # NNN
 export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
 export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 
 # add GNU coreutils to path with no 'g' prefix, openvpn
-path=("/usr/local/opt/coreutils/libexec/gnubin"
-      "/usr/local/opt/gnu-sed/libexec/gnubin"
-      "/usr/local/opt/util-linux/bin"
-      "/usr/local/opt/findutils/libexec/gnubin"
-      "/usr/local/Cellar/openvpn/2.5.0/sbin" "${path[@]}"
+path=(/usr/local/opt/coreutils/libexec/gnubin
+      /usr/local/opt/gnu-sed/libexec/gnubin
+      /usr/local/opt/util-linux/bin
+      /usr/local/opt/findutils/libexec/gnubin
+      /usr/local/Cellar/openvpn/2.5.0/sbin ${path[@]}
 )
 
 d="$XDG_CONFIG_HOME/dircolors/gruv.dircolors"; test -r $d && eval "$(dircolors $d)"
@@ -355,12 +383,12 @@ export PINENTRY_USER_DATA="USE_CURSES=1"
 
 # ruby, go, python, mysql
 export GOPATH=$(go env GOPATH)
-export GEM_HOME="$XDG_DATA_HOME/gem"
-path=("$HOME/.rbenv/version/3.0.0/bin"
-      "$XDG_DATA_HOME/gem/bin"
-      "$HOME/opt/anaconda3/bin"
-      "/usr/local/mysql/bin/"
-      "$GOPATH/bin" "${path[@]}"
+export GEM_HOME="${XDG_DATA_HOME}/gem"
+path=($HOME/.rbenv/version/3.0.0/bin
+      $XDG_DATA_HOME/gem/bin
+      $HOME/opt/anaconda3/bin
+      /usr/local/mysql/bin/
+      $GOPATH/bin ${path[@]}
 )
 eval "$(rbenv init -)"
 
@@ -387,6 +415,12 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
 (pueue clean && pueue status | rg 'limelight' || pueue add limelight) >/dev/null
 
 export PATH
-typeset -U PATH path
+typeset -U path fpath manpath
 
 # export PATH="/usr/bin:$PATH"
+
+
+_fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
+_fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
+w2md() { wget -qO - "$1" | iconv -t utf-8 | html2text -b 0; }
+md5dir() { fd . -tf -x md5sum {} | cut -d' ' -f1 | sort | md5sum | cut -d' ' -f1; }

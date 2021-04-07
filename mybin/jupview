@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# desc: preview jupyter notebooks in terminal
+
 set -eu
 
 die() {

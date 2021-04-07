@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
 
-[ "$nvim" ] || nvim=nvim
-[ "$oldfiles" ] || oldfiles=/tmp/nv-oldfiles.tmp
+# desc: open most recently viewed files in nvim with fzf
 
-$nvim --headless -c "call append(0, v:oldfiles)" -c "write! /tmp/nv-oldfiles.tmp" -c exit 1>/dev/null 2>&1
+[ "$oldfiles" ] || oldfiles="/tmp/nv-oldfiles.tmp"
 
-$nvim "$(rg -v 'term' "$oldfiles" | fzf)"
+nvim --headless -c "call append(0, v:oldfiles)" \
+  -c "write! $oldfiles" \
+  -c exit 1>/dev/null 2>&1
+
+files="$(
+  fzf --ansi -m \
+      --select-1 \
+      --exit-0 \
+      --delimiter / \
+      --with-nth -2,-1 \
+      --prompt="Hist> " < <(rg -v 'coc-explorer|term' $oldfiles)
+)"
+
+[[ -n "$files" && -e "$files" ]] && ${EDITOR} "$files"
