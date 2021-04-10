@@ -32,21 +32,20 @@ setopt autocd
 setopt auto_pushd
 setopt pushd_ignore_dups
 setopt pushdminus
+setopt long_list_jobs
+setopt interactivecomments
 unsetopt menu_complete
 unsetopt flowcontrol
 unsetopt case_glob
-
-# setopt correct
-# setopt correct_all
 
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ZINIT_HOME="$ZDOTDIR/zinit"
 export GENCOMP_DIR="$ZDOTDIR/completions"
 fpath+=( ${ZDOTDIR}/{functions,completions} )
 
-# to load all omz lib
-# export ZSH="$XDG_CONFIG_HOME/zsh/oh-my-zsh"
-# [ -f "$ZSH/oh-my-zsh.sh" ] && source $ZSH/oh-my-zsh.sh
+zpt() { zinit ice wait"${1}" lucid               "${@:2}"; } # Turbo
+zpi() { zinit ice lucid                            "${@}"; } # Regular Ice
+zp()  { [ -z $2 ] && zinit light $@ || zinit $@; }          # zinit
 
 typeset -A ZINIT=(
     BIN_DIR         $ZDOTDIR/zinit/bin
@@ -55,6 +54,7 @@ typeset -A ZINIT=(
 )
 
 # compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
+zmodload zsh/zprof
 autoload -Uz $ZDOTDIR/functions/*(:t)
 autoload +X zman
 autoload -Uz zmv zcalc zargs
@@ -83,12 +83,11 @@ zinit light-mode for \
     zinit-zsh/z-a-bin-gem-node
 
 # zinit snippet OMZ::lib/misc.zsh
-# zinit snippet OMZ::lib/functions.zsh
 # zinit snippet OMZ::lib/key-bindings.zsh
 # zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
 # depth=1 jeffreytse/zsh-vi-mode
-
-# OMZ::lib/clipboard.zsh \
+# as"completion" OMZ::plugins/pass/_pass
+# OMZ::lib/clipboard.zsh
 
 zinit wait lucid for \
   OMZ::lib/completion.zsh \
@@ -99,9 +98,6 @@ zinit wait lucid for \
   OMZ::plugins/autojump/autojump.plugin.zsh \
   OMZ::plugins/zsh_reload/zsh_reload.plugin.zsh
 
-  # as"completion" \
-  #   OMZ::plugins/pass/_pass
-
 zinit is-snippet for \
   $ZDOTDIR/csnippets/*.zsh \
   OMZ::plugins/vi-mode/vi-mode.plugin.zsh
@@ -110,7 +106,8 @@ zinit wait'1' lucid light-mode for \
     hlissner/zsh-autopair \
     aloxaf/gencomp \
     wfxr/forgit \
-    tarrasch/zsh-bd
+    tarrasch/zsh-bd \
+    skywind3000/z.lua
 
 zinit light-mode for \
     aloxaf/fzf-tab \
@@ -210,19 +207,11 @@ unset __conda_setup
 # === functions === {{{
 # prevent failed commands from being added to history
 zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
-# fzf search for file and open in vim
-vf() { fzf | xargs -r -I % $EDITOR % ; }
 # rsync from local pc to server
 rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
 rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
-# fzf pdfs and open with zathura
-fzfza() { fd -a -e "pdf" | fzf | xargs -I{} zathura "{}" >/dev/null }
 # shred and delete file
-sshred() { find $1 -type f -exec shred -v -n 1 -z -u  {} \; }
-# search and kill process with fzf
-ppkill() { px | sed 1d | awk 'BEGIN{OFS="\t"}{print $1, $2, $NF}' | fzf --height=70% | awk '{print $1}' | xargs -I{} kill -KILL "{}"}
-# grep processes with headers
-psgrep() { ps up $(pgrep -f $@) 2>&-; }
+sshred() { shred -v -n 1 -z -u  $1;  }
 # create py file to sync with ipynb
 jupyt() { jupytext --set-formats ipynb,py $1 }
 # howdoi
@@ -236,24 +225,26 @@ ratesx() { curl rate.sx/$1 }
 pbcopydir() { pwd | tr -d "\r\n" | pbcopy; }
 # backup files
 bak() { /usr/local/bin/gcp -r --force --suffix=.bak $1 $1.bak }
+rbak() { /usr/local/bin/gcp -r --force $1.bak $1 }
 # link unlink file from mybin to $PATH
-lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin }
-unlbin() { rm -v /usr/local/mybin/$1 }
+lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin; }
+unlbin() { rm -v /usr/local/mybin/$1; }
 # latex documenation serch (as best I can)
 latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
 # get help on builtin commands
 zm() { man zshbuiltins | less -p "^       $1 "; }
 unalias run-help && autoload run-help && alias help=run-help
+HELPDIR='/usr/local/share/zsh/help'
 # man zshcontrib | zshall | zshle
 # cd into directory
 take() { mkdir -p $@ && cd ${@:$#} }
 # fzf recent directories
 rdir() { cd "$(dirs -lp | fzf)" }
-
-# font search
-fsearch() { fc-list : file family | sed -n -e 's#/Users/lucasburns/Library/Fonts##p' | rg '^/' | sort | rg "$1" }
-# system_profiler SPFontsDataType | rg "$1"
-# atsutil fonts -list
+w2md() { wget -qO - "$1" | iconv -t utf-8 | html2text -b 0; }
+# md5 of a directory
+md5dir() { fd . -tf -x md5sum {} | cut -d' ' -f1 | sort | md5sum | cut -d' ' -f1; }
+_fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
+_fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
 
 # use lf to switch directories
 lc() {
@@ -265,22 +256,11 @@ lc() {
         [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
     fi
 }
-
-# find what's using a certain port
-listening() {
-    if [ $# -eq 0 ]; then
-        sudo lsof -iTCP -sTCP:LISTEN -n -P
-    elif [ $# -eq 1 ]; then
-        sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
-    else
-        echo "Usage: listening [pattern]"
-    fi
-}
 # }}}
 
 #===== variables ===== {{{
 eval "$(zoxide init zsh --cmd x)"
-eval "$(keychain --agents ssh -q --inherit any --eval id_rsa git gitlab-new burnsac && \
+eval "$(keychain --agents ssh -q --inherit any --eval id_rsa git burnsac && \
         keychain --agents gpg -q --eval 0xC011CBEF6628B679)"
 eval "$(thefuck --alias)"
 # eval "$(fakedata --completion zsh)"
@@ -317,8 +297,8 @@ export FZFZ_RECENT_DIRS_TOOL='autojump'
 export FZF_DEFAULT_OPTS="
   --prompt '❱❱ '
   --marker='+'
-  --color=fg:#d5c4a1,fg+:#ebdbb2,hl:#458588,hl+:#b16286
-  --color=info:#689d6a,pointer:#d79921,marker:#fe8019,spinner:#b8bb26
+  --color=fg:#b16286,fg+:#d3869b,hl:#458588,hl+:#689d6a
+  --color=info:#b8bb26,pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
   --color=header:#cc241d,gutter:-1,prompt:#fb4934
   --reverse --height 50% --border --ansi --info=inline --multi
   --preview-window=:hidden
@@ -333,11 +313,13 @@ export FZF_DEFAULT_OPTS="
 
 # pointer='|>'
 # --color=dark
+# --color=fg:#d5c4a1,fg+:#ebdbb2,hl:#458588,hl+:#b16286
 # --color=fg:250,fg+:15,hl:203,hl+:203
 # --color=info:100,pointer:15,marker:220,spinner:11,header:-1,gutter:-1,prompt:15
 # export FZF_DEFAULT_COMMAND='rg --files --hidden --follow'
-export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --fllow --exclude ".git"'
+export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd -t d ."
 export FORGIT_FZF_DEFAULT_OPTS="--exact --cycle --border --ansi --reverse
     --height 70% --info=inline --multi"
 export NAVI_FZF_OVERRIDES="--height=70%"
@@ -351,7 +333,6 @@ export DOTBARE_FZF_DEFAULT_OPTS="
   --marker='+'
   --color=header:#cc241d,gutter:-1,prompt:#fb4934
   --header='A:select-all, B:pager, Y:copy, E:nvim'
-  --header-lines=1
   --reverse --height 50% --border --ansi --info=inline --multi
   --preview-window=nohidden
   --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
@@ -397,6 +378,8 @@ export PDFVIEWER='zathura'
 
 # perlbrew
 source "${HOME}/perl5/perlbrew/etc/bashrc"
+# rakubrew
+eval "$(/usr/local/mybin/rakubrew init Zsh)"
 
 # xdg-utils
 export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
@@ -409,18 +392,11 @@ export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
 # }}}
 
-# killall limelight &> /dev/null
-# (limelight &> /dev/null &)
-
-(pueue clean && pueue status | rg 'limelight' || pueue add limelight) >/dev/null
+# killall limelight &> /dev/null; limelight &> /dev/null &
+# pueue clean && pueue status | rg -Fq 'limelight' || chronic pueue add limelight
+ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight
 
 export PATH
 typeset -U path fpath manpath
 
 # export PATH="/usr/bin:$PATH"
-
-
-_fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
-_fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
-w2md() { wget -qO - "$1" | iconv -t utf-8 | html2text -b 0; }
-md5dir() { fd . -tf -x md5sum {} | cut -d' ' -f1 | sort | md5sum | cut -d' ' -f1; }

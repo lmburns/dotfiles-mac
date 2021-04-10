@@ -1,3 +1,4 @@
+# desc: tells from-where a zsh completion is coming from
 
 function from-where {
     echo $^fpath/$_comps[$1](N)

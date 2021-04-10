@@ -3,16 +3,9 @@
 alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
-# === mac specific ===============================================================
-alias loginwindow='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
-alias x1mute="osascript -e 'set volume output muted true'"
-alias x1lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
-alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
-alias spot='sudo mdutil -a -i'
-alias PlistBuddy='/usr/libexec/PlistBuddy'
-alias slocate='/usr/bin/locate'
-
 alias pl='print -rl --'
+alias ult="ulimit -c 195312; echo $$"
+ulimit -c unlimited
 
 alias keuze="keuze -fs 12 -fn Monaco"
 
@@ -43,7 +36,7 @@ alias grep='grep --color=auto'
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
 alias his='history | grep'
-alias ofd='open $PWD'
+# alias ofd='open $PWD'
 
 # === configs ===================================================================
 alias nzsh="nvim $ZDOTDIR/.zshrc"
@@ -81,7 +74,7 @@ alias tsmd='transmission-daemon'
 alias qbt='qbt torrent'
 
 alias getip='ipconfig getifaddr en0 &&  curl ipecho.net/plain; echo'
-alias dnsflush="dscacheutil -flushcache && killall -HUP mDNSResponder"
+alias dnsflush="sudo dscacheutil -flushcache && killall -HUP mDNSResponder"
 alias n1sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias n1httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 alias cpumem="ps -A -o %cpu,%mem | awk '{ cpu += \$1; mem += \$2} END {print \"CPU: \"  cpu,\"MEM: \"  mem}'"
@@ -97,6 +90,12 @@ alias wifi='osx-wifi-cli'
 # === mac specific =============================================================
 alias mute="osascript -e 'set volume output muted true'"
 alias lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+# alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
+alias loginwindow='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
+alias plpbpaste='pbpaste | textutil -convert txt -stdin -stdout -encoding 30 | pbcopy'
+alias spot='sudo mdutil -a -i'
+alias PlistBuddy='/usr/libexec/PlistBuddy'
+alias slocate='/usr/bin/locate'
 
 # === wiki ======================================================================
 alias vw='nvim $HOME/vimwiki/index.md'

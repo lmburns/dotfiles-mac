@@ -49,6 +49,7 @@
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
   Plug 'sheerun/vim-polyglot'                     " More syntax highlighting
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
   " HTML/CSS
   Plug 'shime/vim-livedown'
@@ -106,7 +107,7 @@
   let mapleader = ' '
   let maplocalleader = ','                      " For NVim-R
 
-  let g:gruvbox_material_palette = 'original'
+  let g:gruvbox_material_palette = 'mix'
   " let g:gruvbox_material_background = 'hard'
   let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
@@ -143,9 +144,9 @@
 
   syntax enable
   " colorscheme spaceduck
-  colorscheme kimbox
+  " colorscheme kimbox
   " colorscheme oceanic_material
-  " colorscheme gruvbox-material
+  colorscheme gruvbox-material
   " colorscheme edge
   " colorscheme sonokai
   " colorscheme forest-night
@@ -380,7 +381,7 @@ set belloff=all                             " turn off bell
   augroup END
   hi def link myTodo Todo
 
-  " Have vimCommentTitle for python (#) and sql (--)
+  " have vimCommentTitle for python (#) and SQL (--)
   augroup ccommtitle
     au!
     au Syntax * syn match cmTitle /\(#\|--\)\s*\%([sS]:\|\h\w*\(#\|--\)\)\=\u\w*\(\s\+\u\w*\)*:/
@@ -481,6 +482,7 @@ set belloff=all                             " turn off bell
     \ 'coc-python',
     \ 'coc-explorer',
     \ 'coc-vimtex',
+    \ 'coc-go',
     \ 'coc-r-lsp',
     \ 'coc-vimlsp',
     \ 'coc-sh',
@@ -513,7 +515,7 @@ set belloff=all                             " turn off bell
   nmap <silent> <Leader>eg :CocCommand explorer --preset github<CR>
   nmap <silent> <Leader>eo :CocCommand explorer --preset opt<CR>
   nmap <silent> <Leader>ex :CocCommand explorer
-  nmap <silent> <Leader>el :CocList explPresets
+  nmap <silent> <Leader>el :CocList explPresets<CR>
 
   " GoTo code navigation.
   nmap <silent> gd <Plug>(coc-definition)
@@ -827,13 +829,13 @@ set belloff=all                             " turn off bell
 
 " === Startify === {{{
   " Don't change to directory when selecting a file
+  let g:webdevicons_enable_startify = 1
   let g:startify_files_number = 5
   let g:startify_change_to_dir = 0
   let g:startify_custom_header = [ ]
   let g:startify_relative_path = 1
   let g:startify_use_env = 1
   let g:startify_update_oldfiles = 1
-  let g:webdevicons_enable_startify = 1
 
   function! s:gitModified()
     let files = systemlist('git ls-files -m 2>/dev/null')
@@ -851,10 +853,15 @@ set belloff=all                             " turn off bell
     call execute('CocCommand explorer')
   endfunction
 
+  function! StartifyEntryFormat()
+    return 'WebDevIconsGetFileTypeSymbol(absolute_path) ." ". entry_path'
+  endfunction
+
+  "   \  { 'type':  function('s:explore'), 'header':    ['coc']},
+
   " Custom startup list, only show MRU from current directory/project
   let g:startify_lists = [
   \  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
-  \  { 'type':  function('s:explore'), 'header':    ['coc']},
   \  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
   \  { 'type': 'commands',  'header': [ 'Commands' ]       },
   \  { 'type': 'files',     'header': ['MRU'] },
@@ -1008,16 +1015,17 @@ endif
   nnoremap <Leader>rr :Tclear<CR>
   nnoremap <Leader>rt :Ttoggle<CR>
   nnoremap <Leader>ro :Ttoggle<CR> :Ttoggle<CR>
-  autocmd FileType python nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>
-  autocmd FileType python inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A
-  autocmd FileType python xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
+  au FileType python,perl nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>
+  au FileType python,perl inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A
+  au FileType python,perl xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
 "}}}
 
 " === Vim-Slime === {{{
   let g:slime_target = "neovim"
-  autocmd FileType python xmap <buffer> ,l <Plug>SlimeRegionSend
-  autocmd FileType python nmap <buffer> ,l <Plug>SlimeLineSend
-  autocmd FileType python nmap <buffer> ,p <Plug>SlimeParagraphSend
+  autocmd FileType python,perl xmap <buffer> ,l <Plug>SlimeRegionSend
+  autocmd FileType python,perl nmap <buffer> ,l <Plug>SlimeLineSend
+  autocmd FileType perl nmap <buffer> ,l <Plug>SlimeLineSend
+  autocmd FileType python,perl nmap <buffer> ,p <Plug>SlimeParagraphSend
 " }}}
 
 " === Vim-lsp === {{{
@@ -1148,3 +1156,5 @@ endif
 
 
 source ~/.config/nvim/indentline.vim
+
+au filetype go inoremap <buffer> . .<C-x><C-o>

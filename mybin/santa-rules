@@ -12,9 +12,9 @@ case "$1" in
       sudo santactl rule --blacklist --path /System/Applications/"$app".app
     done
     ;;
-  whitelist)
+  remove)
     for app in "${apps[@]}"; do
-      sudo santactl rule --whitelist --path /System/Applications/"$app".app
+      sudo santactl rule --remove --path /System/Applications/"$app".app
     done
     ;;
 esac

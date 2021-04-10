@@ -1,7 +1,4 @@
-# fe [FUZZY PATTERN] - Open the selected file with the default editor
-#   - Bypass fuzzy finder if there's only one match (--select-1)
-#   - Exit if there's no match (--exit-0)
-
+# desc: open the selected file with the default editor
 # from: https://github.com/ahmedelgabri/dotfiles/blob/master/config/zsh.d/zsh/functions/fe
 
 emulate -L zsh

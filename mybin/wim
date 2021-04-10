@@ -2,10 +2,12 @@
 
 # desc: open script in editor
 
+Z="${ZDOTDIR}/functions/${*}"
 P=$(which $*)
- if [ -f "$P" ]
- then
-   $EDITOR $P
- else
-   echo $P
- fi
+if [ -f "$P" ]; then
+ $EDITOR $P
+elif [ -f "$Z" ]; then
+  $EDITOR $Z
+else
+ echo $P
+fi

@@ -10,7 +10,7 @@
 [alias]
 	a = add
 	addurl = remote set-url --add origin
-	ammend = commit --amend --reuse-message=HEAD
+	amend = commit --amend --reuse-message=HEAD
 	b = branch
 	c = commit
 	cl = clone

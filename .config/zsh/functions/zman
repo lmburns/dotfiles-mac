@@ -1,5 +1,10 @@
 # desc: Searches zshall with special keyword ($1) matching
 
-PAGER="less -g -s '+/^       "$1"'" man ${2:-zshall}
+# PAGER="less -g -s '+/^       "$1"'" man ${2:-zshall}
+if [[ $1 == "test" ]]; then
+  man -P "less -p'^CONDITIONAL EXPRESSIONS$'" zshall
+else
+  man -P "less -p'^ *$@ '" zshall
+fi
 
 # vim:ft=zsh:et

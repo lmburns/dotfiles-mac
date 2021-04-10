@@ -10,4 +10,6 @@ convert /tmp/screen.png -paint 1 -swirl 240 ~/Desktop/unix/imagemagick/lock.png 
 
 osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/tmp/screen.png"'
 
+# sqlite3 ~/Library/Application\ Support/Dock/desktoppicture.db "update data set value = '/path/to/picture.jpg'" && killall Dock
+
 osascript -e 'tell app "System Events" to key code 12 using {control down, command down}'

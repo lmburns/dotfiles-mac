@@ -12,7 +12,7 @@ local p file header="# desc: "
 
 for (( pass = 1; pass <= 2; ++ pass )); do
     for p in "${pfxs[@]}"; do
-        files=( $HOME/mybin/${~p}*(N) )
+        files=( $ZDOTDIR/functions/${~p}*(N) )
 
         if (( pass == 2 )); then
             if (( ${#files[@]} )); then
