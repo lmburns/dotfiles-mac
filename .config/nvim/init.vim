@@ -299,6 +299,11 @@ set belloff=all                             " turn off bell
   autocmd BufRead,BufNewFile calcurse-note*,~/.local/share/calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
   autocmd BufRead,BufNewFile *.tex set filetype=tex
+  " for github tabs
+  nnoremap <Leader>nt :setlocal noexpandtab<CR>
+  xnoremap <Leader>re :retab!<CR>
+  autocmd FileType nroff setlocal wrap textwidth=85 colorcolumn=+1
+  autocmd filetype go inoremap <buffer> . .<C-x><C-o>
 
   " Enable Goyo by default for mutt writing
 	" autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
@@ -639,7 +644,6 @@ set belloff=all                             " turn off bell
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
 
   command! -bang Conf call fzf#vim#files('~/.config', <bang>0)
-  " command! -bang Proj call fzf#vim#files('~/projects', fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
   command! -bang Proj call fzf#vim#files('~/projects', fzf#vim#with_preview(), <bang>0)
 
   " word completion popup
@@ -667,7 +671,6 @@ set belloff=all                             " turn off bell
   \ 'sink': 'e',
   \ 'options': [ '--multi', '--preview', 'cat {}' ]
   \ }))
-
 
   " Line completion (same as :Bline)
   imap <C-a> <C-x><C-l>
@@ -802,6 +805,7 @@ set belloff=all                             " turn off bell
 
 " === vim surround === {{{
   nmap <Leader>o ysiw
+  nmap <Leader>lw yss`
 "}}}
 
 " =====================================================================
@@ -1040,6 +1044,7 @@ endif
 "}}}
 
 " === Mkdx === {{{
+  let g:polygot_disabled = ['markdown']
   let g:mkdx#settings     = {
         \ 'restore_visual': 1,
         \ 'gf_on_steroids': 1,
@@ -1047,6 +1052,9 @@ endif
         \ 'enter':     { 'shift':    1 },
         \ 'map':       { 'prefix': 'm', 'enable': 1 },
         \ 'links':     { 'external': { 'enable': 1 } },
+        \ 'checkbox':  {'toggles': [' ', 'x', '-'] },
+        \ 'tokens':    { 'strike': '~~',
+        \                'list': '+' },
         \ 'fold':      { 'enable':   1,
         \                'components': ['toc', 'fence'] },
         \ 'toc': {
@@ -1055,8 +1063,6 @@ endif
         \    'details': { 'nesting_level': 0 }
         \ }
         \ }
-
-  let g:polygot_disabled = ['markdown']
 
   function! <SID>MkdxGoToHeader(header)
     call cursor(str2nr(get(matchlist(a:header, ' *\([0-9]\+\)'), 1, '')), 1)
@@ -1082,6 +1088,12 @@ endif
           \ }))
   endfunction
 
+  augroup markdown
+    autocmd!
+    " Include dash in 'word'
+    autocmd FileType markdown setlocal iskeyword+=-
+  augroup END
+
   if (!$VIM_DEV)
     " when not developing mkdx, use fancier <leader>I which uses fzf
     " instead of qf to jump to headers in markdown documents.
@@ -1089,6 +1101,7 @@ endif
   endif
 
   nnoremap <Leader>mcs :vs ~/vimwiki/dotfiles/mkdx.md<CR>
+  nnoremap <Leader>mdm :menu Plugin.mkdx<CR>
   nnoremap <Leader>ev :e $VIMRC<CR>
 " }}}
 
@@ -1156,5 +1169,3 @@ endif
 
 
 source ~/.config/nvim/indentline.vim
-
-au filetype go inoremap <buffer> . .<C-x><C-o>

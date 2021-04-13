@@ -11,32 +11,33 @@ dotfiles
 - To get <kbd>⇪ Caps lock</kbd> you need to press left <kbd>⇧ Shift</kbd> then right <kbd>⇧ Shift</kbd>
 - While holding <kbd>⇪ Caps lock</kbd>, pressing the following keys will do these actions:
 
-| Key           | Action                                                                    |
-| :-----        | :-----                                                                    |
-| <kbd>j</kbd>  | down                                                                      |
-| <kbd>k</kbd>  | up                                                                        |
-| <kbd>h</kbd>  | left                                                                      |
-| <kbd>l</kbd>  | right                                                                     |
-| <kbd>0</kbd>  | beginning of line                                                         |
-| <kbd>4</kbd>  | end of line (close enough to $)                                           |
-| <kbd>gg</kbd> | beginning of document                                                     |
-| <kbd>G</kbd>  | end of document                                                           |
-| <kbd>b</kbd>  | move backwards a word                                                     |
-| <kbd>w</kbd>  | move forward a word                                                       |
-| <kbd>u</kbd>  | highlight all words to the left                                           |
-| <kbd>i</kbd>  | highlight one word to the left                                            |
-| <kbd>o</kbd>  | highlight one word the right                                              |
-| <kbd>p</kbd>  | highlight all words to the right                                          |
-| <kbd>yy</kbd> | copy                                                                      |
-| <kbd>J</kbd>  | <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>←</kbd>                  |
-| <kbd>K</kbd>  | <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>→</kbd>                  |
+| Key           | Action                                                    |
+| :-----        | :-----                                                    |
+| <kbd>j</kbd>  | down                                                      |
+| <kbd>k</kbd>  | up                                                        |
+| <kbd>h</kbd>  | left                                                      |
+| <kbd>l</kbd>  | right                                                     |
+| <kbd>0</kbd>  | beginning of line                                         |
+| <kbd>4</kbd>  | end of line (close enough to $)                           |
+| <kbd>gg</kbd> | beginning of document                                     |
+| <kbd>G</kbd>  | end of document                                           |
+| <kbd>b</kbd>  | move backwards a word                                     |
+| <kbd>w</kbd>  | move forward a word                                       |
+| <kbd>u</kbd>  | highlight all words to the left                           |
+| <kbd>i</kbd>  | highlight one word to the left                            |
+| <kbd>o</kbd>  | highlight one word the right                              |
+| <kbd>p</kbd>  | highlight all words to the right                          |
+| <kbd>yy</kbd> | copy                                                      |
+| <kbd>J</kbd>  | <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>←</kbd> |
+| <kbd>K</kbd>  | <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>→</kbd> |
 
-- Other mappings:
-
+|--------------------------------|---------------------|
+| Other mappings                 | Action              |
+|--------------------------------|---------------------|
 | <kbd>Cmd</kbd> + <kbd>qq</kbd> | quit app            |
 | <kbd>Cmd</kbd> + <kbd>ww</kbd> | close window of app |
 
-The <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings are significant if you have this sequence mapped to changing tabs in iTerm.  I just find this a little easier to do instead of moving my fingers off of the home row.
+The <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings are significant if you have this sequence mapped to changing tabs in iTerm.  I just find this a little easier to do instead of moving my fingers off of the home row.
 
 ----
 
@@ -44,11 +45,11 @@ The <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings ar
 
 <kbd>Hyper</kbd> = <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Cmd</kbd> + <kbd>Shift</kbd>
 
-| Keys                                                               | Action        |
-|--------------------------------------------------------------------|---------------|
-| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Cmd</kbd> + <kbd>r</kbd>   | Restart yabai |
-| <kbd>Hyper</kbd> + <kbd>Backspace</kbd>                            | Close window  |
-| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>g</kbd>                  | Toggle gaps   |
+| Keys                                                             | Action        |
+|------------------------------------------------------------------|---------------|
+| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Cmd</kbd> + <kbd>r</kbd> | Restart yabai |
+| <kbd>Hyper</kbd> + <kbd>Backspace</kbd>                          | Close window  |
+| <kbd>L-Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>g</kbd>                | Toggle gaps   |
 
 | Swapping                                       |            |
 |------------------------------------------------|------------|
@@ -116,7 +117,7 @@ The <kbd>⌥Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings ar
 | <kbd>F2</kbd>                         | turn on/off wrapping                    | n     |
 | <kbd>F3</kbd>                         | turn on/off relative line numbers       | n     |
 | <kbd>F4</kbd>                         | compile markdown using pandoc           |       |
-| <kbd>F9</kbd>                         | get syntax name / attributes of hover  | n     |
+| <kbd>F9</kbd>                         | get syntax name / attributes of hover   | n     |
 | <kbd>F10</kbd>                        | spellcheck                              |       |
 | <kbd>gkk</kbd>                        | move to previous blank line             | n     |
 | <kbd>gjj</kbd>                        | move to next blank line                 | n     |
@@ -234,16 +235,20 @@ Change MAC address randomly or interactively. Can specify interface as well.
 #### Usage
 
 ```sh
-[Options](Options):
+Options:
     -r, --restore           Restore to system default MAC
     -m, --manual            Manually enter the MAC address in dialog box
-                              Optionally enter <MAC> on CLI without invoking dialog
+                               Optionally enter <MAC> on CLI without invoking dialog
                               Type '-m x' (anything not a MAC) to be prompted for randomized addresses
     -i, --interface         Select the interface with FZF (default en0)
-                              Optionally enter <interface> on CLI without invoking FZF
+                               Optionally enter <interface> on CLI without invoking FZF
     -v, --version           Show version information
     -h, --help              Print this help message and exit
 ```
+
+================================================
+### `flist`
+fzf view of script directory with descriptions
 
 ================================================
 ### `rmcrap`
@@ -275,7 +280,7 @@ Search manpages using fuzzy finder.
 **Usage**: `macho`
 
 ================================================
-### `pzz`
+### `fzf_pdf`
 
 Search directory with `fzf` for pdfs to open in `zathura`.
 
@@ -349,6 +354,11 @@ Used in conjunction with `lf` to search a directory with `rg` and return the res
 ```sh
 cmd rglf $dialog --title "Search" --msgbox "$(rg --color=never ${1})" 40 80
 ```
+
+================================================
+### `santa-rules`
+
+Blacklist or remove applications/rules with `santa-ctl`
 
 ================================================
 ### `tordone` & `transadd`

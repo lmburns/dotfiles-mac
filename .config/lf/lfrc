@@ -571,6 +571,9 @@ map gto ${{clear; f::log}}
 map gtc ${{clear; f::clean}}
 map gtu ${{clear; funtrack}}
 
+map gfa ${{clear; dotbare fadd -f}}
+map gfs ${{clear; dotbare fstat}}
+
 # Movement
 map gd cd ~/Documents
 map gD cd ~/Downloads

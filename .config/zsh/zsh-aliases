@@ -11,6 +11,7 @@ alias keuze="keuze -fs 12 -fn Monaco"
 
 # === general ===================================================================
 # alias sudo='doas'
+alias d='doas'
 alias cp='cp -iv'
 alias rcp='rsync -av --ignore-existing --progress'
 alias pb='pbcopy'
@@ -91,7 +92,8 @@ alias wifi='osx-wifi-cli'
 alias mute="osascript -e 'set volume output muted true'"
 alias lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
 # alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
-alias loginwindow='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
+alias loginscreen='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
+alias battemp="bc <<< \"scale=3; $(ioreg -r -n AppleSmartBattery | grep Temperature | cut -c23-)/100*1.8+32\""
 alias plpbpaste='pbpaste | textutil -convert txt -stdin -stdout -encoding 30 | pbcopy'
 alias spot='sudo mdutil -a -i'
 alias PlistBuddy='/usr/libexec/PlistBuddy'

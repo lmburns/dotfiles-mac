@@ -76,13 +76,14 @@ report.long.labels=  ,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description
 report.long.sort=due+,priority-,project+
 report.long.filter=status:pending
 
+# depends.indicator, tags, recur.indicator, scheduled.countdown, until.age
 # task list
 report.list.columns=start.active,id,project,priority,due,description,entry.age
 report.list.labels= , ,Project,Pri,Due,Description,Age
 report.list.description=Lists all tasks matching the specified criteria
 # report.list.columns=id,project,priority,due,start.active,age,description
 # report.list.labels=ID,Project,Pri,Due,Active,Age,Description
-report.list.sort=description,due+,priority-,project+
+report.list.sort=start,description,due+,priority-,project+
 report.list.filter=status:pending
 
 # task ls
