@@ -1,10 +1,10 @@
 o ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Basics / General                                                          │
 # └───────────────────────────────────────────────────────────────────────────┘
-set shell bash				# interpreter for shell commands
-set shellopts '-eu'		# exit on error
-set ifs "\n"					# internal field separator / split $fs, $fx
-set scrolloff 10			# space on top and bottom of screen
+set shell bash        # interpreter for shell commands
+set shellopts '-eu'   # exit on error
+set ifs "\n"          # internal field separator / split $fs, $fx
+set scrolloff 10      # space on top and bottom of screen
 set icons             # show icons next to files
 set period 1          # interval to check for directory updates
 set hidden            # show hidden files by default
@@ -47,14 +47,14 @@ $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
 # └───────────────────────────────────────────────────────────────────────────┘
 cmd open ${{
     case $(file --mime-type $f -b) in
-			application/pdf) nohup zathura $fx >/dev/null 2>&1 ;;
-			application/csv) vd $fx ;;
-			text/*) $EDITOR $fx;;
-			image/x-xcf) nohup gimp $f >/dev/null 2>&1 ;;
-			image/svg+xml) display -- $f ;;
-			image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | sxiv -ai 2>/dev/null | lf-select ;;
-			audio/*) mpv --audio-display=no $f >/dev/null ;;
-			video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
+      application/pdf) nohup zathura $fx >/dev/null 2>&1 ;;
+      application/csv) vd $fx ;;
+      text/*) $EDITOR $fx;;
+      image/x-xcf) nohup gimp $f >/dev/null 2>&1 ;;
+      image/svg+xml) display -- $f ;;
+      image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | sxiv -ai 2>/dev/null | lf-select ;;
+      audio/*) mpv --audio-display=no $f >/dev/null ;;
+      video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
       application/x-bittorrent) open -a Transmission.app ;;
       application/zlib) open ;;
       application/msword|application/vnd.openxmlformats-officedocument.*) open -a LibreOffice.app ;;
@@ -65,115 +65,52 @@ cmd open ${{
 
 # Delete single file
 cmd delete ${{
-	clear
-	if (whiptail --title "$(echo $fx | xargs -r basename -a)" --yesno "Delete?[y/N]" --defaultno 8 40); then
-		trash-put $fx && echo "$fx deleted" && 	terminal-notifier -title "🗑️  Fle deleted" -message "$(echo $fx | xargs -r basename -a) moved to trash"
+  clear
+  if (whiptail --title "$(echo $fx | xargs -r basename -a)" --yesno "Delete?[y/N]" --defaultno 8 40); then
+    trash-put $fx && echo "$fx deleted" &&  terminal-notifier -title "🗑️  Fle deleted" -message "$(echo $fx | xargs -r basename -a) moved to trash"
 
-	else
-		echo "$fx not deleted"
-	fi
+  else
+    echo "$fx not deleted"
+  fi
 }}
-
-
-cmd trash-list ${{
-	clear
-  trash=$(trash-list)
-  whiptail --msgbox --title "Trash List" "$trash" 35 75
-}}
-
 
 # trash; no confirmation
 cmd trash ${{
-	clear
+  clear
   files=$(printf "$fx" | tr '\n' ';')
   while [ "$files" ]; do
-    # extract the substring from start of string up to delimiter.
-    # this is the first "element" of the string.
     file=${files%%;*}
-
     trash-put "$(basename "$file")"
-    # if there's only one element left, set `files` to an empty string.
-    # this causes us to exit this `while` loop.
-    # else, we delete the first "element" of the string from files, and move onto the next.
     if [ "$files" = "$file" ]; then
       files=''
     else
       files="${files#*;}"
     fi
   done &&
- 	terminal-notifier -title "🗑️  File(s) deleted" -message "File(s) moved to trash" && echo "$fx deleted"
+  terminal-notifier -title "🗑️  File(s) deleted" -message "File(s) moved to trash" && echo "$fx deleted"
 }}
-
-
-# Whiptail Move
-cmd whipmove ${{
-  dest=$(whiptail --title "title" --inputbox "Where to move to?" 8 40 3>&1 1>&2 2>&3)
-  for x in $fx; do
-    eval mv -iv \"$x\" \"$dest\"
-  done &&
- 	terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) moved to $dest."
-}}
-
-
-# Fzf Move - local directory
-cmd movetolocal ${{
-	clear
-	prompt="Where to move to?: "
-	dest="$(fd -Hit d . | fzf --prompt="$prompt")" &&
-	for x in $fx; do
-		eval mv -iv \"$x\" \"$dest\"
-	done &&
-	terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) moved to $dest."
-}}
-
-
-# move to directories listed in a file
-cmd movetopre ${{
-	clear; tput cup $(($(tput lines)/3)); tput bold
-	set -f
-	clear; echo "Move to where?"
-	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' | awk '{print $2}')" &&
-	for x in $fx; do
-		eval mv -iv \"$x\" \"$dest\"
-	done &&
-	terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) moved to $dest."
-}}
-
 
 # move to directory from autojump
 cmd movetojump ${{
-	clear
-	prompt="Move to: "
-	dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")" &&
-	for x in $fx; do
-		eval mv -iv \"$x\" \"$dest\"
-	done &&
-	terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
-}}
-
-
-# copy to directories listed in a file
-cmd copytopre ${{
-	clear; tput cup $(($(tput lines)/3)); tput bold
-	set -f
-	clear; echo "Copy to where?"
-	dest="$(cat ${XDG_CONFIG_HOME}/shell/bm-dirs | fzf | sed 's|~|$HOME|' | awk '{print $2}')" &&
-	for x in $fx; do
-		eval cp -ivr \"$x\" \"$dest\"
-	done &&
-	terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
+  clear
+  prompt="Move to: "
+  dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")" &&
+  for x in $fx; do
+    eval mv -iv \"$x\" \"$dest\"
+  done &&
+  terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
 }}
 
 
 # copy to directory from autojump
 cmd copytojump ${{
-	clear
-	prompt="Copy to: "
-	dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")" &&
-	for x in $fx; do
-		eval cp -ivr \"$x\" \"$dest\"
-	done &&
-	terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
+  clear
+  prompt="Copy to: "
+  dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")" &&
+  for x in $fx; do
+    eval cp -ivr \"$x\" \"$dest\"
+  done &&
+  terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
 }}
 
 
@@ -198,9 +135,9 @@ cmd ppaste &{{
 
 
 cmd br_dir ${{
-	clear
+  clear
   f=$(mktemp)
-	res="$(broot --only-folders')"
+  res="$(broot --only-folders')"
   rm -f "$f"
   if [ -f "$res" ]; then
     cmd="select"
@@ -224,21 +161,21 @@ cmd broot_jump ${{
 
 
 cmd z ${{
-	set +u
-	prefix=''
-	dest="$(zoxide query "$@")"
-	if test -n "${dest}"; then
-		lf -remote "send $id cd '${dest}'"
-	else
-		lf -remote "send $id echo 'Invalid directory ${dest}'"
-	fi
+  set +u
+  prefix=''
+  dest="$(zoxide query "$@")"
+  if test -n "${dest}"; then
+    lf -remote "send $id cd '${dest}'"
+  else
+    lf -remote "send $id echo 'Invalid directory ${dest}'"
+  fi
 }}
 
 
 # zoxide query directory jump
 cmd fzf_z ${{
-	sel="$(zoxide query -l | fzf +s)"
-	[ -d "$sel" ] && lf -remote "send $id cd \"$sel\""
+  sel="$(zoxide query -l | fzf +s)"
+  [ -d "$sel" ] && lf -remote "send $id cd \"$sel\""
 }}
 
 
@@ -248,7 +185,7 @@ cmd unarchive ${{
       *.zip) unzip "$f" ;;
       *.tar.gz) tar -xzvf "$f" ;;
       *.tar.bz2) tar -xjvf "$f" ;;
-			*.tar.x) tar -xJvf "$f" ;;
+      *.tar.x) tar -xJvf "$f" ;;
       *.tar) tar -xvf "$f" ;;
       *) echo "Unsupported format" ;;
   esac
@@ -269,7 +206,7 @@ cmd git_branch ${{
 # d (select for cut) and P to paste hard-link
 cmd link %{{
     set $(lf -remote load)
-		mode="$1"
+    mode="$1"
     shift
     if [ "$#" -lt 1 ]; then
         lf -remote "send $id echo no files to link"
@@ -284,17 +221,17 @@ cmd link %{{
 
 # symlink without gnu coreutils
 cmd paste-symlink ${{
-	 load=$(lf -remote 'load')
-	 mode=$(echo "$load" | sed -n '1p')
-	 list=$(echo "$load" | sed '1d')
-	 if [ $mode = 'copy' ]; then
-			 s='' && [ ! -w . ] && s='sudo'
-			 for f in $list; do
-					 $s ln -s "$f" "$(pwd)/$(basename $f)"
-			 done
-			 lf -remote 'send load'
-			 lf -remote 'send clear'
-	 fi
+   load=$(lf -remote 'load')
+   mode=$(echo "$load" | sed -n '1p')
+   list=$(echo "$load" | sed '1d')
+   if [ $mode = 'copy' ]; then
+       s='' && [ ! -w . ] && s='sudo'
+       for f in $list; do
+           $s ln -s "$f" "$(pwd)/$(basename $f)"
+       done
+       lf -remote 'send load'
+       lf -remote 'send clear'
+   fi
 }}
 
 
@@ -313,7 +250,7 @@ cmd chmod ${{
     chmod $ans $file
   done
   lf -remote 'send reload'
-	lf -remote 'send clear'
+  lf -remote 'send clear'
 }}
 
 
@@ -427,15 +364,14 @@ cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
 cmd yank-path $printf '%s' "$fx" | pbcopy
 cmd open-with %"$@" $fx
 cmd usage $du -h -d1 | less
-cmd rglf $dialog --title "Search" --msgbox "$(rg --color=never ${1})" 40 80
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Mappings                                                                  │
 # └───────────────────────────────────────────────────────────────────────────┘
 map m
 map n
-# map "'"
-# map '"'
+map "'"
+map '"'
 map d
 map e
 map c
@@ -443,22 +379,22 @@ map f
 map gh
 
 # File Openers
-map ee $$EDITOR "$f"														# open file in editor
-map ec edit_config															# edit & source lfrc
-map ev $nvim ~/.config/nvim/init.vim						# open nvim config
-map ew $nvim ~/vimwiki/index.md									# open vimwiki
-map es edit_scope																# edit lfrc scope
-map ez $nvim $ZDOTDIR/.zshrc										# edit zshrc
-map ea $nvim $ZDOTDIR/zsh-aliases								# edit zsh aliases
-map b $gcp --force --suffix=.bak "$f" "$f"			# backup file
-map r $rmcrap																		# delete .DS_Store etc
+map ee $$EDITOR "$f"                            # open file in editor
+map ec edit_config                              # edit & source lfrc
+map ev $nvim ~/.config/nvim/init.vim            # open nvim config
+map ew $nvim ~/vimwiki/index.md                 # open vimwiki
+map es edit_scope                               # edit lfrc scope
+map ez $nvim $ZDOTDIR/.zshrc                    # edit zshrc
+map ea $nvim $ZDOTDIR/zsh-aliases               # edit zsh aliases
+map b $gcp --force --suffix=.bak "$f" "$f"      # backup file
+map r $rmcrap                                   # delete .DS_Store etc
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
-map ? $lf -doc | bat -f													# open lfrc docs
-map gX $bat -f ~/.config/lf/mappings						# open these mappings
-map o push :open-with<space>										# open w/ specified program
+map ? $lf -doc | bat -f                         # open lfrc docs
+map gX $bat -f ~/.config/lf/mappings            # open these mappings
+map o push :open<space>                         # open w/ specified program
 
-map as !du -hsx * | sort -rh | bat --paging=always	# directory info
+map as !du -hsx * | sort -rh | bat --paging=always  # directory info
 map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file -I -b -p $f
 
 map sf select-files
@@ -473,10 +409,10 @@ map au unarchive
 
 # Trash Mappings
 map dd trash
-map D delete														# confirmation with whiptail
+map D delete                            # confirmation with whiptail
 map te %trash-empty
 map tl trash-list
-map tr %trash-restore
+map tr $ftrr                            # fzf trash restore script
 
 # Dragon Mapping [CONFIGURE]
 # map dr dragon
@@ -487,39 +423,39 @@ map tr %trash-restore
 # map dl dlfile
 
 # Renaming
-map A rename														# at the very end
-map cn push A<c-u>											# new rename
-map I push A<c-a>												# at the beginning
-map i push A<a-b><a-b><a-f>							# before extention
-map aa push A<a-b>											# after extention
-map Bb bulkrename												# bulk rename all in directory
-map Bm massren													# bulk rename with massren
-map ch chmod														# change file permissions
+map A rename                            # at the very end
+map cn push A<c-u>                      # new rename
+map I push A<c-a>                       # at the beginning
+map i push A<a-b><a-b><a-f>             # before extention
+map aa push A<a-b>                      # after extention
+map Bb bulkrename                       # bulk rename all in directory
+map Bm massren                          # bulk rename with massren
+map ch chmod                            # change file permissions
 
 # File movement
-map fo push :fzf<space>		# fzf search and open
-map fd push :fd<space>		# use fd to find file
-map fa ajfzf							# use fzf with autojump
-map <c-b> broot_jump			# use broot to jump to directory
-map n fzf_z								# fzf zioxide
-map zz push :z<space>			# very similar to autojump
+map fo push :fzf<space>   # fzf search and open
+map fd push :fd<space>    # use fd to find file
+map fa ajfzf              # use fzf with autojump
+map <c-b> broot_jump      # use broot to jump to directory
+map n fzf_z               # fzf zioxide
+map zz push :z<space>     # very similar to autojump
 map <c-j> push :aj<space> # auto jump
 map w $lf -remote "send $id select $(fzf)"
 
 # General
 map . :set hidden!
-map p ppaste							# paste and preview progress
-map Pl :link							# paste a symlink
-map Ps :paste-symlink			# another paste symlink w/o needing gnucoreutils
-map Pp paste							# regular paste
+map p paste             # regular
+map Pl :link              # paste a symlink
+map Ps :paste-symlink     # another paste symlink w/o needing gnucoreutils
+map Pp ppaste             # paste and preview progress
 map x cut
 map y copy
-map <c-y> yank-path				# yank file path
+map Yp yank-path        # yank file path
 map <enter> open
 map mf push :mkfile<space>
 map md push :mkdir<space>
-map ms $mkscript
-map Ql :ql_preview				# open in quicklook (macOS)
+map ms $mksc              # make script
+map Ql :ql_preview        # open in quicklook (macOS)
 
 map gg top
 map G bottom
@@ -527,28 +463,24 @@ map R reload
 map C clear
 map U unselect
 
-map <c-x>x $$f															# execute file
-map <c-x>X !$f															# execute file and $PAGER output
-map <c-x>l $$f | bat --paging=always -f			# execute file and bat output
-map <c-x>w push :wim<space>									# open script source code
-map <c-v> $jupview -P "$f"
-map <c-x>p $cat $fx | up										# cat file to up (unix piper)
-map <c-s> shell															# enter shell command
+map <c-x>x $$f                              # execute file
+map <c-x>X !$f                              # execute file and $PAGER output
+map <c-x>l $$f | bat --paging=always -f     # execute file and bat output
+map <c-x>w push :wim<space>                 # open script source code
+map <c-v> $jupview -P "$f"                  # view ipynb file
+map <c-x>p $cat $fx | up                    # cat file to up (unix piper)
+map <c-s> shell                             # enter shell command
 map <c-u> usage
-map <c-w> push :rglf<space>									# search with rg in dialog box
-map <c-f> push :rg<space>										# search with rg
+map <c-f> push :rg<space>                   # search with rg
 
-map Yp copytopre			  # copy with predfined list of dirs from file
-map Yj copytojump				# similary to fzf-z (best choice)
-map Mp movetopre				# move with predfined list of dirs from file
-map Ml movetoloc				# move to a directory within current directory
-map Mj movetojump				# similiar to fzf-z
-map Mw whipmove					# move with a whiptail dialog box
+map Yj copytojump       # copy to directory with autojump
+map Mj movetojump       # move to directory with autojump
+map Mw whipmove         # move with a whiptail dialog box
 
-map Mt push :rsyncto<space>											# move things to the server
-map Mf push :rsyncfrom<space>										# move things from the server
+map Mt push :rsyncto<space>                     # move things to the server
+map Mf push :rsyncfrom<space>                   # move things from the server
 
-map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$f"		# attempt to preview all imgs
+map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$f"   # attempt to preview all imgs
 
 # gpg
 map te pgp_encrypt_recipient

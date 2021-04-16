@@ -15,13 +15,14 @@
   " Plug 'vifm/vifm.vim'
   Plug 'ptzz/lf.vim'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  " Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
   Plug 'junegunn/fzf.vim'
   Plug 'lervag/vimtex'
   Plug 'vim-pandoc/vim-pandoc-syntax'
   Plug 'plasticboy/vim-markdown'
   Plug 'dhruvasagar/vim-table-mode'
   Plug 'vimwiki/vimwiki'
-  Plug 'SidOfc/mkdx'
+  Plug 'sidofc/mkdx'
   Plug 'junegunn/goyo.vim'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
@@ -162,7 +163,7 @@
   set background=dark
   set path+=**
   set lazyredraw
-set belloff=all                             " turn off bell
+  set belloff=all                             " turn off bell
   set title
   set noshowmode                            " hide file, it's in airline
   set noshowcmd
@@ -193,6 +194,7 @@ set belloff=all                             " turn off bell
   set synmaxcol=1000                      " do not highlight long lines
   set timeoutlen=350                      " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
+  set guicursor=a:blinkon100
   set confirm                             " confirm when editing readonly
   set noerrorbells
   set belloff=all
@@ -201,8 +203,8 @@ set belloff=all                             " turn off bell
 
 " === General Mappings === {{{
   " easier navigation in normal / visual / operator pending mode
-  noremap gkk     {
-  noremap gjj     }
+  noremap gkk   {
+  noremap gjj   }
   noremap H     g^
   xnoremap H    g^
   noremap L     g_
@@ -245,6 +247,8 @@ set belloff=all                             " turn off bell
   noremap gV `[v`]
   " select characters of line (no new line)
   nnoremap vv ^vg_
+  " make visual yanks pace the cursor back where started
+  vnoremap y ygv<Esc>
   " insert a space after current character
   nnoremap <Leader>sa a<Space><ESC>h
 
@@ -272,13 +276,15 @@ set belloff=all                             " turn off bell
   cnoreabbrev Q q
   cnoreabbrev Qall qall
 
-  " smart way to move between windows
+  " move between windows
   map <C-j> <C-W>j
   imap <C-j> <C-W>j
   map <C-k> <C-W>k
   imap <C-k> <C-W>k
   map <C-h> <C-W>h
   map <C-l> <C-W>l
+  " close buffer
+  nnoremap <Leader>bd :bd<CR>
 
   " resize windows
   nnoremap + :vertical resize +5<CR>
@@ -317,7 +323,7 @@ set belloff=all                             " turn off bell
   " :%s/<1b>\[[0-9;]*m//g                       " replace ANSI color codes
 
   " disables automatic commenting on newline
-  autocmd FileType * setlocal formatoptions-=cro
+  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
   " shellcheck
   nnoremap <Leader>sc :!shellcheck -x %<CR>
@@ -408,7 +414,8 @@ set belloff=all                             " turn off bell
       endif
       return mkdir(fnamemodify(a:1, ':p:h'), 'p')
   endfunction
-  command -bang -bar -nargs=? -complete=file E :call s:MKDir(<f-args>) | e<bang> <args>
+
+  command -bang -bar -nargs=? -complete=file EE :call s:MKDir(<f-args>) | e<bang> <args>
 
   " Automatically reload buffer if changed outside current buffer
   augroup auto_read
@@ -638,8 +645,9 @@ set belloff=all                             " turn off bell
 " }}}
 
   " === FZF & Ripgrep === {{{
-  " :History/ -- :Maps -- :Commands -- :GFiles -- :GFiles?
+  " let $SKIM_DEFAULT_COMMAND = "git ls-tree -r --name-only HEAD || rg --files
   " let g:rg_command = 'rg --vimgrep --hidden'
+  " let g:fzf_command_prefix = 'fzf'
   let g:rg_highlight = 'true'
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
 
@@ -654,6 +662,10 @@ set belloff=all                             " turn off bell
     \ 'source':  'cat /usr/share/dict/words',
     \ 'options': '--multi --reverse --margin 15%,0',
     \ 'left':    20})
+
+  " LS command
+  command! -bang -complete=dir -nargs=? LS
+    \ call fzf#run(fzf#wrap({'source': 'ls', 'dir': <q-args>}, <bang>0))
 
   " prevent from searching for file names as well
   command! -bang -nargs=* Rg
@@ -676,20 +688,22 @@ set belloff=all                             " turn off bell
   imap <C-a> <C-x><C-l>
   imap <C-f> <Plug>(fzf-complete-line)
 
+  " :Commands -- :GFiles? -- :Helptags
   nnoremap <silent> <Leader>F :Files<CR>
   nnoremap <silent> <Leader>gf :GFiles<CR>
   nnoremap <Leader>L :Locate .<CR>
   nnoremap <C-f> :Rg<CR>
-
   nnoremap <silent> <Leader>a :Buffers<CR>
   nnoremap <silent> <Leader>A :Windows<CR>
-  " Lines in current buffer
+  " lines in current buffer
   nnoremap <silent> <Leader>; :BLines<CR>
-  " Command history
+  " command history
   nnoremap <silent> <Leader>hc :History:<CR>
-  " File history
+  " file history
   nnoremap <silent> <Leader>hf :History<CR>
-  " Mappings
+  " search history
+  nnoremap <silent> <Leader>hs :History/<CR>
+  " mappings
   nnoremap <silent> <Leader>mm :Maps<CR>
 
   " let g:fzf_preview_window = ''
@@ -769,6 +783,9 @@ set belloff=all                             " turn off bell
   let g:airline#extensions#tabline#show_tab_nr = 0
   let g:airline#extensions#tabline#tab_nr_type = 0
   let g:airline#extensions#tabline#show_close_button = 0
+  let g:airline_detect_spell=0
+  let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+  let g:airline_section_b = '%{strftime("%I:%M")}'
   let g:airline_skip_empty_sections=1
   let g:airline_highlighting_cache = 1
 
@@ -805,7 +822,7 @@ set belloff=all                             " turn off bell
 
 " === vim surround === {{{
   nmap <Leader>o ysiw
-  nmap <Leader>lw yss`
+  nmap mlw yss`
 "}}}
 
 " =====================================================================
@@ -1103,6 +1120,7 @@ endif
   nnoremap <Leader>mcs :vs ~/vimwiki/dotfiles/mkdx.md<CR>
   nnoremap <Leader>mdm :menu Plugin.mkdx<CR>
   nnoremap <Leader>ev :e $VIMRC<CR>
+  nnoremap <Leader>sv :so $VIMRC<CR>
 " }}}
 
 " === Hack to make CocExplorer hijack Netwr === {{{
@@ -1130,7 +1148,7 @@ endif
   let g:table_mode_corner='|'
   let g:table_mode_fillchar = '-'
   let g:table_mode_separator = '|'
- " }}}
+" }}}
 
 " === vifm === {{{
   " let g:vifm_replace_netrw = 1

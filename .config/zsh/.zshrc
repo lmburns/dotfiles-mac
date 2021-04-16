@@ -7,18 +7,18 @@
 # MacOS: Speeed up ZSH `sudo rm -rf /private/var/log/asl/*.asl`
 
 # === general settings === {{{
+export LC_ALL="en_US.UTF-8"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_BIN_HOME="$HOME/bin"
 
-export LC_ALL="en_US.UTF-8"
-export ZSH_DISABLE_COMPFIX=true
-export HISTSIZE=10000000
-export HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history"
-export SAVEHIST=10000000
+typeset -g HISTSIZE=10000000 HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history" SAVEHIST=10000000
 export HIST_STAMPS="yyyy-mm-dd"
 export HISTORY_FILTER_EXCLUDE=("jrnl", "cd")
+export ZSH_DISABLE_COMPFIX=true
 export PROMPT_EOL_MARK=''
+export TIMEFMT=$'\n================\nCPU\t%P\nuser\t%*U\nsystem\t%*S\ntotal\t%*E'
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt append_history
@@ -34,6 +34,7 @@ setopt pushd_ignore_dups
 setopt pushdminus
 setopt long_list_jobs
 setopt interactivecomments
+setopt glob_dots
 unsetopt menu_complete
 unsetopt flowcontrol
 unsetopt case_glob
@@ -42,10 +43,6 @@ export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ZINIT_HOME="$ZDOTDIR/zinit"
 export GENCOMP_DIR="$ZDOTDIR/completions"
 fpath+=( ${ZDOTDIR}/{functions,completions} )
-
-zpt() { zinit ice wait"${1}" lucid               "${@:2}"; } # Turbo
-zpi() { zinit ice lucid                            "${@}"; } # Regular Ice
-zp()  { [ -z $2 ] && zinit light $@ || zinit $@; }          # zinit
 
 typeset -A ZINIT=(
     BIN_DIR         $ZDOTDIR/zinit/bin
@@ -59,6 +56,8 @@ autoload -Uz $ZDOTDIR/functions/*(:t)
 autoload +X zman
 autoload -Uz zmv zcalc zargs
 alias zmv='noglob zmv -W'
+unalias run-help && autoload run-help && alias help=run-help
+HELPDIR='/usr/local/share/zsh/help'
 
 [ -f "$ZDOTDIR/zsh-aliases" ] && source "$ZDOTDIR/zsh-aliases"
 # }}}
@@ -82,12 +81,8 @@ zinit light-mode for \
     zinit-zsh/z-a-patch-dl \
     zinit-zsh/z-a-bin-gem-node
 
-# zinit snippet OMZ::lib/misc.zsh
-# zinit snippet OMZ::lib/key-bindings.zsh
 # zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
 # depth=1 jeffreytse/zsh-vi-mode
-# as"completion" OMZ::plugins/pass/_pass
-# OMZ::lib/clipboard.zsh
 
 zinit wait lucid for \
   OMZ::lib/completion.zsh \
@@ -107,7 +102,6 @@ zinit wait'1' lucid light-mode for \
     aloxaf/gencomp \
     wfxr/forgit \
     tarrasch/zsh-bd \
-    skywind3000/z.lua
 
 zinit light-mode for \
     aloxaf/fzf-tab \
@@ -125,14 +119,11 @@ zinit light-mode for \
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 source $ZDOTDIR/.p10k.zsh
 
-zinit ice lucid ver'master' wait'0b' as'completion' has'git-extras' blockf
 zinit wait lucid atload'_zsh_autosuggest_start' light-mode for \
     zsh-users/zsh-autosuggestions
 
 # compdef _dotbare_completion_git dotbare
 autoload -Uz compinit && compinit
-# autoload -U +X bashcompinit && bashcompinit
-# zinit cdreplay -q
 # }}}
 
 # === powerlevel10k === {{{
@@ -142,14 +133,12 @@ fi
 # }}}
 
 # === zsh keybindings === {{{
-bindkey '^a' autosuggest-accept
-bindkey '^x' autosuggest-execute
+# sed -n l -- infocmp -L1 -- zle -L
 bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
 bindkey -s '^o' 'lc\n'
-bindkey -M vicmd '^h' run-help
 bindkey -M vicmd '?' which-command
-
-autoload edit-command-line; zle -N edit-command-line
+autoload edit-command-line;               zle -N edit-command-line
+bindkey '^a' autosuggest-accept;          bindkey '^x' autosuggest-execute
 bindkey -M vicmd '^e' edit-command-line;  bindkey -M viins '^e' edit-command-line
 bindkey -M viins 'jk' vi-cmd-mode;        bindkey -M viins 'kj' vi-cmd-mode
 bindkey -M vicmd 'H' beginning-of-line;   bindkey -M vicmd 'L' end-of-line
@@ -157,20 +146,41 @@ bindkey -M vicmd 'H' beginning-of-line;   bindkey -M vicmd 'L' end-of-line
 # fixes macOS consumption of ^O command
 stty discard undef <$TTY >$TTY
 
-# === fzf tab completion ===
-zstyle ':fzf-tab:complete:kill:argument-rest' fzf-preview 'ps --pid=$word -o cmd --no-headers -w -w'
-zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags '--preview-window=down:3:wrap'
+# === completion === {{{
+zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
+zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
+  '[[ $group == "[process ID]" ]] && ps --pid=$word -o cmd --no-headers -w -w'
 zstyle ':fzf-tab:complete:kill:*' popup-pad 0 3
-zstyle ':fzf-tab:complete:_zlua:*' query-string input
-zstyle ':fzf-tab:complete:cd:*' popup-pad 30 0
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
-zstyle ':fzf-tab:*' switch-group ',' '.'
+zstyle ':fzf-tab:complete:nvim:*' fzf-preview \
+  'r=$realpath; ([[ -f $r ]] && bat --style=numbers --color=always $r) \
+  || ([[ -d $r ]] && tree -C $r | less) || (echo $r 2> /dev/null | head -200)'
+zstyle ':fzf-tab:complete:nvim:argument-rest' fzf-flags '--preview-window=nohidden,right:65%:wrap'
+zstyle ':fzf-tab:complete:(exa|cd):*' popup-pad 30 0
+zstyle ':fzf-tab:complete:(exa|cd):*' fzf-flags '--preview-window=nohidden,right:65%:wrap'
+zstyle ':fzf-tab:complete:(exa|cd):*' fzf-preview '[[ -d $realpath ]] && exa -T --color=always $realpath'
+zstyle ':fzf-tab:complete:(cp|rm|mv|bat):argument-rest' fzf-preview 'r=$realpath; bat --color=always -- $r || exa --color=always -- $r'
+zstyle ':fzf-tab:*' fzf-bindings 'enter:accept,backward-eof:abort'   # enter as accept, abort deleting empty
+zstyle ':fzf-tab:*' print-query ctrl-c        # use input as result when ctrl-c
+zstyle ':fzf-tab:*' accept-line space         # accept selected entry on space
+zstyle ':fzf-tab:*' prefix ''                 # no dot prefix
+zstyle ':fzf-tab:*' switch-group ',' '.'      # switch between header groups
+zstyle ':fzf-tab:*' single-group color header # single header is shown
+zstyle ':fzf-tab:*' fzf-pad 4                 # increased because of fzf border
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' accept-exact '*(N)'
+zstyle ':completion:*' completer _complete _match _list _ignored _correct _approximate
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*:exa' file-sort modification
 zstyle ':completion:*:exa' sort false
+zstyle ':completion:*:manuals' separate-sections true
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 # }}}
 
@@ -180,31 +190,37 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 # fzf fix
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 [ -f "$ZDOTDIR/lficons" ] && source "$ZDOTDIR/lficons"
-[ -f "$XDG_CONFIG_HOME/broot/launcher/bash/br" ] && source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
+# [ -f "$XDG_CONFIG_HOME/broot/launcher/bash/br" ] && source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
 # }}}
 
 # === homebrew, custom bins === {{{
-path=("$HOME/.local/bin" "/usr/local/mybin"
+path=("$HOME/.local/bin" "$XDG_BIN_HOME"
       "/usr/local/bin" "/usr/local/sbin"
       "${path[@]}"
 )
 # }}}
 
 # === conda initialize === {{{
-__conda_setup="$('/Users/lucasburns/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/lucasburns/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/lucasburns/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/lucasburns/opt/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
+_conda_initialize() {
+  if [ -n "${CONDA_EXE}" ]; then
+    $CONDA_EXE config --set auto_activate_base false
+    __conda_setup="$($CONDA_EXE 'shell.zsh' 'hook' 2>/dev/null)"
+    [ $? -eq 0 ] && eval "$__conda_setup"
+  fi
+  unset __conda_setup
+}
+
+conda() {
+  unfunction conda
+  _conda_initialize
+  conda "$@"
+}
 # }}}
 
 # === functions === {{{
+# howdoi
+# h() { howdoi $@ -c -n 5; }
+# hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
 # prevent failed commands from being added to history
 zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
 # rsync from local pc to server
@@ -214,35 +230,36 @@ rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
 sshred() { shred -v -n 1 -z -u  $1;  }
 # create py file to sync with ipynb
 jupyt() { jupytext --set-formats ipynb,py $1 }
-# howdoi
-h() { howdoi $@ -c -n 5; }
-hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
 # use up pipe with any file
 upp() { cat $1 | up }
 # crypto
 ratesx() { curl rate.sx/$1 }
 # copy directory
-pbcopydir() { pwd | tr -d "\r\n" | pbcopy; }
+pbcd() { pwd | tr -d "\r\n" | pbcopy; }
+# create file from clipboard
+pbpf() { pbpaste > "$1"; }
+pbcf() { pbcopy < "${1:-/dev/stdin}"; }
 # backup files
 bak() { /usr/local/bin/gcp -r --force --suffix=.bak $1 $1.bak }
 rbak() { /usr/local/bin/gcp -r --force $1.bak $1 }
 # link unlink file from mybin to $PATH
-lnbin() { ln -siv $HOME/mybin/$1 /usr/local/mybin; }
-unlbin() { rm -v /usr/local/mybin/$1; }
+lnbin() { ln -siv $HOME/mybin/$1 $XDG_BIN_HOME; }
+unlbin() { rm -v /$XDG_BIN_HOME/$1; }
 # latex documenation serch (as best I can)
 latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
 # get help on builtin commands
 zm() { man zshbuiltins | less -p "^       $1 "; }
-unalias run-help && autoload run-help && alias help=run-help
-HELPDIR='/usr/local/share/zsh/help'
-# man zshcontrib | zshall | zshle
 # cd into directory
 take() { mkdir -p $@ && cd ${@:$#} }
 # fzf recent directories
 rdir() { cd "$(dirs -lp | fzf)" }
+# html to markdown
 w2md() { wget -qO - "$1" | iconv -t utf-8 | html2text -b 0; }
-# md5 of a directory
-md5dir() { fd . -tf -x md5sum {} | cut -d' ' -f1 | sort | md5sum | cut -d' ' -f1; }
+# sha of a directory
+sha256dir() { fd . -tf -x sha256sum {} | cut -d' ' -f1 | sort | sha256sum | cut -d' ' -f1; }
+allcmds() { print -l ${commands[@]} | awk -F'/' '{print $NF}' | fzf; }
+rmsym() { find -L . -name . -o -type d -prune -o -type l -exec rm {} +; }
+
 _fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
 _fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
 
@@ -265,6 +282,33 @@ eval "$(keychain --agents ssh -q --inherit any --eval id_rsa git burnsac && \
 eval "$(thefuck --alias)"
 # eval "$(fakedata --completion zsh)"
 
+_zsh_autosuggest_strategy_dir_history(){ # Avoid Zinit picking this up as a completion
+    emulate -L zsh
+    if $_per_directory_history_is_global && [[ -r "$_per_directory_history_path" ]]; then
+        setopt EXTENDED_GLOB
+        local prefix="${1//(#m)[\\*?[\]<>()|^~#]/\\$MATCH}"
+        local pattern="$prefix*"
+        if [[ -n $ZSH_AUTOSUGGEST_HISTORY_IGNORE ]]; then
+        pattern="($pattern)~($ZSH_AUTOSUGGEST_HISTORY_IGNORE)"
+        fi
+        [[ "${dir_history[(r)$pattern]}" != "$prefix" ]] && \
+        typeset -g suggestion="${dir_history[(r)$pattern]}"
+    fi
+}
+
+_zsh_autosuggest_strategy_custom_history () {
+        emulate -L zsh
+        setopt EXTENDED_GLOB
+        local prefix="${1//(#m)[\\*?[\]<>()|^~#]/\\$MATCH}"
+        local pattern="$prefix*"
+        if [[ -n $ZSH_AUTOSUGGEST_HISTORY_IGNORE ]]
+        then
+                pattern="($pattern)~($ZSH_AUTOSUGGEST_HISTORY_IGNORE)"
+        fi
+        [[ "${history[(r)$pattern]}" != "$prefix" ]] && \
+        typeset -g suggestion="${history[(r)$pattern]}"
+}
+
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # export MANPAGER="nvim -c 'set ft=man' -"
 # export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
@@ -273,15 +317,22 @@ export RTV_BROWSER="w3m"
 export EDITOR='nvim'
 
 export VIMRC="$XDG_CONFIG_HOME/nvim/init.vim"
-export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
 export NOTMUCH_CONFIG="$XDG_CONFIG_HOME/notmuch/notmuch-config"
 export TASKRC="$XDG_CONFIG_HOME/task/taskrc"
 export TASKDATA="$XDG_CONFIG_HOME/task"
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/ripgreprc"
 export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
-# export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export CONDARC="$XDG_CONFIG_HOME/conda/condarc"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+export GOPATH=$(go env GOPATH)
+export GEM_HOME="$XDG_DATA_HOME/gem"
+export R_USER="$XDG_CONFIG_HOME/r/R"
+export R_ENVIRON_USER="$XDG_CONFIG_HOME/r/Renviron"
+export R_MAKE_VARS_USER="$XDG_CONFIG_HOME/r/Makevars"
 export R_HISTFILE="$XDG_CONFIG_HOME/r/Rhistory"
 export R_PROFILE_USER="$XDG_CONFIG_HOME/r/Rprofile"
+export R_LIBS_USER="$HOME/Library/R"
 export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
@@ -292,17 +343,33 @@ export HOMEBREW_BAT=1
 export HOMEBREW_BAT_CONFIG_PATH="$XDG_CONFIG_HOME/bat/config"
 export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
 export FZFZ_RECENT_DIRS_TOOL='autojump'
+export ZSH_AUTOSUGGEST_USE_ASYNC=1
+export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+export ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c100,)" # Do not consider 100 character entries
+export ZSH_AUTOSUGGEST_COMPLETION_IGNORE="[[:space:]]*"   # Ignore leading whitespace
+export ZSH_AUTOSUGGEST_STRATEGY=(dir_history custom_history completion)
 
-# ❱❯❮
+
+# ❱❯❮ --border
+
+  # --color=fg:#b16286,fg+:#d3869b,hl:#458588,hl+:#689d6a
+  # --color=info:#b8bb26,pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
+  # --color=header:#cc241d,gutter:-1,prompt:#fb4934
+
+  # --color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74
+  # --color=hl:#7E8E91,fg:#F8F8F2,header:#7E8E91,info:#A6E22E
+  # --color=pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
+
 export FZF_DEFAULT_OPTS="
   --prompt '❱❱ '
   --marker='+'
-  --color=fg:#b16286,fg+:#d3869b,hl:#458588,hl+:#689d6a
-  --color=info:#b8bb26,pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
-  --color=header:#cc241d,gutter:-1,prompt:#fb4934
-  --reverse --height 50% --border --ansi --info=inline --multi
-  --preview-window=:hidden
-  --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+  --color=fg:#ebdbb2,fg+:#ebdbb2,hl:#928374,hl+:#fb4934
+  --color=info:#8ec07c,pointer:#fb4934,marker:#fb4934,spinner:#fb4934
+  --color=header:#928374,gutter:-1,prompt:#fb4934
+  --reverse --height 60% --ansi --info=inline --multi
+  --preview-window=:hidden,right:65%:wrap,border-left
+  --preview '([[ -f {} ]] && (bat --style=numbers --color=always)) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
   --bind '?:toggle-preview'
   --bind 'ctrl-a:select-all'
   --bind 'ctrl-b:execute(bat --paging=always -f {+})'
@@ -311,11 +378,22 @@ export FZF_DEFAULT_OPTS="
   --bind 'ctrl-v:execute(code {+})'
 "
 
-# pointer='|>'
-# --color=dark
-# --color=fg:#d5c4a1,fg+:#ebdbb2,hl:#458588,hl+:#b16286
-# --color=fg:250,fg+:15,hl:203,hl+:203
-# --color=info:100,pointer:15,marker:220,spinner:11,header:-1,gutter:-1,prompt:15
+export SKIM_DEFAULT_OPTIONS="
+  --prompt '❱❱ '
+  --color=fg:#b16286,fg+:#d3869b,hl:#458588,hl+:#689d6a
+  --color=pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
+  --color=header:#cc241d,prompt:#fb4934
+  --reverse --height 50% --border --ansi --multi
+  --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+  --bind '?:toggle-preview'
+  --bind 'ctrl-a:select-all'
+  --bind 'ctrl-b:execute(bat --paging=always -f {+})'
+  --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
+  --bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
+  --bind 'ctrl-v:execute(code {+})'
+"
+export SKIM_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
+
 # export FZF_DEFAULT_COMMAND='rg --files --hidden --follow'
 export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -349,6 +427,8 @@ export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 # add GNU coreutils to path with no 'g' prefix, openvpn
 path=(/usr/local/opt/coreutils/libexec/gnubin
       /usr/local/opt/gnu-sed/libexec/gnubin
+      /usr/local/opt/grep/libexec/gnubin
+      /usr/local/Cellar/gawk/5.1.0/libexec/gnubin/awk
       /usr/local/opt/util-linux/bin
       /usr/local/opt/findutils/libexec/gnubin
       /usr/local/Cellar/openvpn/2.5.0/sbin ${path[@]}
@@ -363,9 +443,8 @@ export GPG_AGENT_INFO="$HOME/.gnupg/S.gpg-agent"
 export PINENTRY_USER_DATA="USE_CURSES=1"
 
 # ruby, go, python, mysql
-export GOPATH=$(go env GOPATH)
-export GEM_HOME="${XDG_DATA_HOME}/gem"
 path=($HOME/.rbenv/version/3.0.0/bin
+      $CARGO_HOME/bin
       $XDG_DATA_HOME/gem/bin
       $HOME/opt/anaconda3/bin
       /usr/local/mysql/bin/
@@ -379,7 +458,7 @@ export PDFVIEWER='zathura'
 # perlbrew
 source "${HOME}/perl5/perlbrew/etc/bashrc"
 # rakubrew
-eval "$(/usr/local/mybin/rakubrew init Zsh)"
+# eval "$(/usr/local/mybin/rakubrew init Zsh)"
 
 # xdg-utils
 export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
@@ -398,5 +477,3 @@ ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight
 
 export PATH
 typeset -U path fpath manpath
-
-# export PATH="/usr/bin:$PATH"

@@ -311,7 +311,7 @@ Capture a screenshot of current screen, lock computer, modify the image a little
 ### `mkscript`
 
 Create a script and place it in the specified directory.
-One can uncomment the `zentiy` dialog section to use it over regular `dialog`.
+One can uncomment the `zenity` dialog section to use it over regular `dialog`.
 
 ================================================
 ### `nv`
