@@ -22,7 +22,7 @@
   Plug 'plasticboy/vim-markdown'
   Plug 'dhruvasagar/vim-table-mode'
   Plug 'vimwiki/vimwiki'
-  Plug 'sidofc/mkdx'
+  Plug 'SidOfc/mkdx'
   Plug 'junegunn/goyo.vim'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
@@ -61,12 +61,15 @@
   Plug 'yggdroot/indentline'
 
   " Themes
+  Plug 'franbach/miramare'
+  Plug 'savq/melange'
   Plug 'burnsac5040/kimbox'
+  Plug 'nanotech/jellybeans.vim'
   Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
   Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/edge'
   Plug 'sainnhe/sonokai'
-  Plug 'sainnhe/forest-night'
+  Plug 'sainnhe/everforest'
   Plug 'morhetz/gruvbox'
   Plug 'joshdick/onedark.vim'
   Plug 'embark-theme/vim', { 'as': 'embark' }
@@ -112,17 +115,24 @@
   " let g:gruvbox_material_background = 'hard'
   let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
+
   " let g:kimbox_background = 'medium' " brown
   " let g:kimbox_background = 'darker' " dark dark purple
   let g:kimbox_background = 'ocean' " dark purple
   let g:kimbox_allow_bold = 1
+
   " let g:oceanic_material_background = "deep"
   let g:oceanic_material_background = "ocean"
   let g:oceanic_material_allow_bold = 1
+
+  let g:everforest_background = 'hard'
+  let g:everforest_enable_italic = 1
   let g:gruvbox_contrast_dark = 'medium'
   let g:sonokai_style = 'shusia'
   let g:edge_style = 'aura'
   let g:material_theme_style = 'ocean-community'
+  " let g:material_theme_style = 'darker-community'
+  let g:material_terminal_italics = 1
 " }}}
 
 " === General 'set'tings === {{{
@@ -140,22 +150,25 @@
 
   set t_Co=256
   set termguicolors                " enable termguicolors for better highlighting
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
   syntax enable
   " colorscheme spaceduck
   " colorscheme kimbox
+  colorscheme material
+  " colorscheme jellybeans
   " colorscheme oceanic_material
-  colorscheme gruvbox-material
+  " colorscheme gruvbox-material
+  " colorscheme miramare
+  " colorscheme melange
   " colorscheme edge
   " colorscheme sonokai
-  " colorscheme forest-night
+  " colorscheme everforest
   " colorscheme onedark
   " colorscheme embark
   " colorscheme daycula
   " colorscheme tokyonight
-  " colorscheme material
   " colorscheme srcery
   " colorscheme dogrun
   " colorscheme neodark
@@ -387,7 +400,7 @@
   " Custom syntax groups
   augroup vimTodo
     au!
-    au Syntax * syn match myTodo /\v<(FIXME|NOTE|NOTES|INFO|OPTIMIZE|XXX):/
+    au Syntax * syn match myTodo /\v<(FIXME|NOTE|NOTES|INFO|OPTIMIZE|XXX|EXPLAIN):/
           \ containedin=.*Comment,vimCommentTitle
   augroup END
   hi def link myTodo Todo
@@ -449,11 +462,13 @@
 
   hi VimwikiHeader1 guifg=#cc241d gui=bold
   hi VimwikiHeader2 guifg=#fe8019 gui=bold
-  hi VimwikiHeader3 guifg=#fabc2e gui=bold
+  hi VimwikiHeader3 guifg=#689d6a gui=bold
   hi VimwikiHeader4 guifg=#b8ba25 gui=bold
   hi VimwikiHeader5 guifg=#b16286 gui=bold
   hi VimwikiHeader6 guifg=#458588 gui=bold
   hi VimwikiBold    guifg=#a25bc4 gui=bold
+  hi VimwikiCode    guifg=#d3869b
+  hi VimwikiItalic  guifg=#83a598 gui=italic
 
   map <Leader>vw :VimwikiIndex<CR>
 
@@ -677,6 +692,19 @@
           \ {'options':  '--delimiter : --nth 4..'},
           \ 0)
 
+  " RG with preview
+  function! RipgrepFzf(query, fullscreen)
+    let command_fmt = 'rg --column --line-number --no-heading '
+      \ . '--color=always --smart-case -- %s || true'
+    let initial_command = printf(command_fmt, shellescape(a:query))
+    let reload_command = printf(command_fmt, '{q}')
+    let spec = {'options':
+      \ ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+    call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+  endfunction
+
+  command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
   " dotbare (dotfile manager) - edit file
   command! Dots call fzf#run(fzf#wrap({
   \ 'source': 'dotbare ls-files --full-name --directory "${DOTBARE_TREE}" | awk -v home="${DOTBARE_TREE}/" "{print home \$0}"',
@@ -692,6 +720,8 @@
   nnoremap <silent> <Leader>F :Files<CR>
   nnoremap <silent> <Leader>gf :GFiles<CR>
   nnoremap <Leader>L :Locate .<CR>
+  nnoremap <Leader>rg :RG<CR>
+  nnoremap <Leader>cd :lcd %:p:h<CR>
   nnoremap <C-f> :Rg<CR>
   nnoremap <silent> <Leader>a :Buffers<CR>
   nnoremap <silent> <Leader>A :Windows<CR>
@@ -792,6 +822,7 @@
   " let g:airline#extensions#tabline#show_tabs = 0
   " let g:airline#extensions#hunks#enabled = 0
   set laststatus=2
+  " let g:airline_theme='srcery'
   let g:airline_theme='srcery'
 " }}}
 

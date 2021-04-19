@@ -42,7 +42,9 @@ unsetopt case_glob
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ZINIT_HOME="$ZDOTDIR/zinit"
 export GENCOMP_DIR="$ZDOTDIR/completions"
+
 fpath+=( ${ZDOTDIR}/{functions,completions} )
+autoload -Uz $ZDOTDIR/functions/*(:t)
 
 typeset -A ZINIT=(
     BIN_DIR         $ZDOTDIR/zinit/bin
@@ -52,7 +54,6 @@ typeset -A ZINIT=(
 
 # compinit -u -d "${ZDOTDIR}/.zcompdump_${ZSH_VERSION}"
 zmodload zsh/zprof
-autoload -Uz $ZDOTDIR/functions/*(:t)
 autoload +X zman
 autoload -Uz zmv zcalc zargs
 alias zmv='noglob zmv -W'
@@ -149,7 +150,7 @@ stty discard undef <$TTY >$TTY
 # === completion === {{{
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
-  '[[ $group == "[process ID]" ]] && ps --pid=$word -o cmd --no-headers -w -w'
+  '[[ $group == "[process ID]" ]] && ps -p $word -o comm="" -w -w'
 zstyle ':fzf-tab:complete:kill:*' popup-pad 0 3
 zstyle ':fzf-tab:complete:nvim:*' fzf-preview \
   'r=$realpath; ([[ -f $r ]] && bat --style=numbers --color=always $r) \
@@ -172,6 +173,7 @@ zstyle ':completion:*' verbose yes
 zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' completer _complete _match _list _ignored _correct _approximate
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' ignore-parents parent pwd
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
@@ -194,9 +196,12 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 # }}}
 
 # === homebrew, custom bins === {{{
-path=("$HOME/.local/bin" "$XDG_BIN_HOME"
-      "/usr/local/bin" "/usr/local/sbin"
-      "${path[@]}"
+path=(
+  $HOME/.local/bin
+  $XDG_BIN_HOME
+  /usr/local/bin
+  /usr/local/sbin
+  ${path[@]}
 )
 # }}}
 
@@ -425,17 +430,34 @@ export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:auto
 export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 
 # add GNU coreutils to path with no 'g' prefix, openvpn
-path=(/usr/local/opt/coreutils/libexec/gnubin
-      /usr/local/opt/gnu-sed/libexec/gnubin
-      /usr/local/opt/grep/libexec/gnubin
-      /usr/local/Cellar/gawk/5.1.0/libexec/gnubin/awk
-      /usr/local/opt/util-linux/bin
-      /usr/local/opt/findutils/libexec/gnubin
-      /usr/local/Cellar/openvpn/2.5.0/sbin ${path[@]}
+path=(
+  /usr/local/opt/coreutils/libexec/gnubin
+  /usr/local/opt/gnu-sed/libexec/gnubin
+  /usr/local/opt/grep/libexec/gnubin
+  /usr/local/opt/gnu-tar/libexec/gnubin
+  /usr/local/opt/gawk/libexec/gnubin
+  /usr/local/opt/util-linux/bin
+  /usr/local/opt/findutils/libexec/gnubin
+  /usr/local/opt/openvpn/sbin
+  ${path[@]}
 )
 
-d="$XDG_CONFIG_HOME/dircolors/gruv.dircolors"; test -r $d && eval "$(dircolors $d)"
-export MANPATH="/usr/local/opt/findutils/libexec/gnuman:$MANPATH"
+manpath=(
+  /usr/local/opt/gnu-sed/libexec/gnuman
+  /usr/local/opt/grep/libexec/gnuman
+  /usr/local/opt/gnu-getopt/share/man
+  /usr/local/opt/gnu-tar/libexec/gnuman
+  /usr/local/opt/gawk/libexec/gnuman
+  /usr/local/opt/findutils/libexec/gnuman
+  ${manpath[@]}
+)
+
+typeset -gxU infopath INFOPATH
+infopath=(
+  /usr/local/info
+  /usr/local/share/info
+  ${infopath[@]}
+)
 
 # GPG
 export GPG_TTY=$TTY
@@ -443,37 +465,38 @@ export GPG_AGENT_INFO="$HOME/.gnupg/S.gpg-agent"
 export PINENTRY_USER_DATA="USE_CURSES=1"
 
 # ruby, go, python, mysql
-path=($HOME/.rbenv/version/3.0.0/bin
-      $CARGO_HOME/bin
-      $XDG_DATA_HOME/gem/bin
-      $HOME/opt/anaconda3/bin
-      /usr/local/mysql/bin/
-      $GOPATH/bin ${path[@]}
+path=(
+  $HOME/.rbenv/version/3.0.0/bin
+  $CARGO_HOME/bin
+  $XDG_DATA_HOME/gem/bin
+  $HOME/opt/anaconda3/bin
+  $GOPATH/bin
+  /usr/local/mysql/bin/
+  ${path[@]}
 )
+
 eval "$(rbenv init -)"
 
 # texdoc pdfviewer
 export PDFVIEWER='zathura'
 
 # perlbrew
-source "${HOME}/perl5/perlbrew/etc/bashrc"
+source "$HOME/perl5/perlbrew/etc/bashrc"
 # rakubrew
 # eval "$(/usr/local/mybin/rakubrew init Zsh)"
 
-# xdg-utils
-export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
-
-# fontpreview
-# export FONTPREVIEW_BG_COLOR="#000000"
-# export FONTPREVIEW_FG_COLOR="#ffffff"
-
-# dbus
-export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
+export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"  # xdg-utils
+export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"  # vimtex
 # }}}
 
+# keep limelight / dircolors alive {{{
 # killall limelight &> /dev/null; limelight &> /dev/null &
 # pueue clean && pueue status | rg -Fq 'limelight' || chronic pueue add limelight
 ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight
+
+d="$XDG_CONFIG_HOME/dircolors/gruv.dircolors"; test -r $d && eval "$(dircolors $d)"
+# }}}
+
 
 export PATH
 typeset -U path fpath manpath

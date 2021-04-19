@@ -1,2 +1,2 @@
 export ZDOTDIR="$HOME/.config/zsh"
-source "$HOME/.cargo/env"
+source "$HOME/.local/share/cargo/env"

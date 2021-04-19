@@ -90,6 +90,7 @@ EXEC  01;30;32
 
 # Crufty and ignorable files
 .bak   38;5;246
+.bkp   38;5;246
 .cache 38;5;246
 .dist  38;5;246
 .lock  38;5;246
@@ -201,10 +202,24 @@ EXEC  01;30;32
 .spx  01;33
 .xspf 01;33
 
+# scripting but may not be executable
+.awk  33;5;109
+.bash 33;5;109
+.pl   33;5;109
+.sh   33;5;109
+.zsh   33;5;109
+
+# configuration
+.conf   36;109
+.cfg    36;5;109
+.config 36;5;109
+
 # documents
 .doc   38;5;109
 .docx  38;5;109
+.csv   38;5;109
 .html  38;5;109
+.ini   38;5;109
 .js    38;5;109
 .json  38;5;109
 .md    38;5;109
@@ -215,9 +230,11 @@ EXEC  01;30;32
 .pdf   38;5;109
 .php   38;5;109
 .phtml 38;5;109
+.plist 38;5;109
 .ppt   38;5;109
 .pptx  38;5;109
 .tex   38;5;109
+.tmTheme 38;5;109
 .txt   38;5;109
 .xls   38;5;109
 .xlsx  38;5;109

@@ -392,7 +392,7 @@ map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | bat -f                         # open lfrc docs
 map gX $bat -f ~/.config/lf/mappings            # open these mappings
-map o push :open<space>                         # open w/ specified program
+map o push :open-with<space>                    # open w/ specified program
 
 map as !du -hsx * | sort -rh | bat --paging=always  # directory info
 map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file -I -b -p $f
