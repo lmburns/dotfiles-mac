@@ -47,6 +47,7 @@ handle_mime() {
 	text/html) w3m -dump "${FILE_PATH}" && { dump | trim | fmt -s -w $WIDTH; exit 4; } ;;
 	text/troff) man ./ "${FILE_PATH}" | col -b ;;
 	text/* | */xml) bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme KimbieDark --style auto -- "${FILE_PATH}" ;;
+  application/pgp-encrypted) bat -Pf --theme KimbieDark --style auto "${FILE_PATH}" ;;
 	application/zip) atool --list -- "${FILE_PATH}" ;;
   image/*) chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
    video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
@@ -70,20 +71,22 @@ handle_other() {
         *.o) nm "${FILE_PATH}" | less ;;
         *.torrent) transmission-show "${FILE_PATH}";;
         *.iso) iso-info --no-header -l "${FILE_PATH}";;
-        *odt) odt2txt "${FILE_PATH}";;
+        *.odt|*.ods|*.odp|*.sxw) odt2txt "${FILE_PATH}";;
         *.doc) catdoc "${FILE_PATH}" ;;
         *.docx) docx2txt "${FILE_PATH}" - ;;
-        *.md) mdv "${FILE_PATH}" ;;
         *.csv) bat "${FILE_PATH}" | sed s/,/\\n/g ;;
         *.json) jq --color-output . "${FILE_PATH}";;
-        *.asc) bat -Pf --theme gruvbox --style auto "${FILE_PATH}";;
-        *.ipynb) jupview -t gruvbox-N "${FILE_PATH}";;
+        *.asc) bat -Pf --theme KimbieDark --style auto "${FILE_PATH}";;
+        *.ipynb) jupview -t KimbieDark "${FILE_PATH}";;
         *.sha1|*.sha256|*.sha512|*.md5) rhash -c "${FILE_PATH}" ;;
     esac
 }
 
+# *.md) mdv "${FILE_PATH}" ;;
+
 handle_fallback() {
-    echo '----- File Type Classification -----' && file --dereference --brief -- "${FILE_PATH}"
+    echo '----- File Type Classification -----' &&
+      file --dereference --brief -- "${FILE_PATH}"
     exit 1
 }
 

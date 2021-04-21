@@ -1,19 +1,22 @@
-o ┌───────────────────────────────────────────────────────────────────────────┐
+# -*- mode: sh -*-
+# vim: set ts=2 sw=2 et
+
+# ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Basics / General                                                          │
 # └───────────────────────────────────────────────────────────────────────────┘
 set shell bash        # interpreter for shell commands
 set shellopts '-eu'   # exit on error
 set ifs "\n"          # internal field separator / split $fs, $fx
 set scrolloff 10      # space on top and bottom of screen
-set icons             # show icons next to files
+set icons on          # show icons next to files
 set period 1          # interval to check for directory updates
-set hidden            # show hidden files by default
-set incsearch         # jump to first match after each keystroke in search
-set dircounts
-set info size
-set sortby natural
-set preview           # preview file on the right pane
-# set drawbox
+set hidden on         # show hidden files by default
+set incsearch o       # jump to first match after each keystroke in search
+set dircounts on      # show number of items in directory instead of sie
+set info "size"       # list directory information on the right
+set sortby "natural"  # don't sort files in any special way
+set preview on        # preview file on the right pane
+set drawbox on        # draw a border around all panes
 set ratios '1:2:3'    # ratio of pane widths
 set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
@@ -47,8 +50,13 @@ $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
 # └───────────────────────────────────────────────────────────────────────────┘
 cmd open ${{
     case $(file --mime-type $f -b) in
-      application/pdf) nohup zathura $fx >/dev/null 2>&1 ;;
+      application/pdf|application/vnd*|application/epub*) nohup zathura $fx >/dev/null 2>&1 ;;
       application/csv) vd $fx ;;
+      application/msword\
+        |application/vnd.openxmlformats-officedocument.*\
+        |application/vnd.oasis.opendocument.text\
+        |application/vnd.ms-excel\
+        |text/rtf) open -a LibreOffice.app ;;
       text/*) $EDITOR $fx;;
       image/x-xcf) nohup gimp $f >/dev/null 2>&1 ;;
       image/svg+xml) display -- $f ;;
@@ -57,8 +65,7 @@ cmd open ${{
       video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
       application/x-bittorrent) open -a Transmission.app ;;
       application/zlib) open ;;
-      application/msword|application/vnd.openxmlformats-officedocument.*) open -a LibreOffice.app ;;
-        *) for f in $fx; do nohup $OPENER $f > /dev/null 2> /dev/null & done;;
+      *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>/dev/null & done;;
     esac
 }}
 
@@ -178,6 +185,11 @@ cmd fzf_z ${{
   [ -d "$sel" ] && lf -remote "send $id cd \"$sel\""
 }}
 
+cmd zoxide_i ${{
+  sel="$(zoxide query -i)"
+  [ -d "$sel" ] && lf -remote "send $id cd \"$sel\""
+}}
+
 
 ## Archive
 cmd unarchive ${{
@@ -216,22 +228,6 @@ cmd link %{{
         copy) gln -sr -t . "$@";;
         move) gln -t . "$@";;
     esac
-}}
-
-
-# symlink without gnu coreutils
-cmd paste-symlink ${{
-   load=$(lf -remote 'load')
-   mode=$(echo "$load" | sed -n '1p')
-   list=$(echo "$load" | sed '1d')
-   if [ $mode = 'copy' ]; then
-       s='' && [ ! -w . ] && s='sudo'
-       for f in $list; do
-           $s ln -s "$f" "$(pwd)/$(basename $f)"
-       done
-       lf -remote 'send load'
-       lf -remote 'send clear'
-   fi
 }}
 
 
@@ -309,28 +305,28 @@ cmd edit_scope :{{
 
 # select all file in directory
 cmd select-files ${{
-    { echo "$fs"; fd --full-path -L "$(pwd)" --min-depth 1 -d 1 -tf; } |
-        if [ "$lf_hidden" = "false" ]; then
-          # remove any hidden files so you only select files you can see.
-          rg -v '/\.[^/]\+$'
-        else
-          cat
-        fi |
-        gsed '/^$/d' | sort | uniq -u |
-        gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+  { echo "$fs"; fd --full-path -L "$(pwd)" --min-depth 1 -d 1 -tf; } |
+    if [ "$lf_hidden" = "false" ]; then
+      # remove any hidden files so you only select files you can see.
+      rg -v '/\.[^/]\+$'
+    else
+      cat
+    fi |
+    gsed '/^$/d' | sort | uniq -u |
+    gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
 }}
 
 
 # select all directories in current directory
 cmd select-dirs ${{
-    { echo "$fs"; fd --full-path -L "$(pwd)" --min-depth 1 -d 1 -td; } |
-        if [ "$lf_hidden" = "false" ]; then
-          rg -v '/\.[^/]\+$'
-        else
-          cat
-        fi |
-        gsed '/^$/d' | sort | uniq -u |
-        gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+  { echo "$fs"; fd --full-path -L "$(pwd)" --min-depth 1 -d 1 -td; } |
+    if [ "$lf_hidden" = "false" ]; then
+      rg -v '/\.[^/]\+$'
+    else
+      cat
+    fi |
+    gsed '/^$/d' | sort | uniq -u |
+    gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
 }}
 
 
@@ -358,10 +354,9 @@ cmd rg !clear; rg "$1"
 cmd bulkrename $fd . | vidir -
 cmd massren $massren
 cmd wim $wim "$1"
-# cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
 cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
-cmd yank-path $printf '%s' "$fx" | pbcopy
+cmd yank-path $printf '%s' "$fx" | pbcopy && terminal-notifier -title "lf" -message "$fx copied"
 cmd open-with %"$@" $fx
 cmd usage $du -h -d1 | less
 
@@ -373,10 +368,14 @@ map n
 map "'"
 map '"'
 map d
+map O
 map e
+map w
+map i
 map c
 map f
 map gh
+map .
 
 # File Openers
 map ee $$EDITOR "$f"                            # open file in editor
@@ -392,13 +391,17 @@ map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | bat -f                         # open lfrc docs
 map gX $bat -f ~/.config/lf/mappings            # open these mappings
-map o push :open-with<space>                    # open w/ specified program
+map O push :open-with<space>                    # open w/ specified program
 
 map as !du -hsx * | sort -rh | bat --paging=always  # directory info
 map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file -I -b -p $f
 
 map sf select-files
 map sd select-dirs
+map sr :{{ set nopreview; set ratios 1:3; }}
+map sp :{{ set preview;   set ratios 1:2:3; }}
+map sP :{{ set preview;   set ratios 1:2; }}
+map sR :{{ set reverse!; }}
 
 # Archive Mappings
 map az zip
@@ -411,8 +414,8 @@ map au unarchive
 map dd trash
 map D delete                            # confirmation with whiptail
 map te %trash-empty
-map tl trash-list
-map tr $ftrr                            # fzf trash restore script
+map tl %trash-list
+map tr %ftrr                            # fzf trash restore script
 
 # Dragon Mapping [CONFIGURE]
 # map dr dragon
@@ -436,29 +439,31 @@ map ch chmod                            # change file permissions
 map fo push :fzf<space>   # fzf search and open
 map fd push :fd<space>    # use fd to find file
 map fa ajfzf              # use fzf with autojump
-map <c-b> broot_jump      # use broot to jump to directory
+# map <c-b> broot_jump      # use broot to jump to directory
 map n fzf_z               # fzf zioxide
+map zi zoxide_i           # zoxide interactive
 map zz push :z<space>     # very similar to autojump
 map <c-j> push :aj<space> # auto jump
 map w $lf -remote "send $id select $(fzf)"
 
 # General
-map . :set hidden!
-map p paste             # regular
-map Pl :link              # paste a symlink
-map Ps :paste-symlink     # another paste symlink w/o needing gnucoreutils
-map Pp ppaste             # paste and preview progress
+map . set hidden!
+map p paste                     # regular
+map Pl :{{ link; unselect; }}   # paste a symlink
+map Pp ppaste                   # paste and preview progress
 map x cut
 map y copy
-map Yp yank-path        # yank file path
-map <enter> open
+map Yp yank-path                # yank file path
+map <enter> shell-wait
 map mf push :mkfile<space>
 map md push :mkdir<space>
-map ms $mksc              # make script
-map Ql :ql_preview        # open in quicklook (macOS)
+map ms $mksc                    # make script
+map Ql ql_preview               # open in quicklook (macOS)
 
-map gg top
-map G bottom
+map gg top -- []
+map G bottom -- []
+map J half-down
+map K half-up
 map R reload
 map C clear
 map U unselect
@@ -475,7 +480,6 @@ map <c-f> push :rg<space>                   # search with rg
 
 map Yj copytojump       # copy to directory with autojump
 map Mj movetojump       # move to directory with autojump
-map Mw whipmove         # move with a whiptail dialog box
 
 map Mt push :rsyncto<space>                     # move things to the server
 map Mf push :rsyncfrom<space>                   # move things from the server
@@ -493,18 +497,24 @@ map tsd pgp_sign_detach
 # git
 map gtb :git_branch
 map gtp ${{clear; git pull --rebase || true; echo "press ENTER"; read ENTER}}
-map gts ${{clear; git status; echo "press ENTER"; read ENTER}}
-map gtl ${{clear; git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit}}
-map gtt ${{clear; fstat}}
-map gta ${{clear; fadd}}
-map gtx ${{clear; f::add}}
+map gtz ${{clear; git status; echo "press ENTER"; read ENTER}}
+map gtp ${{clear; git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit}}
+map gttr ${{clear; git ls-tree -r master --name-only | bat}}
+map gttt ${{clear; git ls-tree -r master --name-only | as-tree --color always | bat -p}}
+map gttu ${{clear; git ls-files --other | bat}}
 map gtd ${{clear; f::diff}}
-map gto ${{clear; f::log}}
 map gtc ${{clear; f::clean}}
+map gts ${{clear; fstat}}
+map gta ${{clear; fadd}}
+map gtl ${{clear; flog}}
 map gtu ${{clear; funtrack}}
 
 map gfa ${{clear; dotbare fadd -f}}
 map gfs ${{clear; dotbare fstat}}
+map gfu ${{clear; dotbare funtrack}}
+map gftr ${{clear; dotbare ls-tree -r master --name-only | bat}}
+map gftt ${{clear; dotbare ls-tree -r master --name-only | as-tree --color always | bat -p}}
+map gftu ${{clear; dotbare ls-files --other | bat}}
 
 # Movement
 map gd cd ~/Documents

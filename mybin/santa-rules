@@ -2,6 +2,10 @@
 
 # desc: whitelist/blacklist apps with santactl
 
+# sudo /bin/launchctl unload /Library/LaunchAgents/com.google.santa.plist
+# sudo /bin/launchctl unload /Library/LaunchAgents/com.google.santad.plist
+# sudo /bin/launchctl unload /Library/LaunchDaemons/com.google.santa.bundleservice.plist
+
 typeset -a apps
 
 apps=("Image Capture" "News" "Music" "QuickTime Player" "Siri" "Books" "Photo Booth" "Stickies" "TV" "Stocks" "Chess" "Maps")

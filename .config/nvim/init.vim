@@ -49,33 +49,41 @@
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
-  Plug 'sheerun/vim-polyglot'                     " More syntax highlighting
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+  Plug 'sheerun/vim-polyglot'                     " More syntax highlighting
 
   " HTML/CSS
   Plug 'shime/vim-livedown'
   Plug 'tpope/vim-commentary'
   Plug 'alvan/vim-closetag'
-  Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
+  " Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
   Plug 'ap/vim-css-color'
   Plug 'yggdroot/indentline'
 
   " Themes
   Plug 'franbach/miramare'
+  Plug 'Rigellute/rigel'
+  Plug 'AlessandroYorba/Alduin'
+  Plug 'ackyshake/Spacegray.vim'
+  Plug 'gavinok/spaceway.vim'
+  Plug 'bluz71/vim-nightfly-guicolors'
   Plug 'savq/melange'
-  Plug 'burnsac5040/kimbox'
+  Plug 'ajmwagar/vim-deus'
+  Plug 'lmburns/kimbox'
   Plug 'nanotech/jellybeans.vim'
-  Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+  Plug 'cocopon/iceberg.vim'
+  Plug 'lifepillar/vim-gruvbox8'
+  Plug 'morhetz/gruvbox'
   Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/edge'
   Plug 'sainnhe/sonokai'
   Plug 'sainnhe/everforest'
-  Plug 'morhetz/gruvbox'
   Plug 'joshdick/onedark.vim'
   Plug 'embark-theme/vim', { 'as': 'embark' }
+  Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+  Plug 'kaicataldo/material.vim', { 'branch': 'main' }
   Plug 'ghifarit53/daycula-vim' , {'branch' : 'main'}
   Plug 'ghifarit53/tokyonight-vim'
-  Plug 'kaicataldo/material.vim', { 'branch': 'main' }
   Plug 'srcery-colors/srcery-vim'
   Plug 'wadackel/vim-dogrun'
   Plug 'glepnir/oceanic-material'
@@ -118,7 +126,7 @@
 
   " let g:kimbox_background = 'medium' " brown
   " let g:kimbox_background = 'darker' " dark dark purple
-  let g:kimbox_background = 'ocean' " dark purple
+  " let g:kimbox_background = 'ocean' " dark purple
   let g:kimbox_allow_bold = 1
 
   " let g:oceanic_material_background = "deep"
@@ -127,12 +135,17 @@
 
   let g:everforest_background = 'hard'
   let g:everforest_enable_italic = 1
-  let g:gruvbox_contrast_dark = 'medium'
-  let g:sonokai_style = 'shusia'
-  let g:edge_style = 'aura'
+
+
   let g:material_theme_style = 'ocean-community'
   " let g:material_theme_style = 'darker-community'
   let g:material_terminal_italics = 1
+
+  let g:spacegray_use_italics = 1
+
+  let g:gruvbox_contrast_dark = 'medium'
+  let g:sonokai_style = 'shusia'
+  let g:edge_style = 'aura'
 " }}}
 
 " === General 'set'tings === {{{
@@ -155,16 +168,19 @@
 
   syntax enable
   " colorscheme spaceduck
-  " colorscheme kimbox
-  colorscheme material
+  colorscheme kimbox
+  " colorscheme material
+  " colorscheme deus
+  " colorscheme everforest
   " colorscheme jellybeans
+  " colorscheme iceberg
   " colorscheme oceanic_material
   " colorscheme gruvbox-material
   " colorscheme miramare
+  " colorscheme nightfly
   " colorscheme melange
   " colorscheme edge
   " colorscheme sonokai
-  " colorscheme everforest
   " colorscheme onedark
   " colorscheme embark
   " colorscheme daycula
@@ -173,6 +189,10 @@
   " colorscheme dogrun
   " colorscheme neodark
   " colorscheme palenight
+  " colorscheme deep-space
+  " colorscheme spaceway    " needs work
+  " colorscheme alduin      " needs work
+  " colorscheme spacegray
   set background=dark
   set path+=**
   set lazyredraw
@@ -378,7 +398,7 @@
   autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
   autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
 
-  nmap <Leader>c :w! <bar> !compiler %<CR>
+  nmap <Leader>cm :w! <bar> !compiler %<CR>
   nmap <Leader>pr :!opout <c-r>%<CR><CR>
   autocmd VimLeave *.tex !texclear %
 " }}}
@@ -400,7 +420,7 @@
   " Custom syntax groups
   augroup vimTodo
     au!
-    au Syntax * syn match myTodo /\v<(FIXME|NOTE|NOTES|INFO|OPTIMIZE|XXX|EXPLAIN):/
+    au Syntax * syn match myTodo /\v<(FIXME|FIX|DISCOVER|NOTE|NOTES|INFO|OPTIMIZE|XXX|EXPLAIN|TODO|HACK|BUG|BUGS):/
           \ containedin=.*Comment,vimCommentTitle
   augroup END
   hi def link myTodo Todo
@@ -735,6 +755,8 @@
   nnoremap <silent> <Leader>hs :History/<CR>
   " mappings
   nnoremap <silent> <Leader>mm :Maps<CR>
+  " colorschemes
+  nnoremap <silent> <Leader>cs :Colors<CR>
 
   " let g:fzf_preview_window = ''
   let g:fzf_layout         = { 'down': '~40%' }
@@ -822,8 +844,9 @@
   " let g:airline#extensions#tabline#show_tabs = 0
   " let g:airline#extensions#hunks#enabled = 0
   set laststatus=2
-  " let g:airline_theme='srcery'
   let g:airline_theme='srcery'
+  " let g:airline_theme='base16_twilight'
+  " let g:airline_theme='iceberg'
 " }}}
 
 " === UndoTree ==={{{
