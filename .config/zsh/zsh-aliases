@@ -23,7 +23,7 @@ alias lct='launchctl'
 alias l='exa -FH --git --icons'
 alias l.='l -d .*'
 alias lp='exa -1F'
-alias ll='exa -FlahH'
+alias ll='exa -FlahH --git --icons'
 alias ls='exa -Fh --git --icons'
 alias lse='exa -Flh --git --sort=extension --icons'
 alias lsm='exa -Flh --git --sort=modified --icons'
@@ -39,11 +39,11 @@ alias grep='grep --color=auto'
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
 alias his='history | grep'
-alias ofd='open $PWD'
 
 # === configs ===================================================================
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias azsh="nvim $ZDOTDIR/zsh-aliases"
+alias ezsh="nvim $HOME/.zshenv"
 alias nvimd='cd /usr/local/share/nvim/runtime'
 alias ninit='nvim $XDG_CONFIG_HOME/nvim/init.vim'
 alias nlfr='nvim $XDG_CONFIG_HOME/lf/lfrc'
@@ -114,7 +114,7 @@ alias vwb='nvim $HOME/vimwiki/blog/index.md'
 alias vwl='nvim $HOME/vimwiki/languages/index.md'
 
 # === github ====================================================================
-alias c="/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME"
+alias conf="/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME"
 alias xav="/usr/bin/git --git-dir=$XDG_DATA_HOME/dottest --work-tree=$HOME"
 
 alias gua='git remote | xargs -L1 git push --all'
@@ -164,7 +164,8 @@ alias trl='trash-list'
 alias trr='trash-restore'
 alias trm='trash-rm'
 
-alias vi='nvim'
+alias vi="$EDITOR"
+alias sv="sudo $EDITOR"
 alias vimdiff='nvim -d'
 alias jrnl=' jrnl'
 

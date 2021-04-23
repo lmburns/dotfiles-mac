@@ -305,28 +305,28 @@ cmd edit_scope :{{
 
 # select all file in directory
 cmd select-files ${{
-  { echo "$fs"; fd --full-path -L "$(pwd)" --min-depth 1 -d 1 -tf; } |
-    if [ "$lf_hidden" = "false" ]; then
-      # remove any hidden files so you only select files you can see.
-      rg -v '/\.[^/]\+$'
-    else
-      cat
-    fi |
-    gsed '/^$/d' | sort | uniq -u |
-    gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+  { echo "$fs"; find -L "$(pwd)" -mindepth 1 -maxdepth 1 -type f; } |
+      if [ "$lf_hidden" = "false" ]; then
+        # remove any hidden files so you only select files you can see.
+        grep -v '/\.[^/]\+$'
+      else
+        cat
+      fi |
+      gsed '/^$/d' | sort | uniq -u |
+      gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
 }}
 
 
 # select all directories in current directory
 cmd select-dirs ${{
-  { echo "$fs"; fd --full-path -L "$(pwd)" --min-depth 1 -d 1 -td; } |
-    if [ "$lf_hidden" = "false" ]; then
-      rg -v '/\.[^/]\+$'
-    else
-      cat
-    fi |
-    gsed '/^$/d' | sort | uniq -u |
-    gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+  { echo "$fs"; find -L "$(pwd)" -mindepth 1 -maxdepth 1 -type d; } |
+      if [ "$lf_hidden" = "false" ]; then
+        grep -v '/\.[^/]\+$'
+      else
+        cat
+      fi |
+      gsed '/^$/d' | sort | uniq -u |
+      gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
 }}
 
 
@@ -345,6 +345,7 @@ cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
 
 cmd rsyncto ${{ rsync -uvrP $fx root@burnsac.xyz:"$1" }}
 cmd rsyncfrom ${{ rsync -uvrP root@burnsac.xyz:"$1" "$2" }}
+cmd fzf_cd $lf -remote "send $id cd '$(fd . --exact-depth=1 -td -H | fzf)'"
 
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
 cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' | fzf)'"
@@ -415,7 +416,7 @@ map dd trash
 map D delete                            # confirmation with whiptail
 map te %trash-empty
 map tl %trash-list
-map tr %ftrr                            # fzf trash restore script
+map tr %ftr                            # fzf trash restore script
 
 # Dragon Mapping [CONFIGURE]
 # map dr dragon
@@ -444,7 +445,9 @@ map n fzf_z               # fzf zioxide
 map zi zoxide_i           # zoxide interactive
 map zz push :z<space>     # very similar to autojump
 map <c-j> push :aj<space> # auto jump
-map w $lf -remote "send $id select $(fzf)"
+# map w $lf -remote "send $id select $(fzf)"
+map w fzf_cd
+
 
 # General
 map . set hidden!

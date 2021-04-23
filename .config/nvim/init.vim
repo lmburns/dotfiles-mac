@@ -14,8 +14,8 @@
   Plug 'scrooloose/nerdtree'
   " Plug 'vifm/vifm.vim'
   Plug 'ptzz/lf.vim'
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   " Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   Plug 'lervag/vimtex'
   Plug 'vim-pandoc/vim-pandoc-syntax'
@@ -24,6 +24,7 @@
   Plug 'vimwiki/vimwiki'
   Plug 'SidOfc/mkdx'
   Plug 'junegunn/goyo.vim'
+  Plug 'sslivkoff/vim-scroll-barnacle'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
   Plug 'zhou13/vim-easyescape'
@@ -163,8 +164,8 @@
 
   set t_Co=256
   set termguicolors                " enable termguicolors for better highlighting
-  " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
   syntax enable
   " colorscheme spaceduck
@@ -179,20 +180,13 @@
   " colorscheme miramare
   " colorscheme nightfly
   " colorscheme melange
-  " colorscheme edge
-  " colorscheme sonokai
   " colorscheme onedark
-  " colorscheme embark
-  " colorscheme daycula
-  " colorscheme tokyonight
-  " colorscheme srcery
-  " colorscheme dogrun
   " colorscheme neodark
-  " colorscheme palenight
   " colorscheme deep-space
   " colorscheme spaceway    " needs work
   " colorscheme alduin      " needs work
   " colorscheme spacegray
+  " edge sonokai tokyonight daycula srcery dogrun palenight
   set background=dark
   set path+=**
   set lazyredraw
@@ -204,7 +198,6 @@
   set list lcs=tab:‣\ ,trail:•,nbsp:␣ " customize invisibles
   set fillchars+=msgsep:\ ,vert:\│          " customize message separator in neovim
   set incsearch                             " incremential search highligh
-    nnoremap <silent><F7> :set nohlsearch!<CR>
   set encoding=utf-8
   set magic
   set clipboard+=unnamedplus                " use system clipboard
@@ -213,9 +206,7 @@
   set expandtab softtabstop=2 smartindent
   set ignorecase smartcase
   set number
-    nnoremap <silent><F3> :set relativenumber!<CR>
   set wrap
-    nnoremap <silent><F2> :set nowrap!<CR>
   set nofoldenable
   set foldmethod=marker
   set scrolloff=5                         " cusor 5 lines from bottom of page
@@ -228,10 +219,14 @@
   set timeoutlen=350                      " keycode delay
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
   set guicursor=a:blinkon100
+  set guifont=JetBrains\ Mono\ Bold\ Nerd\ Font\ Complete:h14
   set confirm                             " confirm when editing readonly
   set noerrorbells
   set belloff=all
   filetype plugin indent on
+
+  nnoremap <silent><F3> :set relativenumber!<CR>
+  nnoremap <silent><F2> :set nowrap!<CR>
 " }}}
 
 " === General Mappings === {{{
@@ -298,6 +293,14 @@
   nnoremap <expr> oo printf('m`%so<ESC>``', v:count1)
   nnoremap <expr> OO printf('m`%sO<ESC>``', v:count1)
 
+  " move through folded lines
+  nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+  nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+
+  " move selected text up down
+  vnoremap J :m '>+1<CR>gv=gv
+  vnoremap K :m '<-2<CR>gv=gv
+
   cnoreabbrev W! w!
   cnoreabbrev Q! q!
   cnoreabbrev Qall! qall!
@@ -316,6 +319,7 @@
   imap <C-k> <C-W>k
   map <C-h> <C-W>h
   map <C-l> <C-W>l
+
   " close buffer
   nnoremap <Leader>bd :bd<CR>
 
@@ -325,9 +329,11 @@
   nnoremap s+ :resize +5<CR>
   nnoremap s- :resize -5<CR>
 
-  " move through folded lines
-  nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
-  nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+  " alternative
+  nnoremap <Up> <C-w>3+
+  nnoremap <Down> <C-w>3-
+  nnoremap <right> <C-w>3>
+  nnoremap <left> <C-w>3<
 
   " perform dot commands over visual blocks
 	vnoremap . :normal .<CR>
@@ -338,9 +344,11 @@
   autocmd BufRead,BufNewFile calcurse-note*,~/.local/share/calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
   autocmd BufRead,BufNewFile *.tex set filetype=tex
-  " for github tabs
+
+  " for github - change tabs
   nnoremap <Leader>nt :setlocal noexpandtab<CR>
   xnoremap <Leader>re :retab!<CR>
+
   autocmd FileType nroff setlocal wrap textwidth=85 colorcolumn=+1
   autocmd filetype go inoremap <buffer> . .<C-x><C-o>
 
@@ -640,8 +648,13 @@
 
   " For json
   autocmd FileType json syntax match Comment +\/\/.\+$+
-  " For coc-pairs
-  autocmd FileType * let b:coc_pairs_disabled = ['<']
+  " coc-pairs
+  augroup CocPairs
+    autocmd!
+    " autocmd FileType markdown let b:coc_pairs_disabled = ['`', "'"]
+    autocmd FileType vim,vifm let b:coc_pairs_disabled = ['"']
+    autocmd FileType * let b:coc_pairs_disabled = ['<']
+  augroup end
   " Highlight the symbol and its references when holding the cursor.
   autocmd CursorHold * silent call CocActionAsync('highlight')
 
@@ -682,7 +695,6 @@
   " === FZF & Ripgrep === {{{
   " let $SKIM_DEFAULT_COMMAND = "git ls-tree -r --name-only HEAD || rg --files
   " let g:rg_command = 'rg --vimgrep --hidden'
-  " let g:fzf_command_prefix = 'fzf'
   let g:rg_highlight = 'true'
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
 
@@ -759,12 +771,26 @@
   nnoremap <silent> <Leader>cs :Colors<CR>
 
   " let g:fzf_preview_window = ''
+  let g:fzf_history_dir = '~/.local/share/fzf-history'
   let g:fzf_layout         = { 'down': '~40%' }
   let g:fzf_action = {
     \ 'ctrl-t': 'tab split',
     \ 'ctrl-x': 'split',
     \ 'ctrl-v': 'vsplit'
     \}
+" }}}
+
+" =====================================================================
+" =====================================================================
+
+" === VimFugitive === {{{
+nnoremap <leader>gs :G<CR>3j
+nnoremap <leader>gq :G<CR>:q<CR>
+nnoremap <leader>gw :Gwrite<CR>
+nnoremap <leader>gr :Gread<CR>
+nnoremap <leader>gh :diffget //2<CR>
+nnoremap <leader>gl :diffget //3<CR>
+nnoremap <leader>gp :Git push<CR>
 " }}}
 
 " =====================================================================
@@ -830,16 +856,19 @@
 
 " === Airline === {{{
   let g:airline_powerline_fonts = 1
+  let g:airline_section_b = ' %{strftime("%I:%M")}'
+  " let g:airline_section_z = '☰ %3l/%L:%3v'
+  let g:airline_skip_empty_sections=1
+  let g:airline_highlighting_cache = 1
+  let g:airline_detect_spell=0
+  " let g:airline_section_warning = ''
+  " let g:airline_section_error = ''
   let g:airline#extensions#tabline#enabled = 2
   let g:airline#extensions#tabline#fnamemod = ':t'
   let g:airline#extensions#tabline#show_tab_nr = 0
   let g:airline#extensions#tabline#tab_nr_type = 0
   let g:airline#extensions#tabline#show_close_button = 0
-  let g:airline_detect_spell=0
   let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
-  let g:airline_section_b = '%{strftime("%I:%M")}'
-  let g:airline_skip_empty_sections=1
-  let g:airline_highlighting_cache = 1
 
   " let g:airline#extensions#tabline#show_tabs = 0
   " let g:airline#extensions#hunks#enabled = 0
@@ -1239,5 +1268,6 @@ endif
   augroup END
 "}}}
 
-
 source ~/.config/nvim/indentline.vim
+
+" ====
