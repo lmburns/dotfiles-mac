@@ -144,7 +144,7 @@ cmd ppaste &{{
 cmd br_dir ${{
   clear
   f=$(mktemp)
-  res="$(broot --only-folders')"
+  res="$(broot --only-folders)"
   rm -f "$f"
   if [ -f "$res" ]; then
     cmd="select"

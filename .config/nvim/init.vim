@@ -336,27 +336,33 @@
   nnoremap <left> <C-w>3<
 
   " perform dot commands over visual blocks
-	vnoremap . :normal .<CR>
+  vnoremap . :normal .<CR>
   " goyo plugin makes text more readable when writing prose:
-	map <Leader>G :Goyo \| set linebreak<CR>
+  map <Leader>G :Goyo \| set linebreak<CR>
 
   " set filetypes
   autocmd BufRead,BufNewFile calcurse-note*,~/.local/share/calcurse/notes/* set filetype=markdown
   autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
   autocmd BufRead,BufNewFile *.tex set filetype=tex
+  autocmd FileType nroff setlocal wrap textwidth=85 colorcolumn=+1
+  autocmd FileType go inoremap <buffer> . .<C-x><C-o>
 
   " for github - change tabs
   nnoremap <Leader>nt :setlocal noexpandtab<CR>
   xnoremap <Leader>re :retab!<CR>
+  " close quickfix
+  nnoremap <Leader>qc :cclose<CR>
+  " toggle scrollbar
+  nnoremap <Leader>sb :ScrollbarToggle<CR>
+  let g:sb_default_behavior = "off"
 
-  autocmd FileType nroff setlocal wrap textwidth=85 colorcolumn=+1
-  autocmd filetype go inoremap <buffer> . .<C-x><C-o>
 
   " Enable Goyo by default for mutt writing
-	" autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
-	" autocmd BufRead,BufNewFile neomutt-void* :Goyo | set bg=light
-	" autocmd BufRead,BufNewFile neomutt-void* map ZZ :Goyo\|x!<CR>
-	" autocmd BufRead,BufNewFile neomutt-void* map ZQ :Goyo\|q!<CR>
+  " autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
+  " autocmd BufRead,BufNewFile neomutt-void* :Goyo | set bg=light
+  " autocmd BufRead,BufNewFile neomutt-void* map ZZ :Goyo\|x!<CR>
+  " autocmd BufRead,BufNewFile neomutt-void* map ZQ :Goyo\|q!<CR>
+  autocmd BufRead,BufNewFile neomutt-void* setlocal spell
 
   " automatically deletes all tralling whitespace on save.
   autocmd BufWritePre * %s/\s\+$//e            " End of lines
@@ -501,7 +507,7 @@
   map <Leader>vw :VimwikiIndex<CR>
 
   " Toggle [ ] todo list items
-  autocmd FileType markdown nmap <Leader><Leader>m <Plug>VimwikiToggleListItem
+  " autocmd FileType markdown nmap <Leader><Leader>m <Plug>VimwikiToggleListItem
   " Bold shortcut for markdown
   autocmd FileType markdown inoremap ** ****<Left><Left>
   " <C-x> select pop up menu (vimwiki uses <enter> in to go to another page)
@@ -651,7 +657,7 @@
   " coc-pairs
   augroup CocPairs
     autocmd!
-    " autocmd FileType markdown let b:coc_pairs_disabled = ['`', "'"]
+    autocmd FileType markdown let b:coc_pairs_disabled = ['`', "'"]
     autocmd FileType vim,vifm let b:coc_pairs_disabled = ['"']
     autocmd FileType * let b:coc_pairs_disabled = ['<']
   augroup end

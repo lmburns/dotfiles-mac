@@ -25,22 +25,23 @@ bind-key D pb-download
 bind-key U show-urls
 bind-key x pb-delete
 
-color background default default
-color listnormal red default
-color listnormal_unread white default
-color listfocus magenta white bold
-color listfocus_unread magenta white bold
-color info white black bold
-color article white default bold
-
+##############################
 # color background default default
-# color listnormal default default
-# color listnormal_unread default default
-# color listfocus color16 cyan
-# color listfocus_unread color16 cyan
-# color info default black
-# color article default default
+# color listnormal red default
+# color listnormal_unread white default
+# color listfocus magenta white bold
+# color listfocus_unread magenta white bold
+# color info white black bold
+# color article white default bold
+##############################
 
+color background default default
+color listnormal default default
+color listnormal_unread default default
+color listfocus color16 cyan
+color listfocus_unread color16 cyan
+color info default black
+color article default default
 
 browser open -a LibreWolf
 macro , open-in-browser
@@ -58,7 +59,7 @@ highlight article "https?://[^ ]+" green default
 highlight article "^(Title):.*$" blue default
 highlight article "\\[[0-9][0-9]*\\]" magenta default bold
 highlight article "\\[image\\ [0-9]+\\]" green default bold
-highlight article "\\[embedded flash: [0-9][0-9]*\\]" green default bold
+# highlight article "\\[embedded flash: [0-9][0-9]*\\]" green default bold
 highlight article ":.*\\(link\\)$" cyan default
 highlight article ":.*\\(image\\)$" blue default
 highlight article ":.*\\(embedded flash\\)$" magenta default

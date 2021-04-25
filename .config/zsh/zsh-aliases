@@ -44,7 +44,6 @@ alias his='history | grep'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias azsh="nvim $ZDOTDIR/zsh-aliases"
 alias ezsh="nvim $HOME/.zshenv"
-alias nvimd='cd /usr/local/share/nvim/runtime'
 alias ninit='nvim $XDG_CONFIG_HOME/nvim/init.vim'
 alias nlfr='nvim $XDG_CONFIG_HOME/lf/lfrc'
 
@@ -55,19 +54,24 @@ alias mwmail='mw -Y'
 alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@burnsac.xyz'
 
 # ===locations ==================================================================
-alias prd='cd $HOME/projects'
-alias unx='cd $HOME/Desktop/unix/mac'
-alias zdotd='cd "$ZDOTDIR"'
-alias gitd='cd $HOME/projects/github'
-alias optd='cd $HOME/opt'
-alias confd='cd $XDG_CONFIG_HOME'
-alias docd='cd $HOME/Documents'
-alias downd='cd $HOME/Downloads'
-alias mbd='cd $HOME/mybin'
-alias vwdir='cd $HOME/vimwiki'
+alias prd="cd $HOME/projects"
+alias unx="cd $HOME/Desktop/unix/mac"
+alias zdotd="cd "$ZDOTDIR""
+alias gitd="cd $HOME/projects/github"
+alias perld="cd $HOME/projects/perl"
+alias perlb="cd $HOME/mybin/perl"
+alias pyd="cd $HOME/projects/python"
+alias awkd="cd $HOME/projects/awk"
+alias optd="cd $HOME/opt"
+alias confd="cd $XDG_CONFIG_HOME"
+alias docd="cd $HOME/Documents"
+alias downd="cd $HOME/Downloads"
+alias mbd="cd $HOME/mybin"
+alias vwdir="cd $HOME/vimwiki"
+alias nvimd='cd /usr/local/share/nvim/runtime'
 
-alias f='pushd'
-alias b='popd'
+# alias f='pushd'
+# alias b='popd'
 # alias dirs='dirs -v'
 
 # === internet / vpn / etc ======================================================

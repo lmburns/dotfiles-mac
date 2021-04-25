@@ -9,9 +9,9 @@ typeset -g HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history"
 typeset -g SAVEHIST=10000000
 typeset -g HIST_STAMPS="yyyy-mm-dd"
 typeset -g HISTORY_FILTER_EXCLUDE=("jrnl", "youtube-dl", "you-get")
+typeset -g TIMEFMT=$'\n================\nCPU\t%P\nuser\t%*U\nsystem\t%*S\ntotal\t%*E'
+typeset -g PROMPT_EOL_MARK=''
 # export ZSH_DISABLE_COMPFIX=true
-export PROMPT_EOL_MARK=''
-export TIMEFMT=$'\n================\nCPU\t%P\nuser\t%*U\nsystem\t%*S\ntotal\t%*E'
 
 setopt hist_ignore_space    append_history      hist_ignore_all_dups
 setopt share_history        inc_append_history  extended_history
@@ -21,9 +21,9 @@ setopt pushdminus           long_list_jobs      interactive_comments
 setopt glob_dots            extended_glob       menu_complete
 setopt no_flow_control      case_glob           notify
 
-export ZINIT_HOME="$ZDOTDIR/zinit"
-export GENCOMP_DIR="$ZDOTDIR/completions"
-export GENCOMPL_FPATH="$ZDOTDIR/completions"
+typeset -gx ZINIT_HOME="$ZDOTDIR/zinit"
+typeset -gx GENCOMP_DIR="$ZDOTDIR/completions"
+typeset -gx GENCOMPL_FPATH="$ZDOTDIR/completions"
 pchf="${0:h}/patches"
 thmf="${0:h}/themes"
 
@@ -35,17 +35,12 @@ typeset -A ZINIT=(
     BIN_DIR         $ZDOTDIR/zinit/bin
     PLUGINS_DIR     $ZDOTDIR/zinit/plugins
     SNIPPETS_DIR    $ZDOTDIR/zinit/snippets
+    COMPLETIONS_DIR $ZDOTDIR/zinit/completions
     ZCOMPDUMP_PATH  $ZDOTDIR/.zcompdump
     COMPINIT_OPTS   -C
 )
 
 # module_path+=("$ZINIT[BIN_DIR]/zmodules/Src"); zmodload zdharma/zplugin &>/dev/null
-zmodload zsh/zprof
-autoload +X zman
-autoload -Uz zmv zcalc zargs
-alias zmv='noglob zmv -W'
-unalias run-help && autoload run-help && alias help=run-help
-HELPDIR='/usr/local/share/zsh/help'
 # }}}
 
 # === zinit === {{{
@@ -66,7 +61,11 @@ zt light-mode for \
   zinit-zsh/z-a-patch-dl \
   zinit-zsh/z-a-bin-gem-node \
   zinit-zsh/z-a-submods \
-  NICHOLAS85/z-a-linkbin
+  NICHOLAS85/z-a-linkbin \
+  atinit'Z_A_USECOMP=1' \
+    NICHOLAS85/z-a-eval
+
+# zinit-zsh/z-a-unscope
 
 # zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
 # depth=1 jeffreytse/zsh-vi-mode
@@ -76,6 +75,21 @@ zt light-mode for \
 # zt 2 for zdharma/declare-zsh zdharma/zflai blockf zdharma/zui zinit-zsh/zinit-console
 # trigger-load'!crasis' zdharma/zinit-crasis \
 
+# zt atload"!source $ZDOTDIR/.p10k.zsh" lucid nocd for \
+#   romkatv/powerlevel10k
+
+# taken from: NICHOLAS85 github
+(){
+  [[ -f "${thmf}/${1}-pre.zsh" || -f "${thmf}/${1}-post.zsh" ]] && {
+    zt light-mode for \
+          romkatv/powerlevel10k \
+      id-as"${1}-theme" \
+      atinit"[[ -f ${thmf}/${1}-pre.zsh ]] && source ${thmf}/${1}-pre.zsh" \
+      atload"[[ -f ${thmf}/${1}-post.zsh ]] && source ${thmf}/${1}-post.zsh" \
+          zdharma/null
+  } || print -P "%F{220}Theme \"${1}\" not found%f"
+} "${MYPROMPT=p10k}"
+
 zt 0c light-mode for \
   is-snippet trigger-load'!x' blockf svn \
     OMZ::plugins/extract \
@@ -83,7 +97,7 @@ zt 0c light-mode for \
     OMZ::plugins/osx \
   pick'bd.zsh' \
     tarrasch/zsh-bd \
-  trigger-load'!n' \
+  trigger-load'!man' \
     ael-code/zsh-colored-man-pages
 
 zt light-mode for \
@@ -108,29 +122,35 @@ zt 0a light-mode for \
     felipec/git-completion
 
 zt 0b light-mode for \
-  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;" \
-    zdharma/fast-syntax-highlighting \
   atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert)' \
     hlissner/zsh-autopair \
   blockf compile'lib/*f*~*.zwc' \
     Aloxaf/fzf-tab \
   atload'bindkey -M viins -r "^n"; bindkey -M vicmd -r "^n";
   bindkey -M viins "^n" fzfz-dir-widget; bindkey -M vicmd "^n" fzfz-dir-widget' \
-  patch"${pchf}/%PLUGIN%.patch" reset \
+  patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' \
     andrewferrier/fzf-z \
-  atload'bindkey -M viins "^u" dotbare-fstat; bindkey -M viins "^d" dotbare-fedit' \
-    kazhala/dotbare \
   atinit"forgit_ignore='fgi'" \
       wfxr/forgit \
   atload'add-zsh-hook chpwd @chwpd_dir-history-var;
   add-zsh-hook zshaddhistory @append_dir-history-var; @chwpd_dir-history-var' \
+  patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' \
     kadaan/per-directory-history \
+  atload'export FZF_MARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
     urbainvaes/fzf-marks \
-    kazhala/dump-cli
+    kazhala/dump-cli \
+  atinit'zicompinit_fast; zicdreplay' atload'FAST_HIGHLIGHT[chroma-man]=' \
+  atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' \
+  compile'.*fast*~*.zwc' nocompletions atpull'%atclone' \
+  patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' \
+    zdharma/fast-syntax-highlighting
 
-zt 0c light-mode for \
+zt 0c light-mode binary for \
   lbin atclone="rm -f ^(rgg|rgv)" \
-    lilydjwg/search-and-view
+    lilydjwg/search-and-view \
+  lbin'!' patch"${pchf}/%PLUGIN%.patch" reset \
+  atload'bindkey -M viins "^u" dotbare-fstat; bindkey -M viins "^d" dotbare-fedit' \
+    kazhala/dotbare
 
 zt light-mode is-snippet for \
   $ZDOTDIR/csnippets/*.zsh \
@@ -142,21 +162,6 @@ zt light-mode is-snippet for \
 zt 0c light-mode null for \
   id-as'Cleanup' nocd atinit'unset -f zt; _zsh_autosuggest_bind_widgets' \
     zdharma/null
-
-# zt atload"!source $ZDOTDIR/.p10k.zsh" lucid nocd for \
-#   romkatv/powerlevel10k
-
-# taken from: NICHOLAS85 github
-(){
-    [[ -f "${thmf}/${1}-pre.zsh" || -f "${thmf}/${1}-post.zsh" ]] && {
-        zt light-mode for \
-                romkatv/powerlevel10k \
-            id-as"${1}-theme" \
-            atinit"[[ -f ${thmf}/${1}-pre.zsh ]] && source ${thmf}/${1}-pre.zsh" \
-            atload"[[ -f ${thmf}/${1}-post.zsh ]] && source ${thmf}/${1}-post.zsh" \
-                zdharma/null
-    } || print -P "%F{220}Theme \"${1}\" not found%f"
-} "${MYPROMPT=p10k}"
 
 # compdef _dotbare_completion_git dotbare
 autoload -Uz compinit
@@ -177,11 +182,19 @@ fi
 
 # === zsh keybindings === {{{
 # sed -n l -- infocmp -L1 -- zle -L
-# stty discard undef <$TTY >$TTY
 # bindkey -M vicmd 'ys' add-surround
 stty intr '^C'
 stty susp '^Z'
 stty stop undef
+stty discard undef <$TTY >$TTY
+zmodload zsh/zprof
+autoload +X zman
+autoload -Uz zmv zcalc zargs
+alias zmv='noglob zmv -W'
+unalias run-help && autoload run-help && alias help=run-help
+HELPDIR='/usr/local/share/zsh/help'
+# zshexpn
+
 bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n';   bindkey -s '^o' 'lc\n'
 bindkey -M vicmd '?' which-command;             bindkey -M visual S add-surround
 autoload edit-command-line;                     zle -N edit-command-line
@@ -258,7 +271,8 @@ zt light-mode as'null' for \
   atload'x="$HOME/.iterm2_shell_integration.zsh"; test -e "$x" && source "$x"' \
     zdharma/null \
   atinit'export PERLBREW_ROOT="${XDG_DATA_HOME}/perl5/perlbrew";
-  export PERLBREW_HOME="${XDG_DATA_HOME}/perl5/perlbrew-h"' \
+  export PERLBREW_HOME="${XDG_DATA_HOME}/perl5/perlbrew-h";
+  export PERL_CPANM_HOME="${XDG_DATA_HOME}/perl5/cpanm"' \
   atload'x="$PERLBREW_ROOT/etc/bashrc"; test -e "$x" && source "$x"' \
     zdharma/null
 # }}}
@@ -310,6 +324,7 @@ lnbin() { ln -siv $HOME/mybin/$1 $XDG_BIN_HOME; }
 unlbin() { rm -v /$XDG_BIN_HOME/$1; }
 # latex documenation serch (as best I can)
 latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
+perldoc() { command perldoc -n less "$@" | gman -l -; }
 # get help on builtin commands
 zm() { man zshbuiltins | less -p "^       $1 "; }
 # cd into directory
@@ -371,20 +386,20 @@ _zsh_autosuggest_strategy_custom_history () {
 # }}}
 
 #===== variables ===== {{{
-zt light-mode as'null' for \
-  atload'eval "$(rbenv init - --no-rehash)"' \
+zt 0c light-mode for \
+  id-as'ruby_env' has'rbenv' eval'rbenv init - --no-rehash' \
     zdharma/null \
-  atload'eval "$(zoxide init --no-aliases zsh)" && alias z=__zoxide_z c=__zoxide_zi' \
+  id-as'thefuck_alias' has'thefuck' eval'thefuck --alias' run-atpull \
     zdharma/null \
-  atload'eval "$(keychain --agents ssh -q --inherit any --eval id_rsa git burnsac &&
-        keychain --agents gpg -q --eval 0xC011CBEF6628B679)"' \
+  id-as'zoxide_init' has'zoxide' eval'zoxide init --no-aliases zsh'\
+  atload'alias z=__zoxide_z c=__zoxide_zi' run-atpull \
     zdharma/null \
-  atload'eval "$(thefuck --alias)"' \
+  id-as'keychain_init' has'keychain' eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac && keychain --agents gpg -q --eval 0xC011CBEF6628B679' \
+    zdharma/null \
+  id-as'dircolors' has'gdircolors' eval"gdircolors $ZDOTDIR/gruv.dircolors" \
     zdharma/null \
   atload"ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight" \
     zdharma/null \
-  atload'd="$ZDOTDIR/gruv.dircolors"; test -r "$d" && eval "$(gdircolors $d)"' \
-    zdharma/null
 
 # eval "$(/usr/local/mybin/rakubrew init Zsh)"
 # eval "$(fakedata --completion zsh)"
@@ -403,7 +418,6 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"  # 
 
 export _ZO_DATA_DIR="${XDG_DATA_HOME}/zoxide"
 export FZFZ_RECENT_DIRS_TOOL='autojump'
-export FZF_MARKS_FILE="${ZPFX}/share/fzf-marks/marks"
 export ZSH_AUTOSUGGEST_USE_ASYNC=1
 export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
@@ -417,7 +431,7 @@ export DUMP_LOG="${ZPFX}/share/dump/log"
 # }}}
 
 # === fzf === {{{
-# ❱❯❮ --border
+# ❱❯❮ --border ,border-left
 export FZF_DEFAULT_OPTS="
   --prompt '❱❱ '
   --marker='+'
@@ -425,8 +439,8 @@ export FZF_DEFAULT_OPTS="
   --color=fg:#cbccc6,fg+:#707a8c,hl:#707a8c,hl+:#ffcc66
   --color=info:#73d0ff,pointer:#cbccc6,marker:#73d0ff,spinner:#73d0ff
   --color=header:#d4bfff,gutter:-1,prompt:#707a8c,dark
-  --reverse --height 60% --ansi --info=inline --multi
-  --preview-window=:hidden,right:65%:wrap,border-left
+  --reverse --height 60% --ansi --info=inline --multi --border
+  --preview-window=:hidden,right:65%:wrap
   --preview '([[ -f {} ]] && (bat --style=numbers --color=always)) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
   --bind '?:toggle-preview'
   --bind 'ctrl-a:select-all'
@@ -494,12 +508,12 @@ path=(
 )
 
 manpath=(
-  /usr/local/opt/gnu-sed/libexec/gnuman
-  /usr/local/opt/grep/libexec/gnuman
+  /usr/local/opt/gnu-sed/share/man
+  /usr/local/opt/grep/share/man
   /usr/local/opt/gnu-getopt/share/man
-  /usr/local/opt/gnu-tar/libexec/gnuman
-  /usr/local/opt/gawk/libexec/gnuman
-  /usr/local/opt/findutils/libexec/gnuman
+  /usr/local/opt/gnu-tar/share/man
+  /usr/local/opt/gawk/share/man
+  /usr/local/opt/findutils/share/man
   ${manpath[@]}
 )
 
