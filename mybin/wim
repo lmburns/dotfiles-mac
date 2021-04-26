@@ -3,11 +3,11 @@
 # desc: open script in editor
 
 Z="${ZDOTDIR}/functions/${*}"
-P=$(which $*)
-if [ -f "$P" ]; then
- $EDITOR $P
+fullp=$(which $*)
+if file -b -L --mime-type "${fullp}" | grep -q "text/"; then
+ "${EDITOR}" "${fullp}"
 elif [ -f "$Z" ]; then
-  $EDITOR $Z
+  "${EDITOR}" "${Z}"
 else
- echo $P
+ echo "${fullp} is not a text file"
 fi

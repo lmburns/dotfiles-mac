@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# desc: upload server to google drive
+
+/usr/local/bin/rclone copy --update --verbose --copy-links --exclude ".DS_Store" --transfers 30 --checkers 8 --contimeout 60s --timeout 300s --retries 3 --low-level-retries 10 --stats 1s --progress "/Users/lucasburns/Desktop/unix/www/www-md/www" "google-drive:Backups/website/www"

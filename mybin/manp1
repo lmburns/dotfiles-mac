@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# desc: output manpage and view in zathura
+
+DIR="$HOME/Documents/manpages"
+[[ ! -d $DIR ]] && mkdir -p "$DIR"
+if [[ ! -f $DIR/$1.pdf ]]; then
+    man -t "$1" | pstopdf -i -o "$DIR/$1.pdf"
+    zathura "$DIR/$1.pdf"
+else
+    zathura "$DIR/$1.pdf"
+fi

@@ -21,14 +21,11 @@ setopt pushdminus           long_list_jobs      interactive_comments
 setopt glob_dots            extended_glob       menu_complete
 setopt no_flow_control      case_glob           notify
 
-typeset -gx ZINIT_HOME="$ZDOTDIR/zinit"
-typeset -gx GENCOMP_DIR="$ZDOTDIR/completions"
-typeset -gx GENCOMPL_FPATH="$ZDOTDIR/completions"
-pchf="${0:h}/patches"
-thmf="${0:h}/themes"
-
-fpath+=( ${ZDOTDIR}/{functions,completions} )
-autoload -Uz $ZDOTDIR/functions/*(:t)
+typeset -gx ZINIT_HOME="${0:h}/zinit"
+typeset -gx GENCOMP_DIR="${0:h}/completions"
+typeset -gx GENCOMPL_FPATH="${0:h}/completions"
+local pchf="${0:h}/patches"
+local thmf="${0:h}/themes"
 
 typeset -A ZINIT=(
     HOME_DIR        $ZDOTDIR/zinit
@@ -40,43 +37,37 @@ typeset -A ZINIT=(
     COMPINIT_OPTS   -C
 )
 
-# module_path+=("$ZINIT[BIN_DIR]/zmodules/Src"); zmodload zdharma/zplugin &>/dev/null
+fpath+=( ${0:h}/{functions,completions} )
+autoload -Uz ${0:h}/functions/*(:t)
+module_path+=("$ZINIT[BIN_DIR]/zmodules/Src"); zmodload zdharma/zplugin &>/dev/null
 # }}}
 
 # === zinit === {{{
 zt(){ zinit lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
 
-[[ ! -f $ZINIT_HOME/bin/zinit.zsh ]] && {
+[[ ! -f $ZINIT[BIN_DIR]/zinit.zsh ]] && {
     command mkdir -p "$ZINIT_HOME" && command chmod g-rwX "$ZINIT_HOME"
-    command git clone https://github.com/zdharma/zinit "$ZINIT_HOME/bin"
+    command git clone https://github.com/zdharma/zinit "$ZINIT[BIN_DIR]"
 }
 
-source "$ZINIT_HOME/bin/zinit.zsh"
+source "$ZINIT[BIN_DIR]/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 zt light-mode for \
-  zinit-zsh/z-a-rust \
-  zinit-zsh/z-a-as-monitor \
   zinit-zsh/z-a-patch-dl \
-  zinit-zsh/z-a-bin-gem-node \
   zinit-zsh/z-a-submods \
+  NICHOLAS85/z-a-linkman \
   NICHOLAS85/z-a-linkbin \
   atinit'Z_A_USECOMP=1' \
     NICHOLAS85/z-a-eval
 
-# zinit-zsh/z-a-unscope
+# zinit-zsh/z-a-unscope - /z-a-bin-gem-node - /z-a-as-monitor - /z-a-rust
 
-# zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
-# depth=1 jeffreytse/zsh-vi-mode
-# zinit wait'0b' light-mode for compile'h*' zdharma/history-search-multi-word
+# command-not-found -- depth=1 jeffreytse/zsh-vi-mode
 # seletskiy/zsh-fuzzy-search-and-edit
-# trackbinds bindmap'\e[1\;6D -> ^[[1;2H; \e[1\;6C -> ^[[1;2F' michaelxmcbride/zsh-dircycle
 # zt 2 for zdharma/declare-zsh zdharma/zflai blockf zdharma/zui zinit-zsh/zinit-console
 # trigger-load'!crasis' zdharma/zinit-crasis \
-
-# zt atload"!source $ZDOTDIR/.p10k.zsh" lucid nocd for \
-#   romkatv/powerlevel10k
 
 # taken from: NICHOLAS85 github
 (){
@@ -90,21 +81,19 @@ zt light-mode for \
   } || print -P "%F{220}Theme \"${1}\" not found%f"
 } "${MYPROMPT=p10k}"
 
+[[ $MYPROMPT != dolphin ]] && add-zsh-hook chpwd chpwd_ls
+
 zt 0c light-mode for \
   is-snippet trigger-load'!x' blockf svn \
     OMZ::plugins/extract \
-  atload'unalias ofd && alias ofd="open $PWD"' mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
-    OMZ::plugins/osx \
-  pick'bd.zsh' \
+  pick'bd.plugin.zsh' trigger-load'!bd' \
     tarrasch/zsh-bd \
   trigger-load'!man' \
-    ael-code/zsh-colored-man-pages
-
-zt light-mode for \
-    MichaelAquilina/zsh-history-filter \
-    MichaelAquilina/zsh-you-should-use \
-  src="etc/git-extras-completion.zsh" \
-    tj/git-extras \
+    ael-code/zsh-colored-man-pages \
+  trigger-load'!updatelocal' blockf compile'f*/*~*.zwc' \
+    NICHOLAS85/updatelocal \
+    trigger-load'!gcomp' blockf \
+  atclone'command rm -rf lib/*;git ls-files -z lib/ |xargs -0 git update-index --skip-worktree' \
   submods'RobSis/zsh-completion-generator -> lib/zsh-completion-generator;
   nevesnunes/sh-manpage-completions -> lib/sh-manpage-completions' \
   atload' gcomp(){gencomp "${@}" && zinit creinstall -q ${ZINIT[SNIPPETS_DIR]}/config 1>/dev/null}' \
@@ -139,7 +128,7 @@ zt 0b light-mode for \
   atload'export FZF_MARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
     urbainvaes/fzf-marks \
     kazhala/dump-cli \
-  atinit'zicompinit_fast; zicdreplay' atload'FAST_HIGHLIGHT[chroma-man]=' \
+  atinit'zicompinit_fast; zicdreplay' atload'unset "FAST_HIGHLIGHT[chroma-man]"' \
   atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' \
   compile'.*fast*~*.zwc' nocompletions atpull'%atclone' \
   patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' \
@@ -150,18 +139,35 @@ zt 0c light-mode binary for \
     lilydjwg/search-and-view \
   lbin'!' patch"${pchf}/%PLUGIN%.patch" reset \
   atload'bindkey -M viins "^u" dotbare-fstat; bindkey -M viins "^d" dotbare-fedit' \
-    kazhala/dotbare
+    kazhala/dotbare \
+  lbin'!**/*grep;**/*man;**/*diff' \
+  atclone'(){local f;cd -q src;for f (*.sh){mv ${f} ${f:r}};}' \
+    eth-p/bat-extras
+
+zt 0c light-mode null for \
+  lbin from'gh-r' \
+  dl'https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf.1' lman \
+    junegunn/fzf \
+  multisrc"shell/{completion,key-bindings}.zsh" id-as"fzf_comp" pick"/dev/null" \
+    junegunn/fzf
+
+zt light-mode for \
+  pick'zsh-history-filter.plugin.zsh' \
+    MichaelAquilina/zsh-history-filter \
+  pick'you-should-use.plugin.zsh' \
+    MichaelAquilina/zsh-you-should-use \
+  as'completion' src="etc/git-extras-completion.zsh" \
+    tj/git-extras
 
 zt light-mode is-snippet for \
   $ZDOTDIR/csnippets/*.zsh \
   OMZ::plugins/git \
   OMZ::plugins/iterm2 \
-  OMZ::plugins/vi-mode
+  OMZ::plugins/vi-mode \
+  atload'unalias ofd && alias ofd="open $PWD"' mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
+    OMZ::plugins/osx \
 
-# ??
-zt 0c light-mode null for \
-  id-as'Cleanup' nocd atinit'unset -f zt; _zsh_autosuggest_bind_widgets' \
-    zdharma/null
+# zinit pack"bgn-binary" for fzf
 
 # compdef _dotbare_completion_git dotbare
 autoload -Uz compinit
@@ -171,7 +177,6 @@ if (( $#_comp_files )); then
 else
     compinit -i
 fi
-unset _comp_files
 # }}}
 
 # === powerlevel10k === {{{
@@ -192,7 +197,7 @@ autoload +X zman
 autoload -Uz zmv zcalc zargs
 alias zmv='noglob zmv -W'
 unalias run-help && autoload run-help && alias help=run-help
-HELPDIR='/usr/local/share/zsh/help'
+typeset -g HELPDIR='/usr/local/share/zsh/help'
 # zshexpn
 
 bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n';   bindkey -s '^o' 'lc\n'
@@ -246,22 +251,11 @@ zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 # }}}
 
-# === homebrew, custom bins === {{{
-path=(
-  $HOME/.local/bin
-  $XDG_BIN_HOME
-  /usr/local/bin
-  /usr/local/sbin
-  ${path[@]}
-)
-# }}}
-
 # === sourcing === {{{
 # atload'x="$XDG_CONFIG_HOME/broot/launcher/bash/br"; [ -f "$x" ] && source "$x"'
+# atload'x="$HOME/.fzf.zsh"; [ -f "$x" ] && source "$x"'
 
-zt light-mode as'null' for \
-  atload'x="$HOME/.fzf.zsh"; [ -f "$x" ] && source "$x"' \
-    zdharma/null \
+zt light-mode null for \
   atload'x="$ZDOTDIR/zsh-aliases"; [ -f "$x" ] && source "$x"' \
     zdharma/null \
   atload'x="$ZDOTDIR/lficons"; [ -f "$x" ]  && source "$x"' \
@@ -339,7 +333,6 @@ allcmds() { print -l ${commands[@]} | awk -F'/' '{print $NF}' | fzf; }
 # remove broken symlinks
 rmsym() { find -L . -name . -o -type d -prune -o -type l -exec rm {} +; }
 # fixed string rg
-frg() { rg -F "$@"; }
 time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
 profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof; }
 
@@ -386,7 +379,7 @@ _zsh_autosuggest_strategy_custom_history () {
 # }}}
 
 #===== variables ===== {{{
-zt 0c light-mode for \
+zt 0c light-mode null for \
   id-as'ruby_env' has'rbenv' eval'rbenv init - --no-rehash' \
     zdharma/null \
   id-as'thefuck_alias' has'thefuck' eval'thefuck --alias' run-atpull \
@@ -400,6 +393,8 @@ zt 0c light-mode for \
     zdharma/null \
   atload"ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight" \
     zdharma/null \
+  id-as'Cleanup' nocd atinit'unset -f zt; unset _comp_files; _zsh_autosuggest_bind_widgets' \
+    zdharma/null
 
 # eval "$(/usr/local/mybin/rakubrew init Zsh)"
 # eval "$(fakedata --completion zsh)"
@@ -418,15 +413,16 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"  # 
 
 export _ZO_DATA_DIR="${XDG_DATA_HOME}/zoxide"
 export FZFZ_RECENT_DIRS_TOOL='autojump'
-export ZSH_AUTOSUGGEST_USE_ASYNC=1
-export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-export ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c100,)" # Do not consider 100 character entries
-export ZSH_AUTOSUGGEST_COMPLETION_IGNORE="[[:space:]]*"   # Ignore leading whitespace
-export ZSH_AUTOSUGGEST_STRATEGY=(dir_history custom_history completion)
-export PER_DIRECTORY_HISTORY_BASE="${ZPFX}/share/per-directory-history"
-export DUMP_DIR="${ZPFX}/share/dump/trash"
-export DUMP_LOG="${ZPFX}/share/dump/log"
+typeset -g ZSH_AUTOSUGGEST_USE_ASYNC=1
+typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+typeset -g ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c100,)" # Do not consider 100 character entries
+typeset -g ZSH_AUTOSUGGEST_COMPLETION_IGNORE="[[:space:]]*"   # Ignore leading whitespace
+typeset -g ZSH_AUTOSUGGEST_STRATEGY=(dir_history custom_history completion)
+typeset -g PER_DIRECTORY_HISTORY_BASE="${ZPFX}/share/per-directory-history"
+typeset -g UPDATELOCAL_GITDIR="${HOME}/opt"
+typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
+typeset -g DUMP_LOG="${ZPFX}/share/dump/log"
 
 # }}}
 
@@ -468,8 +464,8 @@ export SKIM_DEFAULT_OPTIONS="
 "
 export SKIM_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
 
-# export FZF_DEFAULT_COMMAND='rg --files --hidden --follow'
-export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
+# export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd -t d ."
 export FORGIT_FZF_DEFAULT_OPTS="--exact --cycle --border --ansi --reverse
@@ -495,6 +491,15 @@ export DOTBARE_FZF_DEFAULT_OPTS="
 # }}}
 
 # === paths (GNU) === {{{
+
+path=(
+  $HOME/.local/bin
+  $XDG_BIN_HOME
+  /usr/local/bin
+  /usr/local/sbin
+  ${path[@]}
+)
+
 path=(
   /usr/local/opt/coreutils/libexec/gnubin
   /usr/local/opt/gnu-sed/libexec/gnubin
@@ -541,5 +546,6 @@ path=(
 # pueue clean && pueue status | rg -Fq 'limelight' || chronic pueue add limelight
 # }}}
 
-export PATH
-typeset -U path fpath manpath infopath
+path=( "${ZPFX}/bin" "${path[@]}" )       # add to beginning
+path=( "${path[@]:#}" )                   # remove empties
+typeset -gxU path fpath manpath infopath  # clean duplicates / export

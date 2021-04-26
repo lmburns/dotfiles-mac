@@ -3,11 +3,13 @@
 alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
-alias pl='print -rl --'
 alias ult="ulimit -c 195312; echo $$"
 ulimit -c unlimited
 
 alias keuze="keuze -fs 12 -fn Monaco"
+
+alias checkrootkits="sudo rkhunter --update; sudo rkhunter --propupd; sudo rkhunter --check"
+alias checkvirus="clamscan --recursive=yes --infected $HOME/"
 
 # === general ===================================================================
 # alias sudo='doas'
@@ -17,6 +19,8 @@ alias cp='cp -iv'
 alias rcp='rsync -av --ignore-existing --progress'
 alias pbc='pbcopy'
 alias pbp='pbpaste'
+alias pl='print -rl --'
+alias ec='echo'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
 alias lct='launchctl'
@@ -36,6 +40,8 @@ alias ka='killall'
 alias kid='kill -KILL'
 alias yt='youtube-dl --add-metadata -i'
 alias grep='grep --color=auto'
+alias prg="rg --pcre2"
+alias frg="rg -F"
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
 alias his='history | grep'

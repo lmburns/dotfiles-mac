@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# desc: check dnsmas, stubby, and dns servers
+
+echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
+
+[ $? -eq 0 ] || (printf "$(tput setaf 1)No internet connection\n" && exit 1)
+
+
+printf "$(tput setaf 5)\nTesting dnsmasq syntax: "
+sudo dnsmasq --test
+
+printf "$(tput setaf 1)\nTesting stubby syntax: "
+stubby -i 2>&1 | rg -o 'Result: .*$'
+
+printf "$(tput setaf 3)\nSetting DNS servers: \n"
+networksetup -setdnsservers Wi-Fi 127.0.0.1 ::1
+printf "$(tput setaf 2) $(scutil --dns | head | rg 'nameserver')\n"
+
+printf "$(tput setaf 2)\nChecking DNSSEC valdation: "
+printf "$(tput setaf 3) $(dig +dnssec burnsac.xyz | rg -o '(\bad\b|\bRRSIG\b|\bNOERROR\b)' | tr '\n' ' ')"
+
+printf "$(tput setaf 4)\nChecking QNAME minimization: "
+printf "$(tput setaf 5) $(dig +short txt qnamemintest.internet.nl | sed -n '$p')"
+
+printf "\n\n$(tput setaf 1)Finished $(tput setaf 2)updating $(tput setaf 3)block $(tput setaf 4)lists"

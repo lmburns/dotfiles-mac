@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# desc: upload text files to google drive
+
+/usr/local/bin/rclone copy \
+  --update \
+  --verbose \
+  --delete-after \
+  --exclude ".DS_Store" \
+  --exclude .git/ \
+  --copy-links \
+  --transfers 4 \
+  --checkers 8 \
+  --contimeout 60s \
+  --timeout 300s \
+  --retries 3 \
+  --low-level-retries 10 \
+  --stats 1s \
+  --progress \
+  "/Users/lucasburns/Desktop/unix/mac/" \
+  "google-drive:Backups/mac/--text/"

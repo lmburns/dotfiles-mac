@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# desc: upload projects to google drive
+
+/usr/local/bin/rclone copy \
+  --update \
+  --verbose \
+  --delete-after \
+  --exclude '.*{/**,}' \
+  --transfers 4 \
+  --checkers 8 \
+  --contimeout 60s \
+  --timeout 300s \
+  --retries 3 \
+  --low-level-retries 10 \
+  --stats 1s \
+  --progress \
+  "/Users/lucasburns/JupyterNotebook/projects/" \
+  "google-drive:ColabNotebooks/projects/"

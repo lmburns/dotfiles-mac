@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# desc: git clone from clipboard
+
+git clone "$(pbpaste)"

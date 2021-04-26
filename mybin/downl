@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# desc: uses dragon to download files
+
+# This toy example uses wget and the --target mode to act
+# as a drag-and-drop download tool.
+
+~/.local/bin/dragon --target | while read url
+do
+    wget "$url"
+done
