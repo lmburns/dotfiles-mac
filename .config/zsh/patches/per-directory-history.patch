@@ -1,0 +1,31 @@
+diff --git a/per-directory-history.zsh b/per-directory-history.zsh
+index 6a24694..cb4f9d2 100644
+--- a/per-directory-history.zsh
++++ b/per-directory-history.zsh
+@@ -46,7 +46,7 @@ function _per-directory-history-change-directory() {
+ 	if ! $_per_directory_history_is_global
+ 	then
+ 		fc -P
+-		mkdir -p ${_per_directory_history_path:h}
++    [ -d ${_per_directory_history_path:h} ] || mkdir -p ${_per_directory_history_path:h}
+ 		fc -p $_per_directory_history_path
+ 	fi
+ }
+@@ -73,7 +73,7 @@ function _per-directory-history-preexec() {
+ 			local fn
+ 			if $_per_directory_history_is_global
+ 			then
+-				mkdir -p ${_per_directory_history_path:h}
++        [ -d ${_per_directory_history_path:h} ] || mkdir -p ${_per_directory_history_path:h}
+ 				fn=$_per_directory_history_path
+ 			else
+ 				fn=$_per_directory_history_main_histfile
+@@ -96,7 +96,7 @@ function _per-directory-history-preexec() {
+ function _per-directory-history-set-directory-history() {
+ 	fc -P
+ 
+-	mkdir -p ${_per_directory_history_path:h}
++  [ -d ${_per_directory_history_path:h} ] || mkdir -p ${_per_directory_history_path:h}
+ 	fc -p $_per_directory_history_path
+ 	_per_directory_history_is_global=false
+ }

@@ -10,7 +10,7 @@ rga-fzf() {
 			fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 5 {q} {}" \
 				--phony -q "$1" \
 				--bind "change:reload:$RG_PREFIX {q}" \
-				--preview-window="70%:wrap"
+				--preview-window="70%:wrap,nohidden"
 	)" &&
 	echo "opening $file" &&
 	$EDITOR "$file"

@@ -1,5 +1,7 @@
 # lucas' aliases
 
+pj() { perl -MCpanel::JSON::XS -0777 -E '$ip=decode_json <>;'"$@" ; }
+
 alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
@@ -50,8 +52,8 @@ alias his='history | grep'
 alias nzsh="nvim $ZDOTDIR/.zshrc"
 alias azsh="nvim $ZDOTDIR/zsh-aliases"
 alias ezsh="nvim $HOME/.zshenv"
-alias ninit='nvim $XDG_CONFIG_HOME/nvim/init.vim'
-alias nlfr='nvim $XDG_CONFIG_HOME/lf/lfrc'
+alias ninit="nvim $XDG_CONFIG_HOME/nvim/init.vim"
+alias nlfr="nvim $XDG_CONFIG_HOME/lf/lfrc"
 
 # === mail ======================================================================
 alias mwme='mw -y burnsac@me.com'
@@ -81,7 +83,7 @@ alias nvimd='cd /usr/local/share/nvim/runtime'
 # alias dirs='dirs -v'
 
 # === internet / vpn / etc ======================================================
-alias wget='wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts'
+alias wget="wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts"
 alias tsm='transmission-remote'
 alias tsmd='transmission-daemon'
 alias qbt='qbt torrent'
@@ -117,11 +119,11 @@ alias bundleident='mdls -name kMDItemCFBundleIdentifier -r'
 alias uti='mdls -name kMDItemContentType -name kMDItemContentTypeTree -name kMDItemKind'
 
 # === wiki ======================================================================
-alias vw='nvim $HOME/vimwiki/index.md'
-alias vwd='nvim $HOME/vimwiki/dotfiles/index.md'
-alias vws='nvim $HOME/vimwiki/scripting/index.md'
-alias vwb='nvim $HOME/vimwiki/blog/index.md'
-alias vwl='nvim $HOME/vimwiki/languages/index.md'
+alias vw="$EDITOR $HOME/vimwiki/index.md"
+alias vwd="$EDITOR $HOME/vimwiki/dotfiles/index.md"
+alias vws="$EDITOR $HOME/vimwiki/scripting/index.md"
+alias vwb="$EDITOR $HOME/vimwiki/blog/index.md"
+alias vwl="$EDITOR $HOME/vimwiki/languages/index.md"
 
 # === github ====================================================================
 alias conf="/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME"
@@ -158,7 +160,7 @@ alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
 alias pacman='pacaptr'
 alias p='pacaptr'
 alias fd='fd -Hi'
-alias pat='bat -p'
+alias pat='bat --style=header'
 alias duso='du -hsx * | sort -rh | bat --paging=always'
 
 alias nnn='nnn -Caxe'

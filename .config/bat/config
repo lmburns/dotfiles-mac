@@ -1,9 +1,10 @@
---theme="KimbieDark"
-#--italic-text=always
+--theme="gruvbox-1"
+--italic-text=always
 
 # Disable automatic paging:
 #--paging=never
---style="auto"
+# --style="auto"
+--style="header,grid"
 --map-syntax "*.ino:C++"
 --map-syntax ".ignore:Git Ignore"
 --map-syntax='*.conf:INI'

@@ -33,7 +33,7 @@ typeset -A ZINIT=(
     PLUGINS_DIR     $ZDOTDIR/zinit/plugins
     SNIPPETS_DIR    $ZDOTDIR/zinit/snippets
     COMPLETIONS_DIR $ZDOTDIR/zinit/completions
-    ZCOMPDUMP_PATH  $ZDOTDIR/.zcompdump
+    ZCOMPDUMP_PATH  $ZDOTDIR/.zcompdump-${HOST/.*/}-${ZSH_VERSION}
     COMPINIT_OPTS   -C
 )
 
@@ -64,12 +64,10 @@ zt light-mode for \
 
 # zinit-zsh/z-a-unscope - /z-a-bin-gem-node - /z-a-as-monitor - /z-a-rust
 
-# command-not-found -- depth=1 jeffreytse/zsh-vi-mode
-# seletskiy/zsh-fuzzy-search-and-edit
-# zt 2 for zdharma/declare-zsh zdharma/zflai blockf zdharma/zui zinit-zsh/zinit-console
+# command-not-found -- jeffreytse/zsh-vi-mode
+# zdharma/declare-zsh zdharma/zflai blockf zdharma/zui zinit-zsh/zinit-console
 # trigger-load'!crasis' zdharma/zinit-crasis \
 
-# taken from: NICHOLAS85 github
 (){
   [[ -f "${thmf}/${1}-pre.zsh" || -f "${thmf}/${1}-post.zsh" ]] && {
     zt light-mode for \
@@ -86,17 +84,15 @@ zt light-mode for \
 zt 0c light-mode for \
   is-snippet trigger-load'!x' blockf svn \
     OMZ::plugins/extract \
-  pick'bd.plugin.zsh' trigger-load'!bd' \
-    tarrasch/zsh-bd \
   trigger-load'!man' \
     ael-code/zsh-colored-man-pages \
   trigger-load'!updatelocal' blockf compile'f*/*~*.zwc' \
     NICHOLAS85/updatelocal \
-    trigger-load'!gcomp' blockf \
+  trigger-load'!gcomp' blockf \
   atclone'command rm -rf lib/*;git ls-files -z lib/ |xargs -0 git update-index --skip-worktree' \
   submods'RobSis/zsh-completion-generator -> lib/zsh-completion-generator;
   nevesnunes/sh-manpage-completions -> lib/sh-manpage-completions' \
-  atload' gcomp(){gencomp "${@}" && zinit creinstall -q ${ZINIT[SNIPPETS_DIR]}/config 1>/dev/null}' \
+  atload'gcomp(){gencomp "${@}" && zinit creinstall -q ${ZINIT[SNIPPETS_DIR]}/config 1>/dev/null}' \
      Aloxaf/gencomp
 
 zt 0a light-mode for \
@@ -108,7 +104,11 @@ zt 0a light-mode for \
   ver'develop' atload'_zsh_autosuggest_start' \
     zsh-users/zsh-autosuggestions \
   as'completion' nocompile mv'*.zsh -> _git' \
-    felipec/git-completion
+    felipec/git-completion \
+  pick'zsh-history-filter.plugin.zsh' \
+    MichaelAquilina/zsh-history-filter \
+  pick'you-should-use.plugin.zsh' \
+    MichaelAquilina/zsh-you-should-use
 
 zt 0b light-mode for \
   atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert)' \
@@ -119,6 +119,10 @@ zt 0b light-mode for \
   bindkey -M viins "^n" fzfz-dir-widget; bindkey -M vicmd "^n" fzfz-dir-widget' \
   patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' \
     andrewferrier/fzf-z \
+  autoload'#manydots-magic' \
+    knu/zsh-manydots-magic \
+  patch"${pchf}/%PLUGIN%.patch" blockf nocompletions compile'functions/*~*.zwc' \
+    marlonrichert/zsh-edit \
   atinit"forgit_ignore='fgi'" \
       wfxr/forgit \
   atload'add-zsh-hook chpwd @chwpd_dir-history-var;
@@ -127,7 +131,10 @@ zt 0b light-mode for \
     kadaan/per-directory-history \
   atload'export FZF_MARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
     urbainvaes/fzf-marks \
-    kazhala/dump-cli \
+  pick'async.zsh' \
+    mafredri/zsh-async \
+  patch"${pchf}/%PLUGIN%.patch" atload'bindkey "^p" fuzzy-search-and-edit' \
+    seletskiy/zsh-fuzzy-search-and-edit \
   atinit'zicompinit_fast; zicdreplay' atload'unset "FAST_HIGHLIGHT[chroma-man]"' \
   atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' \
   compile'.*fast*~*.zwc' nocompletions atpull'%atclone' \
@@ -135,48 +142,67 @@ zt 0b light-mode for \
     zdharma/fast-syntax-highlighting
 
 zt 0c light-mode binary for \
-  lbin atclone="rm -f ^(rgg|rgv)" \
+  lbin'rgg;rgv' atclone='rm -f ^(rgg|rgv); command cp -f --remove-destination $(readlink rgv) rgv' \
     lilydjwg/search-and-view \
   lbin'!' patch"${pchf}/%PLUGIN%.patch" reset \
-  atload'bindkey -M viins "^u" dotbare-fstat; bindkey -M viins "^d" dotbare-fedit' \
+  atload'bindkey -M viins "^u" db-fstat; bindkey -M viins "^f" db-faddf' \
+  atinit'_w_db_fstat() { dotbare fstat; }; zle -N db-fstat _w_db_fstat;
+  _w_db_faddf() { dotbare fadd -f; }; zle -N db-faddf _w_db_faddf' \
     kazhala/dotbare \
+  lbin patch"${pchf}/%PLUGIN%.patch" reset \
+    kazhala/dump-cli \
   lbin'!**/*grep;**/*man;**/*diff' \
   atclone'(){local f;cd -q src;for f (*.sh){mv ${f} ${f:r}};}' \
-    eth-p/bat-extras
+    eth-p/bat-extras \
+  lbin'cht.sh -> cht' id-as'cht.sh' \
+    https://cht.sh/:cht.sh \
+  lbin"$ZPFX/bin/git-*" atclone'rm -f **/*ignore' src"etc/git-extras-completion.zsh" make"PREFIX=$ZPFX" \
+    tj/git-extras \
+  lbin atload'alias gi="git-ignore"'\
+    laggardkernel/git-ignore \
+  lbin"$ZPFX/bin/blackbox_*" make"copy-install PREFIX=$ZPFX" \
+    StackExchange/blackbox
+
+zt 0c light-mode binary lbin lman from'gh-r' for \
+  atclone'mv -f **/*.zsh _bat' atpull'%atclone' \
+    @sharkdp/bat \
+    @sharkdp/hyperfine \
+    @sharkdp/fd \
+  atclone'mv -f **/**.zsh _exa' atpull'%atclone' \
+    ogham/exa
+
+# BurntSushi/ripgrep \
+local graw="https://raw.githubusercontent.com/"
 
 zt 0c light-mode null for \
   lbin from'gh-r' \
-  dl'https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf.1' lman \
+  dl"${graw}junegunn/fzf/master/man/man1/fzf.1" lman \
     junegunn/fzf \
-  multisrc"shell/{completion,key-bindings}.zsh" id-as"fzf_comp" pick"/dev/null" \
-    junegunn/fzf
-
-zt light-mode for \
-  pick'zsh-history-filter.plugin.zsh' \
-    MichaelAquilina/zsh-history-filter \
-  pick'you-should-use.plugin.zsh' \
-    MichaelAquilina/zsh-you-should-use \
-  as'completion' src="etc/git-extras-completion.zsh" \
-    tj/git-extras
+  multisrc'shell/{completion,key-bindings}.zsh' id-as'fzf_comp' pick'/dev/null' \
+    junegunn/fzf \
+  lbin from'gh-r' bpick'*darwin*' dl"${graw}gokcehan/lf/master/lf.1" lman \
+  atinit'bindkey -s "^o" "lc\n"' \
+  atload'lc() { local __="$(mktemp)" && lf -last-dir-path="$__" "$@";
+  d="${"$(<$__)"}" && chronic rm -f "$__" && [ -d "$d" ] && cd "$d"; }' \
+    gokcehan/lf \
+  lbin from'gh-r' \
+    ericchiang/pup \
+  lbin'antidot* -> antidot' from'gh-r' atclone'./**/antidot* update 1>/dev/null' atpull'%atclone' \
+    doron-cohen/antidot \
+  lbin'xurls* -> xurls' from'gh-r' bpick'*darwin_amd64' \
+    @mvdan/xurls
 
 zt light-mode is-snippet for \
   $ZDOTDIR/csnippets/*.zsh \
   OMZ::plugins/git \
   OMZ::plugins/iterm2 \
-  OMZ::plugins/vi-mode \
   atload'unalias ofd && alias ofd="open $PWD"' mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
     OMZ::plugins/osx \
+  OMZ::plugins/vi-mode
 
 # zinit pack"bgn-binary" for fzf
 
-# compdef _dotbare_completion_git dotbare
-autoload -Uz compinit
-_comp_files=(${ZDOTDIR}/.zcompdump(Nm-20))
-if (( $#_comp_files )); then
-    compinit -i -C
-else
-    compinit -i
-fi
+zicompinit_fast; zicdreplay
 # }}}
 
 # === powerlevel10k === {{{
@@ -198,18 +224,20 @@ autoload -Uz zmv zcalc zargs
 alias zmv='noglob zmv -W'
 unalias run-help && autoload run-help && alias help=run-help
 typeset -g HELPDIR='/usr/local/share/zsh/help'
-# zshexpn
+# zshexpn -- zsh -o SOURCE_TRACE -lic ''
+# bindkey -c = to command / -u = unused / -n = lookup
 
-bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n';   bindkey -s '^o' 'lc\n'
 bindkey -M vicmd '?' which-command;             bindkey -M visual S add-surround
 autoload edit-command-line;                     zle -N edit-command-line
 autoload -Uz surround;                          zle -N delete-surround surround
 zle -N add-surround surround;                   zle -N change-surround surround
 bindkey -M vicmd 'cs' change-surround;          bindkey -M vicmd 'ds' delete-surround
 bindkey '^a' autosuggest-accept;                bindkey '^x' autosuggest-execute
-bindkey -M vicmd '^e' edit-command-line;        bindkey -M viins '^e' edit-command-line
+bindkey -M vicmd 'vv' edit-command-line
 bindkey -M viins 'jk' vi-cmd-mode;              bindkey -M viins 'kj' vi-cmd-mode
 bindkey -M vicmd 'H' beginning-of-line;         bindkey -M vicmd 'L' end-of-line
+bindkey -M vicmd 'E' backward-kill-line;        bindkey -M viins '^b' backward-delete-word
+bindkey -M vicmd 'U' redo;                      bindkey -M vicmd 'u' undo;
 # }}}
 
 # === completion === {{{
@@ -223,8 +251,8 @@ zstyle ':fzf-tab:complete:nvim:*' fzf-preview \
 zstyle ':fzf-tab:complete:nvim:argument-rest' fzf-flags '--preview-window=nohidden,right:65%:wrap'
 zstyle ':fzf-tab:complete:(exa|cd):*' popup-pad 30 0
 zstyle ':fzf-tab:complete:(exa|cd):*' fzf-flags '--preview-window=nohidden,right:65%:wrap'
-zstyle ':fzf-tab:complete:(exa|cd):*' fzf-preview '[[ -d $realpath ]] && exa -T --color=always $realpath'
-zstyle ':fzf-tab:complete:(cp|rm|mv|bat):argument-rest' fzf-preview 'r=$realpath; bat --color=always -- $r || exa --color=always -- $r'
+zstyle ':fzf-tab:complete:(exa|cd):*' fzf-preview '[[ -d $realpath ]] && exa -T --color=always $(readlink -f $realpath)'
+zstyle ':fzf-tab:complete:(cp|rm|mv|bat):argument-rest' fzf-preview 'r=$(readlink -f $realpath); bat --color=always -- $r || exa --color=always -- $r'
 zstyle ':fzf-tab:*' fzf-bindings 'enter:accept,backward-eof:abort'   # enter as accept, abort deleting empty
 zstyle ':fzf-tab:*' print-query ctrl-c        # use input as result when ctrl-c
 zstyle ':fzf-tab:*' accept-line space         # accept selected entry on space
@@ -282,7 +310,7 @@ _conda_initialize() {
 }
 
 conda() {
-  unfunction conda
+  unset -f conda
   _conda_initialize
   conda "$@"
 }
@@ -293,18 +321,18 @@ conda() {
 # h() { howdoi $@ -c -n 5; }
 # hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
 # prevent failed commands from being added to history
-zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
+zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1; }
 # rsync from local pc to server
 rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
 rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
 # shred and delete file
 sshred() { shred -v -n 1 -z -u  $1;  }
 # create py file to sync with ipynb
-jupyt() { jupytext --set-formats ipynb,py $1 }
+jupyt() { jupytext --set-formats ipynb,py $1; }
 # use up pipe with any file
-upp() { cat $1 | up }
+upp() { cat $1 | up; }
 # crypto
-ratesx() { curl rate.sx/$1 }
+ratesx() { curl rate.sx/$1; }
 # copy directory
 pbcd() { pwd | tr -d "\r\n" | pbcopy; }
 # create file from clipboard
@@ -316,11 +344,12 @@ rbak() { /usr/local/bin/gcp -r --force $1.bak $1 }
 # link unlink file from mybin to $PATH
 lnbin() { ln -siv $HOME/mybin/$1 $XDG_BIN_HOME; }
 unlbin() { rm -v /$XDG_BIN_HOME/$1; }
-# latex documenation serch (as best I can)
+# latex documentation serch (as best I can)
 latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
 perldoc() { command perldoc -n less "$@" | gman -l -; }
 # get help on builtin commands
 zm() { man zshbuiltins | less -p "^       $1 "; }
+zs() { man zshexpn | less -p "^       $1 "; }
 # cd into directory
 take() { mkdir -p $@ && cd ${@:$#} }
 # fzf recent directories
@@ -332,23 +361,12 @@ sha256dir() { fd . -tf -x sha256sum {} | cut -d' ' -f1 | sort | sha256sum | cut 
 allcmds() { print -l ${commands[@]} | awk -F'/' '{print $NF}' | fzf; }
 # remove broken symlinks
 rmsym() { find -L . -name . -o -type d -prune -o -type l -exec rm {} +; }
-# fixed string rg
+
 time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
 profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof; }
 
 _fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
 _fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
-
-# use lf to switch directories
-lc() {
-    tmp="$(mktemp)"
-    lf -last-dir-path="$tmp" "$@"
-    if [ -f "$tmp" ]; then
-      dir="$(cat "$tmp")"
-      rm -f "$tmp" >/dev/null
-      [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-    fi
-}
 
 _zsh_autosuggest_strategy_dir_history(){ # Avoid Zinit picking this up as a completion
     emulate -L zsh
@@ -380,20 +398,23 @@ _zsh_autosuggest_strategy_custom_history () {
 
 #===== variables ===== {{{
 zt 0c light-mode null for \
-  id-as'ruby_env' has'rbenv' eval'rbenv init - --no-rehash' \
+  id-as'ruby_env' has'rbenv' nocd eval'rbenv init - --no-rehash' \
     zdharma/null \
-  id-as'thefuck_alias' has'thefuck' eval'thefuck --alias' run-atpull \
+  id-as'thefuck_alias' has'thefuck' nocd eval'thefuck --alias' run-atpull \
     zdharma/null \
-  id-as'zoxide_init' has'zoxide' eval'zoxide init --no-aliases zsh'\
+  id-as'zoxide_init' has'zoxide' nocd eval'zoxide init --no-aliases zsh'\
   atload'alias z=__zoxide_z c=__zoxide_zi' run-atpull \
+  atinit'bindkey -s "^k" "c\n"' \
     zdharma/null \
-  id-as'keychain_init' has'keychain' eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac && keychain --agents gpg -q --eval 0xC011CBEF6628B679' \
+  id-as'keychain_init' has'keychain' run-atpull nocd \
+  eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac \
+  && keychain --agents gpg -q --eval 0xC011CBEF6628B679' \
     zdharma/null \
-  id-as'dircolors' has'gdircolors' eval"gdircolors $ZDOTDIR/gruv.dircolors" \
+  id-as'dircolors' has'gdircolors' nocd eval"gdircolors $ZDOTDIR/gruv.dircolors" \
     zdharma/null \
-  atload"ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight" \
+  id-as'limelight-alive' nocd atinit"ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight" \
     zdharma/null \
-  id-as'Cleanup' nocd atinit'unset -f zt; unset _comp_files; _zsh_autosuggest_bind_widgets' \
+  id-as'Cleanup' nocd atinit'unset -f zt; _zsh_autosuggest_bind_widgets' \
     zdharma/null
 
 # eval "$(/usr/local/mybin/rakubrew init Zsh)"
@@ -402,17 +423,19 @@ zt 0c light-mode null for \
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # export MANPAGER="nvim -c 'set ft=man' -"
 # export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
-export KEYTIMEOUT=15
+typeset -g KEYTIMEOUT=15
+typeset -g WORDCHARS=' *?_-.~\'
 
-export PASSWORD_STORE_ENABLE_EXTENSIONS='true'
-export PASSWORD_STORE_EXTENSIONS_DIR="$(brew --prefix)/lib/password-store/extensions"
+typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
+typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="$(brew --prefix)/lib/password-store/extensions"
 
-export PDFVIEWER='zathura' # texdoc pdfviewer
-export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"  # xdg-utils
-export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"  # vimtex
+typeset -gx PDFVIEWER='zathura' # texdoc pdfviewer
+typeset -gx XML_CATALOG_FILES="/usr/local/etc/xml/catalog"  # xdg-utils
+typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"  # vimtex
 
-export _ZO_DATA_DIR="${XDG_DATA_HOME}/zoxide"
-export FZFZ_RECENT_DIRS_TOOL='autojump'
+typeset -gx RGV_EDITOR='nvim $file +$line'
+typeset -gx _ZO_DATA_DIR="${XDG_DATA_HOME}/zoxide"
+typeset -gx FZFZ_RECENT_DIRS_TOOL='autojump'
 typeset -g ZSH_AUTOSUGGEST_USE_ASYNC=1
 typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
@@ -546,6 +569,7 @@ path=(
 # pueue clean && pueue status | rg -Fq 'limelight' || chronic pueue add limelight
 # }}}
 
-path=( "${ZPFX}/bin" "${path[@]}" )       # add to beginning
-path=( "${path[@]:#}" )                   # remove empties
-typeset -gxU path fpath manpath infopath  # clean duplicates / export
+path=( "${ZPFX}/bin" "${path[@]}" )          # add to beginning
+path=( "${path[@]:#}" )                      # remove empties
+# fpath=( "${0:h}/completions" "${fpath[@]}" ) # add to beginning
+typeset -gxU path fpath manpath infopath     # clean duplicates / export

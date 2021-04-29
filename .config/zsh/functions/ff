@@ -1,0 +1,14 @@
+# vim:ft=zsh:
+
+# desc: mage commands to run
+
+ff() {
+  if [ $# -eq 0 ]; then
+    mage | tail -n +2 | fzf | while read -r cmd _; do if [ "$cmd" ]; then mage "$cmd"; fi; done
+  else
+    # TODO: resort to run `make` if no magefile.go is found?
+    mage "${1:-.}"
+  fi
+}
+
+ff "$@"
