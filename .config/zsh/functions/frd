@@ -1,0 +1,10 @@
+# vim:ft=zsh:
+
+# desc fzf recent directories
+
+frd() {
+  dir=$(dirs -lp | fzf)
+  [[ -d "$dir" ]] && cd "$dir"
+}
+
+frd

@@ -22,3 +22,4 @@ if [[ -s "$zcompf" && (! -s "${zcompf}.zwc" || "$zcompf" -nt "${zcompf}.zwc") ]]
     # run in background
     { zcompile -M "$zcompf" && command rm -f "$zcompf.zwc.old" }&!
 fi
+

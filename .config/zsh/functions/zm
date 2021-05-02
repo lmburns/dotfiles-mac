@@ -1,0 +1,36 @@
+# desc: Searches zshall with special keyword ($1) matching
+
+zmp() { man -P "less -p'^${@}'" zshall }
+zb() { man -P "less -p'^       "$1" '" zshbuiltins; }
+
+# zp() { man -P "less -p'^       "$1" '" zshexpn; }
+# zs() { man -P "less -p'^       "$1" '" zshparam; }
+
+zp() { man -P "less -p'^       ${1/#[ewspfrRiInbkK]/"${1}"} '" zshexpn; }
+zs() { man -P "less -p'^       ${1/#[AacCefFikLnoOPqQtuUvVwWXzpjslrSIBEMNR]/"${1}"} '" zshparam; }
+
+case "${1}" in
+  test|cond) zmp "CONDITIONAL EXPRESSIONS$" ;;
+  eg|exmple|examples) zmp "   Examples$" ;;
+  pexpf|"param exp flags"|"pexp flags") zmp "   Parameter Expansion Flags$" ;;
+  pexp|"param exp") zmp "PARAMETER EXPANSION$" ;;
+  hexp|"hist exp") zmp "HISTORY EXPANSION$" ;;
+  hflag|"hist flags") zmp "   Modifiers$" ;;
+  array|"array param") zmp "ARRAY PARAMETERS$" ;;
+  arsub|"arr sub"|"array subscripts") zmp "   Array Subscripts$" ;;
+  arsubf|"arr sub flags"|"arr flags"|"array flags") zmp "   Subscript Flags$" ;;
+  complex|compcmds) zmp "COMPLEX COMMANDS$" ;;
+  glob|"glob flags") zmp "   Globbing Flags$" ;;
+  opts|options) zmp "DESCRIPTION OF OPTIONS$" ;;
+  sopts|1opts) zmp "SINGLE LETTER OPTIONS$" ;;
+  prompt|"prompt chars") zmp "SIMPLE PROMPT ESCAPES$" ;;
+  binds|bindkey) zmp "STANDARD WIDGETS$" ;;
+  b|built) zb ${2} ;;
+  p|param) zp ${2} ;;
+  s|subscript|sub) zs ${2} ;;
+  h|help)
+    print -P "%F{11}test, cond -- [[ -e ]]\neg, examples\npexpf, param exp -- \"\$ {(f)foo}\"\nhexp, hist exp -- \$ {var:h3}\nhflag, hist flags\narray, array param\narsub, array subscripts\narsubf, array flags -- \$ {array[(i)pattern]}\ncomplex, compcmds\nglob, glob flags -- (#X)\nopts, options -- AUTO_CD\nsopts, 1opts\nprompt, prompt chars -- %%B\nbinds, bindkey -- vi-backward-kill\nb, built -- echoti\np, param -- \$ {var:h}, \$ {(f)foo}\ns, subscript -- \$ {foo[(re)bar]}%f" ;;
+  *) man -P "less -p'^ *$@ '" zshall ;;
+esac
+
+# vim:ft=zsh:et

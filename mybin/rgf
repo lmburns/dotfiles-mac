@@ -2,7 +2,7 @@
 
 # desc: interactively search files with rg (with reload)
 
-RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+RG_PREFIX="rg --column --hidden --line-number --no-heading --color=always --smart-case "
 INITIAL_QUERY="${*:-}"
 IFS=: read -ra selected < <(
   FZF_DEFAULT_COMMAND="$RG_PREFIX $(printf %q "$INITIAL_QUERY")" \

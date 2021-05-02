@@ -7,6 +7,10 @@ alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
 alias ult="ulimit -c 195312; echo $$"
 ulimit -c unlimited
+alias wh="whence -f"
+alias wa="whence -va"
+
+alias dic='trans -d'
 
 alias keuze="keuze -fs 12 -fn Monaco"
 
@@ -49,11 +53,12 @@ alias sha='shasum -a 256'
 alias his='history | grep'
 
 # === configs ===================================================================
-alias nzsh="nvim $ZDOTDIR/.zshrc"
-alias azsh="nvim $ZDOTDIR/zsh-aliases"
-alias ezsh="nvim $HOME/.zshenv"
-alias ninit="nvim $XDG_CONFIG_HOME/nvim/init.vim"
-alias nlfr="nvim $XDG_CONFIG_HOME/lf/lfrc"
+alias nzsh="$EDITOR ${0:h}/.zshrc"
+alias azsh="$EDITOR ${0:h}/zsh-aliases"
+alias ezsh="$EDITOR $HOME/.zshenv"
+alias ninit="$EDITOR $XDG_CONFIG_HOME/$EDITOR/init.vim"
+alias nlfr="$EDITOR $XDG_CONFIG_HOME/lf/lfrc"
+alias ngit="$EDITOR $XDG_CONFIG_HOME/git/config"
 
 # === mail ======================================================================
 alias mwme='mw -y burnsac@me.com'
@@ -214,7 +219,7 @@ alias brtapp='brew tap-pin'         brtapu='brew tap-unpin'     bruin='brew unin
 alias bruli='brew unlink'           brupa='brew unpack'         brupd='brew update'
 alias brupdr='brew update-reset'    brupg='brew upgrade'        brupi='brew unpin'
 alias bruse='brew uses'             bruta='brew untap'          brse='brew services'
-alias brseli='brew services list'   sbrse='sudo brew services'
+alias brseli='brew services list'   sbrse='sudo brew services'  brwh='brew which-formula'
 
 # === directories ================================================================
 alias -- -='cd -'

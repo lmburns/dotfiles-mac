@@ -247,6 +247,8 @@
 
   " Replace all is aliased to S.
   nnoremap S :%s//g<Left><Left>
+  " Replace under cursor
+  nnoremap <Leader>sr :%s/\<<C-r><C-w>\>/
   " Replace quotes on the line
   nnoremap <Leader>Q :s/'/"/g<CR>:nohlsearch<CR>
   " convert python 2 print to python3
@@ -494,15 +496,30 @@
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
   let g:vimwiki_table_mappings = 0
 
-  hi VimwikiHeader1 guifg=#cc241d gui=bold
-  hi VimwikiHeader2 guifg=#fe8019 gui=bold
-  hi VimwikiHeader3 guifg=#689d6a gui=bold
-  hi VimwikiHeader4 guifg=#b8ba25 gui=bold
-  hi VimwikiHeader5 guifg=#b16286 gui=bold
-  hi VimwikiHeader6 guifg=#458588 gui=bold
+  " hi VimwikiHeader1 guifg=#cc241d gui=bold
+  " hi VimwikiHeader2 guifg=#fe8019 gui=bold
+  " hi VimwikiHeader3 guifg=#689d6a gui=bold
+  " hi VimwikiHeader4 guifg=#b8ba25 gui=bold
+  " hi VimwikiHeader5 guifg=#b16286 gui=bold
+  " hi VimwikiHeader6 guifg=#458588 gui=bold
+
   hi VimwikiBold    guifg=#a25bc4 gui=bold
   hi VimwikiCode    guifg=#d3869b
   hi VimwikiItalic  guifg=#83a598 gui=italic
+
+  hi VimwikiHeader1 guifg=#F14A68 gui=bold
+  hi VimwikiHeader2 guifg=#F06431 gui=bold
+  hi VimwikiHeader3 guifg=#689d6a gui=bold
+  hi VimwikiHeader4 guifg=#819C3B gui=bold
+  hi VimwikiHeader5 guifg=#98676A gui=bold
+  hi VimwikiHeader6 guifg=#458588 gui=bold
+
+  " hi MatchParen guifg=#088649
+  " hi vimOperParen guifg=#088649
+  " hi vimSep guifg=#088649
+  " hi Delimiter guifg=#088649
+  " hi Operator guifg=#088649
+
 
   map <Leader>vw :VimwikiIndex<CR>
 
@@ -1277,3 +1294,5 @@ endif
 source ~/.config/nvim/indentline.vim
 
 " ====
+
+" autocmd CursorHold * update

@@ -26,6 +26,8 @@
   lp = log --graph --pretty=format:'%Cred%h%Creset %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   lg = log --pretty='format:%h %G? %aN  %s'
   lss = log --show-signature
+  m = merge
+  ms = merge --squash
   pl = pull
   pa = !git remote | xargs -L1 git push --all
   ps = push
@@ -79,15 +81,16 @@
   syntax-theme = KimbieDark
   line-numbers-left-format = ""
   line-numbers-right-format = "│ "
+  max-line-distance = 0.3
 # plus-style = "syntax #088649"
 # plus-emph-style = "syntax #088649"
 # minus-style = syntax "#7E5053"
 # minus-empty-line-marker-style = "syntax #7E5053"
 [delta "decorations"]
-  commit-decoration-style = bold magenta box ul
+  commit-decoration-style = bold magenta ul
   file-style = bold magenta ul
   file-decoration-style = none
-  hunk-header-decoration-style = red box ul
+  hunk-header-decoration-style = yellow box ul
 [delta "unobstrusive-line-numbers"]
   line-numbers-left-format = "{nm:>4}┊"
   line-numbers-right-format = "{np:>4}│"
@@ -97,3 +100,18 @@
   line-numbers-plus-style = 28
 [interactive]
   diffFilter = delta --color-only
+[diff]
+  algorithm = patience
+  colorMoved = default
+  indentHeuristic = true
+  mnemonicPrefix = true
+#  renames = copies
+[stash]
+  showPatch = true
+[pull]
+  ff = only
+  default = current
+[checkout]
+  defaultRemote = origin
+
+# vim:ft=gitconfig:et

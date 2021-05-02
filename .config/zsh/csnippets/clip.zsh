@@ -1,8 +1,8 @@
 
 function detect-clip() {
   emulate -L zsh
-  function clipcopy() { pbcopy < "${1:-/dev/stdin}"; }
-  function clippaste() { pbpaste; }
+  function ccopy() { pbcopy < "${1:-/dev/stdin}"; }
+  function cpaste() { pbpaste; }
 }
 
 detect-clip || true

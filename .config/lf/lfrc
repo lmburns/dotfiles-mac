@@ -391,7 +391,7 @@ map r $rmcrap                                   # delete .DS_Store etc
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | bat -f                         # open lfrc docs
-map gX $bat -f ~/.config/lf/mappings            # open these mappings
+map gH $bat -f ~/.config/lf/mappings            # open these mappings
 map O push :open-with<space>                    # open w/ specified program
 
 map as !du -hsx * | sort -rh | bat --paging=always  # directory info

@@ -1,6 +1,6 @@
 emulate -L zsh
 if [[ "$OLDPWD" != "$PWD" ]]; then
-    exa --group-directories-first
+    exa -Fh --git --icons --group-directories-first
 fi
 
 # vim:ft=zsh:

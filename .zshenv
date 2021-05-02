@@ -55,7 +55,9 @@ export PINENTRY_USER_DATA="USE_CURSES=1"
 export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
 export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 
+export GRIPHOME="${XDG_CONFIG_HOME}/grip"
 
 source "${XDG_DATA_HOME}/cargo/env"
+
 
 # vim:ft=zsh:et
