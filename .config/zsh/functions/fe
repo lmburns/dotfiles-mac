@@ -4,8 +4,18 @@
 emulate -L zsh
 
 fe() {
-  local files
-  files=($(fzf --query="$1" --multi --select-1 --exit-0))
+  local -a files
+  files=("$(
+    fzf --query="$1" \
+      --multi \
+      --select-1 \
+      --exit-0 \
+      --bind=ctrl-x:toggle-sort \
+      --header='(view:ctrl-v) (sort:ctrl-x)' \
+      --preview-window=':nohidden,right:65%:wrap' \
+      --preview='([[ -f {} ]] && (bat --style=numbers --color=always {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+    )"
+  ) || return
   [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
 

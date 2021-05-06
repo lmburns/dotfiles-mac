@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# desc: use something without it touching harddrive
+
+PIPE="$OUTPUT_DIR/key.pipe"
+mkfifo -m 0600 "$PIPE"
+keychain_access name.of.the.private.key > "$PIPE" &
+
+SIG=`openssl dgst -sha1 -binary < "$OUTPUT_DIR/$VOL.dmg" | openssl dgst -dss1 -sign "$PIPE" | openssl enc -base64`
+
+rm "$PIPE"

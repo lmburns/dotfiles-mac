@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# desc: open neomutt in new iterm window
+
+source "/Users/lucasburns/.config/zsh/.zshrc"
+
+open -a iTerm '/usr/local/bin/neomutt'

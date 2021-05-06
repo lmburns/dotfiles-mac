@@ -767,6 +767,23 @@
   \ 'options': [ '--multi', '--preview', 'cat {}' ]
   \ }))
 
+  function! s:plug_help_sink(line)
+    let dir = g:plugs[a:line].dir
+    for pat in ['doc/*.txt', 'README.md']
+      let match = get(split(globpath(dir, pat), "\n"), 0, '')
+      if len(match)
+        execute 'tabedit' match
+        return
+      endif
+    endfor
+    tabnew
+    execute 'Explore' dir
+  endfunction
+
+  command! PlugHelp call fzf#run(fzf#wrap({
+    \ 'source': sort(keys(g:plugs)),
+    \ 'sink':   function('s:plug_help_sink')}))
+
   " Line completion (same as :Bline)
   imap <C-a> <C-x><C-l>
   imap <C-f> <Plug>(fzf-complete-line)
@@ -1006,8 +1023,9 @@ nnoremap <leader>gp :Git push<CR>
   \ ]
 
   let g:startify_bookmarks = [
-      \ { 'c': '~/.config/nvim/init.vim' },
-      \ { 'g': '~/.gitconfig' },
+      \ { 'co': '~/.config/nvim/init.vim' },
+      \ { 'gc': '~/.config/git/config' },
+      \ { 'lc': '~/.config/lf/lfrc' },
       \ { 'zs': '~/.config/zsh/zshrc' },
       \ { 'za': '~/.config/zsh/zsh-aliases' },
       \ { 'vi': '~/vimwiki/index.md' },
@@ -1177,7 +1195,7 @@ endif
         \ 'links':     { 'external': { 'enable': 1 } },
         \ 'checkbox':  {'toggles': [' ', 'x', '-'] },
         \ 'tokens':    { 'strike': '~~',
-        \                'list': '+' },
+        \                'list': '*' },
         \ 'fold':      { 'enable':   1,
         \                'components': ['toc', 'fence'] },
         \ 'toc': {

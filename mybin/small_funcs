@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# desc: list of all kinds of small functions to work on
+
+save_4chan_thread_imgs() {
+    requires mkdir lynx grep uniq xargs wget
+
+    pagename="${1}_${2}"
+    # Create folder for downloading; fail if already downloaded/exists
+    mkdir "$pagename"
+    # Get all links on the thread page
+    lynx -listonly -nonumbers -dump "http://boards.4chan.org/${1}/thread/${2}/" |
+        # Filter links pointing to jpg images
+        grep '.jpg$' | uniq |
+        # Asynchronously download images into the folder
+        xargs -I{} --max-args=1 --max-procs=8 \
+            wget --no-verbose --directory-prefix="$pagename" "{}"
+}
+
+zsh_stats(){
+  fc -l 1 | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl | head -n20
+}

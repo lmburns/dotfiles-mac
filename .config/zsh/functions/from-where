@@ -1,7 +1,7 @@
 # desc: tells from-where a zsh completion is coming from
 
 function from-where {
-    echo $^fpath/$_comps[$1](N)
+    print -l -- $^fpath/$_comps[$1](N)
     whence -v $_comps[$1]
     #which $_comps[$1] 2>&1 | head
 }

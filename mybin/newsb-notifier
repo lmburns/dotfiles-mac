@@ -1,0 +1,3 @@
+#!/bin/sh
+
+terminal-notifier -title "Newsboat" -message "$@"

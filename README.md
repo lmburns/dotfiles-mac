@@ -148,6 +148,7 @@ The <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings a
 | <kbd>ctrl</kbd> + <kbd>h</kbd>        | move left window                        | n     |
 | <kbd>ctrl</kbd> + <kbd>l</kbd>        | move right window                       | n     |
 | <kbd>j</kbd> / <kbd>k</kbd>           | move through wrapped lines              | n     |
+| <kbd>J</kbd>  / <kbd>K</kbd>          | move selected text through text         | v     |
 | <kbd>Leader</kbd> + <kbd>sc</kbd>     | run `shellcheck`                        | n     |
 | <kbd>Leader</kbd> + <kbd>vw</kbd>     | navigate to vimwiki index               | n     |
 | <kbd>Leader</kbd> + <kbd>ee</kbd>     | coc explorer                            | n     |

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# desc: queue up tasks for urls
+
+# $1 is a url; $2 is a command
+[ -z "$1" ] && exit
+base="$(basename "$1")"
+terminal-notifier -message "⏳ Queuing $base..."
+cmd="$2"
+[ -z "$cmd" ] && cmd="youtube-dl --add-metadata -ic"
+idnum="$(ts $cmd "$1")"
+realname="$(echo "$base" | sed "s/?\(source\|dest\).*//;s/%20/ /g")"
+ts -D "$idnum" mv "$base" "$realname"
+ts -D "$idnum" terminal-notifier -message "👍 $realname done."

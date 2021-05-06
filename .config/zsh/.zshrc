@@ -9,6 +9,7 @@ typeset -g HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history"
 typeset -g SAVEHIST=10000000
 typeset -g HIST_STAMPS="yyyy-mm-dd"
 typeset -g HISTORY_FILTER_EXCLUDE=("jrnl", "youtube-dl", "you-get")
+typeset -g HISTORY_IGNORE="(jrnl|youtube-dl|you-get)"
 typeset -g TIMEFMT=$'\n================\nCPU\t%P\nuser\t%*U\nsystem\t%*S\ntotal\t%*E'
 typeset -g PROMPT_EOL_MARK=''
 # export ZSH_DISABLE_COMPFIX=true
@@ -53,12 +54,6 @@ grman() {
 [[ ! -f $ZINIT[BIN_DIR]/zinit.zsh ]] && {
   command mkdir -p "$ZINIT_HOME" && command chmod g-rwX "$ZINIT_HOME"
   command git clone https://github.com/zdharma/zinit "$ZINIT[BIN_DIR]"
-}
-
-# recache keychain if older than GPG cache time
-[[ -f "$ZINIT[PLUGINS_DIR]/keychain_init"/eval*~*.zwc(#qN.ms+45000) ]] && {
-  zinit recache keychain_init 1>&2 2>/dev/null
-  print -P "%F{12}Keychain recached%f"
 }
 
 source "$ZINIT[BIN_DIR]/zinit.zsh"
@@ -130,8 +125,7 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atload'add-zsh-hook chpwd @chwpd_dir-history-var;
   add-zsh-hook zshaddhistory @append_dir-history-var; @chwpd_dir-history-var' \
     kadaan/per-directory-history \
-  atinit'zicompinit_fast; zicdreplay; fast-theme XDG:mod-default.ini &>/dev/null' \
-  atload'unset "FAST_HIGHLIGHT[chroma-man]"' \
+  atinit'zicompinit_fast; zicdreplay;' atload'unset "FAST_HIGHLIGHT[chroma-man]"' \
   atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' \
   compile'.*fast*~*.zwc' nocompletions atpull'%atclone' \
     zdharma/fast-syntax-highlighting
@@ -181,24 +175,36 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
   atclone'mv -f **/**.zsh _exa' atpull'%atclone' \
     ogham/exa
 
-# BurntSushi/ripgrep \
-
 zt 0c light-mode null for \
   lbin from'gh-r' dl"$(grman man/man1/)" lman \
     junegunn/fzf \
   multisrc'shell/{completion,key-bindings}.zsh' id-as'fzf_comp' pick'/dev/null' \
+  atload"bindkey -r '\ec'; bindkey 'ç' fzf-cd-widget" \
     junegunn/fzf \
   lbin from'gh-r' bpick'*darwin*' dl"$(grman)" lman \
   atinit'bindkey -s "^o" "lc\n"' \
   atload'lc() { local __="$(mktemp)" && lf -last-dir-path="$__" "$@";
   d="${"$(<$__)"}" && chronic rm -f "$__" && [ -d "$d" ] && cd "$d"; }' \
     gokcehan/lf \
-  lbin from'gh-r' \
-    ericchiang/pup \
   lbin'antidot* -> antidot' from'gh-r' atclone'./**/antidot* update 1>/dev/null' atpull'%atclone' \
     doron-cohen/antidot \
   lbin'xurls* -> xurls' from'gh-r' bpick'*darwin_amd64' \
-    @mvdan/xurls
+    @mvdan/xurls \
+  lbin'bin/*' dl"$(grman man/)" lman \
+    mklement0/perli \
+  lbin from'gh-r' \
+    natesales/q \
+  lbin'a*.pl -> arranger' \
+  atclone'mkdir -p $XDG_CONFIG_HOME/arranger; cp *.conf $XDG_CONFIG_HOME/arranger' \
+    anhsirk0/file-arranger \
+  lbin'lax' atclone'cargo install --path .' \
+    Property404/lax \
+  lbin'desed' atclone'cargo install --path .' dl"$(grman)" lman \
+    SoptikHa2/desed \
+  lbin'chmap' from'gh-r' lman'chmap.1' \
+    lptstr/chmap
+
+# /gruntwork-io/git-xargs
 
 zt light-mode is-snippet for \
   $ZDOTDIR/csnippets/*.zsh \
@@ -207,7 +213,6 @@ zt light-mode is-snippet for \
   atload'unalias ofd && alias ofd="open $PWD"' mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
     OMZ::plugins/osx
 
-zicompinit_fast; zicdreplay
 # }}}
 
 # === powerlevel10k === {{{
@@ -225,14 +230,15 @@ stty stop undef
 stty discard undef <$TTY >$TTY
 zmodload zsh/zprof
 autoload +X zm
-autoload -Uz zmv zcalc zargs
+# ztodo
+autoload -Uz zmv zcalc zargs zed
 alias zmv='noglob zmv -W'
 unalias run-help && autoload run-help && alias help=run-help
 typeset -g HELPDIR='/usr/local/share/zsh/help'
 # zshexpn -- zsh -o SOURCE_TRACE -lic ''
 # bindkey -c = to command / -u = unused / -n = lookup
 
-bindkey '^I' expand-or-complete-prefix
+# bindkey '^I' expand-or-complete-prefix
 bindkey -M vicmd '?' which-command;             bindkey -M visual S add-surround
 autoload -Uz edit-command-line;                 zle -N edit-command-line
 autoload -Uz surround;                          zle -N delete-surround surround
@@ -261,8 +267,8 @@ zstyle ':fzf-tab:complete:nvim:argument-rest' fzf-flags '--preview-window=nohidd
 zstyle ':fzf-tab:complete:updatelocal:argument-rest' fzf-preview "git --git-dir=$UPDATELOCAL_GITDIR/\${word}/.git log --color --date=short --pretty=format:'%Cgreen%cd %h %Creset%s %Cred%d%Creset ||%b' ..FETCH_HEAD 2>/dev/null"
 zstyle ':fzf-tab:complete:updatelocal:argument-rest' fzf-flags '--preview-window=down:5:wrap'
 zstyle ':fzf-tab:complete:(exa|cd):*' popup-pad 30 0
-zstyle ':fzf-tab:complete:(exa|cd):*' fzf-flags '--preview-window=nohidden,right:65%:wrap'
-zstyle ':fzf-tab:complete:(exa|cd):*' fzf-preview '[[ -d $realpath ]] && exa -T --color=always $(readlink -f $realpath)'
+zstyle ':fzf-tab:complete:(exa|cd|cd_):*' fzf-flags '--preview-window=nohidden,right:65%:wrap'
+zstyle ':fzf-tab:complete:(exa|cd|cd_):*' fzf-preview '[[ -d $realpath ]] && exa -T --color=always $(readlink -f $realpath)'
 zstyle ':fzf-tab:complete:(cp|rm|mv|bat):argument-rest' fzf-preview 'r=$(readlink -f $realpath); bat --color=always -- $r || exa --color=always -- $r'
 zstyle ':fzf-tab:*' fzf-bindings 'enter:accept,backward-eof:abort'   # enter as accept, abort deleting empty
 zstyle ':fzf-tab:*' print-query ctrl-c        # use input as result when ctrl-c
@@ -323,7 +329,7 @@ upp() { cat $1 | up; }
 # crypto
 ratesx() { curl rate.sx/$1; }
 # copy directory
-pbcd() { pwd | tr -d "\r\n" | pbcopy; }
+pbcpd() { pwd | tr -d "\r\n" | pbcopy; }
 # create file from clipboard
 pbpf() { pbpaste > "$1"; }
 pbcf() { pbcopy < "${1:-/dev/stdin}"; }
@@ -352,16 +358,25 @@ allcmds() { print -l ${commands[@]} | awk -F'/' '{print $NF}' | fzf; }
 # remove broken symlinks
 rmsym() { command rm -- *(-@D); }
 rmsymr() { command rm -- **/*(-@D); }
+# add -x to apply changes
+rmspace() { f2 -f '\s' -r '_' -RF $@ }
 # monitor core dumps
 moncore() { fswatch --event-flags /cores/ | xargs -I{} terminal-notifier -message {} -title 'coredump'; }
 
+e() { lax nvim "@${1}"; }
+macfeh() { open -b "drabweb.macfeh" "$@"; }
 time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
 profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof; }
 # }}}
 
 # === helper functions === {{{
 # prevent failed commands from being added to history
-zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1; }
+zshaddhistory() {
+  emulate -L zsh
+  whence ${${(z)1}[1]} >| /dev/null || return 1
+  [[ ${1%%$'\n'} != ${~HISTORY_IGNORE} ]]
+}
+
 _fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
 _fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
 
@@ -420,8 +435,6 @@ zt 0c light-mode null for \
     zdharma/null \
   id-as'antidot_conf' has'antidot' nocd eval'antidot init' \
     zdharma/null \
-  id-as'limelight-alive' nocd atinit"ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight" \
-    zdharma/null \
   id-as'Cleanup' nocd atinit'unset -f zt grman; _zsh_autosuggest_bind_widgets' \
     zdharma/null
 
@@ -457,6 +470,9 @@ typeset -gx UPDATELOCAL_GITDIR="${HOME}/opt"
 typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
 typeset -g DUMP_LOG="${ZPFX}/share/dump/log"
 typeset -gx BREW_PREFIX="$(brew --prefix)"
+typeset -gx CDHISTSIZE=1000 CDHISTTILDE=TRUE
+# typeset -gx CDHISTCOMMAND=xd
+typeset -gx NQDIR="$TMPDIR/nq"
 # }}}
 
 # === fzf === {{{
@@ -469,14 +485,14 @@ export FZF_DEFAULT_OPTS="
   --color=info:#73d0ff,pointer:#cbccc6,marker:#73d0ff,spinner:#73d0ff
   --color=header:#d4bfff,gutter:-1,prompt:#707a8c,dark
   --reverse --height 60% --ansi --info=inline --multi --border
-  --preview-window=:hidden,right:65%:wrap
-  --preview '([[ -f {} ]] && (bat --style=numbers --color=always)) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
-  --bind '?:toggle-preview'
-  --bind 'ctrl-a:select-all'
-  --bind 'ctrl-b:execute(bat --paging=always -f {+})'
-  --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
-  --bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
-  --bind 'ctrl-v:execute(code {+})'
+  --preview-window=':hidden,right:65%:wrap'
+  --preview '([[ -f {} ]] && (bat --style=numbers --color=always {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+  --bind='?:toggle-preview'
+  --bind='ctrl-a:select-all'
+  --bind='ctrl-b:execute(bat --paging=always -f {+})'
+  --bind='ctrl-y:execute-silent(echo {+} | pbcopy)'
+  --bind='ctrl-e:execute(echo {+} | xargs -o nvim)'
+  --bind='ctrl-v:execute(code {+})'
   --bind='ctrl-k:preview-up'
   --bind='ctrl-j:preview-down'
 "
@@ -500,7 +516,8 @@ export SKIM_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
 # export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd -t d ."
+export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
+# export FZF_ALT_C_COMMAND="fd -t d ."
 export FORGIT_FZF_DEFAULT_OPTS="--exact --cycle --border --ansi --reverse
     --height 70% --info=inline --multi"
 export NAVI_FZF_OVERRIDES="--height=70%"
@@ -564,6 +581,14 @@ infopath=(
   ${infopath[@]}
 )
 
+typeset -gxU cdpath CDPATH
+cdpath=(
+  $HOME
+  $HOME/projects
+  $HOME/projects/github
+  $XDG_CONFIG_HOME
+)
+
 # ruby, go, python, mysql
 path=(
   $HOME/.rbenv/version/3.0.0/bin
@@ -589,23 +614,32 @@ zt light-mode null id-as for \
   export PERLBREW_HOME="${XDG_DATA_HOME}/perl5/perlbrew-h";
   export PERL_CPANM_HOME="${XDG_DATA_HOME}/perl5/cpanm"' \
   atload'local x="$PERLBREW_ROOT/etc/bashrc"; [ -f "$x" ] && source "$x"' \
+    zdharma/null \
+  atload'fast-theme XDG:mod-default.ini &>/dev/null' \
+    zdharma/null \
+  atload'chronic pueue clean && pueue status | rg -Fq "limelight" || chronic pueue add limelight' \
+    zdharma/null \
+  atload'local x="$XDG_CONFIG_HOME/cdhist/cdhist.rc"; [ -f "$x" ] && source "$x"' \
     zdharma/null
-# }}}
 
-# keep limelight / dircolors alive {{{
-# killall limelight &> /dev/null; limelight &> /dev/null &
-# pueue clean && pueue status | rg -Fq 'limelight' || chronic pueue add limelight
+# nocd atinit"ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight"
+
+# recache keychain if older than GPG cache time
+[[ -f "$ZINIT[PLUGINS_DIR]/keychain_init"/eval*~*.zwc(#qN.ms+45000) ]] && {
+  zinit recache keychain_init
+  print -P "%F{12}===> Keychain recached <===%f"
+}
 # }}}
 
 local fdir="${BREW_PREFIX}/share/zsh/site-functions"
-[[ -z ${fpath[(re)$fdir]} && -d $fdir ]] && fpath=( "${fpath[@]}" "${fdir}" )
+[[ -z ${fpath[(re)$fdir]} && -d "$fdir" ]] && fpath=( "${fpath[@]}" "${fdir}" )
 
 [[ -z ${path[(re)$XDG_BIN_HOME]} && -d "$XDG_BIN_HOME" ]] && path=( "$XDG_BIN_HOME" "${path[@]}")
 [[ -z ${path[(re)/$ZPFX/bin]} ]] && path=( "${ZPFX}/bin" "${path[@]}" )
 
-path=( "${path[@]:#}" )                      # remove empties
-typeset -gxU path fpath manpath infopath     # clean duplicates / export
-
-() { pgrep fswatch &>/dev/null || ( moncore &>/dev/null & ) }
+path=( "${path[@]:#}" )                            # remove empties
+typeset -gxU path fpath manpath infopath cdpth     # clean duplicates / export
 
 # vim: set sw=2 ts=2 sts=2 et ft=zsh fdm=marker fmr={{{,}}}:
+
+# ≻⊲       

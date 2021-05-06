@@ -1,14 +1,15 @@
 # lucas' aliases
 
 pj() { perl -MCpanel::JSON::XS -0777 -E '$ip=decode_json <>;'"$@" ; }
+jqy() { yq r -j "$1" | jq "$2" | yq - r; }
+proxstat() { sudo brew services list | perl -MTerm::ANSIColor=colored -lane 'print colored( sprintf("%-10s  ==>  %-10s", "$F[0]", "$F[1]"), "magenta") if /stubby|privoxy|dnsmasq/' }
 
 alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
-alias ult="ulimit -c 195312; echo $$"
-ulimit -c unlimited
 alias wh="whence -f"
 alias wa="whence -va"
+alias wm="whence -m"
 
 alias dic='trans -d'
 
@@ -26,7 +27,7 @@ alias rcp='rsync -av --ignore-existing --progress'
 alias pbc='pbcopy'
 alias pbp='pbpaste'
 alias pl='print -rl --'
-alias ec='echo'
+# alias ec='echo'
 alias mv='mv -iv'
 alias mkd='mkdir -pv'
 alias lct='launchctl'
@@ -40,7 +41,9 @@ alias lsm='exa -Flh --git --sort=modified --icons'
 alias lss='exa -Flh --git --group-directories-first --icons'
 alias lsd='exa -D --icons'
 alias treed='exa -TL --icons'
-alias chx='chmod +x'
+alias fdr='fd --changed-within=30m'
+alias fdr1='fd --changed-within=30m -d1'
+alias cx='chmod 755'
 alias lns='ln -siv'
 alias ka='killall'
 alias kid='kill -KILL'
@@ -69,6 +72,7 @@ alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@
 # ===locations ==================================================================
 alias prd="cd $HOME/projects"
 alias unx="cd $HOME/Desktop/unix/mac"
+alias zfd="cd $ZDOTDIR/functions"
 alias zdotd="cd "$ZDOTDIR""
 alias gitd="cd $HOME/projects/github"
 alias perld="cd $HOME/projects/perl"
@@ -77,9 +81,10 @@ alias pyd="cd $HOME/projects/python"
 alias awkd="cd $HOME/projects/awk"
 alias optd="cd $HOME/opt"
 alias confd="cd $XDG_CONFIG_HOME"
+alias locd="cd $XDG_DATA_HOME"
 alias docd="cd $HOME/Documents"
 alias downd="cd $HOME/Downloads"
-alias mbd="cd $HOME/mybin"
+alias mbd="cd $XDG_BIN_HOME"
 alias vwdir="cd $HOME/vimwiki"
 alias nvimd='cd /usr/local/share/nvim/runtime'
 
@@ -115,7 +120,7 @@ alias lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resourc
 # alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
 alias loginscreen='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
 alias battemp="bc <<< \"scale=3; $(ioreg -r -n AppleSmartBattery | grep Temperature | cut -c23-)/100*1.8+32\""
-alias pbpl='pbpaste | textutil -convert txt -stdin -stdout -encoding 30 | pbcopy'
+alias pbplain='pbpaste | textutil -convert txt -stdin -stdout -encoding 30 | pbcopy'
 alias spot='sudo mdutil -a -i'
 alias PlistBuddy='/usr/libexec/PlistBuddy'
 alias slocate='/usr/bin/locate'
@@ -137,6 +142,7 @@ alias xav="/usr/bin/git --git-dir=$XDG_DATA_HOME/dottest --work-tree=$HOME"
 alias gua='git remote | xargs -L1 git push --all'
 alias grmssh='ssh git@burnsac.xyz -- grm'
 alias g='git'
+alias allgit="gitbatch -r 2 -d $HOME/opt"
 alias gtrr='git ls-tree -r master --name-only | as-tree'
 
 alias magit='nvim -c MagitOnly'

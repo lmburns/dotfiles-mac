@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# desc: manipulate pfctl firewall
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsigned off
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsignedapp off
+
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active -bool false
+
+# view status of services
+find /var/db/com.apple.xpc.launchd/ -type f -print -exec defaults read {} \; 2>/dev/null
+
+defaults read /System/Library/LaunchDaemons/com.apple.apsd.plist
+
+sudo pfctl -e -f /etc/pf.anchors/pf.rules
+
+# create interface for loggin
+sudo ifconfig pflog0 create
+
+# view filtered packeds
+sudo tcpdump -ni pflog0
+
+sudo pfctl -t blocklist -T add $(whois -h whois.radb.net '!gAS32934' | tail -n +2 | sed 's/ /\n/g; $d')
+
+# confirm dns is encrypted
+sudo tcpdump -qtni en0
+
+##########
+# privoxy
+sudo networksetup -setwebproxy "Wi-Fi" 127.0.0.1 8118
+sudo networksetup -setsecurewebproxy "Wi-Fi" 127.0.0.1 8118
+ALL_PROXY=127.0.0.1:8118 curl -I http://p.p/

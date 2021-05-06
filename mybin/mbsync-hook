@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# desc: mbsync hook
+
+POSTSYNC="notmuch new"
+
+mbsync="$(type 2>/dev/null -a mbsync | tail -n 1)"
+mbsync=${mbsync#* * }
+
+if [ -z "$1" ]; then
+  "$mbsync"
+  exit
+fi
+
+
+accounts=$(rg -N --color=never 'Channel' ~/.mbsyncrc)
+accounts=($(for a in ${accounts[@]}; do [ "$a" != "Channel" ] && echo "$a"; done ))
+
+last_arg=${*: -1:1}
+
+for account in ${accounts[*]}; do
+  if [[ "$last_arg" =~ ^"$account"(:.+)?$ ]]; then
+    $PRESYNC ~/.imapfilter/"$account".lua
+    echo ""
+  fi
+done
+
+for argument in "$@"; do
+  if [[ "$argument" =~ ^-[a-zA-Z]*a[a-zA-Z]*$ ]] || [ "$argument" = "--all" ]; then
+    for account in ${accounts[*]}; do
+        $PRESYNC ~/.imapfilter/"$account".lua
+      echo ""
+    done
+    break
+  fi
+done
+
+$mbsync "$@"
+echo ""
+
+$POSTSYNC

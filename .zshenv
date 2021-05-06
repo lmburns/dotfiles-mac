@@ -12,7 +12,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_BIN_HOME="$HOME/bin"
 
-export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
+export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
 export RTV_BROWSER="w3m"
 export EDITOR='nvim'
 
