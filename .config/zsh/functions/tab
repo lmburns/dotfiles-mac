@@ -1,5 +1,4 @@
-#
-# Opens a new Terminal.app/iTerm.app tab in the current directory.
+# desc: open new terminal tab in current dir
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>

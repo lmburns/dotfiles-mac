@@ -931,10 +931,6 @@ nnoremap <leader>gp :Git push<CR>
   noremap  <Leader>ma :MagitO<Cr>
 " }}}
 
-" === Vim Gist === {{{
-  let g:gist_clip_command = 'pbcopy'
-"}}}
-
 " === gitgutter === {{{
   nmap ) <Plug>(GitGutterNextHunk)
   nmap ( <Plug>(GitGutterPrevHunk)

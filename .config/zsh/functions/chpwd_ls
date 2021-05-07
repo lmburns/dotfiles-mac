@@ -1,3 +1,5 @@
+# desc: func ran on every cd
+
 emulate -L zsh
 if [[ "$OLDPWD" != "$PWD" ]]; then
     exa -Fh --git --icons --group-directories-first

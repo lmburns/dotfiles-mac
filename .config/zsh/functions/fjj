@@ -1,4 +1,4 @@
-# desc autojump fzf
+# desc: autojump fzf
 
 if [[ "$#" -ne 0 ]]; then
     cd $(autojump $@)

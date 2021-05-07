@@ -1,3 +1,5 @@
+# desc: list download history
+
 emulate -L zsh
 
 function osx-ls-download-history {

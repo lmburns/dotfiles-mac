@@ -1,3 +1,5 @@
+# desc: swap files
+
 [[ ! -e "$1" || ! -e "$2" ]] && { print -r -- "The args do not exist"; return 1; }
 
 local suffix=$(( RANDOM % 10000 ))

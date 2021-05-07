@@ -1,3 +1,5 @@
+# desc: helper function for per-dir-hist
+
 emulate -L zsh
 
 dir_history=("${1%%$'\n'}" "${(u)dir_history[@]}" )

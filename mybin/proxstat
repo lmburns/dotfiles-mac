@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# desc: see if dnsmasq stuby privoxy are on
+
+sudo brew services list \
+  | perl -MTerm::ANSIColor=colored -lane 'print colored( sprintf("%-10s  ==>  %-10s", "$F[0]", "$F[1]"), "magenta") if /stubby|privoxy|dnsmasq/'

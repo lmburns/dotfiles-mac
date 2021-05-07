@@ -1,6 +1,4 @@
-# vim:ft=zsh:
-
-# desc fzf recent directories
+# desc: fzf recent directories
 
 frd() {
   dir=$(dirs -lp | fzf)
@@ -8,3 +6,5 @@ frd() {
 }
 
 frd
+
+# vim:ft=zsh:
