@@ -27,7 +27,7 @@ case "${1}" in
   prompt|"prompt chars") zmp "SIMPLE PROMPT ESCAPES$" ;;
   redir|red|redirection) zmp "REDIRECTION$" ;;
   bind|bindkey) zmp "STANDARD WIDGETS$" ;;
-  zparse|parse) zmm "       zparseopts$" ;;
+  zparse|parse) zmo "       zparseopts$" ;;
   b|built) zb ${2} ;;
   p|param) zp ${2} ;;
   s|subscript|sub) zs ${2} ;;

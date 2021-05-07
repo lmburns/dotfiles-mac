@@ -12,7 +12,8 @@ dotfiles
 - While holding <kbd>⇪ Caps lock</kbd>, pressing the following keys will do these actions:
 
 <details>
-<summary>Main Karabiner Mappings</summary>
+<summary>**Main Karabiner Mappings**</summary>
+
 | Key           | Action                                                    |
 | :-----        | :-----                                                    |
 | <kbd>j</kbd>  | down                                                      |
@@ -36,7 +37,8 @@ dotfiles
 </details>
 
 <details>
-<summary>Other Karabiner Mappings</summary>
+<summary>**Other Karabiner Mappings**</summary>
+
 | Other mappings                 | Action              |
 |--------------------------------|---------------------|
 | <kbd>Cmd</kbd> + <kbd>qq</kbd> | quit app            |
