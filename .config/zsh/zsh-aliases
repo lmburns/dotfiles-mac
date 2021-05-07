@@ -1,22 +1,16 @@
 # lucas' aliases
 
-pj() { perl -MCpanel::JSON::XS -0777 -E '$ip=decode_json <>;'"$@" ; }
-jqy() { yq r -j "$1" | jq "$2" | yq - r; }
-proxstat() { sudo brew services list | perl -MTerm::ANSIColor=colored -lane 'print colored( sprintf("%-10s  ==>  %-10s", "$F[0]", "$F[1]"), "magenta") if /stubby|privoxy|dnsmasq/' }
-
 alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
-alias wh="whence -f"
-alias wa="whence -va"
-alias wm="whence -m"
-
-alias dic='trans -d'
-
-alias keuze="keuze -fs 12 -fn Monaco"
-
-alias checkrootkits="sudo rkhunter --update; sudo rkhunter --propupd; sudo rkhunter --check"
-alias checkvirus="clamscan --recursive=yes --infected $HOME/"
+# === zsh-help ==============================================================
+alias lynx="lynx -vikeys -accept-all-cookies"
+alias hzmodif="lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers'"
+alias hzparam="lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion'"
+alias hzparamfl="lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags'"
+alias hzglobfl="lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Globbing-Flags'"
+alias hzglobqual="lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Glob-Qualifiers'"
+alias hzsubfl="lynx 'http://zsh.sourceforge.net/Doc/Release/Parameters.html#Subscript-Flags'"
 
 # === general ===================================================================
 # alias sudo='doas'
@@ -42,8 +36,9 @@ alias lss='exa -Flh --git --group-directories-first --icons'
 alias lsd='exa -D --icons'
 alias treed='exa -TL --icons'
 alias fdr='fd --changed-within=30m'
-alias fdr1='fd --changed-within=30m -d1'
-alias cx='chmod 755'
+alias fdrd='fd --changed-within=30m -d1'
+alias fdrr='fd --changed-within=1m'
+alias chx='chmod 755'
 alias lns='ln -siv'
 alias ka='killall'
 alias kid='kill -KILL'
@@ -53,15 +48,19 @@ alias prg="rg --pcre2"
 alias frg="rg -F"
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
-alias his='history | grep'
+alias wh="whence -f"
+alias wa="whence -va"
+alias wm="whence -m"
 
 # === configs ===================================================================
 alias nzsh="$EDITOR ${0:h}/.zshrc"
 alias azsh="$EDITOR ${0:h}/zsh-aliases"
 alias ezsh="$EDITOR $HOME/.zshenv"
-alias ninit="$EDITOR $XDG_CONFIG_HOME/$EDITOR/init.vim"
+alias ninit="$EDITOR $XDG_CONFIG_HOME/nvim/init.vim"
 alias nlfr="$EDITOR $XDG_CONFIG_HOME/lf/lfrc"
 alias ngit="$EDITOR $XDG_CONFIG_HOME/git/config"
+alias nyab="$EDITOR $XDG_CONFIG_HOME/yabai/yabairc"
+alias nskhd="$EDITOR $XDG_CONFIG_HOME/skhd/skhdrc"
 
 # === mail ======================================================================
 alias mwme='mw -y burnsac@me.com'
@@ -81,10 +80,11 @@ alias pyd="cd $HOME/projects/python"
 alias awkd="cd $HOME/projects/awk"
 alias optd="cd $HOME/opt"
 alias confd="cd $XDG_CONFIG_HOME"
+alias dotd="cd $HOME/opt/_dotfiles"
 alias locd="cd $XDG_DATA_HOME"
 alias docd="cd $HOME/Documents"
 alias downd="cd $HOME/Downloads"
-alias mbd="cd $XDG_BIN_HOME"
+alias mbd="cd $HOME/mybin"
 alias vwdir="cd $HOME/vimwiki"
 alias nvimd='cd /usr/local/share/nvim/runtime'
 
@@ -113,6 +113,8 @@ alias kck='keychain -k all'
 alias wifi='osx-wifi-cli'
 
 # === mac specific =============================================================
+alias keuze="keuze -fs 12 -fn Monaco"
+alias temp='osx-cpu-temp'
 alias nset='networksetup'
 alias snset='sudo networksetup'
 alias mute="osascript -e 'set volume output muted true'"
@@ -178,6 +180,10 @@ alias nnn='nnn -Caxe'
 alias lsn='nnn -deH'
 alias dmenu='open -a dmenu-mac'
 
+alias dic='trans -d'
+alias checkrootkits="sudo rkhunter --update; sudo rkhunter --propupd; sudo rkhunter --check"
+alias checkvirus="clamscan --recursive=yes --infected $HOME/"
+
 # === trash =====================================================================
 alias rm='rm -iv'
 # alias rr='rm -rf'
@@ -226,11 +232,5 @@ alias bruli='brew unlink'           brupa='brew unpack'         brupd='brew upda
 alias brupdr='brew update-reset'    brupg='brew upgrade'        brupi='brew unpin'
 alias bruse='brew uses'             bruta='brew untap'          brse='brew services'
 alias brseli='brew services list'   sbrse='sudo brew services'  brwh='brew which-formula'
-
-# === directories ================================================================
-alias -- -='cd -'
-alias 1='cd -'    2='cd -2'   3='cd -3'
-alias 4='cd -4'   5='cd -5'   6='cd -6'
-alias 7='cd -7'   8='cd -8'   9='cd -9'
 
 # vim:ft=zsh:

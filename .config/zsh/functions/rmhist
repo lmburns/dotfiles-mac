@@ -9,25 +9,26 @@ rmhist() {
     'u' '-undo'
 
   # remove a until n (range starting from 0)
-  if [[ "${opt[1]}" == -(r|-range) ]]; then
+  # if [[ "${opt[1]}" = -(r|-range) ]]; then
+  if (( ${+opts[(r)-r]} )) {
     local HISTORY_IGNORE="${(b)$(fc -ln $1 $2)}"
     print -Pl -- "%F{4}Line range:%f %F{2}$1 - $2%f %F{4}was deleted%f"
     fc -W && fc -p "$HISTFILE" "$HISTSIZE" "$SAVEHIST"
-  elif [[ "${opt[1]}" == -(n|-num) ]]; then
+  } elif (( ${+opt[(r)-n]} )) {
     # why does this convert to array-special "${(t)1}"
     # have to use negative numbers to access most recent
     local HISTORY_IGNORE="${(b)$(fc -ln $1 $1)}"
     print -Pl -- "%F{4}Line:%f %F{2}${1}%f -- %F{13}$(fc -ln $1 $1)%f %F{4}was deleted%f"
     fc -W && fc -p "$HISTFILE" "$HISTSIZE" "$SAVEHIST"
-  elif [[ "${opt[1]}" == -(u|-undo) ]]; then
+  } elif [[ "${opt[1]}" == -(u|-undo) ]] {
     cp "$hist_bak" "$HISTFILE"
-  else
+  } else {
     local line="$(fc -ln 1 | rg --line-number "${@}" | fzf)"
     local line_n="$(cut -d: -f1 <<< $line)"
     local HISTORY_IGNORE="${(b)$(fc -ln $line_n $line_n)}"
     fc -W && fc -p "$HISTFILE" "$HISTSIZE" "$SAVEHIST"
     print -Pl -- "%F{4}Line:%f %F{2}${line_n}%f -- %F{13}$(cut -d: -f2 <<< $line)%f %F{4}was deleted%f"
-  fi
+  }
 }
 
 rmhist "$@"

@@ -1,7 +1,7 @@
 # desc: Searches zshall with special keyword ($1) matching
 
 zmp() { man -P "less -p'^${@}'" zshall; }
-zmm() { man -P "less -p'^${@}'" zshmodules; }
+zmo() { man -P "less -p'^${@}'" zshmodules; }
 zb() { man -P "less -p'^       "$1" '" zshbuiltins; }
 
 # zp() { man -P "less -p'^       "$1" '" zshexpn; }
@@ -35,6 +35,7 @@ case "${1}" in
     print -P "%F{11}test, cond -- [[ -e ]]%f"
     print -P "%F{12}eg, examples%f"
     print -P "%F{11}pexpf, param exp -- \"\$ {(f)foo}\"%f"
+    print -P "%F{4}pexp, paramexp -- \"\$ {~foo}\"%f"
     print -P "%F{12}hexp, hist exp -- $ {var:h3}%f"
     print -P "%F{11}hflag, hist flags%f"
     print -P "%F{12}array, array param%f"
@@ -53,5 +54,7 @@ case "${1}" in
     print -P "%F{11}s, subscript -- $ {foo[(re)bar]}%f" ;;
   *) man -P "less -p'^ *$@ '" zshall ;;
 esac
+
+unset -f zmp zmo zb zp zs
 
 # vim:ft=zsh:et

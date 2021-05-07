@@ -11,6 +11,8 @@ dotfiles
 - To get <kbd>⇪ Caps lock</kbd> you need to press left <kbd>⇧ Shift</kbd> then right <kbd>⇧ Shift</kbd>
 - While holding <kbd>⇪ Caps lock</kbd>, pressing the following keys will do these actions:
 
+<details>
+<summary>Main Karabiner Mappings</summary>
 | Key           | Action                                                    |
 | :-----        | :-----                                                    |
 | <kbd>j</kbd>  | down                                                      |
@@ -31,11 +33,16 @@ dotfiles
 | <kbd>J</kbd>  | <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>←</kbd> |
 | <kbd>K</kbd>  | <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>→</kbd> |
 
-|--------------------------------|---------------------|
+</details>
+
+<details>
+<summary>Other Karabiner Mappings</summary>
 | Other mappings                 | Action              |
 |--------------------------------|---------------------|
 | <kbd>Cmd</kbd> + <kbd>qq</kbd> | quit app            |
 | <kbd>Cmd</kbd> + <kbd>ww</kbd> | close window of app |
+
+</details>
 
 The <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings are significant if you have this sequence mapped to changing tabs in iTerm.  I just find this a little easier to do instead of moving my fingers off of the home row.
 
@@ -185,17 +192,22 @@ The <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings a
 | <kbd>Leader</kbd> + <kbd>I</kbd>      | jump between markdown headers           | n     |
 | <kbd>Leader</kbd> + <kbd>nv</kbd>     | edit `$MYVIMRC`                         | n     |
 | <kbd>Leader</kbd> + <kbd>mcs</kbd>    | open mkdx cheatsheet                    | n     |
+| <kbd>Leader</kbd> + <kbd>o</kbd>      | wrap word in `(["'` etc.              | n     |
+| <kbd>Leader</kbd> + <kbd>ci</kbd>     | change ` to `*`                         | n     |
 
 ### Functions
 | Function      | Action                                       |
 | :------------ | :----------                                  |
-| `SQ`            | SyntaxQuery - get syntax attributes of hover |
-| `IndentSize`    | set file specific indents                    |
-| `Format`        | format current buffer                        |
-| `Fold`          | fold current buffer                          |
-| `OR`            | organize imports current buffer              |
-| `Conf`          | fuzzy find ~/.config                         |
-| `Dots`          | dotbare (dotfile manager) edit files         |
+| `SQ`          | `SyntaxQuery` - get syntax attributes of hover |
+| `IndentSize`  | set file specific indents                    |
+| `Format`      | format current buffer                        |
+| `Fold`        | fold current buffer                          |
+| `OR`          | organize imports current buffer              |
+| `Conf`        | fuzzy find `~/.config`                       |
+| `Dots`        | `dotbare` (dotfile manager) edit files       |
+| `EE`          | create dir like `mkdir -p`                   |
+| `RipgrepFZF`  | `:RG` with preview                           |
+| `PlugHelp`    | `fzf` all docs for plugins                   |
 
 ==========================================================
 ## [Scripts](mybin)

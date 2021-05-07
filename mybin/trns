@@ -1,12 +1,6 @@
 #!/usr/bin/env zsh
 
-# Check zshmodules
-
-# Parse the following command-line arguments as options
-
-# Note on `-a`:
-# Specify the name of where to save parsed options
-# In this case, into an array named `option`
+# desc: transission wrapper
 
 # Note on `-D`:
 # if an option is detected, remove it from

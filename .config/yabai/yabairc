@@ -41,6 +41,7 @@ yabai -m rule --add app="^Netiquette$" sticky=on layer=above manage=off
 yabai -m rule --add app="Bear" manage=off layer=above
 yabai -m rule --add app="^iTerm2$" manage=on
 yabai -m rule --add app="^DaisyDisk$" sticky=on layer=above manage=off
+yabai -m rule --add app="KnockKnock" sticky=on layer=above manage=off
 yabai -m rule --add app="^Flux$" manage=off
 
 # === global settings ========================================================
@@ -79,6 +80,9 @@ yabai -m config bottom_padding                  "${gaps}"
 yabai -m config left_padding                    "${gaps}"
 yabai -m config right_padding                   "${gaps}"
 yabai -m config window_gap                      "${gaps_inner}"
+
+# === statusbar =============================================================
+yabai -m config status_bar_space_icon_strip  I II III IV V VI VII VIII IX X
 
 # focus on next window when closing
 # yabai -m signal --add event=window_destroyed action="bash "$HOME/mybin/yabai/winfocus.sh""

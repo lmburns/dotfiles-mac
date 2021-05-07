@@ -192,7 +192,7 @@ zt 0c light-mode null for \
     @mvdan/xurls \
   lbin'bin/*' dl"$(grman man/)" lman \
     mklement0/perli \
-  lbin from'gh-r' \
+  lbin'q -> dq' from'gh-r' \
     natesales/q \
   lbin'a*.pl -> arranger' \
   atclone'mkdir -p $XDG_CONFIG_HOME/arranger; cp *.conf $XDG_CONFIG_HOME/arranger' \
@@ -200,9 +200,7 @@ zt 0c light-mode null for \
   lbin'lax' atclone'cargo install --path .' \
     Property404/lax \
   lbin'desed' atclone'cargo install --path .' dl"$(grman)" lman \
-    SoptikHa2/desed \
-  lbin'chmap' from'gh-r' lman'chmap.1' \
-    lptstr/chmap
+    SoptikHa2/desed
 
 # /gruntwork-io/git-xargs
 
@@ -210,7 +208,8 @@ zt light-mode is-snippet for \
   $ZDOTDIR/csnippets/*.zsh \
   OMZ::plugins/git \
   OMZ::plugins/iterm2 \
-  atload'unalias ofd && alias ofd="open $PWD"' mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
+  atload'unalias ofd && alias ofd="open $PWD"' \
+  mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
     OMZ::plugins/osx
 
 # }}}
@@ -229,7 +228,7 @@ stty susp '^Z'
 stty stop undef
 stty discard undef <$TTY >$TTY
 zmodload zsh/zprof
-autoload +X zm
+autoload +X zman
 # ztodo
 autoload -Uz zmv zcalc zargs zed
 alias zmv='noglob zmv -W'
@@ -366,7 +365,9 @@ moncore() { fswatch --event-flags /cores/ | xargs -I{} terminal-notifier -messag
 e() { lax nvim "@${1}"; }
 macfeh() { open -b "drabweb.macfeh" "$@"; }
 time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
-profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof; }
+profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof | bat; }
+pj() { perl -MCpanel::JSON::XS -0777 -E '$ip=decode_json <>;'"$@" ; }
+jqy() { yq r -j "$1" | jq "$2" | yq - r; }
 # }}}
 
 # === helper functions === {{{

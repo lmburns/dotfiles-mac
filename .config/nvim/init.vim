@@ -24,7 +24,6 @@
   Plug 'vimwiki/vimwiki'
   Plug 'SidOfc/mkdx'
   Plug 'junegunn/goyo.vim'
-  Plug 'sslivkoff/vim-scroll-barnacle'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
   Plug 'zhou13/vim-easyescape'
@@ -43,7 +42,7 @@
   " Git
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
-  Plug 'mattn/vim-gist'
+  " Plug 'mattn/vim-gist'
   Plug 'jreybert/vimagit'
   Plug 'mbbill/undotree'
 
@@ -63,17 +62,18 @@
 
   " Themes
   Plug 'franbach/miramare'
-  Plug 'Rigellute/rigel'
-  Plug 'AlessandroYorba/Alduin'
+  " Plug 'Rigellute/rigel'
+  " Plug 'AlessandroYorba/Alduin'
+  " Plug 'lifepillar/vim-gruvbox8'
   Plug 'ackyshake/Spacegray.vim'
   Plug 'gavinok/spaceway.vim'
   Plug 'bluz71/vim-nightfly-guicolors'
   Plug 'savq/melange'
   Plug 'ajmwagar/vim-deus'
   Plug 'lmburns/kimbox'
+  Plug '1612492/github.vim'
   Plug 'nanotech/jellybeans.vim'
   Plug 'cocopon/iceberg.vim'
-  Plug 'lifepillar/vim-gruvbox8'
   Plug 'morhetz/gruvbox'
   Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/edge'
@@ -124,6 +124,7 @@
   " let g:gruvbox_material_background = 'hard'
   let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
+  let g:gruvbox_material_diagnostic_virtual_text = 1
 
   " let g:kimbox_background = 'medium' " brown
   " let g:kimbox_background = 'darker' " dark dark purple
@@ -171,12 +172,12 @@
   " colorscheme spaceduck
   colorscheme kimbox
   " colorscheme material
-  " colorscheme deus
   " colorscheme everforest
-  " colorscheme jellybeans
-  " colorscheme iceberg
   " colorscheme oceanic_material
   " colorscheme gruvbox-material
+  " colorscheme jellybeans
+  " colorscheme iceberg
+  " colorscheme deus
   " colorscheme miramare
   " colorscheme nightfly
   " colorscheme melange
@@ -355,9 +356,6 @@
   " close quickfix
   nnoremap <Leader>qc :cclose<CR>
   " toggle scrollbar
-  nnoremap <Leader>sb :ScrollbarToggle<CR>
-  let g:sb_default_behavior = "off"
-
 
   " Enable Goyo by default for mutt writing
   " autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
@@ -914,6 +912,8 @@ nnoremap <leader>gp :Git push<CR>
   " let g:airline#extensions#hunks#enabled = 0
   set laststatus=2
   let g:airline_theme='srcery'
+  " let g:airline_theme='gruvbox_material'
+  " let g:gruvbox_material_statusline_style='mix'
   " let g:airline_theme='base16_twilight'
   " let g:airline_theme='iceberg'
 " }}}
@@ -944,6 +944,7 @@ nnoremap <leader>gp :Git push<CR>
 "}}}
 
 " === vim surround === {{{
+  nmap <Leader>ci cs`*
   nmap <Leader>o ysiw
   nmap mlw yss`
 "}}}

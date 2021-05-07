@@ -1,11 +1,13 @@
 # desc: grep history
 
 hgrep() {
-  local cmd
+  local cmd sel
   zparseopts -D -a opt 'f' '-fzf'
   cmd='fc -lnr 1 | rg "${@}"'
   if [[ "${opt[1]}" == -(f|-fzf) ]] cmd="${cmd} | fzf"
-  eval "$cmd"
+  sel="$(eval "$cmd")"
+  pbcopy <<< "$sel"
+  print -P "%F{2}${sel}%F"
 }
 
 hgrep "$@"

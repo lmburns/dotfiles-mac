@@ -1,0 +1,92 @@
+#!/usr/bin/env zsh
+
+# desc: search zshall more efficiently
+
+setopt localoptions extendedglob
+
+man() {
+  env \
+    LESS_TERMCAP_md=$(tput setaf 14) \
+    LESS_TERMCAP_me=$(tput sgr0) \
+    LESS_TERMCAP_mb=$(tput blink) \
+    LESS_TERMCAP_us=$(tput setaf 124) \
+    LESS_TERMCAP_ue=$(tput sgr0) \
+    LESS_TERMCAP_so=$(tput smso) \
+    LESS_TERMCAP_se=$(tput rmso) \
+    PAGER="${commands[less]:-$PAGER}" \
+    man "$@"
+}
+
+# zp() { man -P "less -p'^       "$1" '" zshexpn; }
+# zs() { man -P "less -p'^       "$1" '" zshparam; }
+
+zmp() { man -P "less -p'^${@}'" zshall; }
+zmo() { man -P "less -p'^${@}'" zshmodules; }
+zb() { man -P "less -p'^       "$1" '" zshbuiltins; }
+zp() { man -P "less -p'^       ${1/#[ewspfrRiInbkK]/"${1}"} '" zshexpn; }
+zs() { man -P "less -p'^       ${1/#[AacCefFikLnoOPqQtuUvVwWXzpjslrSIBEMNR]/"${1}"} '" zshparam; }
+
+lopts=(test example pf pexpf pexp paramexp he histexp hf histflags arrparam arrsubscript help)
+lopts+=(arsf arrflag complex glob opts sopts 1opts prompt promptchars redir bind bindkey zparse)
+
+zparseopts -D -E -a opts ${(s::):-teacgorzh} \
+  ${lopts//(#m)*/\-${MATCH}} \
+  ${${(@)${(s::):-bps}//(#m)*/${MATCH}\:\=opts}}
+
+  # b:=opts p:=opts s:=opts
+  # ${(j.:=opts .)${(s::):-bps}}:=opts
+  # "${${(@)${(s::):-bps}//(#m)*/${MATCH}\:\=opts}}"
+
+  # 'b' 'built' \
+  # 'p' 'param' \
+  # 's' 'subscript' \
+  # 'h' 'help'
+
+builtin set -- ${@:#--}
+
+case ${opts[1]} in
+  -t|--test) zmp "CONDITIONAL EXPRESSIONS$" ;;
+  -e|--exmple) zmp "   Examples$" ;;
+  --pf|--pexpf) zmp "   Parameter Expansion Flags$" ;;
+  --pexp|--paramexp) zmp "PARAMETER EXPANSION$" ;;
+  --he|--histexp) zmp "HISTORY EXPANSION$" ;;
+  --hf|--histflags) zmp "   Modifiers$" ;;
+  -a|--arrparam) zmp "ARRAY PARAMETERS$" ;;
+  --ars|--arrsubscript|"array subscripts") zmp "   Array Subscripts$" ;;
+  --arsf|-a-rrflag|"arr flags"|"array flags") zmp "   Subscript Flags$" ;;
+  -c|--complex) zmp "COMPLEX COMMANDS$" ;;
+  -g|--glob) zmp "   Globbing Flags$" ;;
+  -o|--opts) zmp "DESCRIPTION OF OPTIONS$" ;;
+  --sopts|--1opts) zmp "SINGLE LETTER OPTIONS$" ;;
+  --prompt|--promptchars) zmp "SIMPLE PROMPT ESCAPES$" ;;
+  -r|--redir) zmp "REDIRECTION$" ;;
+  --bind|--bindkey) zmp "STANDARD WIDGETS$" ;;
+  -z|--zparse) zmo "       zparseopts$" ;;
+  -b) zp "${opts[2]}" ;;
+  -p) zp "${opts[2]}" ;;
+  -s) zs "${opts[2]}" ;;
+  -h|--help)
+    print -P "%F{2}-t, --test -- [[ -e ]]%f"
+    print -P "%F{4}-e, --example%f"
+    print -P "%F{2}--pf, --pexpf -- \"\$ {(f)foo}\"%f"
+    print -P "%F{4}--pexp, --paramexp -- \"\$ {~foo}\"%f"
+    print -P "%F{2}--he, --histexp -- $ {var:h3}%f"
+    print -P "%F{4}--hf, histflags%f"
+    print -P "%F{2}-a, --arrparam%f"
+    print -P "%F{4}--ars, --arrsubscript%f"
+    print -P "%F{2}--arsf, --arrflag -- $ {array[(i)pattern]}%f"
+    print -P "%F{4}-c, --complex%f"
+    print -P "%F{2}-g, --glob -- (#X)%f"
+    print -P "%F{4}-o, --opts -- AUTO_CD%f"
+    print -P "%F{2}--sopts, --1opts%f"
+    print -P "%F{4}--prompt, --promptchars -- %%B%f"
+    print -P "%F{2}-r, --redir%f"
+    print -P "%F{4}--bind --bindkey -- vi-backward-kill%f"
+    print -P "%F{2}-z, --zparse%f"
+    print -P "%F{4}b, built -- echoti%f"
+    print -P "%F{2}p, param -- $ {var:h}, $ {(f)foo}%f"
+    print -P "%F{4}s, subscript -- $ {foo[(re)bar]}%f" ;;
+  *) man -P "less -p'^ *$@ '" zshall ;;
+esac
+
+# vim:ft=zsh:et

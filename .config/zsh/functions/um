@@ -1,4 +1,5 @@
-# desc: colorize um man pages
+# desc: wrapper to colorize um man pages
+
 # taken from colorized man pages
 # ks       make the keypad send commands
 # ke       make the keypad send digits
