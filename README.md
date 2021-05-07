@@ -25,7 +25,7 @@ There are several more configuration file than the ones listed in contents. Thes
 
 #### Displayed Colors
 
-| Background / Foreground                                         | Red                                                             | Green                                                           | Yellow                                                          | Blue                                                            | Magenta                                                         | Cyan                                                            |
+| {back,fore}ground                                               | Red                                                             | Green                                                           | Yellow                                                          | Blue                                                            | Magenta                                                         | Cyan                                                            |
 | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
 | #221a02                                                         | #f79a32                                                         | #088649                                                         | #f79a32                                                         | #733e8b                                                         | #7e5053                                                         | #088649                                                         |
 | ![#221a02](https://via.placeholder.com/80/221a02/000000?text=+) | ![#f79a32](https://via.placeholder.com/80/f79a32/000000?text=+) | ![#088649](https://via.placeholder.com/80/088649/000000?text=+) | ![#f79a32](https://via.placeholder.com/80/f79a32/000000?text=+) | ![#733e8b](https://via.placeholder.com/80/733e8b/000000?text=+) | ![#7e5053](https://via.placeholder.com/80/7e5053/000000?text=+) | ![#088649](https://via.placeholder.com/80/088649/000000?text=+) |
@@ -323,7 +323,7 @@ The <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings a
 + [`zsh-aliases`](.config/zsh/zsh-aliases)
 
 ```sh
- $ pflist                                                 【 ~/.conf/zs/functions】─╯
+ $ pflist                                                 【  ~/.conf/zs/functions】─╯
 ======================================================================================
 @append_dir-history-var    helper function for per-dir-hist
 @chwpd_dir-history-var     helper function for per-dir-hist
@@ -396,7 +396,7 @@ ztes                       Searches zshall with special keyword () matching
 ### <a name="all-scripts"></a>All Scripts
 
 ```sh
- $ pblist                                                                              【 ~/mybin】─╯
+ $ pblist                                                                              【  ~/mybin】─╯
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 backup_calcurse      bash      backup calcurse reminders
 backup_crontab       sh        backup crontab
@@ -432,7 +432,7 @@ image-mag-gen        sh        search for font files and add to imagemagick
 index-gen            bash      generate template for my website when creating new repo
 jupsync              sh        sync jupyter notebook and python file
 killport             sh        kills all processes running on the specified port
-launchd-creator      bash    generate launch daemon/agent
+launchd-creator      bash      generate launch daemon/agent
 lctl                 bash      a launchctl wrapper
 lf-chdir             bash      change directories with lf file manager
 lf-select            sh        reads file names from stdin and selects them in lf
@@ -477,7 +477,7 @@ rmcrap               bash      deletes .DS_Store and __MACOSX directories
 rotdir               sh        rotate image order with sxiv
 rssadd               sh        add rss feed to newsboat
 santa-rules          bash      whitelist/blacklist apps with santactl
-santa-uninstall      bash     uninstall santa-ctl
+santa-uninstall      bash      uninstall santa-ctl
 shortcuts            sh        update all shortcuts when one file is updated
 small_funcs          bash      list of all kinds of small functions to work on
 srv-bkp              bash      backup server
@@ -485,7 +485,7 @@ srv-up               bash      backup server
 synctask             bash      sync tasks from taskwarrior to Reminders.app
 take                 zsh       create directory and cd into it
 todos                sh        grep for vim comments
-tomb                 bash     tomb but for macOS
+tomb                 bash      tomb but for macOS
 tordone              bash      notifier of finished torrent
 torque               bash      torque - minimal tui for transmission-daemon
 transadd             bash      add torrent to transmission
@@ -531,7 +531,8 @@ Options:
     -t, --theme             Change syntax highlighting theme (gruvbox default)
 ```
 
-================================================
+---
+
 ## `chgmac`
 
 Change MAC address randomly or interactively. Can specify interface as well.
@@ -550,7 +551,8 @@ Options:
     -h, --help              Print this help message and exit
 ```
 
-================================================
+---
+
 ### `rmcrap`
 
 Deletes `.DS_Store` files and `__MACOSX` directories recursively.
@@ -562,8 +564,8 @@ Options:
     -s, --show     Show tree diagram of what rmcrap is removing
     -c, --count    Show count of .DS_Store and __MACOSX removed
 ```
+---
 
-================================================
 ### `cps`
 
 Whenever you track your dotfiles with a git bare repo you are unable to use `xargs` to push changes to all remotes.
@@ -577,7 +579,8 @@ The remote names can be changed.
 
 **Usage**: `cps`
 
-================================================
+---
+
 ### `grm`, `index-gen`, & `post-receive`
 
 `grm` is a git repo manager that I modified to fit my needs. It can create repos, list repos, recompile repos for `stagit`. See `grm -h` for help with all the commands.
@@ -591,7 +594,8 @@ alias grm='ssh git@host_name -- grm'
 
 `index-gen` is used in combination with `grm` to generate an index.html file for my website.
 
-================================================
+---
+
 ### `update_block`
 
 A script that updates block lists for `dnsmasq`, prints out the date the block list was updated, sets the DNS servers to `127.0.0.1` and `::1`, and then checks my website for DNSSEC validation by printing the flags needed for verification.
