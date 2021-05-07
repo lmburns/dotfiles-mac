@@ -11,7 +11,7 @@ for (( pass = 1; pass <= 2; ++ pass )); do
   files=( $HOME/mybin/*(N) )
   if (( pass == 2 )); then
     if (( ${#files[@]} )); then
-      print -Pr -- "%F{5}${(l:longest+longest2+longest3::+:):-}%f"
+      print -Pr -- "%F{5}${(l:longest+longest2+longest3::=:):-}%f"
     fi
   fi
   for file in "${files[@]}"; do
@@ -33,7 +33,7 @@ for (( pass = 1; pass <= 2; ++ pass )); do
     fi
   done
   if (( pass == 2 )); then
-    print -Pr -- "%F{5}${(l:longest+longest2+longest3::+:):-}%f"
+    print -Pr -- "%F{5}${(l:longest+longest2+longest3::=:):-}%f"
   fi
 done
 
