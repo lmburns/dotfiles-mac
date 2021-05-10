@@ -1,12 +1,15 @@
 --theme="KimbieDark"
+# --theme="gruvbox-dark"
+# --theme="kimbie"
 --italic-text=always
 
 # Disable automatic paging:
 #--paging=never
 # --style="auto"
 --style="header,grid"
+
 --map-syntax "*.ino:C++"
 --map-syntax ".ignore:Git Ignore"
---map-syntax='*.conf:INI'
+--map-syntax "h:cpp"
 
 # alias cat="bat --theme=\$(defaults read -globalDomain AppleInterfaceStyle &> /dev/null && echo default || echo GitHub)"

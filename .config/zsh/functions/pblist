@@ -20,7 +20,8 @@ for (( pass = 1; pass <= 2; ++ pass )); do
     desc=( "${(M)lines[@]:#${header}*}" )
     shtype=( "${(M)lines[@]:#${shtypeM}*}" )
     desc[1]="${desc[1]#$header}"
-    shtype[1]="${${${shtype[1]#${shtype}*bin}:t}//env /}"
+    shtype[1]="${${(S)${shtype[1]#${shtype}*bin}:t}#env }"
+    # ${${${shtype[1]#${shtype}*bin}:t}//env /}
     file="${file:t}"
     [[ "$file" = (LICENSE|README.md) ]] && continue
     if (( pass == 1 )); then

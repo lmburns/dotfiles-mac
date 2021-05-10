@@ -3,24 +3,25 @@
 rmhist() {
   local hist_bak="${HISTFILE}.bak"
   cp "$HISTFILE" "$hist_bak"
-  zparseopts -D -a opt \
+  zparseopts -D -a opts \
     'r' '-range' \
     'n' '-num' \
     'u' '-undo'
 
   # remove a until n (range starting from 0)
   # if [[ "${opt[1]}" = -(r|-range) ]]; then
-  if (( ${+opts[(r)-r]} )) {
+  # if [[ ${+opts[(r)-r]} = 1 || ${+opts[(r)--range]} = 1 ]] {
+  if (( ${+opts[(r)-r]} )) || (( ${+opts[(r)--range]} )) {
     local HISTORY_IGNORE="${(b)$(fc -ln $1 $2)}"
     print -Pl -- "%F{4}Line range:%f %F{2}$1 - $2%f %F{4}was deleted%f"
     fc -W && fc -p "$HISTFILE" "$HISTSIZE" "$SAVEHIST"
-  } elif (( ${+opt[(r)-n]} )) {
+  } elif (( ${+opts[(r)-n]} )) || (( ${+opts[(r)--num]} )) {
     # why does this convert to array-special "${(t)1}"
     # have to use negative numbers to access most recent
     local HISTORY_IGNORE="${(b)$(fc -ln $1 $1)}"
     print -Pl -- "%F{4}Line:%f %F{2}${1}%f -- %F{13}$(fc -ln $1 $1)%f %F{4}was deleted%f"
     fc -W && fc -p "$HISTFILE" "$HISTSIZE" "$SAVEHIST"
-  } elif [[ "${opt[1]}" == -(u|-undo) ]] {
+  } elif (( ${+opts[(r)-u]} )) || (( ${+opts[(r)--undo]} )) {
     cp "$hist_bak" "$HISTFILE"
   } else {
     local line="$(fc -ln 1 | rg --line-number "${@}" | fzf)"

@@ -24,6 +24,8 @@
   Plug 'vimwiki/vimwiki'
   Plug 'SidOfc/mkdx'
   Plug 'junegunn/goyo.vim'
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
   Plug 'zhou13/vim-easyescape'
@@ -47,6 +49,7 @@
   Plug 'mbbill/undotree'
 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'antoinemadec/coc-fzf'
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -65,6 +68,7 @@
   " Plug 'Rigellute/rigel'
   " Plug 'AlessandroYorba/Alduin'
   " Plug 'lifepillar/vim-gruvbox8'
+  " Plug 'morhetz/gruvbox'
   Plug 'ackyshake/Spacegray.vim'
   Plug 'gavinok/spaceway.vim'
   Plug 'bluz71/vim-nightfly-guicolors'
@@ -74,7 +78,6 @@
   Plug '1612492/github.vim'
   Plug 'nanotech/jellybeans.vim'
   Plug 'cocopon/iceberg.vim'
-  Plug 'morhetz/gruvbox'
   Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/edge'
   Plug 'sainnhe/sonokai'
@@ -121,10 +124,9 @@
   let maplocalleader = ','                      " For NVim-R
 
   let g:gruvbox_material_palette = 'mix'
-  " let g:gruvbox_material_background = 'hard'
-  let g:gruvbox_material_background = 'medium'
+  let g:gruvbox_material_background = 'hard'
+  " let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_enable_bold = 1
-  let g:gruvbox_material_diagnostic_virtual_text = 1
 
   let g:kimbox_background = 'deep'
   " let g:kimbox_background = 'medium' " brown
@@ -171,11 +173,11 @@
 
   syntax enable
   " colorscheme spaceduck
-  colorscheme kimbox
+  " colorscheme kimbox
   " colorscheme material
   " colorscheme everforest
   " colorscheme oceanic_material
-  " colorscheme gruvbox-material
+  colorscheme gruvbox-material
   " colorscheme jellybeans
   " colorscheme iceberg
   " colorscheme deus
@@ -242,10 +244,10 @@
 
   " save using <C-s> in every mode
   " when in operator-pending or insert, takes you to normal mode
-  nnoremap <C-s> :write<Cr>
-  vnoremap <C-s> <C-c>:write<Cr>
-  inoremap <C-s> <Esc>:write<Cr>
-  onoremap <C-s> <Esc>:write<Cr>
+  " nnoremap <C-s> :write<Cr>
+  " vnoremap <C-s> <C-c>:write<Cr>
+  " inoremap <C-s> <Esc>:write<Cr>
+  " onoremap <C-s> <Esc>:write<Cr>
 
   " Replace all is aliased to S.
   nnoremap S :%s//g<Left><Left>
@@ -548,6 +550,8 @@
 
   " prettier command for coc
   command! -nargs=0 Prettier :CocCommand prettier.formatFile
+  let g:coc_fzf_opts = ['--no-border', '--layout=reverse-list']
+  noremap <C-x><C-l> :CocFzfList<cr>
   let g:coc_global_extensions = [
     \ 'coc-snippets',
     \ 'coc-pairs',
@@ -566,10 +570,10 @@
     \ 'coc-git',
     \ 'coc-sql',
     \ 'coc-perl',
-    \ 'coc-xml'
-    \ ]
-
-  " let g:coc_global_extensions += ['https://github.com/andys8/vscode-jest-snippets']
+    \ 'coc-xml',
+    \ 'coc-fzf-preview',
+    \ 'coc-syntax',
+      \ ]
 
   let g:coc_explorer_global_presets = {
       \ 'config': {
@@ -645,16 +649,16 @@
     endif
   endfunction
 
-  inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+  " inoremap <silent><expr> <TAB>
+  "     \ pumvisible() ? "\<C-n>" :
+  "     \ <SID>check_back_space() ? "\<TAB>" :
+  "     \ coc#refresh()
+  " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-  endfunction
+  " function! s:check_back_space() abort
+  "   let col = col('.') - 1
+  "   return !col || getline('.')[col - 1]  =~# '\s'
+  " endfunction
 
   " Make <CR> auto-select the first completion item and notify coc.nvim to
   " format on enter, <cr> could be remapped by other vim plugin
@@ -744,7 +748,23 @@
           \ . shellescape(<q-args>),
           \ 1,
           \ {'options':  '--delimiter : --nth 4..'},
-          \ 0)
+          \ 0),
+          \ fzf#vim#with_preview(g:fzf_vim_opts, 'right:60%:default'), <bang>0)
+
+  command! -bang Colors
+    \ call fzf#vim#colors(g:fzf_vim_opts, <bang>0)
+  command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>,
+    \ fzf#vim#with_preview(g:fzf_vim_opts, 'right:60%:default'), <bang>0)
+  command! -bang Buffers
+    \ call fzf#vim#buffers(
+    \ fzf#vim#with_preview(g:fzf_vim_opts, 'right:60%:default'), <bang>0)
+
+  " command! -bang -nargs=* Rg
+  "   \ call fzf#vim#grep(
+  "   \   'rg --column --line-number --no-heading '
+  "     \ . '--color=always --smart-case -- '.shellescape(<q-args>), 1,
+  "   \   fzf#vim#with_preview(g:fzf_vim_opts, 'right:60%:default'), <bang>0)
 
   " RG with preview
   function! RipgrepFzf(query, fullscreen)
@@ -754,14 +774,16 @@
     let reload_command = printf(command_fmt, '{q}')
     let spec = {'options':
       \ ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-    call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+    call fzf#vim#grep(initial_command, 1,
+      \ fzf#vim#with_preview(spec), a:fullscreen)
   endfunction
 
   command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
   " dotbare (dotfile manager) - edit file
   command! Dots call fzf#run(fzf#wrap({
-  \ 'source': 'dotbare ls-files --full-name --directory "${DOTBARE_TREE}" | awk -v home="${DOTBARE_TREE}/" "{print home \$0}"',
+  \ 'source': 'dotbare ls-files --full-name --directory "${DOTBARE_TREE}" '
+    \ . '| awk -v home="${DOTBARE_TREE}/" "{print home \$0}"',
   \ 'sink': 'e',
   \ 'options': [ '--multi', '--preview', 'cat {}' ]
   \ }))
@@ -804,18 +826,20 @@
   nnoremap <silent> <Leader>hf :History<CR>
   " search history
   nnoremap <silent> <Leader>hs :History/<CR>
-  " mappings
   nnoremap <silent> <Leader>mm :Maps<CR>
-  " colorschemes
   nnoremap <silent> <Leader>cs :Colors<CR>
+  nnoremap <silent> <Leader>ls :LS<CR>
 
   " let g:fzf_preview_window = ''
   let g:fzf_history_dir = '~/.local/share/fzf-history'
   let g:fzf_layout         = { 'down': '~40%' }
+  let g:fzf_vim_opts = {'options': ['--no-border']} "
+  let g:fzf_buffers_jump = 1
   let g:fzf_action = {
     \ 'ctrl-t': 'tab split',
     \ 'ctrl-x': 'split',
-    \ 'ctrl-v': 'vsplit'
+    \ 'ctrl-v': 'vsplit',
+    \ 'ctrl-m': 'edit',
     \}
 " }}}
 
@@ -912,8 +936,8 @@ nnoremap <leader>gp :Git push<CR>
   " let g:airline#extensions#tabline#show_tabs = 0
   " let g:airline#extensions#hunks#enabled = 0
   set laststatus=2
-  let g:airline_theme='srcery'
-  " let g:airline_theme='gruvbox_material'
+  " let g:airline_theme='srcery'
+  let g:airline_theme='gruvbox_material'
   " let g:gruvbox_material_statusline_style='mix'
   " let g:airline_theme='base16_twilight'
   " let g:airline_theme='iceberg'
@@ -1290,7 +1314,6 @@ endif
 " === vimtex === {{{
   let g:vimtex_view_method = 'zathura'
   let g:tex_flavor='latex'
-  " set conceallevel=1
   " let g:vimtex_compiler_latexmk = {
   "       \ 'executable' : 'latexmk',
   "       \ 'options' : [
@@ -1300,15 +1323,64 @@ endif
   "       \   '-interaction=nonstopmode',
   "       \ ],
   "       \}
-  augroup vimrc
-    autocmd!
-    autocmd InsertEnter *.tex set conceallevel=0
-    autocmd InsertLeave *.tex set conceallevel=2
-  augroup END
+  " augroup vimrc
+  "   autocmd!
+  "   autocmd InsertEnter *.tex set conceallevel=0
+  "   autocmd InsertLeave *.tex set conceallevel=2
+  " augroup END
 "}}}
 
 source ~/.config/nvim/indentline.vim
 
-" ====
+" ==== UltiSnips == {{{
+let g:UltiSnipsExpandTrigger='<tab>'
+let g:UltiSnipsJumpForwardTrigger='<C-j>'
+let g:UltiSnipsJumpBackwardTrigger='<C-k>'
+let g:UltiSnipsListSnippets="<C-s>"
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit='horizontal'
+" autocmd Filetype snippet set shiftwidth=4
+" }}} ultisnips && vim-snippets "
 
 " autocmd CursorHold * update
+
+" let g:gruvbox_material_palette = {
+"             \ 'bg0':              ['#282828', '235'],
+"             \ 'bg1':              ['#32302f', '236'],
+"             \ 'bg2':              ['#32302f', '236'],
+"             \ 'bg3':              ['#45403d', '237'],
+"             \ 'bg4':              ['#45403d', '237'],
+"             \ 'bg5':              ['#5a524c', '239'],
+"             \ 'bg_statusline1':   ['#32302f', '236'],
+"             \ 'bg_statusline2':   ['#3a3735', '236'],
+"             \ 'bg_statusline3':   ['#504945', '240'],
+"             \ 'bg_diff_green':    ['#34381b', '22'],
+"             \ 'bg_visual_green':  ['#3b4439', '22'],
+"             \ 'bg_diff_red':      ['#402120', '52'],
+"             \ 'bg_visual_red':    ['#4c3432', '52'],
+"             \ 'bg_diff_blue':     ['#0e363e', '17'],
+"             \ 'bg_visual_blue':   ['#374141', '17'],
+"             \ 'bg_visual_yellow': ['#4f422e', '94'],
+"             \ 'bg_current_word':  ['#2e3b3b', '237'],
+"             \ 'fg0':              ['#d4be98', '223'],
+"             \ 'fg1':              ['#ddc7a1', '223'],
+"             \ 'red':              ['#ea6962', '167'],
+"             \ 'orange':           ['#e78a4e', '208'],
+"             \ 'yellow':           ['#d8a657', '214'],
+"             \ 'green':            ['#a9b665', '142'],
+"             \ 'aqua':             ['#89b482', '108'],
+"             \ 'blue':             ['#7daea3', '109'],
+"             \ 'purple':           ['#d3869b', '175'],
+"             \ 'bg_red':           ['#ea6962', '167'],
+"             \ 'bg_green':         ['#a9b665', '142'],
+"             \ 'bg_yellow':        ['#d8a657', '214'],
+"             \ 'grey0':            ['#7c6f64', '243'],
+"             \ 'grey1':            ['#928374', '245'],
+"             \ 'grey2':            ['#a89984', '246'],
+"             \ 'none':             ['NONE',    'NONE']
+"             \ }
+
+highlight Normal guibg=none
+highlight NonText guibg=none
+highlight LineNr guibg=none
+highlight SignColumn guibg=none

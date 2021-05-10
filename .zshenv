@@ -51,6 +51,7 @@ export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
 export GPG_TTY=$TTY
 export GPG_AGENT_INFO="${GNUPGHOME}/S.gpg-agent"
 export PINENTRY_USER_DATA="USE_CURSES=1"
+export OSFONTDIR="$HOME/Library/Fonts"
 
 export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
 export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'

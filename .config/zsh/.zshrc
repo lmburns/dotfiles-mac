@@ -42,6 +42,19 @@ typeset -A ZINIT=(
 fpath+=( ${0:h}/{functions,completions} )
 autoload -Uz ${0:h}/functions/*(:t)
 module_path+=( "$ZINIT[BIN_DIR]/zmodules/Src" ); zmodload zdharma/zplugin &>/dev/null
+
+if ! [[ $MYPROMPT = dolphin ]]; then
+  autoload -Uz chpwd_recent_dirs add-zsh-hook
+  add-zsh-hook chpwd chpwd_recent_dirs
+  zstyle ':chpwd:*' recent-dirs-file "${TMPDIR}/chpwd-recent-dirs"
+  dirstack=($(awk -F"'" '{print $2}' ${$(zstyle -L ':chpwd:*' recent-dirs-file)[4]} 2>/dev/null))
+  [[ ${PWD} = ${HOME}  || ${PWD} = "." ]] && (){
+    local dir
+    for dir ($dirstack){
+      [[ -d "${dir}" ]] && { cd -q "${dir}"; break }
+    }
+  } 2>/dev/null
+fi
 # }}}
 
 # === zinit === {{{
@@ -112,7 +125,11 @@ zt 0a light-mode for \
   pick'zsh-history-filter.plugin.zsh' \
     MichaelAquilina/zsh-history-filter \
   pick'you-should-use.plugin.zsh' \
-    MichaelAquilina/zsh-you-should-use
+    MichaelAquilina/zsh-you-should-use \
+  lbin'!' patch"${pchf}/%PLUGIN%.patch" reset \
+  atload'bindkey "^u" dotbare-fstat; bindkey "^f" db-faddf' \
+  atinit'_w_db_faddf() { dotbare fadd -f; }; zle -N db-faddf _w_db_faddf' \
+    kazhala/dotbare
 
 zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert)' \
@@ -137,25 +154,22 @@ zt 0b light-mode for \
     knu/zsh-manydots-magic \
   atinit"forgit_ignore='fgi'" \
       wfxr/forgit \
-  atload'export FZF_MARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
-    urbainvaes/fzf-marks \
   pick'async.zsh' \
     mafredri/zsh-async \
   patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' \
   atload'bindkey "^p" fuzzy-search-and-edit' \
-    seletskiy/zsh-fuzzy-search-and-edit
+    seletskiy/zsh-fuzzy-search-and-edit \
+  pick'formarks.plugin.zsh' \
+  atload'export PATHMARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
+    wfxr/formarks
 
 zt 0c light-mode binary for \
   lbin'rgg;rgv' atclone='rm -f ^(rgg|rgv); command cp -f --remove-destination $(readlink rgv) rgv' \
     lilydjwg/search-and-view \
-  lbin'!' patch"${pchf}/%PLUGIN%.patch" reset \
-  atload'bindkey -M viins "^u" db-fstat; bindkey -M viins "^f" db-faddf' \
-  atinit'_w_db_fstat() { dotbare fstat; }; zle -N db-fstat _w_db_fstat;
-  _w_db_faddf() { dotbare fadd -f; }; zle -N db-faddf _w_db_faddf' \
-    kazhala/dotbare \
   lbin patch"${pchf}/%PLUGIN%.patch" reset \
     kazhala/dump-cli \
-  lbin'!**/*grep;**/*man;**/*diff' atload'alias bdiff="batdiff"' \
+  lbin'!**/*grep;**/*man;**/*diff' \
+  atload'alias bdiff="batdiff"; alias bm="batman"; alias bgrep="env -u RIPGREP_CONFIG_PATH batgrep"' \
   atclone'(){local f;cd -q src;for f (*.sh){mv ${f} ${f:r}};}' \
     eth-p/bat-extras \
   lbin'cht.sh -> cht' id-as'cht.sh' \
@@ -165,7 +179,12 @@ zt 0c light-mode binary for \
   lbin atload'alias gi="git-ignore"'\
     laggardkernel/git-ignore \
   lbin"$ZPFX/bin/blackbox_*" make"copy-install PREFIX=$ZPFX" \
-    StackExchange/blackbox
+    StackExchange/blackbox \
+  lbin'(f*~*.zsh)' pick'*.zsh' \
+    lmburns/fzfgit
+
+# lbin'wd.sh -> wd' dl"$(grman)" lman mfaerevaag/wd
+# atload'export FZF_MARKS_FILE="${ZPFX}/share/fzf-marks/marks"' urbainvaes/fzf-marks
 
 zt 0c light-mode binary lbin lman from'gh-r' for \
   atclone'mv -f **/*.zsh _bat' atpull'%atclone' \
@@ -340,7 +359,6 @@ lnbin() { ln -siv $HOME/mybin/$1 $XDG_BIN_HOME; }
 unlbin() { rm -v /$XDG_BIN_HOME/$1; }
 # latex documentation serch (as best I can)
 latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
-perldoc() { command perldoc -n less "$@" | gman -l -; }
 # get help on builtin commands -- quote $1 to prevent having to quote on CLI
 zb() { man -P "less -p'^       "$1" '" zshbuiltins; }
 # ${(p)foo} - ${var:h3}
@@ -463,8 +481,8 @@ typeset -gx FZFZ_RECENT_DIRS_TOOL='autojump'
 typeset -g ZSH_AUTOSUGGEST_USE_ASYNC=1
 typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-typeset -g ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c100,)" # Do not consider 100 character entries
-typeset -g ZSH_AUTOSUGGEST_COMPLETION_IGNORE="[[:space:]]*"   # Ignore leading whitespace
+typeset -g ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c100,)" # no 100+ char
+typeset -g ZSH_AUTOSUGGEST_COMPLETION_IGNORE="[[:space:]]*" # no lead space
 typeset -g ZSH_AUTOSUGGEST_STRATEGY=(dir_history custom_history completion)
 typeset -g PER_DIRECTORY_HISTORY_BASE="${ZPFX}/share/per-directory-history"
 typeset -gx UPDATELOCAL_GITDIR="${HOME}/opt"
@@ -472,30 +490,36 @@ typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
 typeset -g DUMP_LOG="${ZPFX}/share/dump/log"
 typeset -gx BREW_PREFIX="$(brew --prefix)"
 typeset -gx CDHISTSIZE=1000 CDHISTTILDE=TRUE
+typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 # typeset -gx CDHISTCOMMAND=xd
 typeset -gx NQDIR="$TMPDIR/nq"
 # }}}
 
+  # --color=fg:-1,bg:-1,hl:#ffaf5f,fg+:-1,bg+:-1,hl+:#ffaf5f
+  # --color=prompt:#5fff87,marker:#ff87d7,spinner:#ff87d7
+  # --color=fg:#cbccc6,fg+:#707a8c,hl:#707a8c,hl+:#ffcc66
+  # --color=info:#73d0ff,pointer:#cbccc6,marker:#73d0ff,spinner:#73d0ff
+
 # === fzf === {{{
 # ❱❯❮ --border ,border-left
 export FZF_DEFAULT_OPTS="
-  --prompt '❱❱ '
-  --marker='+'
+  --prompt '❱ '
+  --pointer '➤'
+  --marker '┃'
   --cycle
-  --color=fg:#cbccc6,fg+:#707a8c,hl:#707a8c,hl+:#ffcc66
-  --color=info:#73d0ff,pointer:#cbccc6,marker:#73d0ff,spinner:#73d0ff
-  --color=header:#d4bfff,gutter:-1,prompt:#707a8c,dark
+  --color=fg:-1,bg:-1,hl:#ffaf5f,fg+:-1,bg+:-1,hl+:#ffaf5f
+  --color=prompt:#5fff87,marker:#ff87d7,spinner:#ff87d7
   --reverse --height 60% --ansi --info=inline --multi --border
   --preview-window=':hidden,right:65%:wrap'
   --preview '([[ -f {} ]] && (bat --style=numbers --color=always {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
   --bind='?:toggle-preview'
-  --bind='ctrl-a:select-all'
+  --bind='ctrl-a:select-all,ctrl-r:toggle-all'
   --bind='ctrl-b:execute(bat --paging=always -f {+})'
   --bind='ctrl-y:execute-silent(echo {+} | pbcopy)'
   --bind='ctrl-e:execute(echo {+} | xargs -o nvim)'
   --bind='ctrl-v:execute(code {+})'
-  --bind='ctrl-k:preview-up'
-  --bind='ctrl-j:preview-down'
+  --bind='ctrl-k:preview-up,ctrl-j:preview-down'
+  --bind='ctrl-u:half-page-up,ctrl-d:half-page-down'
 "
 
 export SKIM_DEFAULT_OPTIONS="
@@ -519,8 +543,8 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 # export FZF_ALT_C_COMMAND="fd -t d ."
-export FORGIT_FZF_DEFAULT_OPTS="--exact --cycle --border --ansi --reverse
-    --height 70% --info=inline --multi"
+export FORGIT_FZF_DEFAULT_OPTS="--exact --cycle --height 70% --info=inline
+  --preview-window=:nohidden"
 export NAVI_FZF_OVERRIDES="--height=70%"
 
 alias db='dotbare'
@@ -532,7 +556,7 @@ export DOTBARE_FZF_DEFAULT_OPTS="
   --marker='+'
   --header='A:select-all, B:pager, Y:copy, E:nvim'
   --reverse --height 50% --border --ansi --info=inline --multi
-  --preview-window=nohidden
+  --preview-window=:nohidden
   --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
   --bind 'ctrl-a:select-all'
   --bind 'ctrl-b:execute(bat --paging=always -f {+})'

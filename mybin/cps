@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# desc: when using a git alias for tracking dotfiles, send to multiple remotes
+# desc: git alias, send multiple remotes
 
 source $ZDOTDIR/.zshrc > /dev/null 2>&1
 

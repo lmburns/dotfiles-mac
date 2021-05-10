@@ -62,7 +62,7 @@ case ${opts[1]} in
   -r|--redir) zmp "REDIRECTION$" ;;
   --bind|--bindkey) zmp "STANDARD WIDGETS$" ;;
   -z|--zparse) zmo "       zparseopts$" ;;
-  -b) zp "${opts[2]}" ;;
+  -b) zb "${opts[2]}" ;;
   -p) zp "${opts[2]}" ;;
   -s) zs "${opts[2]}" ;;
   -h|--help)
