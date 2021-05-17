@@ -1,0 +1,11 @@
+# vim:ft=zsh:
+
+# desc: get git repo url
+
+ngu() {
+  confu="$(sed -n '/\[remote\s.*/{n;s/\t//g;s/url = //p}' .git/config)"
+  echo "${confu}" | pbcopy
+  printf "%s" "$(tput setaf 1)${confu}$(tput sgr0)"
+}
+
+ngu

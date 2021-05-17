@@ -59,27 +59,27 @@ handle_mime() {
 
 
 handle_other() {
-    case "${FILE_PATH}" in
-        *.tgz|*.tar.gz) tar tzf "${FILE_PATH}";;
-        *.tar.bz2|*.tbz2) tar tjf "${FILE_PATH}";;
-        *.tar.txz|*.txz) xz --list "${FILE_PATH}";;
-        *.tar) tar tf "${FILE_PATH}";;
-        *.jar|*.war|*.ear|*.oxt) unzip -l "${FILE_PATH}";;
-        *.rar) unrar l "${FILE_PATH}";;
-        *.7z) 7z l "${FILE_PATH}";;
-        *.[1-8]) man "${FILE_PATH}" | col -b ;;
-        *.o) nm "${FILE_PATH}" | less ;;
-        *.torrent) transmission-show "${FILE_PATH}";;
-        *.iso) iso-info --no-header -l "${FILE_PATH}";;
-        *.odt|*.ods|*.odp|*.sxw) odt2txt "${FILE_PATH}";;
-        *.doc) catdoc "${FILE_PATH}" ;;
-        *.docx) docx2txt "${FILE_PATH}" - ;;
-        *.csv) bat "${FILE_PATH}" | sed s/,/\\n/g ;;
-        *.json) jq --color-output . "${FILE_PATH}";;
-        *.asc) bat -Pf --theme KimbieDark --style auto "${FILE_PATH}";;
-        *.ipynb) jupview -t KimbieDark "${FILE_PATH}";;
-        *.sha1|*.sha256|*.sha512|*.md5) rhash -c "${FILE_PATH}" ;;
-    esac
+  case "${FILE_PATH}" in
+    *.tgz|*.tar.gz) tar tzf "${FILE_PATH}";;
+    *.tar.bz2|*.tbz2) tar tjf "${FILE_PATH}";;
+    *.tar.txz|*.txz) xz --list "${FILE_PATH}";;
+    *.tar) tar tf "${FILE_PATH}";;
+    *.jar|*.war|*.ear|*.oxt) unzip -l "${FILE_PATH}";;
+    *.rar) unrar l "${FILE_PATH}";;
+    *.7z) 7z l "${FILE_PATH}";;
+    *.[1-8]) man "${FILE_PATH}" | col -b ;;
+    *.o) nm "${FILE_PATH}" | less ;;
+    *.torrent) transmission-show "${FILE_PATH}";;
+    *.iso) iso-info --no-header -l "${FILE_PATH}";;
+    *.odt|*.ods|*.odp|*.sxw) odt2txt "${FILE_PATH}";;
+    *.doc) catdoc "${FILE_PATH}" ;;
+    *.docx) docx2txt "${FILE_PATH}" - ;;
+    *.csv) bat "${FILE_PATH}" | sed s/,/\\n/g ;;
+    *.json) jq --color-output . "${FILE_PATH}";;
+    *.asc) bat -Pf --theme KimbieDark --style auto "${FILE_PATH}";;
+    *.sha1|*.sha256|*.sha512|*.md5) rhash -c "${FILE_PATH}" ;;
+      *.ipynb) jupview -t KimbieDark "${FILE_PATH}";;
+  esac
 }
 
 # *.md) mdv "${FILE_PATH}" ;;

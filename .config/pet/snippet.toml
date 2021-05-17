@@ -1,0 +1,54 @@
+[[snippets]]
+  description = "find all broken sym links in current directory"
+  command = "find . -type l ! -exec test -e {} \\; -print"
+  output = ""
+
+[[snippets]]
+  description = "stop all network utilities"
+  command = "sbrse stop dnsmasq && sbrse stop stubby && sbrse stop privoxy"
+  output = ""
+
+[[snippets]]
+  description = "start all network utilities"
+  command = "sbrse start dnsmasq && sbrse start stubby && sbrse start privoxy"
+  output = ""
+
+[[snippets]]
+  description = "help - zsh param expansion modifiers"
+  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers'"
+  output = ""
+
+[[snippets]]
+  description = "help -zsh parameter expansion"
+  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion'"
+  output = ""
+
+[[snippets]]
+  description = "help - zsh parameter expansion flags"
+  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags'"
+  output = ""
+
+[[snippets]]
+  description = "help - zsh globbing flags"
+  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Globbing-Flags'"
+  output = ""
+
+[[snippets]]
+  description = "help - zsh globbing qualifiers"
+  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Glob-Qualifiers'"
+  output = ""
+
+[[snippets]]
+  description = "help - zsh subscript flags"
+  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Parameters.html#Subscript-Flags'"
+  output = ""
+
+[[snippets]]
+  description = "get cpu and memory"
+  command = "ps -A -o %cpu,%mem | awk '{ cpu += \\$1; mem += \\$2} END {print \\\"CPU: \\\"  cpu,\\\"MEM: \\\"  mem}'"
+  output = ""
+
+[[snippets]]
+  description = "get battery temperature"
+  command = "bc <<< \\\"scale=3; $(ioreg -r -n AppleSmartBattery | grep Temperature | cut -c23-)/100*1.8+32\\\""
+  output = ""

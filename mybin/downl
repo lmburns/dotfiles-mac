@@ -9,3 +9,5 @@
 do
     wget "$url"
 done
+
+# vim:ft=sh:et:sw=0:ts=2:sts=2:

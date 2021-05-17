@@ -1,0 +1,3 @@
+[[ $EUID -ne 0 ]] && trash-put "${@}" || command rm -I -v "${@}"
+
+# vim:ft=zsh:et:sw=0:ts=2:sts=2:

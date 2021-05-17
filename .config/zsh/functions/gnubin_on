@@ -2,6 +2,57 @@
 
 gnubin_off
 
-PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/grep/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/opt/gawk/libexec/gnubin:/usr/local/opt/util-linux/bin:/usr/local/opt/findutils/libexec/gnubin:$PATH
+# PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/grep/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/opt/gawk/libexec/gnubin:/usr/local/opt/util-linux/bin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/ed/libexec/gnubin:/usr/local/opt/file-formula/bin:/usr/local/opt/unzip/bin:/usr/local/opt/libressl/bin:/usr/local/opt/flex/bin:$PATH
 
-# vim:ft=zsh:et
+path=(
+  /usr/local/opt/coreutils/libexec/gnubin
+  /usr/local/opt/gnu-sed/libexec/gnubin
+  /usr/local/opt/grep/libexec/gnubin
+  /usr/local/opt/gnu-tar/libexec/gnubin
+  /usr/local/opt/gawk/libexec/gnubin
+  /usr/local/opt/findutils/libexec/gnubin
+  /usr/local/opt/ed/libexec/gnubin
+  /usr/local/opt/file-formula/bin
+  /usr/local/opt/util-linux/bin
+  /usr/local/opt/flex/bin
+  /usr/local/opt/libressl/bin
+  /usr/local/opt/unzip/bin
+  /usr/local/opt/openvpn/sbin
+  ${path[@]}
+)
+
+manpath=(
+  /usr/local/opt/gnu-sed/share/man
+  /usr/local/opt/grep/share/man
+  /usr/local/opt/gnu-getopt/share/man
+  /usr/local/opt/gnu-tar/share/man
+  /usr/local/opt/gawk/share/man
+  /usr/local/opt/findutils/share/man
+  /usr/local/opt/gnu-which/share/man
+  /usr/local/opt/file-formula/share/man
+  ${manpath[@]}
+)
+
+# path+=( "/usr/local/opt/coreutils/libexec/gnubin" )
+# path+=( "/usr/local/opt/gnu-sed/libexec/gnubin" )
+# path+=( "/usr/local/opt/grep/libexec/gnubin" )
+# path+=( "/usr/local/opt/gnu-tar/libexec/gnubin" )
+# path+=( "/usr/local/opt/gawk/libexec/gnubin" )
+# path+=( "/usr/local/opt/util-linux/bin" )
+# path+=( "/usr/local/opt/findutils/libexec/gnubin" )
+# path+=( "/usr/local/opt/ed/libexec/gnubin" )
+# path+=( "/usr/local/opt/file-formula/bin" )
+# path+=( "/usr/local/opt/unzip/bin" )
+# path+=( "/usr/local/opt/libressl/bin" )
+# path+=( "/usr/local/opt/flex/bin" )
+#
+# manpath+=( "/usr/local/opt/gnu-sed/share/man" )
+# manpath+=( "/usr/local/opt/grep/share/man" )
+# manpath+=( "/usr/local/opt/gnu-getopt/share/man" )
+# manpath+=( "/usr/local/opt/gnu-tar/share/man" )
+# manpath+=( "/usr/local/opt/gawk/share/man" )
+# manpath+=( "/usr/local/opt/findutils/share/man" )
+# manpath+=( "/usr/local/opt/gnu-which/share/man" )
+# manpath+=( "/usr/local/opt/file-formula/share/man" )
+
+# vim: ft=zsh:et:sw=0:ts=2:sts=2:

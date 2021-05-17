@@ -46,7 +46,7 @@ count_cmd() {
 cmd_rmcrap() {
     local opts fd=0 astree=0
     local show=0 count=0
-    opts="$($GETOPT -o s,c -l show,count -- "$@")"
+    opts="$(getopt -o s,c -l show,count -- "$@")"
     local err=$?
     eval set -- "$opts"
 
@@ -61,9 +61,9 @@ cmd_rmcrap() {
 
     [[ $err -ne 0 ]] && die "$(cmd_short_usage)"
 
-    if [[ $fd=1 ]]; then
+    if [[ $fd = 1 ]]; then
       command_exists fd || die "fd is not in your \$PATH"
-    elif [[ $astree=1 ]]; then
+    elif [[ $astree = 1 ]]; then
       command_exists as-tree || die "as-tree is not in your \$PATH"
     fi
 

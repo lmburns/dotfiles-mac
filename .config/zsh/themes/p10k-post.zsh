@@ -318,14 +318,22 @@
   # parameter. For example, if POWERLEVEL9K_DIR_WORK_NOT_WRITABLE_FOREGROUND is not set, it falls
   # back to POWERLEVEL9K_DIR_FOREGROUND.
   #
+
+  # add bookmark icon for list of 'formarks' bookmarks
+  : ${PATHMARKS_FILE:=$HOME/.config/zsh/zinit/polaris/share/fzf-marks/marks}
+  arr=(${(@s. .)${(@f)"$(<$PATHMARKS_FILE)"}})
+  bmark_dirs=("${${(i@)arr}[1,$(( ${#arr[@]} / 2 ))]}")
+
   typeset -g POWERLEVEL9K_DIR_CLASSES=(
+    '/etc/*|/usr/local/etc/*' ETC            ''
+    '~/projects/*'            GITHUB         ''
+    "${(j.|.)${(s. .)bmark_dirs[@]}}"  BOOKMARK       ''
     '~'                       HOME           ''
     '~/*'                     HOME_SUBFOLDER ''
     '*'                       DEFAULT        ''
-    '/etc/*|/usr/local/etc/*' ETC            ''
   )
 
-  typeset -g POWERLEVEL9K_DIR_{ETC,HOME,HOME_SUBFOLDER,DEFAULT}_NON_EXISTENT_VISUAL_IDENTIFIER_EXPANSION='%227F✖'
+  typeset -g POWERLEVEL9K_DIR_{ETC,HOME,HOME_SUBFOLDER,GITHUB,DEFAULT,BOOKMARK}_NON_EXISTENT_VISUAL_IDENTIFIER_EXPANSION='%227F✖'
 
   # Custom prefix.
   # typeset -g POWERLEVEL9K_DIR_PREFIX='%fin '

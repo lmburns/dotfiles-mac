@@ -7,6 +7,18 @@
   "diagnostic.infoSign": "•",
   "diagnostic.hintSign": "•",
   "diagnostic.checkCurrentLine": false,
+  "diagnostic.level": "hint",
+  "diagnostic.refreshOnInsertMode": false,
+  "diagnostic.virtualText": true,
+  "diagnostic-languageserver.filetypes": {
+    "sh": "shellcheck",
+    "zsh": "shellcheck"
+  },
+  "diagnostic-languageserver.formatFiletypes": {
+    "sh": "shfmt",
+    "zsh": "shfmt"
+  },
+  "coc.preferences.formatOnSaveFiletypes": ["go"],
   "codeLens.enable": true,
   "signature.enable": true,
   "sh.enable": true,
@@ -19,14 +31,53 @@
   "suggest.disableMenu": false,
   "suggest.snippetIndicator": "",
   "suggest.noselect": false,
+  "coc.source.file.ignoreHidden": false,
+  "coc.source.file.shortcut": "\uf414",
+  "coc.source.around.firstMatch": false,
+  "coc.source.around.shortcut": "\uf667",
+  "coc.source.buffer.firstMatch": false,
+  "coc.source.buffer.shortcut": "\uf719",
+  "coc.source.syntax.firstMatch": false,
+  "coc.source.syntax.shortcut": "\uf670",
+  "tabnine.priority": 99,
+  "suggest.languageSourcePriority": 100,
+
+  // coc-explorer
   "explorer.icon.enableNerdfont": true,
   "explorer.icon.enableVimDevicons": false,
   "explorer.git.enable": true,
+  "git.addedSign.text": "┃",
+  "git.changedSign.text": "┃",
+  "git.changeRemovedSign.text": "┃",
+  "git.removedSign.text": "◢",
+  "git.topRemovedSign.text": "◥",
+  "git.addedSign.hlGroup": "SignifySignAdd",
+  "git.changedSign.hlGroup": "SignifySignChange",
+  "git.changeRemovedSign.hlGroup": "SignifySignChange",
+  "git.removedSign.hlGroup": "SignifySignDelete",
+  "git.topRemovedSign.hlGroup": "SignifySignDelete",
+  "git.addGBlameToVirtualText": true,
+  "git.virtualTextPrefix": "     commit: ",
   "explorer.quitOnOpen": true,
   "explorer.position": "left",
   "explorer.file.showHiddenFiles": true,
   "explorer.file.column.clip.copy": "",
   "explorer.file.column.clip.cut": "",
+  "explorer.file.column.indent.indentLine": true,
+  "explorer.openAction.select.filter": {
+    "buftypes": [
+      "terminal"
+    ],
+    "filetypes": [
+      "minimap"
+    ],
+    "floatingWindows": true,
+    "sources": {
+      "buffer": {
+        "buftypes": []
+      }
+    }
+  },
   "explorer.keyMappings.global": {
     "i": false,
     "gk": "expandablePrev",
@@ -92,7 +143,7 @@
   },
     "snippets.ultisnips.directories": [
     "UltiSnips",
-    "~/.vim/plugged/vim-snippets/snippets"
+    "gosnippets/UltiSnips"
   ],
   "snippets.userSnippetsDirectory": "~/.config/nvim/UltiSnips",
   "suggest.enablePreview": true,
@@ -126,5 +177,6 @@
     "typeParameter": "\uf728",
     "default": "\uf29c"
   },
-  "snippets.shortcut": "\uf672"
+  "snippets.shortcut": "\uf672",
+  "yank.highlight.duration": 100
 }

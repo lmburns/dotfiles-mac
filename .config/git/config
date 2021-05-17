@@ -23,7 +23,8 @@
   l = log -p
   lc = log ORIG_HEAD.. --stat --no-merges
   lo = log --oneline --decorate --stat --graph
-  lp = log --graph --pretty=format:'%Cred%h%Creset %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  lp = log --pretty=format:"%h%Cred %ad%Cgreen | %s%C(yellow)%d%C(magenta) [%an]" --graph --date=short
+  lpp = log --graph --pretty=format:'%Cred%h%Creset %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   lg = log --pretty='format:%h %G? %aN  %s'
   lss = log --show-signature
   m = merge
@@ -65,10 +66,13 @@
 [credential]
   helper = osxkeychain
 [init]
-  defaultBranch = master
+	defaultBranch = master
+[checkout]
+  defaultRemote = origin
 [commit]
   gpgsign = true
   template = ~/.config/git/gitmessage
+	verbose = true
 [gpg]
   program = /usr/local/bin/gpg
 [help]
@@ -100,18 +104,34 @@
   line-numbers-plus-style = 28
 [interactive]
   diffFilter = delta --color-only
+[color "diff-highlight"]
+  oldNormal = red bold
+  oldHighlight = red bold 52
+  newNormal = green bold
+  newHighlight = green bold 22
+[color "diff"]
+  meta = 39
+  whitespace = red reverse
+  new = green bold
+  old = red bold
+  commit = 222 bold
+  frag = magenta bold
+[color "status"]
+  untracked = yellow
+  changed = red
+  updated = cyan
+  added = green
 [diff]
   algorithm = patience
   colorMoved = default
-  indentHeuristic = true
+	indentHeuristic = on
   mnemonicPrefix = true
+	compactionHeuristic = true
 #  renames = copies
 [stash]
   showPatch = true
 [pull]
   ff = only
   default = current
-[checkout]
-  defaultRemote = origin
 
 # vim:ft=gitconfig:et

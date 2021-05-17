@@ -352,8 +352,10 @@ cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' |
 cmd fzf $clear; nvim $(fd -Hi "$1" . |  fzf)
 cmd fd !clear; fd -Hi "$1"
 cmd rg !clear; rg "$1"
+cmd rgf !clear; rgf "$1"
 cmd bulkrename $fd . | vidir -
 cmd massren $massren
+cmd f2 !f2 -f "$1"
 cmd wim $wim "$1"
 cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
 cmd mkfile %[ -n "${1}" ] && touch ${@} || echo "Argument needed"
@@ -392,7 +394,8 @@ map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | bat -f                         # open lfrc docs
 map gH $bat -f ~/.config/lf/mappings            # open these mappings
-map O push :open-with<space>                    # open w/ specified program
+map Ow push :open-with<space>                   # open w/ specified program
+map Op $open $PWD
 
 map as !du -hsx * | sort -rh | bat --paging=always  # directory info
 map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file -I -b -p $f
@@ -415,8 +418,9 @@ map au unarchive
 map dd trash
 map D delete                            # confirmation with whiptail
 map te %trash-empty
-map tl %trash-list
-map tr %ftr                            # fzf trash restore script
+map tl $trash-list | fzf
+map tm $frm
+map tr $ftr                            # fzf trash restore script
 
 # Dragon Mapping [CONFIGURE]
 # map dr dragon
@@ -434,6 +438,7 @@ map i push A<a-b><a-b><a-f>             # before extention
 map aa push A<a-b>                      # after extention
 map Bb bulkrename                       # bulk rename all in directory
 map Bm massren                          # bulk rename with massren
+map Bf push :f2<space>
 map ch chmod                            # change file permissions
 
 # File movement
@@ -462,6 +467,8 @@ map mf push :mkfile<space>
 map md push :mkdir<space>
 map ms $mksc                    # make script
 map Ql ql_preview               # open in quicklook (macOS)
+map Qm !clear; mdcat -p $fx
+map Qg !clear; glow -p $fx
 
 map gg top -- []
 map G bottom -- []
@@ -480,6 +487,7 @@ map <c-x>p $cat $fx | up                    # cat file to up (unix piper)
 map <c-s> shell                             # enter shell command
 map <c-u> usage
 map <c-f> push :rg<space>                   # search with rg
+map <c-z> push :rgf<space>                 # search interactively with fzf
 
 map Yj copytojump       # copy to directory with autojump
 map Mj movetojump       # move to directory with autojump

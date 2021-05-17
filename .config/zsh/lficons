@@ -314,4 +314,7 @@ no=00;38;5;250:\
 *.zsh=01;32:\
 *.cfg=36:\
 *.list=34:\
+$LS_COLORS \
 "
+
+# vim: ft=zsh:et:sw=0:ts=2:sts=2:

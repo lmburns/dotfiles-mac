@@ -4,23 +4,43 @@
 
 echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
 
-[ $? -eq 0 ] || (printf "$(tput setaf 1)No internet connection\n" && exit 1)
+[ $? -eq 0 ] || (printf "%s\n" "$(tput setaf 1)No internet connection" && exit 1)
 
 
-printf "$(tput setaf 5)\nTesting dnsmasq syntax: "
+printf "%s\n" "== CHECKING DNS ==="
+printf "%s\n" "$(tput setaf 5)Testing dnsmasq syntax: "
 sudo dnsmasq --test
 
-printf "$(tput setaf 1)\nTesting stubby syntax: "
+printf "%s\n" "$(tput setaf 5)Testing stubby syntax: "
 stubby -i 2>&1 | rg -o 'Result: .*$'
 
-printf "$(tput setaf 3)\nSetting DNS servers: \n"
+printf "\n%s\n" "$(tput setaf 5)Setting DNS servers: "
 networksetup -setdnsservers Wi-Fi 127.0.0.1 ::1
-printf "$(tput setaf 2) $(scutil --dns | head | rg 'nameserver')\n"
 
-printf "$(tput setaf 2)\nChecking DNSSEC valdation: "
-printf "$(tput setaf 3) $(dig +dnssec burnsac.xyz | rg -o '(\bad\b|\bRRSIG\b|\bNOERROR\b)' | tr '\n' ' ')"
+printf "%s\n" "$(tput setaf 5) $(scutil --dns | head | rg 'nameserver')"
 
-printf "$(tput setaf 4)\nChecking QNAME minimization: "
-printf "$(tput setaf 5) $(dig +short txt qnamemintest.internet.nl | sed -n '$p')"
+printf "\n%s\n" "$(tput setaf 5)Checking DNSSEC valdation: "
+printf "%s\n" "$(tput setaf 3) $(dig +dnssec burnsac.xyz | rg -o '(\bad\b|\bRRSIG\b|\bNOERROR\b)' | tr '\n' ' ')"
 
-printf "\n\n$(tput setaf 1)Finished $(tput setaf 2)updating $(tput setaf 3)block $(tput setaf 4)lists"
+printf "\n%s\n" "$(tput setaf 5)Checking QNAME minimization: "
+printf "%s\n" "$(tput setaf 5) $(dig +short txt qnamemintest.internet.nl | sed -n '$p')"
+
+dns="$(scutil --dns | head)"
+proxy="$(scutil --proxy)"
+
+printf "%$(tput cols)s" | tr " " "="
+printf "\n=== DNS ===\n%s\n\n" "$(tput setaf 2)${dns}$(tput sgr0)"
+
+# ======================
+
+# sudo networksetup -setsecurewebproxy "Wi-Fi" 127.0.0.1 8118
+# sudo networksetup -setwebproxy "Wi-Fi" 127.0.0.1 8118
+
+printf "%s\n" "== CHECKING PROXY ==="
+wproxy="$(sudo networksetup -getwebproxy "Wi-Fi")"
+wsecproxy="$(sudo networksetup -getsecurewebproxy "Wi-Fi")"
+
+printf "%s\n\n%s\n" "$(tput setaf 4)Web proxy: ${wproxy}" "$(tput setaf 4)Secure Proxy: ${wsecproxy}"
+
+printf "%$(tput cols)s" | tr " " "="
+printf "=== PROXY ===\n%s" "$(tput setaf 3)${proxy}$(tput sgr0)"
