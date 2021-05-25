@@ -4,6 +4,10 @@
 #      Home: https://github.com/lmburns                                    #
 ############################################################################
 
+alias -g G='| rg '
+alias -g H='| head'
+alias -g T='| tail'
+
 alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
@@ -24,24 +28,24 @@ alias _='sudo'
 alias __='doas'
 # alias cp='cp -iv'
 alias rcp='rsync -av --ignore-existing --progress'
-alias pbc='pbcopy'
-alias pbp='pbpaste'
 alias pl='print -rl --'
-# alias ec='echo'
 alias mv='mv -iv'
 # alias mkd='mkdir -pv'
-alias lct='launchctl'
-alias l='exa -FH --git --icons'
-alias l.='l -d .*'
-alias lp='exa -1F'
-alias ll='exa -FlahH --git --icons --time-style long-iso'
-alias ls='exa -Fh --git --icons'
-alias lse='exa -Flh --git --sort=extension --icons'
-alias lsm='exa -Flh --git --sort=modified --icons'
-alias lsz='exa -Flh --git --sort=size --icons'
-alias lss='exa -Flh --git --group-directories-first --icons'
-alias lsd='exa -D --icons'
-alias tree='exa --icons -TL'
+
+(( ${+commands[exa]} )) && {
+  alias l='exa -FH --git --icons'
+  alias l.='exa -FH --git --icons -d .*'
+  alias lp='exa -1F'
+  alias ll='exa -FlahHg --git --icons --time-style long-iso'
+  alias ls='exa -Fh --git --icons'
+  alias lse='exa -Flh --git --sort=extension --icons'
+  alias lsm='exa -Flh --git --sort=modified --icons'
+  alias lsz='exa -Flh --git --sort=size --icons'
+  alias lss='exa -Flh --git --group-directories-first --icons'
+  alias lsd='exa -D --icons'
+  alias tree='exa --icons -TL'
+}
+
 alias fdr='fd --changed-within=30m'
 alias fdrd='fd --changed-within=30m -d1'
 alias fdrr='fd --changed-within=1m'
@@ -66,16 +70,23 @@ alias nzsh='$EDITOR $ZDOTDIR/.zshrc'
 alias azsh='$EDITOR $ZDOTDIR/zsh-aliases'
 alias ezsh='$EDITOR $HOME/.zshenv'
 alias ninit='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim'
+alias niniti='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim +PlugInstall'
+alias ninitu='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim +PlugUpdate'
 alias nlfr='$EDITOR $XDG_CONFIG_HOME/lf/lfrc'
 alias nlfrs='$EDITOR $XDG_CONFIG_HOME/lf/scope'
 alias ngit='$EDITOR $XDG_CONFIG_HOME/git/config'
 alias nyab='$EDITOR $XDG_CONFIG_HOME/yabai/yabairc'
 alias nskhd='$EDITOR $XDG_CONFIG_HOME/skhd/skhdrc'
+alias ntmux='$EDITOR $XDG_CONFIG_HOME/tmux/tmux.conf'
+alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
 
 # === mail ======================================================================
-alias mwme='mw -y burnsac@me.com'
-alias mwgm='mw -y burnsppl@gmail.com'
-alias mwmail='mw -Y'
+(( ${+commands[mw]} )) && {
+  alias mwme='mw -y burnsac@me.com'
+  alias mwgm='mw -y burnsppl@gmail.com'
+  alias mwmail='mw -Y'
+}
+
 alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@burnsac.xyz'
 
 # ===locations ==================================================================
@@ -90,7 +101,7 @@ alias pyd='cd $HOME/projects/python'
 alias awkd='cd $HOME/projects/awk'
 alias optd='cd $HOME/opt'
 alias confd='cd $XDG_CONFIG_HOME'
-alias dotd='cd $HOME/opt/_dotfiles'
+alias dotd='cd $HOME/opt/dotfiles'
 alias locd='cd $XDG_DATA_HOME'
 alias docd='cd $HOME/Documents'
 alias cvd='cd $HOME/Documents/cv'
@@ -121,25 +132,30 @@ alias spt='speedtest | rg "(Download:|Upload:)"'
 alias essh='eval $(ssh-add)'
 alias kc='keychain'
 alias kck='keychain -k all'
-alias wifi='osx-wifi-cli'
 
 # === mac specific =============================================================
-alias keuze="keuze -fs 12 -fn Monaco"
-alias temp='osx-cpu-temp'
-alias nset='networksetup'
-alias snset='sudo networksetup'
-alias mute="osascript -e 'set volume output muted true'"
-alias lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+[[ "${${(M)OSTYPE:#*darwin*}:+1}" ]] && {
+  alias lct='launchctl'
+  alias pbc='pbcopy'
+  alias pbp='pbpaste'
+  alias keuze="keuze -fs 12 -fn Monaco"
+  alias temp='osx-cpu-temp'
+  alias wifi='osx-wifi-cli'
+  alias nset='networksetup'
+  alias snset='sudo networksetup'
+  alias mute="osascript -e 'set volume output muted true'"
+  alias lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+  alias loginscreen='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
+  alias battemp="bc <<< \"scale=3; $(ioreg -r -n AppleSmartBattery | grep Temperature | cut -c23-)/100*1.8+32\""
+  alias pbplain='pbpaste | textutil -convert txt -stdin -stdout -encoding 30 | pbcopy'
+  alias spot='sudo mdutil -a -i'
+  alias PlistBuddy='/usr/libexec/PlistBuddy'
+  alias slocate='/usr/bin/locate'
+  alias bundleident='mdls -name kMDItemCFBundleIdentifier -r'
+  alias uti='mdls -name kMDItemContentType -name kMDItemContentTypeTree -name kMDItemKind'
+  }
 # alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
-alias loginscreen='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
-alias battemp="bc <<< \"scale=3; $(ioreg -r -n AppleSmartBattery | grep Temperature | cut -c23-)/100*1.8+32\""
-alias pbplain='pbpaste | textutil -convert txt -stdin -stdout -encoding 30 | pbcopy'
-alias spot='sudo mdutil -a -i'
-alias PlistBuddy='/usr/libexec/PlistBuddy'
-alias slocate='/usr/bin/locate'
-alias bundleident='mdls -name kMDItemCFBundleIdentifier -r'
 # bundlei() { osascript -e 'id of app "$1"' }
-alias uti='mdls -name kMDItemContentType -name kMDItemContentTypeTree -name kMDItemKind'
 
 # === wiki ======================================================================
 alias vw='$EDITOR $HOME/vimwiki/index.md'
@@ -156,16 +172,18 @@ alias gua='git remote | xargs -L1 git push --all'
 alias grmssh='ssh git@burnsac.xyz -- grm'
 alias g='git'
 alias allgit='gitbatch -r 2 -d $HOME/opt'
-alias zingit='gitbatch -r 2 -d "$ZINIT[HOME_DIR]"'
+alias zigit='gitbatch -r 2 -d "$ZINIT[HOME_DIR]"'
 alias gtrr='git ls-tree -r master --name-only | as-tree'
 
 alias magit='nvim -c MagitOnly'
-alias ngc='nvim .git/config'
+alias ngc='$EDITOR .git/config'
 alias nbconvert='jupyter nbconvert --to python'
 alias lg='lazygit'
 
 # === other =====================================================================
 alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
+
+alias nerdfont='source $XDG_DATA_HOME/fonts/i_all.sh'
 
 alias mpd='mpd ~/.config/mpd/mpd.conf'
 alias hangups='hangups -c $XDG_CONFIG_HOME/hangups/hangups.conf'
@@ -183,8 +201,14 @@ alias n='man'
 # alias n='gman'
 
 alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
-alias pacman='pacaptr'
-alias p='pacaptr'
+
+(( ${+commands[pacaptr]} )) && {
+  alias pacman='pacaptr'
+  alias p='pacaptr'
+  alias co='p --using conda'
+  alias tlm='p --using tlmgr'
+}
+
 alias fd='fd -Hi'
 alias pat='bat --style=header'
 alias duso='du -hsx * | sort -rh | bat --paging=always'

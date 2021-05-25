@@ -1,7 +1,7 @@
-diff --git a/functions/_dirstack_ b/functions/_dirstack_
-index fd459b5..b5e54af 100644
---- a/functions/_dirstack_
-+++ b/functions/_dirstack_
+diff --git i/functions/_dirstack_ w/functions/_dirstack_
+index fd459b5..847e856 100644
+--- i/functions/_dirstack_
++++ w/functions/_dirstack_
 @@ -1,7 +1,6 @@
  #autoload
  if [[ ! -v _comp_setup ]]; then
@@ -9,46 +9,42 @@ index fd459b5..b5e54af 100644
 -  compinit
 +  zicompinit
  fi
- 
+
  _dirstack_() {
-@@ -11,4 +10,8 @@ _dirstack_() {
-   compstate[list]='list force'
- }
- 
-+# _dirstack_() {
-+#   dirs -lp | fzf
-+# }
-+
- _dirstack_ "$@"
-diff --git a/zsh-edit.plugin.zsh b/zsh-edit.plugin.zsh
-index e4aed2a..a2b1a70 100644
---- a/zsh-edit.plugin.zsh
-+++ b/zsh-edit.plugin.zsh
-@@ -5,9 +5,10 @@ setopt autopushd pushdminus
-   typeset -gHa _edit_opts=( extendedglob NO_listbeep rcquotes warncreateglobal )
+diff --git i/zsh-edit.plugin.zsh w/zsh-edit.plugin.zsh
+index be7e76d..d00d564 100644
+--- i/zsh-edit.plugin.zsh
++++ w/zsh-edit.plugin.zsh
+@@ -5,9 +5,12 @@ setopt autopushd pushdminus
+   typeset -gHa _edit_opts=( extendedglob NO_listbeep NO_shortloops warncreateglobal )
    setopt $_edit_opts
- 
+
 -  local fdir=${${(%):-%x}:h}/functions
 +  local fdir=${${(%):-%x}:A:h}/functions
    unfunction bindkey 2>/dev/null
--  autoload -Uz $fdir/bindkey $fdir/_*~*.zwc
+   autoload -Uz $fdir/bindkey $fdir/_*~*.zwc
 +  autoload -Uz $fdir/bindkey
 +  autoload -Uz $fdir/_*~*.zwc(:t)
- 
++
+
    local widget
    for widget in {forward,backward,kill,backward-kill}-word; do
-@@ -20,11 +21,11 @@ setopt autopushd pushdminus
-   bindkey -M emacs '^[Y' reverse-yank-pop
- 
+@@ -17,14 +20,14 @@ setopt autopushd pushdminus
+     zle -N $widget _visual_yank
+   done
+
+-  bindkey -M emacs '^[Y' reverse-yank-pop
++  bindkey -M viins '≤' reverse-yank-pop # alt-,
+
    zle -N _dirstack
 -  bindkey -M emacs '^[`' _dirstack # Show dir stack.
-+  bindkey '∂' _dirstack # Show dir stack.
- 
++  bindkey -M viins '∂' _dirstack # Show dir stack. alt-d
+
    zle -N _pushd
--  bindkey -M emacs '^[-' _pushd # Go back one dir.
--  bindkey -M emacs '^[=' _pushd # Go forward one dir.
-+  bindkey 'ß' _pushd # Go back one dir.
-+  bindkey 'ƒ' _pushd # Go forward one dir.
- 
+-  bindkey -M emacs -c '^[-' '-pushd -1'  # Go backward one dir.
+-  bindkey -M emacs -c '^[=' '-pushd +0'  # Go forward one dir.
++  bindkey -M viins -c 'ß' '-pushd -1'  # Go backward one dir. alt-s
++  bindkey -M viins -c 'ƒ' '-pushd +0'  # Go forward one dir. alt-f
    bindkey -M menuselect '^[-' menu-complete
    bindkey -M menuselect '^[=' reverse-menu-complete
+ }

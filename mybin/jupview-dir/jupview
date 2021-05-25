@@ -44,7 +44,7 @@ jupview_cmd() {
     no_prompt=0
     clear_output=0
     bat_theme=""
-    opts=$($GETOPT -o "PIpOt:" -l "pager,no-input,no-prompt,clear-output,theme:" -a -- "${@}")
+    opts=$(getopt -o "PIpOt:" -l "pager,no-input,no-prompt,clear-output,theme:" -a -- "${@}")
     err=$?
 
     eval set -- "$opts"

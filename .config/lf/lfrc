@@ -1,5 +1,5 @@
 # -*- mode: sh -*-
-# vim: set ts=2 sw=2 et
+# vim: ft=conf:et:sw=0:ts=2:sts=2:
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Basics / General                                                          │
@@ -194,19 +194,19 @@ cmd zoxide_i ${{
 ## Archive
 cmd unarchive ${{
   case "$f" in
-      *.zip) unzip "$f" ;;
-      *.tar.gz) tar -xzvf "$f" ;;
-      *.tar.bz2) tar -xjvf "$f" ;;
-      *.tar.x) tar -xJvf "$f" ;;
-      *.tar) tar -xvf "$f" ;;
-      *) echo "Unsupported format" ;;
+    *.zip) unzip "$f" ;;
+    *.tar.gz) tar -xzvf "$f" ;;
+    *.tar.bz2) tar -xjvf "$f" ;;
+    *.tar.x) tar -xJvf "$f" ;;
+    *.tar) tar -xvf "$f" ;;
+    *) echo "Unsupported format" ;;
   esac
 }}
 
 
 # git
 cmd git_branch ${{
-    git branch | fzy | xargs git checkout
+    git branch | fzf | xargs git checkout
     pwd_shell=$(pwd)
     lf -remote "send $id updir"
     lf -remote "send $id cd \"$pwd_shell\""
@@ -221,12 +221,12 @@ cmd link %{{
     mode="$1"
     shift
     if [ "$#" -lt 1 ]; then
-        lf -remote "send $id echo no files to link"
-        exit 0
+      lf -remote "send $id echo no files to link"
+      exit 0
     fi
     case "$mode" in
-        copy) gln -sr -t . "$@";;
-        move) gln -t . "$@";;
+      copy) gln -sr -t . "$@";;
+      move) gln -t . "$@";;
     esac
 }}
 
@@ -329,6 +329,10 @@ cmd select-dirs ${{
       gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
 }}
 
+# TODO: formarks
+cmd jumpi ${{
+  zsh -c "TRAPWINCH() { zle && { zle reset-prompt; zle -R }; }; source $ZDOTDIR/zinit/plugins/wfxr---formarks/formarks.plugin.zsh; jump"
+}}
 
 cmd zip %zip -r "$f" "$f"
 cmd tar %tar cvf "$f.tar" "$f"
@@ -352,9 +356,10 @@ cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' |
 cmd fzf $clear; nvim $(fd -Hi "$1" . |  fzf)
 cmd fd !clear; fd -Hi "$1"
 cmd rg !clear; rg "$1"
-cmd rgf !clear; rgf "$1"
+cmd rgf !clear; rgff "$1"
 cmd bulkrename $fd . | vidir -
 cmd massren $massren
+cmd mmv $mmv $fx
 cmd f2 !f2 -f "$1"
 cmd wim $wim "$1"
 cmd mkdir %[ -n "${1}" ] && mkdir -p ${@} || echo "Argument needed"
@@ -406,6 +411,7 @@ map sr :{{ set nopreview; set ratios 1:3; }}
 map sp :{{ set preview;   set ratios 1:2:3; }}
 map sP :{{ set preview;   set ratios 1:2; }}
 map sR :{{ set reverse!; }}
+map sN :{{ set sortby natural; set info size; }}
 
 # Archive Mappings
 map az zip
@@ -416,11 +422,14 @@ map au unarchive
 
 # Trash Mappings
 map dd trash
-map D delete                            # confirmation with whiptail
+map Dd delete                            # confirmation with whiptail
 map te %trash-empty
 map tl $trash-list | fzf
 map tm $frm
 map tr $ftr                            # fzf trash restore script
+
+map Dp $dump -p -s                     # dump - interactive delete
+map Dr $dump -u -s                     # dump - restore interactive
 
 # Dragon Mapping [CONFIGURE]
 # map dr dragon
@@ -438,6 +447,7 @@ map i push A<a-b><a-b><a-f>             # before extention
 map aa push A<a-b>                      # after extention
 map Bb bulkrename                       # bulk rename all in directory
 map Bm massren                          # bulk rename with massren
+map Bv mmv
 map Bf push :f2<space>
 map ch chmod                            # change file permissions
 

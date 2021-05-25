@@ -12,7 +12,7 @@ umask 022
 
 typeset -g HISTSIZE=10000000
 typeset -g HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history"
-typeset -g SAVEHIST=10000000
+typeset -g SAVEHIST=8000000
 typeset -g HIST_STAMPS="yyyy-mm-dd"
 typeset -g HISTORY_FILTER_EXCLUDE=("jrnl", "youtube-dl", "you-get")
 typeset -g HISTORY_IGNORE="(jrnl|youtube-dl|you-get)"
@@ -46,8 +46,8 @@ typeset -A ZINIT=(
     COMPINIT_OPTS   -C
 )
 
-fpath+=( ${0:h}/{functions,completions} )
-autoload -Uz ${0:h}/functions/*(:t)
+fpath=( ${0:h}/{functions,completions} "${fpath[@]}")
+autoload -Uz $fpath[1]/*(:t)
 module_path+=( "$ZINIT[BIN_DIR]/zmodules/Src" ); zmodload zdharma/zplugin &>/dev/null
 
 if ! [[ $MYPROMPT = dolphin ]]; then
@@ -91,11 +91,11 @@ zt light-mode for \
 (){
   [[ -f "${thmf}/${1}-pre.zsh" || -f "${thmf}/${1}-post.zsh" ]] && {
     zt light-mode for \
-          romkatv/powerlevel10k \
+        romkatv/powerlevel10k \
       id-as"${1}-theme" \
       atinit"[[ -f ${thmf}/${1}-pre.zsh ]] && source ${thmf}/${1}-pre.zsh" \
       atload"[[ -f ${thmf}/${1}-post.zsh ]] && source ${thmf}/${1}-post.zsh" \
-          zdharma/null
+        zdharma/null
   } || print -P "%F{4}Theme \"${1}\" not found%f"
 } "${MYPROMPT=p10k}"
 
@@ -123,8 +123,9 @@ zt 0c light-mode for \
   atload'gcomp(){gencomp "${@}" && zinit creinstall -q "${GENCOMP_DIR}" 1>/dev/null}' \
      Aloxaf/gencomp
 
+# OMZP::sudo/sudo.plugin.zsh
+
 zt 0a light-mode for \
-    OMZP::sudo/sudo.plugin.zsh \
     OMZ::lib/history.zsh \
   atload'zstyle ":completion:*" special-dirs false' \
     OMZ::lib/completion.zsh \
@@ -142,7 +143,18 @@ zt 0a light-mode for \
   atload'bindkey "$terminfo[kf1]" dotbare-fstat;
   bindkey "$terminfo[kf2]" db-faddf' \
   atinit'_w_db_faddf() { dotbare fadd -f; }; zle -N db-faddf _w_db_faddf' \
-    kazhala/dotbare
+    kazhala/dotbare \
+  lbin'!' atload'export BMUX_DIR="$XDG_CONFIG_HOME/bmux";
+  bindkey "${terminfo[kf3]}" _wbmux' \
+  atinit'_wbmux() { bmux }; zle -N _wbmux' \
+    kazhala/bmux \
+  lbin'!hist' blockf nocompletions compile'functions/*~*.zwc' \
+    marlonrichert/zsh-hist \
+    anatolykopyl/doas-zsh-plugin
+
+# zdharma/zflai
+# FIX: why doesn't work with zsh-edit ? bindkey -c maybe
+# trackbinds bindmap'!"∂" -> _dirstack; "^[-" -> "ß"; "^[=" -> "ƒ"' \
 
 zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert)' \
@@ -160,9 +172,6 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' \
   compile'.*fast*~*.zwc' nocompletions atpull'%atclone' \
     zdharma/fast-syntax-highlighting
-
-    # atinit"forgit_ignore='fgi'" \
-    #   wfxr/forgit \
 
 zt 0b light-mode for \
   blockf compile'lib/*f*~*.zwc' \
@@ -182,7 +191,17 @@ zt 0b light-mode for \
   atload'
   zstyle ":history-search-multi-word" highlight-color "fg=cyan,bold";
   zstyle ":history-search-multi-word" page-size "16"' \
-    zdharma/history-search-multi-word
+    zdharma/history-search-multi-word \
+    marzocchi/zsh-notify
+
+zstyle ":notify:*" command-complete-timeout 3
+zstyle ':notify:*' error-title "Command failed (in #{time_elapsed} seconds)"
+zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
+
+# lbin'cmds/*' atinit'zstyle ":plugin:zconvey" greeting "none"' \
+#     zdharma/zconvey \
+# zstyle ":notify:*" notifier plg-zsh-notify
+# zstyle ":plugin:zconvey" greeting "none"
 
 zt 0c light-mode binary for \
   lbin'rgg;rgv' atclone='rm -f ^(rgg|rgv); command cp -f --remove-destination $(readlink rgv) rgv' \
@@ -202,19 +221,32 @@ zt 0c light-mode binary for \
   lbin"$ZPFX/bin/blackbox_*" make"copy-install PREFIX=$ZPFX" \
     StackExchange/blackbox \
   lbin'(f*~*.zsh)' pick'*.zsh' \
+  atinit'alias fs="fstat"' \
     lmburns/fzfgit \
   patch"${pchf}/%PLUGIN%.patch" reset \
-  lbin'!**/pt*' \
+  lbin'!src/pt*(*)' \
   atclone'(){local f;builtin cd -q src;for f (*.sh){mv ${f} ${f:r:l}};}' \
-  atload'alias ppwd="ptpwd" mkd="ptmkdir -pv" touch="pttouch" cp="ptcp -iv"' \
+  atclone"command mv -f config $ZPFX/share/ptSh/config" \
+  atload'alias ppwd="ptpwd" mkd="ptmkdir -pv" touch="pttouch" cp="ptcp -vi"' \
     jszczerbinsky/ptSh \
   lbin from'gh-r' bpick'*darwin_amd64*' \
   atload"source $ZPFX/share/pet/pet_atload.zsh " \
-    knqyf263/pet
+    knqyf263/pet \
+  lbin atclone'make build' \
+    @motemen/gore \
+  lbin from'gh-r' ver'nightly' \
+    ClementTsang/bottom \
+  lbin from'gh-r' bpick'*darwin*' \
+    ms-jpq/sad \
+  lbin from'gh-r' \
+    ducaale/xh \
+  lbin from'gh-r' \
+    itchyny/mmv \
+  lbin atclone'./autogen.sh && ./configure --enable-unicode && make install' \
+    KoffeinFlummi/htop-vim
 
-# alias pwd="ptpwd"
-# alias mkdir="ptmkdir -p"
-# alias touch="pttouch"
+# lbin from'gh-r' nivekuil/rip
+# cosmos72/gomacro
 
 zt 0c light-mode binary lbin lman from'gh-r' for \
   atclone'mv -f **/*.zsh _bat' atpull'%atclone' \
@@ -288,7 +320,7 @@ alias zmv='noglob zmv -W'
 unalias run-help && autoload run-help && alias help=run-help
 typeset -g HELPDIR='/usr/local/share/zsh/help'
 # zshexpn -- zsh -o SOURCE_TRACE -lic ''
-# bindkey -c = to command / -u = unused / -n = lookup
+# bindkey -c = to command / -u = unused / -n = lookup / -U multiple
 
 # bindkey '^I' expand-or-complete-prefix
 bindkey -M vicmd '?' which-command;             bindkey -M visual S add-surround
@@ -351,20 +383,20 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f
 # }}}
 
 # === conda initialize === {{{
-_conda_initialize() {
-  if [ -n "${CONDA_EXE}" ]; then
-    $CONDA_EXE config --set auto_activate_base false
-    __conda_setup="$($CONDA_EXE 'shell.zsh' 'hook' 2>/dev/null)"
-    [ $? -eq 0 ] && eval "$__conda_setup"
-  fi
-  unset __conda_setup
-}
-
-conda() {
-  unset -f conda
-  _conda_initialize
-  conda "$@"
-}
+# _conda_initialize() {
+#   if [ -n "${CONDA_EXE}" ]; then
+#     $CONDA_EXE config --set auto_activate_base false
+#     __conda_setup="$($CONDA_EXE 'shell.zsh' 'hook' 2>/dev/null)"
+#     [ $? -eq 0 ] && eval "$__conda_setup"
+#   fi
+#   unset __conda_setup
+# }
+#
+# conda() {
+#   unset -f conda
+#   _conda_initialize
+#   conda "$@"
+# }
 # }}}
 
 # === functions === {{{
@@ -426,18 +458,16 @@ whic() { (alias; declare -f) | /usr/local/bin/gwhich --tty-only --read-alias --r
 jpeg() { jpegoptim -S "${2:-1000}" "$1"; jhead -purejpg "$1" && du -sh "$1"; }
 pngo() { optipng -o"${2:-3}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
 png() { pngquant --speed "${2:-4}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
+osxnotify() { osascript -e 'display notification "'"$*"'"'; }
 # }}}
 
 # === helper functions === {{{
 # prevent failed commands from being added to history
-# zshaddhistory() {
-#   emulate -L zsh
-#   whence ${${(z)1}[1]} >| /dev/null || return 1
-#   [[ ${1%%$'\n'} != ${~HISTORY_IGNORE} ]]
-# }
-
-_fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
-_fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
+zshaddhistory() {
+  emulate -L zsh
+  whence ${${(z)1}[1]} >| /dev/null || return 1
+  [[ ${1%%$'\n'} != ${~HISTORY_IGNORE} ]]
+}
 
 _zsh_autosuggest_strategy_dir_history(){ # avoid zinit picking this up as a completion
     emulate -L zsh
@@ -467,7 +497,7 @@ _zsh_autosuggest_strategy_custom_history () {
 }
 
 per-dir-fzf() {
-  if [[ $_per_directory_history_is_global == true ]]; then
+  if [[ $_per_directory_history_is_global ]]; then
     per-directory-history-toggle-history; fzf-history-widget
   else
     fzf-history-widget
@@ -475,16 +505,20 @@ per-dir-fzf() {
 }
 zle -N per-dir-fzf
 bindkey '®' per-dir-fzf;     # alt+r
+
+zle -N copyqc
+bindkey '^X^b' copyqc
 # }}}
 
 #===== variables ===== {{{
+# Ω = alt-z
 zt 0c light-mode null for \
   id-as'ruby_env' has'rbenv' nocd eval'rbenv init - --no-rehash' \
     zdharma/null \
   id-as'thefuck_alias' has'thefuck' nocd eval'thefuck --alias' run-atpull \
     zdharma/null \
-  id-as'zoxide_init' has'zoxide' nocd eval'zoxide init --no-aliases zsh'\
-  atload'alias z=__zoxide_z c=__zoxide_zi' atinit'bindkey -s "^g" "c\n"' run-atpull \
+  id-as'zoxide_init' has'zoxide' nocd eval'zoxide init --no-aliases zsh' \
+  atload'alias z=__zoxide_z c=__zoxide_zi' atinit'bindkey -s "Ω" "c\n"' run-atpull \
     zdharma/null \
   id-as'keychain_init' has'keychain' run-atpull nocd \
   eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac \
@@ -494,16 +528,15 @@ zt 0c light-mode null for \
     zdharma/null \
   id-as'antidot_conf' has'antidot' nocd eval'antidot init' \
     zdharma/null \
+  id-as'pyenv_init' has'pyenv' nocd eval'pyenv init - zsh' \
+    zdharma/null \
   id-as'Cleanup' nocd atinit'unset -f zt grman; _zsh_autosuggest_bind_widgets' \
     zdharma/null
 
+# id-as'pip_comp' has'pip' nocd eval'pip completion --zsh' zdharma/null
+# export PYTHON_CONFIGURE_OPTS="--enable-shared"
 # eval "$(/usr/local/mybin/rakubrew init Zsh)"
 # eval "$(fakedata --completion zsh)"
-
-typeset -g KEYTIMEOUT=15
-
-typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
-typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="$(brew --prefix)/lib/password-store/extensions"
 
 typeset -gx PDFVIEWER='zathura' # texdoc pdfviewer
 typeset -gx XML_CATALOG_FILES="/usr/local/etc/xml/catalog"  # xdg-utils
@@ -511,12 +544,12 @@ typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET
 
 typeset -gx _ZO_DATA_DIR="${XDG_DATA_HOME}/zoxide"
 typeset -gx FZFZ_RECENT_DIRS_TOOL='autojump'
-typeset -g ZSH_AUTOSUGGEST_USE_ASYNC=1
-typeset -g ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-typeset -g ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c100,)" # no 100+ char
-typeset -g ZSH_AUTOSUGGEST_COMPLETION_IGNORE="[[:space:]]*" # no lead space
-typeset -g ZSH_AUTOSUGGEST_STRATEGY=(dir_history custom_history completion)
+typeset -gx ZSH_AUTOSUGGEST_USE_ASYNC=1
+typeset -gx ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+typeset -gx ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+typeset -gx ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c100,)" # no 100+ char
+typeset -gx ZSH_AUTOSUGGEST_COMPLETION_IGNORE="[[:space:]]*" # no lead space
+typeset -gx ZSH_AUTOSUGGEST_STRATEGY=(dir_history custom_history completion)
 typeset -g PER_DIRECTORY_HISTORY_BASE="${ZPFX}/share/per-directory-history"
 typeset -gx UPDATELOCAL_GITDIR="${HOME}/opt"
 typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
@@ -527,57 +560,90 @@ typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 typeset -gx FZFGIT_DEFAULT_OPTS="--preview-window=':nohidden,right:65%:wrap'"
 # typeset -gx CDHISTCOMMAND=xd
 typeset -gx NQDIR="$TMPDIR/nq"
+
+typeset -g KEYTIMEOUT=15
+
+typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
+typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${BREW_PREFIX}/lib/password-store/extensions"
 # }}}
 
-  # --color=fg:-1,bg:-1,hl:#ffaf5f,fg+:-1,bg+:-1,hl+:#ffaf5f
-  # --color=prompt:#5fff87,marker:#ff87d7,spinner:#ff87d7
-  # --color=fg:#cbccc6,fg+:#707a8c,hl:#707a8c,hl+:#ffcc66
-  # --color=info:#73d0ff,pointer:#cbccc6,marker:#73d0ff,spinner:#73d0ff
+# --color=fg:-1,bg:-1,hl:#ffaf5f,fg+:-1,bg+:-1,hl+:#ffaf5f
+# --color=prompt:#5fff87,marker:#ff87d7,spinner:#ff87d7
+# --color=fg:#cbccc6,fg+:#707a8c,hl:#707a8c,hl+:#ffcc66
+# --color=info:#73d0ff,pointer:#cbccc6,marker:#73d0ff,spinner:#73d0ff
 
 # === fzf === {{{
 # ❱❯❮ --border ,border-left
+(( ${+commands[fd]} )) && {
+  _fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
+  _fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
+}
+
+FZF_COLORS="
+--color=fg:-1,bg:-1,hl:#ffaf5f,fg+:-1,bg+:-1,hl+:#ffaf5f
+--color=prompt:#5fff87,marker:#ff87d7,spinner:#ff87d7
+"
+SKIM_COLORS="
+--color=fg:#b16286,fg+:#d3869b,hl:#458588,hl+:#689d6a
+--color=pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
+--color=header:#cc241d,prompt:#fb4934
+"
+FZF_FILE_PREVIEW="([[ -f {} ]] && (bat --style=numbers --color=always {}))"
+FZF_DIR_PREVIEW="([[ -d {} ]] && (exa -T {} | less))"
+FZF_BIN_PREVIEW="(file --mime-type -b | rg -q 'binary' && echo {})"
+
 export FZF_DEFAULT_OPTS="
-  --prompt '❱ '
-  --pointer '➤'
-  --marker '┃'
-  --cycle
-  --color=fg:-1,bg:-1,hl:#ffaf5f,fg+:-1,bg+:-1,hl+:#ffaf5f
-  --color=prompt:#5fff87,marker:#ff87d7,spinner:#ff87d7
-  --reverse --height 60% --ansi --info=inline --multi --border
-  --preview-window=':hidden,right:65%:wrap'
-  --preview '([[ -f {} ]] && (bat --style=numbers --color=always {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
-  --bind='?:toggle-preview'
-  --bind='ctrl-a:select-all,ctrl-r:toggle-all'
-  --bind='ctrl-b:execute(bat --paging=always -f {+})'
-  --bind='ctrl-y:execute-silent(echo {+} | pbcopy)'
-  --bind='ctrl-e:execute(echo {+} | xargs -o nvim)'
-  --bind='ctrl-v:execute(code {+})'
-  --bind='ctrl-k:preview-up,ctrl-j:preview-down'
-  --bind='ctrl-u:half-page-up,ctrl-d:half-page-down'
+--prompt '❱ '
+--pointer '➤'
+--marker '┃'
+--cycle
+$FZF_COLORS
+--reverse --height 80% --ansi --info=inline --multi --border
+--preview-window=':hidden,right:60%'
+--preview \"($FZF_FILE_PREVIEW || $FZF_DIR_PREVIEW) 2>/dev/null | head -200\"
+--bind='?:toggle-preview'
+--bind='ctrl-a:select-all,ctrl-r:toggle-all'
+--bind='ctrl-b:execute(bat --paging=always -f {+})'
+--bind='ctrl-y:execute-silent(echo {+} | pbcopy)'
+--bind='ctrl-e:execute(echo {+} | xargs -o nvim)'
+--bind='ctrl-v:execute(code {+})'
+--bind='ctrl-k:preview-up,ctrl-j:preview-down'
+--bind='ctrl-u:half-page-up,ctrl-d:half-page-down'
+--bind change:top
 "
 export SKIM_DEFAULT_OPTIONS="
-  --prompt '❱❱ '
-  --color=fg:#b16286,fg+:#d3869b,hl:#458588,hl+:#689d6a
-  --color=pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
-  --color=header:#cc241d,prompt:#fb4934
-  --reverse --height 70% --border --ansi --multi
-  --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
-  --bind '?:toggle-preview'
-  --bind 'ctrl-a:select-all'
-  --bind 'ctrl-b:execute(bat --paging=always -f {+})'
-  --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
-  --bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
-  --bind 'ctrl-v:execute(code {+})'
+--prompt '❱❱ '
+$SKIM_COLORS
+--reverse --height 70% --border --ansi --multi
+--preview \"($FZF_FILE_PREVIEW || $FZF_DIR_PREVIEW) 2>/dev/null | head -200\"
+--bind '?:toggle-preview'
+--bind 'ctrl-a:select-all'
+--bind 'ctrl-b:execute(bat --paging=always -f {+})'
+--bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
+--bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
+--bind 'ctrl-v:execute(code {+})'
+"
+export FZF_ALT_E_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_E_OPTS="
+--preview \"($FZF_FILE_PREVIEW || $FZF_DIR_PREVIEW) 2>/dev/null | head -200\"
+--bind 'alt-e:execute($EDITOR {} >/dev/tty </dev/tty)'
+--preview-window default:right:60%
+"
+export FZF_CTRL_R_OPTS="
+--preview 'echo {}'
+--preview-window 'down:2:wrap'
+--bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+--header 'Press CTRL-Y to copy command into clipboard'
+--exact
+--expect=ctrl-x
 "
 export SKIM_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
-
 # export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 # export FZF_ALT_C_COMMAND="fd -t d ."
-export FORGIT_FZF_DEFAULT_OPTS="--exact --cycle --height 70% --info=inline
-  --preview-window=:nohidden"
+export FORGIT_FZF_DEFAULT_OPTS="--preview-window='right:60%:nohidden'"
 export NAVI_FZF_OVERRIDES="--height=70%"
 
 alias db='dotbare'
@@ -585,27 +651,18 @@ export DOTBARE_DIR="$XDG_DATA_HOME/dotfiles"
 export DOTBARE_TREE="$HOME"
 export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare-b"
 export DOTBARE_FZF_DEFAULT_OPTS="
-  --prompt '❱❱ '
-  --marker='+'
-  --header='A:select-all, B:pager, Y:copy, E:nvim'
-  --reverse --height 50% --border --ansi --info=inline --multi
-  --preview-window=:nohidden
-  --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
-  --bind 'ctrl-a:select-all'
-  --bind 'ctrl-b:execute(bat --paging=always -f {+})'
-  --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
-  --bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
+$FZF_DEFAULT_OPTS
+--header='A:select-all, B:pager, Y:copy, E:nvim'
+--preview-window=:nohidden
+--preview \"($FZF_FILE_PREVIEW || $FZF_DIR_PREVIEW) 2>/dev/null | head -200\"
+--bind 'ctrl-a:select-all'
+--bind 'ctrl-b:execute(bat --paging=always -f {+})'
+--bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
+--bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
 "
 # }}}
 
 # === paths (GNU) === {{{
-
-# path=(
-#   /usr/local/bin
-#   /usr/local/sbin
-#   ${path[@]}
-# )
-
 [[ -z ${path[(re)$HOME/.local/bin]} ]] && path=( "$HOME/.local/bin" "${path[@]}" )
 [[ -z ${path[(re)/usr/local/bin]} ]] && path=( "/usr/local/bin" "${path[@]}" )
 [[ -z ${path[(re)/usr/local/sbin]} ]] && path=( "/usr/local/sbin" "${path[@]}" )
@@ -613,6 +670,7 @@ export DOTBARE_FZF_DEFAULT_OPTS="
 path=(
   /usr/local/opt/coreutils/libexec/gnubin
   /usr/local/opt/gnu-sed/libexec/gnubin
+  /usr/local/opt/gnu-getopt/bin
   /usr/local/opt/grep/libexec/gnubin
   /usr/local/opt/gnu-tar/libexec/gnubin
   /usr/local/opt/gawk/libexec/gnubin
@@ -624,9 +682,11 @@ path=(
   /usr/local/opt/libressl/bin
   /usr/local/opt/unzip/bin
   /usr/local/opt/openvpn/sbin
+  /usr/local/opt/llvm/bin
   ${path[@]}
 )
 
+# $HOME/opt/anaconda3/man
 manpath=(
   /usr/local/opt/gnu-sed/share/man
   /usr/local/opt/grep/share/man
@@ -636,6 +696,8 @@ manpath=(
   /usr/local/opt/findutils/share/man
   /usr/local/opt/gnu-which/share/man
   /usr/local/opt/file-formula/share/man
+  /usr/local/opt/util-linux/share/man
+  /usr/local/opt/gnu-getopt/share/man
   ${manpath[@]}
 )
 
@@ -655,24 +717,27 @@ infopath=(
 # )
 
 # ruby, go, python, mysql
+# $HOME/opt/anaconda3/bin
 path=(
   $HOME/.rbenv/version/3.0.0/bin
+  $PYENV_ROOT/shims
+  $PYENV_ROOT/bin
   $CARGO_HOME/bin
   $XDG_DATA_HOME/gem/bin
-  $HOME/opt/anaconda3/bin
   $GOPATH/bin
   /usr/local/mysql/bin/
   ${path[@]}
 )
 
+# llvm
+export LDFLAGS="-L/usr/local/opt/llvm/lib"
+export CPPFLAGS="-I/usr/local/opt/llvm/include"
 # flex
 export LDFLAGS="-L/usr/local/opt/flex/lib"
 export CPPFLAGS="-I/usr/local/opt/flex/include"
-
 # bison
 export PATH="/usr/local/opt/bison/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/bison/lib"
-
 # libressl
 export LDFLAGS="-L/usr/local/opt/libressl/lib"
 export CPPFLAGS="-I/usr/local/opt/libressl/include"
@@ -700,13 +765,13 @@ zt light-mode null id-as for \
   atload'chronic pueue clean && pueue status | rg -Fq "limelight" || chronic pueue add limelight' \
     zdharma/null \
   atload'local x="$XDG_CONFIG_HOME/cdhist/cdhist.rc"; [ -f "$x" ] && source "$x"' \
-    zdharma/null \
-  atload"source $XDG_DATA_HOME/fonts/i_all.sh" \
     zdharma/null
 
+# atload"source $XDG_DATA_HOME/fonts/i_all.sh" zdharma/null
 # nocd atinit"ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight"
 
-# recache keychain if older than GPG cache time
+# recache keychain if older than GPG cache time or first login
+# FIX: || $(tty) =~ ttys00
 [[ -f "$ZINIT[PLUGINS_DIR]/keychain_init"/eval*~*.zwc(#qN.ms+45000) ]] && {
   zinit recache keychain_init
   print -P "%F{12}===> Keychain recached <===%f"
@@ -724,4 +789,13 @@ typeset -gxU path fpath manpath infopath cdpth     # clean duplicates / export
 
 # vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr={{{,}}}:
 
-# ≻⊲       
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish

@@ -1,6 +1,6 @@
 # desc: interactively kill process with fzf
 
-ppkill() {
+fkill() {
   px \
     | sed 1d \
     | awk 'BEGIN{OFS="\t"}{print $1, $2, $NF}' \
@@ -9,6 +9,6 @@ ppkill() {
     | xargs -I{} kill -KILL "{}"
 }
 
-ppkill
+fkill
 
 # vim:ft=zsh:

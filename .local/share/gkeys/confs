@@ -1,0 +1,8 @@
+nzsh="$EDITOR ${0:h}/.zshrc"
+azsh="$EDITOR ${0:h}/zsh-aliases"
+ezsh="$EDITOR $HOME/.zshenv"
+ninit="$EDITOR $XDG_CONFIG_HOME/nvim/init.vim"
+nlfr="$EDITOR $XDG_CONFIG_HOME/lf/lfrc"
+ngit="$EDITOR $XDG_CONFIG_HOME/git/config"
+nyab="$EDITOR $XDG_CONFIG_HOME/yabai/yabairc"
+nskhd="$EDITOR $XDG_CONFIG_HOME/skhd/skhdrc"

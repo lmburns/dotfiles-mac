@@ -1,0 +1,18 @@
+# vim: ft=zsh:et:sw=0:ts=2:sts=2:
+
+# desc: use copyq to copy clipboard with fzf
+
+copyqc() {
+  sel=$(copyq eval -- \
+    "tab('&clipboard'); for(i=size(); i>0; --i) print(str(read(i-1)) + '\n');" \
+    | rg -v '^\s*$' \
+    | nl -w2 -s" " \
+    | tac \
+    | fzf)
+
+  printf "%s" "$(tput setaf 5)$sel$(tput sgr0)"
+  # echo "$sel" | tr -d '[[:digit:][:blank:]]' | pbcopy
+  echo "$sel" | sd '^\d+(\s*|\t)' '' | pbcopy
+}
+
+copyqc

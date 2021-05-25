@@ -19,15 +19,16 @@
     "zsh": "shfmt"
   },
   "coc.preferences.formatOnSaveFiletypes": ["go"],
-  "codeLens.enable": true,
+  "coc.preferences.formatOnType": true,
   "signature.enable": true,
   "sh.enable": true,
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "~/opt/anaconda3/bin/black",
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
   "python.linting.flake8Enabled": true,
-  "python.formatting.provider": "black",
   "python.jediEnabled": false,
-  "python.condaPath": "conda",
+  "python.condaPath": "~/opt/anaconda3/bin/conda",
   "suggest.disableMenu": false,
   "suggest.snippetIndicator": "",
   "suggest.noselect": false,
@@ -41,11 +42,6 @@
   "coc.source.syntax.shortcut": "\uf670",
   "tabnine.priority": 99,
   "suggest.languageSourcePriority": 100,
-
-  // coc-explorer
-  "explorer.icon.enableNerdfont": true,
-  "explorer.icon.enableVimDevicons": false,
-  "explorer.git.enable": true,
   "git.addedSign.text": "┃",
   "git.changedSign.text": "┃",
   "git.changeRemovedSign.text": "┃",
@@ -58,6 +54,11 @@
   "git.topRemovedSign.hlGroup": "SignifySignDelete",
   "git.addGBlameToVirtualText": true,
   "git.virtualTextPrefix": "     commit: ",
+
+  // coc-explorer
+  "explorer.icon.enableNerdfont": true,
+  "explorer.icon.enableVimDevicons": false,
+  "explorer.git.enable": true,
   "explorer.quitOnOpen": true,
   "explorer.position": "left",
   "explorer.file.showHiddenFiles": true,
@@ -178,5 +179,12 @@
     "default": "\uf29c"
   },
   "snippets.shortcut": "\uf672",
-  "yank.highlight.duration": 100
+  "rust-analyzer.updates.channel":"nightly",
+  "rust-analyzer.cargo.allFeatures": true,
+  "rust-analyzer.checkOnSave.allFeatures": true,
+  "rust-analyzer.procMacro.enable": true,
+  "rust-analyzer.updates.prompt": true,
+  "yank.highlight.duration": 100,
+  "coc.preferences.formatOnType": true,
+  "clangd.path": "/Users/lucasburns/.config/coc/extensions/coc-clangd-data/install/12.0.0/clangd_12.0.0/bin/clangd"
 }

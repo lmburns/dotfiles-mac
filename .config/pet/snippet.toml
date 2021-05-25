@@ -52,3 +52,13 @@
   description = "get battery temperature"
   command = "bc <<< \\\"scale=3; $(ioreg -r -n AppleSmartBattery | grep Temperature | cut -c23-)/100*1.8+32\\\""
   output = ""
+
+[[snippets]]
+  description = "weather one line formater"
+  command = "wttr '65202?format=3'"
+  output = ""
+
+[[snippets]]
+  description = "weather day chart"
+  command = "curl v2d.wttr.in/65202"
+  output = ""

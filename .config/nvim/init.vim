@@ -3,7 +3,6 @@
 "     Email: burnsac@me.com                                                
 "      Home: https://github.com/lmburns                                    
 "============================================================================
-" vim: ft=vim:et:sts=2:sw=0:fdm=marker:fmr={{{,}}}:
 
 " === Plugins === {{{
   set ttyfast
@@ -29,16 +28,18 @@
   Plug 'honza/vim-snippets'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
-  " Plug 'itchyny/lightline.vim'
-  " Plug 'josa42/vim-lightline-coc'
+  " Plug 'sainnhe/tmuxline.vim', {'on': ['Tmuxline', 'TmuxlineSnapshot']}
+  Plug 'itchyny/lightline.vim'
+  Plug 'josa42/vim-lightline-coc'
+  Plug 'sainnhe/artify.vim'
   Plug 'zhou13/vim-easyescape'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-endwise'
-  Plug 'itchyny/vim-highlighturl'
+  " Plug 'itchyny/vim-highlighturl'
   Plug 'PeterRincker/vim-searchlight'
-  Plug 'vim-airline/vim-airline'
-  Plug 'vim-airline/vim-airline-themes'
+  " Plug 'vim-airline/vim-airline'
+  " Plug 'vim-airline/vim-airline-themes'
   Plug 'mhinz/vim-startify'
   Plug 'easymotion/vim-easymotion'
 
@@ -52,12 +53,18 @@
 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'antoinemadec/coc-fzf'
+  " Plug 'tjdevries/coc-zsh'
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
   Plug 'vim-perl/vim-perl', { 'for': 'perl' }
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'fatih/vim-go', { 'for': 'go' }
   Plug 'sheerun/vim-polyglot'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  " Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+  Plug 'nvim-telescope/telescope.nvim'
+  Plug 'nvim-lua/popup.nvim'
+  Plug 'nvim-lua/plenary.nvim'
   Plug 'scrooloose/nerdcommenter'
   " Plug 'tpope/vim-commentary'
 
@@ -67,21 +74,25 @@
   " Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
   Plug 'ap/vim-css-color'
   Plug 'yggdroot/indentline'
+  Plug 'nvim-lua/plenary.nvim'
   Plug 'folke/todo-comments.nvim'
 
   " Themes
   " Plug 'Rigellute/rigel'
-  " Plug 'AlessandroYorba/Alduin'
   " Plug 'lifepillar/vim-gruvbox8'
   " Plug 'morhetz/gruvbox'
+  " Plug 'gavinok/spaceway.vim'
+  Plug 'AlessandroYorba/Alduin'
   Plug 'franbach/miramare'
+  Plug 'wojciechkepka/bogster'
+  Plug 'wojciechkepka/vim-github-dark'
+  Plug 'haishanh/night-owl.vim'
   Plug 'ackyshake/Spacegray.vim'
-  Plug 'gavinok/spaceway.vim'
   Plug 'bluz71/vim-nightfly-guicolors'
   Plug 'savq/melange'
   Plug 'ajmwagar/vim-deus'
+  Plug 'habamax/vim-gruvbit'
   Plug 'lmburns/kimbox'
-  Plug '1612492/github.vim'
   Plug 'nanotech/jellybeans.vim'
   Plug 'cocopon/iceberg.vim'
   Plug 'sainnhe/gruvbox-material'
@@ -97,6 +108,7 @@
   Plug 'srcery-colors/srcery-vim'
   Plug 'wadackel/vim-dogrun'
   Plug 'glepnir/oceanic-material'
+  Plug 'mhartington/oceanic-next'
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
@@ -104,9 +116,6 @@
   Plug 'wfxr/minimap.vim'
   call plug#end()
 " }}}  === Plugins ===
-
-" =====================================================================
-" =====================================================================
 
 " Function Keys: {{{
   " <F1> = run shell script
@@ -129,12 +138,18 @@
   let mapleader = ' '
   let maplocalleader = ','
 
+  let g:gruvbox_material_background = 'medium'
   let g:gruvbox_material_palette = 'mix'
-  let g:gruvbox_material_background = 'hard'
-  " let g:gruvbox_material_background = 'medium'
+  " let g:gruvbox_material_palette = 'material'
+  " let g:gruvbox_material_background = 'hard'
   let g:gruvbox_material_enable_bold = 1
+  let g:gruvbox_material_disable_italic_comment = 1
   let g:gruvbox_material_current_word = 'grey background'
   let g:gruvbox_material_visual = 'grey background'
+  let g:gruvbox_material_cursor = 'green'
+  let g:gruvbox_material_sign_column_background = 'none'
+  let g:gruvbox_material_statusline_style = 'mix'
+  let g:gruvbox_material_better_performance = 1
 
   " let g:kimbox_background = 'deep'
   " let g:kimbox_background = 'medium' " brown
@@ -142,29 +157,68 @@
   " let g:kimbox_background = 'ocean' " dark purple
   let g:kimbox_allow_bold = 1
 
-  let g:oceanic_material_background = "deep"
-  " let g:oceanic_material_background = "ocean"
+  let g:oceanic_material_background = "ocean"
+  " let g:oceanic_material_background = "deep"
+  " let g:oceanic_material_background = "medium"
+  " let g:oceanic_material_background = "darker"
   let g:oceanic_material_allow_bold = 1
+  let g:oceanic_material_allow_italic = 1
+  let g:oceanic_material_allow_underline = 1
 
-  let g:everforest_background = 'hard'
+  " let g:everforest_background = 'hard'
   let g:everforest_enable_italic = 1
+  let g:everforest_sign_column_background = 'none'
+  let g:everforest_better_performance = 1
 
-  let g:material_theme_style = 'ocean-community'
+  let g:edge_style = 'aura'
+  let g:edge_cursor = 'blue'
+  let g:edge_sign_column_background = 'none'
+  let g:edge_better_performance = 1
+
   " let g:material_theme_style = 'darker-community'
+  let g:material_theme_style = 'ocean-community'
   let g:material_terminal_italics = 1
 
-  let g:spacegray_use_italics = 1
+  " maia atlantis era
+  " let g:sonokai_style = 'andromeda'
+  let g:sonokai_style = 'shusia'
+  let g:sonokai_enable_italic = 1
+  let g:sonokai_disable_italic_comment = 1
+  let g:sonokai_cursor = 'blue'
+  let g:sonokai_sign_column_background = 'none'
+  let g:sonokai_better_performance = 1
+
+  let g:miramare_enable_italic = 1
+  let g:miramare_enable_bold = 1
+  let g:miramare_disable_italic_comment = 1
+  let g:miramare_cursor = 'purple'
+  let g:miramare_current_word = 'grey background'
 
   let g:gruvbox_contrast_dark = 'medium'
-  let g:sonokai_style = 'shusia'
-  let g:edge_style = 'aura'
+  let g:spacegray_use_italics = 1
+
+  func! s:gruvbit_setup() abort
+    hi Comment gui=italic cterm=italic
+    hi Statement gui=bold cterm=bold
+    hi Comment gui=italic cterm=italic
+  endfunc
+
+  augroup colorscheme_change | au!
+    au ColorScheme gruvbit call s:gruvbit_setup()
+  augroup END
 
   set t_Co=256
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 
-  set guifont=JetBrains\ Mono\ Bold\ Nerd\ Font\ Complete:h14
+  if exists('g:neovide')
+    set guifont=JetBrainsMono\ Nerd\ Font:h13
+    nnoremap <D-v> "+p
+    inoremap <D-v> <c-r>+
+  endif
+  let g:neovide_cursor_vfx_mode = 'torpedo'
+  " let g:neovide_fullscreen = v:true
   " set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
   " set guicursor=a:blinkon100
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
@@ -173,15 +227,19 @@
 
   syntax enable
   " colorscheme spaceduck
+  " colorscheme bogster
   " colorscheme kimbox
   " colorscheme material
   " colorscheme everforest
-  colorscheme oceanic_material
-  " colorscheme gruvbox-material
+  " colorscheme miramare
+  " colorscheme oceanic_material
+  colorscheme gruvbox-material
+  " coloscheme OceanicNext
   " colorscheme jellybeans
+  " colorscheme gruvbit
+  " colorscheme sonokai
   " colorscheme iceberg
   " colorscheme deus
-  " colorscheme miramare
   " colorscheme nightfly
   " colorscheme melange
   " colorscheme onedark
@@ -190,7 +248,8 @@
   " colorscheme spaceway    " needs work
   " colorscheme alduin      " needs work
   " colorscheme spacegray
-  " edge sonokai tokyonight daycula srcery dogrun palenight
+  " colorscheme tokyonight
+  " edge daycula srcery dogrun palenight
 
 " }}} === Theme Settings ===
 
@@ -227,8 +286,8 @@
   set incsearch                             " incremential search highligh
   set encoding=utf-8
   set pumheight=10                          " number of items in popup menu
-  set pumblend=10                           " transparent popup_menu
-  set winblend=10                           " transparent floating window
+  set pumblend=8                           " transparent popup_menu
+  set winblend=8                           " transparent floating window
   set hidden
   set nobackup
   set nowritebackup
@@ -257,6 +316,7 @@
   set wildmode=full                       " autocompletion
   set wildmenu                            " autocompletion
   set wildignore+=.git,.DS_Store,node_modules
+  set wildoptions=pum
   set diffopt=vertical
   set synmaxcol=1000                      " do not highlight long lines
   set signcolumn=yes
@@ -280,10 +340,10 @@
   nnoremap q: <Nop>
   nnoremap q/ <Nop>
   nnoremap q? <Nop>
-  nnoremap <Up> <Nop>
-  nnoremap <Down> <Nop>
-  nnoremap <Left> <Nop>
-  nnoremap <Right> <Nop>
+  " nnoremap <Up> <Nop>
+  " nnoremap <Down> <Nop>
+  " nnoremap <Left> <Nop>
+  " nnoremap <Right> <Nop>
 
   cnoreabbrev W! w!
   cnoreabbrev Q! q!
@@ -297,8 +357,15 @@
 
   noremap Q gq
 
+  nnoremap ;w :update<CR>
+  nnoremap w; :update<CR>
+  nnoremap ;q :q<CR>
+  nnoremap q; :q<CR>
   " replace command history with quit
-  nmap Q: :q<Cr>
+  " FIX: minimap error
+  " map q: :MinimapToggle<CR> :q<CR>
+  map q: :q<CR>
+  map Q: :q
   command! -bang -nargs=* Q q
 
   " use qq to record, q to stop, Q to play a macro
@@ -389,12 +456,14 @@
   " buffer switching
   nnoremap gt :bnext<CR>
   nnoremap gT :bprevious<CR>
+  nnoremap <C-S-Right> :bnext<CR>
+  nnoremap <C-S-Left> :bprevious<CR>
   " new buffer
-  nnoremap <leader>bn :enew<cr>
+  nnoremap <Leader>bn :enew<cr>
   " close buffer
-  nnoremap <leader>bq :bp <bar> bd! #<cr>
+  nnoremap <Leader>bq :bp <bar> bd! #<cr>
   " close all buffers
-  nnoremap <leader>bQ :bufdo bd! #<cr>
+  nnoremap <Leader>bQ :bufdo bd! #<cr>
   " list buffers
   nnoremap <silent> <space>b :<C-u>Buffers<cr>
 
@@ -492,6 +561,14 @@
   \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
   \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
+  nmap <c-a> :call <SID>SynStack()<CR>
+  function! <SID>SynStack()
+    if !exists("*synstack")
+      return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+  endfunction
+
   ":verbose hi <name>
   " SyntaxQuery: Display the syntax stack at current cursor position
   function! s:syntax_query() abort
@@ -520,9 +597,6 @@
   hi def link cmTitle vimCommentTitle
   hi def link myTodo Todo
 " }}} === Syntax ===
-
-" TODO:
-" COMMENT: title
 
 " === Other === {{{
   augroup jump_last_position
@@ -640,34 +714,38 @@
   " bold shortcut for markdown
   autocmd FileType markdown inoremap ** ****<Left><Left>
   " <C-x> select pop up menu (vimwiki uses <enter> in to go to another page)
-  autocmd FileType markdown inoremap <expr> <C-x> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  " autocmd FileType markdown inoremap <expr> <C-x> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  autocmd FileType markdown inoremap <expr> <right> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 "}}} === Vim Wiki ===
 
-" === COC === {{{
+" === coc-nvim === {{{
   let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
   let g:syntastic_python_pylint_post_args="--max-line-length=120"
   set pyxversion=3
 
   " prettier command for coc
+  command! -nargs=0 CocMarket :CocList marketplace
   command! -nargs=0 Prettier :CocCommand prettier.formatFile
-  noremap <C-x><C-l> :CocFzfList<cr>
-  nnoremap <silent> <Leader>y  :<C-u>CocList yank<cr>
+  noremap <C-x><C-l> :CocFzfList<CR>
+  " alt-s
+  noremap ß :CocFzfList symbols<CR>
+  nnoremap <silent> <Leader>y  :<C-u>CocList yank<CR>
   let g:coc_fzf_opts = ['--no-border', '--layout=reverse-list']
   let g:coc_global_extensions = [
     \ 'coc-snippets',
     \ 'coc-diagnostic',
     \ 'coc-pairs',
     \ 'coc-yank',
+    \ 'coc-explorer',
     \ 'coc-prettier',
+    \ 'coc-marketplace',
     \ 'coc-tabnine',
     \ 'coc-html',
     \ 'coc-css',
     \ 'coc-json',
     \ 'coc-pyright',
     \ 'coc-python',
-    \ 'coc-explorer',
     \ 'coc-vimtex',
-    \ 'coc-go',
     \ 'coc-r-lsp',
     \ 'coc-vimlsp',
     \ 'coc-sh',
@@ -679,6 +757,7 @@
     \ 'coc-git',
     \ 'coc-go',
     \ 'coc-rust-analyzer',
+    \ 'coc-clangd',
     \ ]
 
   let g:coc_explorer_global_presets = {
@@ -697,7 +776,7 @@
       \ }
 
   nmap <silent> <Leader>ee :CocCommand explorer<CR>
-  nmap <silent> <Leader>ec :CocCommand explorer --preset config<CR>
+  " nmap <silent> <Leader>ec :CocCommand explorer --preset config<CR>
   nmap <silent> <Leader>ep :CocCommand explorer --preset projects<CR>
   nmap <silent> <Leader>eg :CocCommand explorer --preset github<CR>
   nmap <silent> <Leader>eo :CocCommand explorer --preset opt<CR>
@@ -712,6 +791,9 @@
   " use `[g` and `]g` to navigate diagnostics
   nmap <silent> [g <Plug>(coc-diagnostic-prev)
   nmap <silent> ]g <Plug>(coc-diagnostic-next)
+  nnoremap <silent> <leader>? :call CocAction('diagnosticInfo')<CR>
+  " nmap <silent> )g :call CocAction('diagnosticNext')<CR>
+  " nmap <silent> (g :call CocAction('diagnosticPrevious')<CR>
 
   " goto code navigation
   nmap <silent> gd <Plug>(coc-definition)
@@ -726,7 +808,7 @@
   nmap <Leader>fm <Plug>(coc-format-selected)
 
   xmap <leader>w  <Plug>(coc-codeaction-selected)
-  nmap <leader>w  <Plug>(coc-codeaction-selected)
+  nmap <leader>ww  <Plug>(coc-codeaction-selected)
 
   " remap for do codeAction of current line
   nmap <leader>wc  <Plug>(coc-codeaction)
@@ -788,6 +870,7 @@
 
   " position. Coc only does snippet and additional edit on confirm.
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
   " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
   " for json
@@ -849,13 +932,14 @@
       \ nmap <buffer> <Leader>b<CR> :call <SID>build_go_files()<CR>|
       \ nmap <buffer> <Leader>r<CR> <Plug>(go-run)|
       \ nmap <buffer> <Leader>rr    :GoRun %<CR>|
+        nmap <buffer> <Leader>ri    :GoRun %<space>|
       \ nmap <buffer> <Leader>t<CR> <Plug>(go-test)|
       \ nmap <buffer> <Leader>c<CR> <Plug>(go-coverage-toggle)|
       \ nmap <buffer> <Leader>gae <Plug>(go-alternate-edit)|
       \ nmap <buffer> <Leader>i <Plug>(go-info)|
       \ nmap <buffer> <Leader>sm :GoSameIdsToggle<CR>|
-      \ nmap <buffer> <c-a-j> :cnext<CR>|
-      \ nmap <buffer> <c-a-k> :cprevious<CR>|
+      \ nmap <buffer> <C-A-n> :cnext<CR>|
+      \ nmap <buffer> <C-A-m> :cprevious<CR>|
       \ nmap <buffer> <Leader>f :GoDeclsDir<cr>|
       \ let g:go_fmt_command = "goimports"|
       \ let g:go_list_type = "quickfix"|
@@ -953,6 +1037,17 @@ augroup END
         \ 1,
         \ {'options':  '--delimiter : --nth 4..'},
         \ 0)
+
+    command! -bang -nargs=* Rgf call RGF()
+    function! RGF()
+      " . ' -F '.expand('%:t')"
+      let fixmestr =
+        \ '(FIXME|FIX|DISCOVER|NOTE|NOTES|INFO|OPTIMIZE|XXX|EXPLAIN|TODO|HACK|BUG|BUGS):'
+      call fzf#vim#grep(
+        \ 'rg --column --no-heading --line-number --color=always '.shellescape(fixmestr),
+        \ 1,
+          \ {'options':  '--delimiter : --nth 4..'}, 0)
+    endfunction
 
   " RG with preview
   function! RipgrepFzf(query, fullscreen)
@@ -1163,41 +1258,42 @@ nnoremap <Leader>gp :Git push<CR>
   noremap <Leader>sa zg
   noremap <Leader>s? z=
   augroup spell
+    " add markdown
     autocmd!
-    autocmd FileType text,markdown,gitcommit setlocal spell
+    autocmd FileType text,gitcommit setlocal spell
     autocmd BufRead,BufNewFile neomutt-void* setlocal spell
   augroup END
 " }}} === Spell Check ===
 
 " === Airline === {{{
-  set laststatus=2
-  let g:airline_powerline_fonts = 1
-  let g:airline_section_b = ' %{strftime("%I:%M")}'
-  " let g:airline_section_z = '☰ %3l/%L:%3v'
-  let g:airline_skip_empty_sections=1
-  let g:airline_highlighting_cache = 1
-  let g:airline_detect_spell=0
-  " let g:airline_section_warning = ''
-  " let g:airline_section_error = ''
-  let g:airline#extensions#tabline#enabled = 2
-  let g:airline#extensions#tabline#fnamemod = ':t'
-  let g:airline#extensions#tabline#show_tab_nr = 0
-  let g:airline#extensions#tabline#tab_nr_type = 0
-  let g:airline#extensions#tabline#show_tab_type = 0 " shows buffer etc
-  let g:airline#extensions#tabline#show_close_button = 0
-  let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
-
-  let g:airline_extensions = ['branch', 'tabline', 'fzf']
-  let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-  let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
-  let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
-  " let g:airline#extensions#tabline#show_tabs = 0
-  " let g:airline#extensions#hunks#enabled = 0
-  let g:airline_theme='srcery'
-  " let g:airline_theme='gruvbox_material'
-  " let g:airline_theme='everforest'
-  " let g:airline_theme='oceanic_material'
-  let g:gruvbox_material_statusline_style='mix'
+  " set laststatus=2
+  " let g:airline_powerline_fonts = 1
+  " let g:airline_section_b = ' %{strftime("%I:%M")}'
+  " " let g:airline_section_z = '☰ %3l/%L:%3v'
+  " let g:airline_skip_empty_sections=1
+  " let g:airline_highlighting_cache = 1
+  " let g:airline_detect_spell=0
+  " " let g:airline_section_warning = ''
+  " " let g:airline_section_error = ''
+  " let g:airline#extensions#tabline#enabled = 2
+  " let g:airline#extensions#tabline#fnamemod = ':t'
+  " let g:airline#extensions#tabline#show_tab_nr = 0
+  " let g:airline#extensions#tabline#tab_nr_type = 0
+  " let g:airline#extensions#tabline#show_tab_type = 0 " shows buffer etc
+  " let g:airline#extensions#tabline#show_close_button = 0
+  " let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+  "
+  " let g:airline_extensions = ['branch', 'tabline', 'fzf']
+  " let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+  " let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
+  " let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+  " " let g:airline#extensions#tabline#show_tabs = 0
+  " " let g:airline#extensions#hunks#enabled = 0
+  " let g:airline_theme='srcery'
+  " " let g:airline_theme='gruvbox_material'
+  " " let g:airline_theme='everforest'
+  " " let g:airline_theme='oceanic_material'
+  " let g:gruvbox_material_statusline_style='mix'
 " }}} === Airline ===
 
 " === UndoTree === {{{
@@ -1214,8 +1310,11 @@ nnoremap <Leader>gp :Git push<CR>
 " }}} === Vimagit ===
 
 " === gitgutter === {{{
-  nmap ) <Plug>(GitGutterNextHunk)
-  nmap ( <Plug>(GitGutterPrevHunk)
+  augroup ExecuteBuffer
+      au!
+      au FileType diff nmap ) <Plug>(GitGutterNextHunk)
+      au FileType diff nmap ( <Plug>(GitGutterPrevHunk)
+  augroup END
   let g:gitgutter_enabled = 1
   let g:gitgutter_map_keys = 0
   let g:gitgutter_highlight_linenrs = 1
@@ -1421,7 +1520,6 @@ endif
 " }}} === lf ===
 
 " === Floaterm === {{{
-  autocmd FileType floaterm,coc-explorer :MinimapToggle
   nnoremap <Leader>slf :FloatermNew --height=0.6 --wintype=split lf<CR>
   nnoremap <Leader>flf :FloatermNew --height=0.9 --width=0.9 lf<CR>
   command! LG FloatermNew --width=0.8 --height=0.8 lazygit
@@ -1435,10 +1533,13 @@ endif
   let g:neoterm_size=14                  " terminal split size
   let g:neoterm_autoscroll=1             " scroll to the bottom
   nnoremap <Leader>rf :T ipython --no-autoindent --colors=Linux --matplotlib<CR>
+  " nnoremap <Leader>rf :T ptipython<CR>
+  " some modules do not work in ptpython
+  nnoremap <Leader>rF :T ptpython<CR>
   nnoremap <Leader>rr :Tclear<CR>
   nnoremap <Leader>rt :Ttoggle<CR>
   nnoremap <Leader>ro :Ttoggle<CR> :Ttoggle<CR>
-  au FileType python,perl nnoremap <silent> ✠ TREPLSendLine<CR><Esc><Home><Down>
+  au FileType python,perl nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>
   au FileType python,perl inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A
   au FileType python,perl xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
 "}}} === Neoterm ===
@@ -1454,6 +1555,19 @@ endif
 " === Vim-LSP === {{{
   let g:markdown_fenced_languages = [
         \ 'vim',
+        \ 'html',
+        \ 'c',
+        \ 'py=python',
+        \ 'python',
+        \ 'go',
+        \ 'rust',
+        \ 'rs=rust',
+        \ 'sh',
+        \ 'shell=sh',
+        \ 'bash=sh',
+        \ 'json',
+        \ 'yaml',
+        \ 'toml',
         \ 'help'
         \]
 "}}} === Vim-LSP ===
@@ -1497,14 +1611,14 @@ endif
 
   function! <SID>MkdxFzfQuickfixHeaders()
     let headers = filter(
-          \ map(mkdx#QuickfixHeaders(0),function('<SID>MkdxFormatHeader')),
-          \ 'v:val != ""'
-          \ )
+      \ map(mkdx#QuickfixHeaders(0),function('<SID>MkdxFormatHeader')),
+      \ 'v:val != ""'
+      \ )
 
     call fzf#run(fzf#wrap({
-          \ 'source': headers,
-          \ 'sink': function('<SID>MkdxGoToHeader')
-          \ }))
+      \ 'source': headers,
+      \ 'sink': function('<SID>MkdxGoToHeader')
+      \ }))
   endfunction
 
   augroup markdown
@@ -1519,9 +1633,13 @@ endif
     nnoremap <silent> <Leader>I :call <SID>MkdxFzfQuickfixHeaders()<Cr>
   endif
 
+  " nnoremap m. m]
+  " nnoremap m, m[
+
   nnoremap <Leader>mcs :vs ~/vimwiki/dotfiles/mkdx.md<CR>
   nnoremap <Leader>mdm :menu Plugin.mkdx<CR>
   nnoremap <Leader>ev :e $VIMRC<CR>
+  nnoremap <Leader>ec :e ~/.config/nvim/coc-settings.json<CR>
   nnoremap <Leader>sv :so $VIMRC<CR>
 " }}} === Mkdx ===
 
@@ -1594,6 +1712,7 @@ let g:UltiSnipsEditSplit='horizontal'
 let NERDSpaceDelims = 1
 let g:NERDCreateDefaultMappings = 0
 let g:NERDTrimTrailingWhitespace = 1
+let g:NERDToggleCheckAllLines = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDCommentEmptyLines = 1
 let g:NERDDefaultAlign = 'left'
@@ -1640,9 +1759,9 @@ let g:easy_align_delimiters = {
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 xmap <Leader>ga <Plug>(LiveEasyAlign)
+xmap <Leader>gi :EasyAlign//ig['Comment']<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+xmap <Leader>gs :EasyAlign//ig['String']<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 " }}} === Easy Align ===
-
-source ~/.config/nvim/indentline.vim
 
 " === minimap === {{{
 nnoremap <Leader>mm :MinimapToggle<CR>
@@ -1651,8 +1770,13 @@ let g:minimap_auto_start = 1
 let g:minimap_auto_start_win_enter = 1
 let g:minimap_highlight_range = 1
 let g:minimap_block_filetypes = ['fugitive', 'nerdtree', 'tagbar', 'coc-explorer']
-let g:minimap_close_filetypes = ['startify', 'netrw', 'vim-plug']
-" }}}
+let g:minimap_close_filetypes = ['startify', 'netrw', 'vim-plug', 'floaterm']
+let g:minimap_block_buftypes = ['nofile', 'nowrite', 'quickfix', 'terminal', 'prompt']
+autocmd VimEnter *
+  \ if (winnr("$") == 1 && &filetype ==# "minimap")
+  \| q
+  \| endif
+" }}} === minimap ===
 
 " === todo-comments-vim === {{{
 lua << EOF
@@ -1680,13 +1804,195 @@ lua << EOF
 EOF
 " }}} === todo-comments-vim ===
 
+" === lightline === {{{
+function! CocDiagnosticError() abort "{{{
+  let info = get(b:, 'coc_diagnostic_info', {})
+  return get(info, 'error', 0) ==# 0 ? '' : ' ' . info['error'] "   
+endfunction "}}}
+function! CocDiagnosticWarning() abort "{{{
+  let info = get(b:, 'coc_diagnostic_info', {})
+  return get(info, 'warning', 0) ==# 0 ? '' : ' ' . info['warning'] "      !
+endfunction "}}}
+function! CocDiagnosticOK() abort "{{{
+  let info = get(b:, 'coc_diagnostic_info', {})
+  return get(info, 'error', 0) ==# 0 && get(info, 'warning', 0) ==# 0 ? '' : '' "  
+endfunction "}}}
+function! CocStatus() abort "{{{
+  return get(g:, 'coc_status', '')
+endfunction "}}}
+function! GitGlobal() abort "{{{
+    if exists('*FugitiveHead')
+        let branch = FugitiveHead()
+        if branch ==# ''
+            return ' ' . fnamemodify(getcwd(), ':t')
+        else
+            return branch . ' '
+        endif
+    endif
+    return ''
+endfunction "}}}
+function! DeviconsFiletype() "{{{
+  return winwidth(0) > 100 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ' . &filetype : 'no ft') : ''
+  " return winwidth(0) > 100 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+endfunction "}}}
+function! TabNum(n) abort "{{{
+  return a:n." \ue0bb"
+endfunction "}}}
+
+set showtabline=2
+let g:lightline = {}
+" let g:lightline.colorscheme = 'kimbox'
+let g:lightline.colorscheme = 'gruvbox_material'
+" let g:lightline.colorscheme = 'miramare'
+" let g:lightline.colorscheme = 'everforest'
+" let g:lightline.colorscheme = 'spaceduck'
+let g:lightline.separator = { 'left': "\ue0b8", 'right': "\ue0be" }
+let g:lightline.subseparator = { 'left': "\ue0b9", 'right': "\ue0b9" }
+let g:lightline.tabline_separator = { 'left': "\ue0bc", 'right': "\ue0ba" }
+let g:lightline.tabline_subseparator = { 'left': "\ue0bb", 'right': "\ue0bb" }
+let g:lightline.active = {
+            \ 'left':  [['mode', 'paste'],
+            \           ['readonly', 'modified', 'fileformat', 'devicons_filetype'],
+            \           ['coc_status']],
+            \ 'right': [['lineinfo'],
+            \           ['linter_errors', 'linter_warnings', 'linter_ok']]
+            \ }
+let g:lightline.inactive = {
+            \ 'left': [['filename', 'modified', 'fileformat']],
+            \ 'right': [[ 'lineinfo' ]]
+            \ }
+let g:lightline.tabline = {
+            \ 'left': [['vim_logo', 'tabs']],
+            \ 'right': [[ 'git_status' ]],
+            \ }
+let g:lightline.tab = {
+            \ 'active': ['tabnum', 'filename', 'modified'],
+            \ 'inactive': ['tabnum', 'filename', 'modified']
+            \ }
+let g:lightline.tab_component_function = {
+      \ 'tabnum': 'TabNum',
+      \ 'filename': 'lightline#tab#filename',
+      \ 'modified': 'lightline#tab#modified',
+      \ 'readonly': 'lightline#tab#readonly',
+      \ }
+let g:lightline.component = {
+      \ 'git_status' : '%{GitGlobal()}',
+      \ 'bufinfo': '%{bufname("%")}:%{bufnr("%")}',
+      \ 'vim_logo': "\ue7c5",
+      \ 'mode': '%{lightline#mode()}',
+      \ 'absolutepath': '%F',
+      \ 'relativepath': '%f',
+      \ 'filename': '%t',
+      \ 'fileencoding': '%{&fenc!=#""?&fenc:&enc}',
+      \ 'fileformat': '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
+      \ 'filetype': '%{&ft!=#""?&ft:"no ft"}',
+      \ 'modified': '%M',
+      \ 'bufnum': '%n',
+      \ 'paste': '%{&paste?"PASTE":""}',
+      \ 'readonly': '%R',
+      \ 'charvalue': '%b',
+      \ 'charvaluehex': '%B',
+      \ 'percent': '%2p%%',
+      \ 'percentwin': '%P',
+      \ 'spell': '%{&spell?&spelllang:""}',
+      \ 'lineinfo': '%2p%% %3l:%-2v',
+      \ 'line': '%l',
+      \ 'column': '%c',
+      \ 'close': '%999X X ',
+      \ 'winnr': '%{winnr()}'
+      \ }
+let g:lightline.component_function = {
+      \ 'devicons_filetype': 'DeviconsFiletype',
+      \ 'coc_status': 'CocStatus',
+      \ }
+let g:lightline.component_expand = {
+            \ 'linter_warnings': 'CocDiagnosticWarning',
+            \ 'linter_errors': 'CocDiagnosticError',
+            \ 'linter_ok': 'CocDiagnosticOK',
+            \ }
+let g:lightline.component_type = {
+            \ 'linter_warnings': 'warning',
+            \ 'linter_errors': 'error',
+            \ 'linter_info': 'info',
+            \ 'linter_hints': 'hints',
+            \ }
+let g:lightline.mode_map = {
+            \ 'n':      'N',
+            \ 'i':      'I',
+            \ 'R':      'R',
+            \ 'v':      'V',
+            \ 'V':      'V-L',
+            \ "\<C-v>": 'V-B',
+            \ 'c':      'C',
+            \ 's':      'S',
+            \ 'S':      'S-L',
+            \ "\<C-s>": 'S-B',
+            \ 't':      'T',
+            \ }
+" }}} === lightline ===
+
+" === treesitter === {{{
+" bash bibtex c python r regex rust
+" comment css gomod json lua yaml toml
+" python ?? why not work
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = {
+    "c", "go", "rust"
+    },
+  highlight = {
+    enable = true
+  }
+}
+EOF
+
+  " ensure_installed = "maintained",
+  " ignore_install = { "javascript" },
+  " highlight = {
+  "   enable = true,
+  "   disable = { "bash", "python", "sh" },
+  " }
+
+" set foldmethod=expr
+" set foldexpr=nvim_treesitter#foldexpr()
+"    textobjects = {
+"     select = {
+"       enable = true,
+"       keymaps = {
+"         ["af"] = "@function.outer",
+"         ["if"] = "@function.inner",
+"       }
+"     }
+
+" }}} === treesitter ===
+
+" === telescope === {{{
+" alt-f
+map ƒ :Telescope find_files<CR>
+" alt-g
+map © :Telescope git_files<CR>
+" alt-b
+map ∫ :Telescope buffers<CR>
+map <Leader>tc :Telescope commands<CR>
+" alt-r
+map ® :Telescope live_grep<CR>
+" }}} === telescope ===
+
 "=== make background transparent === {{{
   " highlight Normal guibg=none ctermbg=NONE
-  highlight NonText guibg=none
-  highlight LineNr guibg=none
-  highlight SignColumn guibg=none
-  highlight TrailingWhitespace ctermfg=0 guifg=Black ctermbg=8 guibg=#41535B
-  highlight EndOfBuffer guibg=NONE ctermbg=NONE guifg=Black ctermfg=0
+  " highlight NonText guibg=none ctermbg=NONE
+  " highlight LineNr guibg=none ctermbg=NONE
+  " highlight SignColumn guibg=none ctermbg=NONE
+  " highlight TrailingWhitespace ctermfg=0 guifg=Black ctermbg=8 guibg=#41535B
+  " highlight EndOfBuffer guibg=NONE ctermbg=NONE guifg=Black ctermfg=0
 " }}} === transparent ===
 
+" === vim-clang === {{{
+autocmd FileType c nnoremap <Leader>r<CR> :FloatermNew --autoclose=0 gcc % -o %< && ./%< <CR>
+" }}} === vim-clang ===
+
 " Todo: 'pattern' is deprectaed. Please refer to the documentation and use 'highlight.pattern' and 'search.pattern' instead.
+
+source ~/.config/nvim/indentline.vim
+
+" vim: ft=vim:et:sw=0:ts=2:sts=2:tw=78:fdm=marker:fmr={{{,}}}:

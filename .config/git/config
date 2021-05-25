@@ -80,7 +80,7 @@
 [pull]
   rebase = false
 [delta]
-  features = side-by-side unobstrusive-line-numbers decorations
+  features = unobstrusive-line-numbers decorations
   whitespace-error-style = 22 reverse
   syntax-theme = KimbieDark
   line-numbers-left-format = ""

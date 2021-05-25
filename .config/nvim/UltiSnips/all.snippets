@@ -31,7 +31,7 @@ snip.rv += (': ' + end.strip()).strip()
 endsnippet
 
 snippet vims "Vim  Filetype"
-`!p snip.rv=get_comment_format()[0]` vim: ${2:ft=${1:`!v printf('%s', &ft)`}}`!v (&expandtab ? printf(':et:sw=%i:ts=%i:sts=%i', &sw, &ts, &sts) : printf(':noet:sts=%i:sw=%i:ts=%i', &sts, &sw, &ts)) . (&tw ? ' tw='. &tw : '') . ':'`
+`!p snip.rv=get_comment_format()[0]` vim: ${2:ft=${1:`!v printf('%s', &ft)`}}`!v (&expandtab ? printf(':et:sw=%i:ts=%i:sts=%i', &sw, &ts, &sts) : printf(':noet:sts=%i:sw=%i:ts=%i', &sts, &sw, &ts)) . (&tw ? ':tw='. &tw:'') . ':fdm=marker:fmr={{{,}}}:'`
 endsnippet
 
 snippet ttest "Description"
@@ -69,4 +69,8 @@ snip += l + time      + r
 snip += d
 `
 $0
+endsnippet
+
+snippet shebang "Add shebang line" b
+#!/usr/bin/env ${1:`!v &filetype`}
 endsnippet

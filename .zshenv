@@ -16,6 +16,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_BIN_HOME="$HOME/bin"
+export XDG_MBIN_HOME="$HOME/mybin"
 
 export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
 export RTV_BROWSER="w3m"
@@ -32,8 +33,8 @@ export LESS="-r -f -F -X -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]"
 export PERLDOC_PAGER="sh -c 'col -bx | bat -l man -p --theme='kimbie''" \
 export PERLDOC_SRC_PAGER="sh -c 'col -bx | bat -l man -p --theme='kimbie''" \
 
-# typeset -g WORDCHARS=' *?_-.~\'
-typeset -g WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
+typeset -g WORDCHARS=' *?_-.~\'
+# typeset -g WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 
@@ -53,6 +54,7 @@ export GEM_HOME="${XDG_DATA_HOME}/ruby/gems"
 export GEM_SPEC_CACHE="${XDG_DATA_HOME}/ruby/specs"
 export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
 export IPYTHONDIR="${XDG_CACHE_HOME}/ipython"
+# export PTPYTHON_CONFIG_HOME="${XDG_CONFIG_HOME}/ptpython/config.py"
 export R_USER="${XDG_CONFIG_HOME}/r/R"
 export R_ENVIRON_USER="${XDG_CONFIG_HOME}/r/Renviron"
 export R_MAKE_VARS_USER="${XDG_CONFIG_HOME}/r/Makevars"
