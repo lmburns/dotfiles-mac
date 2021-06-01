@@ -6,6 +6,10 @@
 ## SYNOPSIS
 Add tasks on command line
 
+## TOOLS
+
+https://taskwarrior.org/tools/
+
 ## OPTIONS
 
 `$ task next`

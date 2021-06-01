@@ -70,6 +70,7 @@
       "terminal"
     ],
     "filetypes": [
+      "qf",
       "minimap"
     ],
     "floatingWindows": true,
@@ -186,5 +187,6 @@
   "rust-analyzer.updates.prompt": true,
   "yank.highlight.duration": 100,
   "coc.preferences.formatOnType": true,
-  "clangd.path": "/Users/lucasburns/.config/coc/extensions/coc-clangd-data/install/12.0.0/clangd_12.0.0/bin/clangd"
+  "clangd.path": "/Users/lucasburns/.config/coc/extensions/coc-clangd-data/install/12.0.0/clangd_12.0.0/bin/clangd",
+  "solargraph.useBundler": true
 }

@@ -1,0 +1,81 @@
+# editor := env_var(EDITOR)
+# confd := env_var(XDG_CONFIG_HOME)
+
+help:
+  @$EDITOR $XDG_DATA_HOME/just/overall.just
+
+weather:
+  @wttr '65202?format=3'
+
+weather_full:
+  @curl v2d.wttr.in/65202
+
+gbatch:
+  gitbatch -r 2 -d $HOME/opt
+
+zbatch:
+  gitbatch -r 2 -d $ZINIT_HOME
+
+sdns:
+  sudo networksetup -setdnsservers "Wi-Fi" 127.0.0.1 ::1
+  sudo networksetup -setwebproxy "Wi-Fi" 127.0.0.1 8118
+  sudo networksetup -setsecurewebproxy "Wi-Fi" 127.0.0.1 8118
+  ALL_PROXY=127.0.0.1:8118 curl -I http://p.p/
+
+gdns:
+  @sudo networksetup -getdnsservers "Wi-Fi"
+  @sudo networksetup -getwebproxy "Wi-Fi"
+  @sudo networksetup -getsecurewebproxy "Wi-Fi"
+
+rdns:
+  sudo networksetup -setdnsservers "Wi-Fi" Empty
+  sudo networksetup -setwebproxy "Wi-Fi" off
+  sudo networksetup -setsecurewebproxy "Wi-Fi" off
+
+privoxy +ACTION:
+  sudo brew services {{ACTION}} privoxy
+  @if [[ {{ACTION}} == 'start' ]]; then \
+    sudo networksetup -setwebproxy "Wi-Fi" 127.0.0.1 8118; \
+    sudo networksetup -setsecurewebproxy "Wi-Fi" 127.0.0.1 8118; \
+    ALL_PROXY=127.0.0.1:8118 curl ads.foo.com/ -IL; \
+  elif [[ {{ACTION}} == 'stop' ]]; then \
+    sudo networksetup -setwebproxy "Wi-Fi" off; \
+    sudo networksetup -setsecurewebproxy "Wi-Fi" off; \
+  elif [[ {{ACTION}} == 'restart' ]]; then \
+    echo "Restarting privoxy ..."; \
+  else \
+    echo "${tput setaf 2}Error: wrong action {{ACTION}}"; \
+  fi
+  @echo ''
+  scutil --proxy | head
+
+rclone-mount:
+  $HOME/bin/rclone mount \
+    --transfers 8 \
+    --volname google-drive \
+    --allow-other \
+    --log-level INFO \
+    --buffer-size 32M \
+    --vfs-cache-mode writes \
+    --vfs-cache-max-size 8G \
+    --daemon \
+    -vv \
+    google-drive:/ /Users/lucasburns/.mount/google-drive
+
+rclg SRC DEST:
+  /usr/local/bin/rclone copy \
+    --update \
+    --verbose \
+    --delete-after \
+    --exclude ".DS_Store" \
+    --exclude .git/ \
+    --copy-links \
+    --transfers 4 \
+    --checkers 8 \
+    --contimeout 60s \
+    --timeout 300s \
+    --retries 3 \
+    --low-level-retries 10 \
+    --stats 1s \
+    --progress \
+    {{SRC}} "google-drive:{{DEST}}/"

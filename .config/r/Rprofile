@@ -1,0 +1,4 @@
+options(repos=structure(c(CRAN="http://cran.wustl.edu/")))
+options(prompt="$ ")
+options(continue="... ")
+options(editor="nvim")

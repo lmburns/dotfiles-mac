@@ -80,6 +80,7 @@ source "$ZINIT[BIN_DIR]/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
+# === annex, prompt === {{{
 zt light-mode for \
   zinit-zsh/z-a-patch-dl \
   zinit-zsh/z-a-submods \
@@ -100,9 +101,10 @@ zt light-mode for \
 } "${MYPROMPT=p10k}"
 
 [[ $MYPROMPT != dolphin ]] && add-zsh-hook chpwd chpwd_ls
+# }}} === annex, prompt ===
 
-# pick between bd-zsh and manydots
-zt 0c light-mode for \
+# === trigger-load block ==={{{
+zt light-mode for \
   is-snippet trigger-load'!x' blockf svn \
     OMZ::plugins/extract \
   trigger-load'!bd' pick'bd.zsh' \
@@ -122,9 +124,11 @@ zt 0c light-mode for \
   nevesnunes/sh-manpage-completions -> lib/sh-manpage-completions' \
   atload'gcomp(){gencomp "${@}" && zinit creinstall -q "${GENCOMP_DIR}" 1>/dev/null}' \
      Aloxaf/gencomp
+# }}} === trigger-load block ===
 
 # OMZP::sudo/sudo.plugin.zsh
 
+# === wait'0a' block === {{{
 zt 0a light-mode for \
     OMZ::lib/history.zsh \
   atload'zstyle ":completion:*" special-dirs false' \
@@ -150,12 +154,16 @@ zt 0a light-mode for \
     kazhala/bmux \
   lbin'!hist' blockf nocompletions compile'functions/*~*.zwc' \
     marlonrichert/zsh-hist \
-    anatolykopyl/doas-zsh-plugin
+    anatolykopyl/doas-zsh-plugin \
+  pick'timewarrior.plugin.zsh' \
+     svenXY/timewarrior
+# }}} === wait'0a' block ===
 
 # zdharma/zflai
 # FIX: why doesn't work with zsh-edit ? bindkey -c maybe
 # trackbinds bindmap'!"∂" -> _dirstack; "^[-" -> "ß"; "^[=" -> "ƒ"' \
 
+#  === wait'0b' - patched === {{{
 zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert)' \
     hlissner/zsh-autopair \
@@ -172,7 +180,9 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' \
   compile'.*fast*~*.zwc' nocompletions atpull'%atclone' \
     zdharma/fast-syntax-highlighting
+#  }}} === wait'0b' - patched ===
 
+#  === wait'0b' === {{{
 zt 0b light-mode for \
   blockf compile'lib/*f*~*.zwc' \
     Aloxaf/fzf-tab \
@@ -192,17 +202,22 @@ zt 0b light-mode for \
   zstyle ":history-search-multi-word" highlight-color "fg=cyan,bold";
   zstyle ":history-search-multi-word" page-size "16"' \
     zdharma/history-search-multi-word \
-    marzocchi/zsh-notify
-
-zstyle ":notify:*" command-complete-timeout 3
-zstyle ':notify:*' error-title "Command failed (in #{time_elapsed} seconds)"
-zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
+  atload'
+  zstyle ":notify:*" command-complete-timeout 3
+  zstyle ":notify:*" error-title "Command failed (in #{time_elapsed} seconds)"
+  zstyle ":notify:*" success-title "Command finished (in #{time_elapsed} seconds)"' \
+    marzocchi/zsh-notify \
+  pick'autoenv.zsh' nocompletions \
+  atload'AUTOENV_AUTH_FILE="${ZPFX}/share/autoenv/autoenv_auth"' \
+    Tarrasch/zsh-autoenv
+#  }}} === wait'0b' ===
 
 # lbin'cmds/*' atinit'zstyle ":plugin:zconvey" greeting "none"' \
 #     zdharma/zconvey \
 # zstyle ":notify:*" notifier plg-zsh-notify
 # zstyle ":plugin:zconvey" greeting "none"
 
+#  === wait'0c' - programs - sourced === {{{
 zt 0c light-mode binary for \
   lbin'rgg;rgv' atclone='rm -f ^(rgg|rgv); command cp -f --remove-destination $(readlink rgv) rgv' \
     lilydjwg/search-and-view \
@@ -227,35 +242,25 @@ zt 0c light-mode binary for \
   lbin'!src/pt*(*)' \
   atclone'(){local f;builtin cd -q src;for f (*.sh){mv ${f} ${f:r:l}};}' \
   atclone"command mv -f config $ZPFX/share/ptSh/config" \
-  atload'alias ppwd="ptpwd" mkd="ptmkdir -pv" touch="pttouch" cp="ptcp -vi"' \
-    jszczerbinsky/ptSh \
-  lbin from'gh-r' bpick'*darwin_amd64*' \
-  atload"source $ZPFX/share/pet/pet_atload.zsh " \
-    knqyf263/pet \
-  lbin atclone'make build' \
-    @motemen/gore \
-  lbin from'gh-r' ver'nightly' \
-    ClementTsang/bottom \
-  lbin from'gh-r' bpick'*darwin*' \
-    ms-jpq/sad \
-  lbin from'gh-r' \
-    ducaale/xh \
-  lbin from'gh-r' \
-    itchyny/mmv \
-  lbin atclone'./autogen.sh && ./configure --enable-unicode && make install' \
-    KoffeinFlummi/htop-vim
+  atload'alias ppwd="ptpwd" mkd="ptmkdir -pv" touch="pttouch"' \
+    jszczerbinsky/ptSh
+#  }}} === wait'0c' - programs - sourced ===
 
-# lbin from'gh-r' nivekuil/rip
-# cosmos72/gomacro
-
+#  === wait'0c' - programs + man === {{{
 zt 0c light-mode binary lbin lman from'gh-r' for \
   atclone'mv -f **/*.zsh _bat' atpull'%atclone' \
     @sharkdp/bat \
     @sharkdp/hyperfine \
     @sharkdp/fd \
   atclone'mv -f **/**.zsh _exa' atpull'%atclone' \
-    ogham/exa
+    ogham/exa \
+  atclone'./just --completions zsh > _just' atpull'%atclone' \
+    casey/just \
+  atclone'./wutag/wutag print-completions zsh > _wutag' atpull'%atclone' \
+    wojciechkepka/wutag
+#  }}} === wait'0c' - programs + man ===
 
+#  === wait'0c' - programs === {{{
 zt 0c light-mode null for \
   lbin from'gh-r' dl"$(grman man/man1/)" lman \
     junegunn/fzf \
@@ -285,19 +290,41 @@ zt 0c light-mode null for \
   lbin'f2' from'gh-r' \
     ayoisaiah/f2 \
   lbin"!**/nvim" from'gh-r' lman bpick'*macos*' \
-    neovim/neovim
+    neovim/neovim \
+  lbin from'gh-r' bpick'*darwin_amd64*' \
+  atload"source $ZPFX/share/pet/pet_atload.zsh " \
+    knqyf263/pet \
+  lbin atclone'make build' \
+    @motemen/gore \
+  lbin from'gh-r' bpick'*darwin_amd64*' \
+    traefik/yaegi \
+  lbin from'gh-r' ver'nightly' \
+    ClementTsang/bottom \
+  lbin from'gh-r' bpick'*darwin*' \
+    ms-jpq/sad \
+  lbin from'gh-r' \
+    ducaale/xh \
+  lbin from'gh-r' \
+    itchyny/mmv \
+  lbin atclone'./autogen.sh && ./configure --enable-unicode && make install' \
+    KoffeinFlummi/htop-vim \
+  lbin'* -> git-xargs' from'gh-r' bpick'*darwin_amd64*' \
+    gruntwork-io/git-xargs \
+  lbin'* -> sd' from'gh-r' bpick'*darwin' \
+    chmln/sd
+#  }}} === wait'0c' - programs ===
 
-# /gruntwork-io/git-xargs
-# OMZ::plugins/git \
+# nivekuil/rip == cosmos72/gomacro == gruntwork-io/git-xargs
 
+#  === snippet block === {{{
 zt light-mode is-snippet for \
   $ZDOTDIR/csnippets/*.zsh \
   OMZ::plugins/iterm2 \
   atload'unalias ofd && alias ofd="open $(pwd)"' \
   mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
     OMZ::plugins/osx
-
-# }}}
+#  }}} === snippet block ===
+# }}} == zinit closing ===
 
 # === powerlevel10k === {{{
 if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -329,7 +356,7 @@ autoload -Uz surround;                          zle -N delete-surround surround
 zle -N add-surround surround;                   zle -N change-surround surround
 bindkey -M vicmd 'cs' change-surround;          bindkey -M vicmd 'ds' delete-surround
 # bindkey '^a' autosuggest-accept
-bindkey '^a' autosuggest-execute
+bindkey '^a' autosuggest-execute;
 bindkey -M vicmd 'VV' edit-command-line;        bindkey -s "µ" "frd\n"
 bindkey -M viins 'jk' vi-cmd-mode;              bindkey -M viins 'kj' vi-cmd-mode
 bindkey -M vicmd 'H' beginning-of-line;         bindkey -M vicmd 'L' end-of-line
@@ -508,6 +535,17 @@ bindkey '®' per-dir-fzf;     # alt+r
 
 zle -N copyqc
 bindkey '^X^b' copyqc
+
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
 # }}}
 
 #===== variables ===== {{{
@@ -518,7 +556,7 @@ zt 0c light-mode null for \
   id-as'thefuck_alias' has'thefuck' nocd eval'thefuck --alias' run-atpull \
     zdharma/null \
   id-as'zoxide_init' has'zoxide' nocd eval'zoxide init --no-aliases zsh' \
-  atload'alias z=__zoxide_z c=__zoxide_zi' atinit'bindkey -s "Ω" "c\n"' run-atpull \
+  atload'alias o=__zoxide_z c=__zoxide_zi' atinit'bindkey -s "ø" "c\n"' run-atpull \
     zdharma/null \
   id-as'keychain_init' has'keychain' run-atpull nocd \
   eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac \
@@ -543,6 +581,7 @@ typeset -gx XML_CATALOG_FILES="/usr/local/etc/xml/catalog"  # xdg-utils
 typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"  # vimtex
 
 typeset -gx _ZO_DATA_DIR="${XDG_DATA_HOME}/zoxide"
+typeset -gx _ZO_ECHO=1
 typeset -gx FZFZ_RECENT_DIRS_TOOL='autojump'
 typeset -gx ZSH_AUTOSUGGEST_USE_ASYNC=1
 typeset -gx ZSH_AUTOSUGGEST_MANUAL_REBIND=1
@@ -555,10 +594,9 @@ typeset -gx UPDATELOCAL_GITDIR="${HOME}/opt"
 typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
 typeset -g DUMP_LOG="${ZPFX}/share/dump/log"
 typeset -gx BREW_PREFIX="$(brew --prefix)"
-typeset -gx CDHISTSIZE=1000 CDHISTTILDE=TRUE
+typeset -gx CDHISTSIZE=75 CDHISTTILDE=TRUE CDHISTCOMMAND=xd
 typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 typeset -gx FZFGIT_DEFAULT_OPTS="--preview-window=':nohidden,right:65%:wrap'"
-# typeset -gx CDHISTCOMMAND=xd
 typeset -gx NQDIR="$TMPDIR/nq"
 
 typeset -g KEYTIMEOUT=15
@@ -590,7 +628,7 @@ SKIM_COLORS="
 "
 FZF_FILE_PREVIEW="([[ -f {} ]] && (bat --style=numbers --color=always {}))"
 FZF_DIR_PREVIEW="([[ -d {} ]] && (exa -T {} | less))"
-FZF_BIN_PREVIEW="(file --mime-type -b | rg -q 'binary' && echo {})"
+FZF_BIN_PREVIEW="([[ \$(file --mime {}) =~ binary ]] && (echo {} is a binary file))"
 
 export FZF_DEFAULT_OPTS="
 --prompt '❱ '
@@ -600,7 +638,7 @@ export FZF_DEFAULT_OPTS="
 $FZF_COLORS
 --reverse --height 80% --ansi --info=inline --multi --border
 --preview-window=':hidden,right:60%'
---preview \"($FZF_FILE_PREVIEW || $FZF_DIR_PREVIEW) 2>/dev/null | head -200\"
+--preview \"($FZF_BIN_PREVIEW || $FZF_FILE_PREVIEW || $FZF_DIR_PREVIEW) 2>/dev/null | head -200\"
 --bind='?:toggle-preview'
 --bind='ctrl-a:select-all,ctrl-r:toggle-all'
 --bind='ctrl-b:execute(bat --paging=always -f {+})'
@@ -749,7 +787,7 @@ export PKG_CONFIG_PATH="/usr/local/opt/libressl/lib/pkgconfig"
 # atload'x="$HOME/.fzf.zsh"; [ -f "$x" ] && source "$x"'
 
 zt light-mode null id-as for \
-  multisrc="$ZDOTDIR/zsh-aliases $ZDOTDIR/lficons" \
+  multisrc="$ZDOTDIR/{zsh-aliases,lficons,git-xargs-token}" \
     zdharma/null \
   atload'local x="$HOME/.iterm2_shell_integration.zsh"; [ -f "$x" ] && source "$x"' \
     zdharma/null \
@@ -788,14 +826,4 @@ path=( "${path[@]:#}" )                            # remove empties
 typeset -gxU path fpath manpath infopath cdpth     # clean duplicates / export
 
 # vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr={{{,}}}:
-
-pasteinit() {
-  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
-  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
-}
-
-pastefinish() {
-  zle -N self-insert $OLD_SELF_INSERT
-}
-zstyle :bracketed-paste-magic paste-init pasteinit
-zstyle :bracketed-paste-magic paste-finish pastefinish
+# source ~/opt/cli-utilities/zsh/zsh-snap/znap.zsh

@@ -15,67 +15,80 @@
   Plug 'ptzz/lf.vim'
   " Plug 'junegunn/vim-journal'
   " Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+  " Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } | Plug 'junegunn/fzf.vim'
   Plug 'junegunn/vim-easy-align'
   Plug 'junegunn/goyo.vim'
+  Plug 'junegunn/limelight.vim'
   Plug 'lervag/vimtex'
   Plug 'vim-pandoc/vim-pandoc-syntax'
   Plug 'plasticboy/vim-markdown'
   Plug 'dhruvasagar/vim-table-mode'
   Plug 'vimwiki/vimwiki'
+  " Plug 'tools-life/taskwiki'
   Plug 'SidOfc/mkdx'
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
+  Plug 'NoahTheDuke/vim-just'
   " Plug 'vim-pandoc/vim-rmarkdown'
 
   " Plug 'sainnhe/tmuxline.vim', {'on': ['Tmuxline', 'TmuxlineSnapshot']}
+  Plug 'mengelbrecht/lightline-bufferline'
   Plug 'itchyny/lightline.vim'
   Plug 'josa42/vim-lightline-coc'
-  Plug 'sainnhe/artify.vim'
+  Plug 'niklaas/lightline-gitdiff'
   Plug 'zhou13/vim-easyescape'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-endwise'
-  " Plug 'itchyny/vim-highlighturl'
-  Plug 'PeterRincker/vim-searchlight'
-  " Plug 'vim-airline/vim-airline'
-  " Plug 'vim-airline/vim-airline-themes'
   Plug 'mhinz/vim-startify'
   Plug 'easymotion/vim-easymotion'
+  Plug 'PeterRincker/vim-searchlight'
+  Plug 'yggdroot/indentline'
+  Plug 'ludovicchabant/vim-gutentags'
+  Plug 'liuchengxu/vista.vim'
+  " Plug 'itchyny/vim-highlighturl'
+  " Plug 'vim-airline/vim-airline'
 
   Plug 'kassio/neoterm'
   Plug 'voldikss/vim-floaterm'
+  Plug 'voldikss/fzf-floaterm'
 
   Plug 'tpope/vim-fugitive'
-  Plug 'airblade/vim-gitgutter'
+  Plug 'mhinz/vim-signify'
+  " Plug 'airblade/vim-gitgutter'
   Plug 'jreybert/vimagit'
   Plug 'mbbill/undotree'
 
+  Plug 'scrooloose/nerdcommenter'
+  " Plug 'tpope/vim-commentary'
+
+  " Plug 'tjdevries/coc-zsh'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'antoinemadec/coc-fzf'
-  " Plug 'tjdevries/coc-zsh'
   Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
   Plug 'jpalardy/vim-slime', { 'for': 'python' }
   Plug 'vim-perl/vim-perl', { 'for': 'perl' }
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'fatih/vim-go', { 'for': 'go' }
   Plug 'sheerun/vim-polyglot'
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  " Plug 'tmhedberg/SimpylFold'
+  " Plug 'Konfekt/FastFold'
+
+  " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   " Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+  " Plug 'nvim-telescope/telescope-fzf-writer.nvim'
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
-  Plug 'scrooloose/nerdcommenter'
-  " Plug 'tpope/vim-commentary'
+  Plug 'folke/todo-comments.nvim'
+  Plug 'Pocco81/HighStr.nvim'
 
   " HTML/CSS
   Plug 'shime/vim-livedown'
   Plug 'alvan/vim-closetag'
   " Plug 'turbio/bracey.vim', {'do': 'npm install --prefix server'}
   Plug 'ap/vim-css-color'
-  Plug 'yggdroot/indentline'
-  Plug 'nvim-lua/plenary.nvim'
-  Plug 'folke/todo-comments.nvim'
 
   " Themes
   " Plug 'Rigellute/rigel'
@@ -112,6 +125,7 @@
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
+  " Plug 'aswathkk/DarkScene.vim'
 
   Plug 'wfxr/minimap.vim'
   call plug#end()
@@ -166,7 +180,7 @@
   let g:oceanic_material_allow_underline = 1
 
   " let g:everforest_background = 'hard'
-  let g:everforest_enable_italic = 1
+  " let g:everforest_enable_italic = 1
   let g:everforest_sign_column_background = 'none'
   let g:everforest_better_performance = 1
 
@@ -188,7 +202,7 @@
   let g:sonokai_sign_column_background = 'none'
   let g:sonokai_better_performance = 1
 
-  let g:miramare_enable_italic = 1
+  " let g:miramare_enable_italic = 1
   let g:miramare_enable_bold = 1
   let g:miramare_disable_italic_comment = 1
   let g:miramare_cursor = 'purple'
@@ -228,23 +242,23 @@
   syntax enable
   " colorscheme spaceduck
   " colorscheme bogster
-  " colorscheme kimbox
+  colorscheme kimbox
   " colorscheme material
   " colorscheme everforest
   " colorscheme miramare
   " colorscheme oceanic_material
-  colorscheme gruvbox-material
-  " coloscheme OceanicNext
+  " colorscheme gruvbox-material
   " colorscheme jellybeans
   " colorscheme gruvbit
   " colorscheme sonokai
-  " colorscheme iceberg
-  " colorscheme deus
-  " colorscheme nightfly
+  " colorscheme deep-space
+  " colorscheme night-owl
   " colorscheme melange
+  " colorscheme iceberg
+  " coloscheme OceanicNext
+  " colorscheme deus
   " colorscheme onedark
   " colorscheme neodark
-  " colorscheme deep-space
   " colorscheme spaceway    " needs work
   " colorscheme alduin      " needs work
   " colorscheme spacegray
@@ -312,6 +326,7 @@
   set concealcursor-=n                    " cancel conceal on cursor line
   set scrolloff=5                         " cusor 5 lines from bottom of page
   set cursorline                          " show line where cursor is
+  " set cursorcolumn
   set mouse=a                             " enable mouse all modes
   set wildmode=full                       " autocompletion
   set wildmenu                            " autocompletion
@@ -364,7 +379,7 @@
   " replace command history with quit
   " FIX: minimap error
   " map q: :MinimapToggle<CR> :q<CR>
-  map q: :q<CR>
+  " map q: :q<CR>
   map Q: :q
   command! -bang -nargs=* Q q
 
@@ -475,8 +490,6 @@
 
   " perform dot commands over visual blocks
   vnoremap . :normal .<CR>
-  " goyo plugin makes text more readable when writing prose:
-  map <Leader>G :Goyo \| set linebreak<CR>
 
   " set filetypes
   autocmd BufRead,BufNewFile calcurse-note*,~/.local/share/calcurse/notes/* set filetype=markdown
@@ -490,12 +503,6 @@
   " close quickfix
   nnoremap <Leader>qc :cclose<CR>
   " toggle scrollbar
-
-  " Enable Goyo by default for mutt writing
-  " autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
-  " autocmd BufRead,BufNewFile neomutt-void* :Goyo | set bg=light
-  " autocmd BufRead,BufNewFile neomutt-void* map ZZ :Goyo\|x!<CR>
-  " autocmd BufRead,BufNewFile neomutt-void* map ZQ :Goyo\|q!<CR>
 
   " automatically deletes all tralling whitespace on save.
   autocmd BufWritePre * %s/\s\+$//e            " End of lines
@@ -534,9 +541,6 @@
     autocmd BufReadPre *.odt silent set ro
     autocmd BufEnter *.odt silent  %!pandoc --columns=78 -f odt -t markdown "%"
 
-  " insert template to blog post
-  autocmd FileType markdown noremap <Leader>tg itags:<Space>macOS<CR>title:<CR>author:<Space>Lucas<Space>Burns<CR>date:<Space><C-r>=strftime('%F')<CR><CR>aside:<CR><CR>#
-
   " check html syntax
   nmap <Leader>h5 :!html5check %<CR>
 
@@ -549,11 +553,9 @@
 
   " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
   autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
-  autocmd FileType markdown nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf
 
   nmap <Leader>cp :w! <bar> !compiler %<CR>
   nmap <Leader>pr :!opout <c-r>%<CR><CR>
-  autocmd VimLeave *.tex !texclear %
 " }}} === General Mappings ===
 
   " === Syntax === {{{
@@ -597,6 +599,52 @@
   hi def link cmTitle vimCommentTitle
   hi def link myTodo Todo
 " }}} === Syntax ===
+
+" === limelight === {{{
+  " Enable Goyo by default for mutt writing
+  " autocmd BufRead,BufNewFile neomutt-void* let g:goyo_width=80
+  " autocmd BufRead,BufNewFile neomutt-void* :Goyo | set bg=light
+  " autocmd BufRead,BufNewFile neomutt-void* map ZZ :Goyo\|x!<CR>
+  " autocmd BufRead,BufNewFile neomutt-void* map ZQ :Goyo\|q!<CR>
+  let g:limelight_conceal_ctermfg = 'gray'
+  let g:limelight_conceal_guifg = 'DarkGray'
+  let g:limelight_paragraph_span = 1
+  let g:limelight_priority = -1
+  function! s:goyo_enter()
+    " silent :execute 'normal! mL'
+    if exists('$TMUX')
+      silent !tmux set status off
+      " silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+    endif
+    " setl noshowmode
+    " setl noshowcmd
+    " setl scrolloff=999
+    setl foldlevel=99
+    set fullscreen
+    let &background = &background
+    Limelight
+    " setl statusline = '%M'
+    setl statusline=...%(\ [%M%R%H]%)
+    hi StatusLine ctermfg=red guifg=red cterm=NONE gui=NONE
+    silent :execute 'normal! <C-W>h'
+  endfunction
+  function! s:goyo_leave()
+    if exists('$TMUX')
+      silent !tmux set status on
+      " silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+    endif
+    Limelight!
+    set nofullscreen
+    let &background = &background
+  endfunction
+
+  autocmd! User GoyoEnter nested call <SID>goyo_enter()
+  autocmd! User GoyoLeave nested call <SID>goyo_leave()
+
+  " nnoremap <Leader>G :Goyo \| set linebreak<CR>
+  nnoremap <Leader>G :Goyo<CR>
+  nnoremap <silent> <Leader>Li :Limelight!!<cr>
+" }}} === limelight ===
 
 " === Other === {{{
   augroup jump_last_position
@@ -675,9 +723,8 @@
   " }}} ExecuteBuffer
 
   " filetype specific indents
-  autocmd FileType markdown,python,json,javascript call <SID>IndentSize(4)
+  autocmd FileType markdown,json,javascript call <SID>IndentSize(4)
   autocmd BufRead,BufNewFile *.htm,*.html call <SID>IndentSize(2)
-  autocmd FileType r call <SID>IndentSize(2)
 "}}} === Other ===
 
   " === Vim Wiki === {{{
@@ -693,6 +740,7 @@
   " hi VimwikiHeader6 guifg=#458588 gui=bold
 
   hi VimwikiBold    guifg=#a25bc4 gui=bold
+  " hi VimwikiBold    guifg=#e9b143 gui=bold
   hi VimwikiCode    guifg=#d3869b
   hi VimwikiItalic  guifg=#83a598 gui=italic
 
@@ -710,12 +758,6 @@
   " hi Operator guifg=#088649
 
   map <Leader>vw :VimwikiIndex<CR>
-
-  " bold shortcut for markdown
-  autocmd FileType markdown inoremap ** ****<Left><Left>
-  " <C-x> select pop up menu (vimwiki uses <enter> in to go to another page)
-  " autocmd FileType markdown inoremap <expr> <C-x> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-  autocmd FileType markdown inoremap <expr> <right> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 "}}} === Vim Wiki ===
 
 " === coc-nvim === {{{
@@ -740,6 +782,7 @@
     \ 'coc-prettier',
     \ 'coc-marketplace',
     \ 'coc-tabnine',
+    \ 'coc-tag',
     \ 'coc-html',
     \ 'coc-css',
     \ 'coc-json',
@@ -759,6 +802,8 @@
     \ 'coc-rust-analyzer',
     \ 'coc-clangd',
     \ ]
+
+" \ 'coc-solargraph',
 
   let g:coc_explorer_global_presets = {
       \ 'config': {
@@ -821,6 +866,17 @@
   omap if <Plug>(coc-funcobj-i)
   omap af <Plug>(coc-funcobj-a)
 
+  nmap [g <Plug>(coc-git-prevchunk)
+  nmap ]g <Plug>(coc-git-nextchunk)
+  " navigate conflicts of current buffer
+  nmap [c <Plug>(coc-git-prevconflict)
+  nmap ]c <Plug>(coc-git-nextconflict)
+  " show chunk diff at current position
+  nmap gs <Plug>(coc-git-chunkinfo)
+  " show commit contains current position
+  nmap gC <Plug>(coc-git-commit)
+  nnoremap <silent> ,g  :<C-u>CocList --normal gstatus<CR>
+
   " coc-snippets
   " imap <C-j> <Plug>(coc-snippets-expand-jump)
 
@@ -831,9 +887,9 @@
   " use `:OR` for organize import of current buffer
   command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
 
-    let g:endwise_no_mappings = v:true
-    inoremap <expr> <Plug>CustomCocCR "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-    imap <CR> <Plug>CustomCocCR<Plug>DiscretionaryEnd
+  let g:endwise_no_mappings = v:true
+  inoremap <expr> <Plug>CustomCocCR "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+  imap <CR> <Plug>CustomCocCR<Plug>DiscretionaryEnd
 
   " use K to show documentation in preview window.
   function! s:show_documentation()
@@ -860,10 +916,11 @@
 
   " Make <CR> auto-select the first completion item
   " inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-  "                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+  " \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
   " Make <tab> auto-select the first completion item
-  inoremap <silent><expr> <tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<tab>"
+  inoremap <silent><expr> <tab> pumvisible()
+      \ ? coc#_select_confirm() : "\<C-g>u\<tab>"
 
   " Use <c-space> to trigger completion
   inoremap <silent><expr> <C-m> coc#refresh()
@@ -873,8 +930,16 @@
 
   " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
-  " for json
-  autocmd FileType json syntax match Comment +\/\/.\+$+
+  augroup cust_filetype
+    au!
+    au BufRead,BufNewFile *pre-commit       setl ft=sh
+    au BufNewFile,BufRead coc-settings.json setl ft=jsonc
+    autocmd FileType json syntax match Comment +\/\/.\+$+
+
+    " au Filetype *vim,*tmux setl foldenable | setl foldmethod=marker
+    au Filetype *json      setl shiftwidth=2
+  augroup END
+
   " coc-pairs
   augroup CocPairs
     autocmd!
@@ -932,7 +997,7 @@
       \ nmap <buffer> <Leader>b<CR> :call <SID>build_go_files()<CR>|
       \ nmap <buffer> <Leader>r<CR> <Plug>(go-run)|
       \ nmap <buffer> <Leader>rr    :GoRun %<CR>|
-        nmap <buffer> <Leader>ri    :GoRun %<space>|
+      \ nmap <buffer> <Leader>ri    :GoRun %<space>|
       \ nmap <buffer> <Leader>t<CR> <Plug>(go-test)|
       \ nmap <buffer> <Leader>c<CR> <Plug>(go-coverage-toggle)|
       \ nmap <buffer> <Leader>gae <Plug>(go-alternate-edit)|
@@ -973,9 +1038,13 @@ augroup rust_env
       \ nmap     <buffer> <Leader>t<CR> :RustTest<CR>|
       \ nmap     <buffer> <Leader>b<CR> :VT cargo build -q<CR>|
       \ nmap     <buffer> <Leader>r<CR> :VT cargo play  %<CR>|
-      \ nnoremap <buffer> <c-a-l>       :RustFmt<cr>
+      \ nnoremap <buffer> ;ff           :RustFmt<cr>
 augroup END
 " }}} vim-rust
+
+" === vim-clang === {{{
+autocmd FileType c nnoremap <Leader>r<CR> :FloatermNew --autoclose=0 gcc % -o %< && ./%< <CR>
+" }}} === vim-clang ===
 
 " === NERDTREE === {{{
   let g:NERDTreeShowHidden = 1
@@ -1021,6 +1090,10 @@ augroup END
     \ call fzf#vim#files('~/.config', <bang>0)
   command! -bang Proj
     \ call fzf#vim#files('~/projects', fzf#vim#with_preview(), <bang>0)
+command! -nargs=? -complete=dir AF
+  \ call fzf#run(fzf#wrap(fzf#vim#with_preview({
+    \ 'source': 'fd --type f --hidden --follow --exclude .git --no-ignore
+    \ . '.expand(<q-args>) })))
 
   " command! -bang -nargs=* Rg
   "   \ call fzf#vim#grep(
@@ -1038,6 +1111,7 @@ augroup END
         \ {'options':  '--delimiter : --nth 4..'},
         \ 0)
 
+  " FIX: open line in current buffer only
     command! -bang -nargs=* Rgf call RGF()
     function! RGF()
       " . ' -F '.expand('%:t')"
@@ -1046,10 +1120,11 @@ augroup END
       call fzf#vim#grep(
         \ 'rg --column --no-heading --line-number --color=always '.shellescape(fixmestr),
         \ 1,
-          \ {'options':  '--delimiter : --nth 4..'}, 0)
+        \ {'options':  '--delimiter : --nth 4..'}, 0)
     endfunction
 
   " RG with preview
+  command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
   function! RipgrepFzf(query, fullscreen)
     let command_fmt = 'rg --column --line-number --no-heading '
       \ . '--color=always --smart-case -- %s || true'
@@ -1060,8 +1135,6 @@ augroup END
     call fzf#vim#grep(initial_command, 1,
       \ fzf#vim#with_preview(spec, 'right:60%:default'), a:fullscreen)
   endfunction
-
-  command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
   " dotbare (dotfile manager) - edit file
   command! Dots call fzf#run(fzf#wrap({
@@ -1133,40 +1206,42 @@ augroup END
     let border = [top] + repeat([mid], height - 2) + [bot]
 
     " Draw frame
-    let s:frame = s:create_float('Comment', {'row': row, 'col': col, 'width': width, 'height': height})
+    let s:frame = s:create_float('Comment',
+      \ {'row': row, 'col': col, 'width': width, 'height': height})
     call nvim_buf_set_lines(s:frame, 0, -1, v:true, border)
 
     " Draw viewport
-    call s:create_float('Normal', {'row': row + 1, 'col': col + 2, 'width': width - 4, 'height': height - 2})
+    call s:create_float('Normal',
+      \ {'row': row + 1, 'col': col + 2, 'width': width - 4, 'height': height - 2})
+
     augroup fzf_floating
-        au!
-        au BufWipeout <buffer> execute 'bwipeout' s:frame
+      au!
+      au BufWipeout <buffer> execute 'bwipeout' s:frame
     augroup END
   endfunction
 
   " :Commands -- :GFiles? -- :Commits
   " change directory to buffers dir
   nnoremap <Leader>cd :lcd %:p:h<CR>
-  nnoremap <Leader>L :Locate .<CR>
+  nnoremap <Leader>Lo :Locate .<CR>
   nnoremap <Leader>rg :RG<CR>
   nnoremap <C-f> :Rg<CR>
-  nnoremap <silent> <Leader>a :Buffers<CR>
-  nnoremap <silent> <Leader>A :Windows<CR>
-  nnoremap <silent> <Leader>; :BLines<CR>
-  nnoremap <silent> <Leader>F :Files<CR>
+  nnoremap <silent> <Leader>a  :Buffers<CR>
+  nnoremap <silent> <Leader>A  :Windows<CR>
+  nnoremap <silent> <Leader>;  :BLines<CR>
+  nnoremap <silent> <Leader>F  :Files<CR>
   nnoremap <silent> <Leader>gf :GFiles<CR>
-  " command history
   nnoremap <silent> <Leader>hc :History:<CR>
-  " file history
   nnoremap <silent> <Leader>hf :History<CR>
-  " search history
   nnoremap <silent> <Leader>hs :History/<CR>
   nnoremap <silent> <Leader>cs :Colors<CR>
   nnoremap <silent> <Leader>si :Snippets<CR>
   nnoremap <silent> <Leader>ls :LS<CR>
   nnoremap <silent> <Leader>ht :Helptags<CR>
   nnoremap <silent> <Leader>cm :Commands<CR>
-  nnoremap <silent> <Leader>mp :Maps<CR>
+  nnoremap <silent> <Leader>mm :Maps<CR>
+  nnoremap <silent> <Leader>T  :Tags<CR>
+  nnoremap <silent> <Leader>Tb :BTags<CR>
 
   nmap <C-l>m <plug>(fzf-maps-n)
   xmap <C-l>m <plug>(fzf-maps-x)
@@ -1309,16 +1384,15 @@ nnoremap <Leader>gp :Git push<CR>
   noremap  <Leader>ma :MagitO<Cr>
 " }}} === Vimagit ===
 
-" === gitgutter === {{{
-  augroup ExecuteBuffer
-      au!
-      au FileType diff nmap ) <Plug>(GitGutterNextHunk)
-      au FileType diff nmap ( <Plug>(GitGutterPrevHunk)
-  augroup END
-  let g:gitgutter_enabled = 1
-  let g:gitgutter_map_keys = 0
-  let g:gitgutter_highlight_linenrs = 1
-"}}} === gitgutter ===
+" === signify === {{{
+let vcs_signs_delete_up   = [ '⤤', '◥', '⥔', '⬈', '⇗', '↗', '⎺']
+let vcs_signs_delete_down = [ '⤥', '◢', '⥕', '⬊', '⇘', '↘', '⎽']
+let g:signify_sign_add               = '┃'
+let g:signify_sign_change            = '┃'
+let g:signify_sign_changedelete      = '┃'
+let g:signify_sign_delete            = vcs_signs_delete_down[5]
+let g:signify_sign_delete_first_line = vcs_signs_delete_up[5]
+"}}} === signify ===
 
 " === vim surround === {{{
   nmap <Leader>ci cs`*
@@ -1410,13 +1484,6 @@ nnoremap <Leader>gp :Git push<CR>
 " }}} === Startify ===
 
 " === NVim-R === {{{
-  " Autostart
-  autocmd FileType r if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
-  autocmd FileType rmd if string(g:SendCmdToR) == "function('SendCmdToR_fake')" | call StartR("R") | endif
-
-  " Open shortcuts
-  nmap <Leader>rs :vs ~/projects/r/rstudio/nvim-r.md<CR>
-
   " Run ;RStop // :RKill to quit
   let R_auto_start = 1                                   " Autostart R when opening .R
   let R_assign_map = ';'                                 " Convert ';' into ' <-
@@ -1428,79 +1495,84 @@ nnoremap <Leader>gp :Git push<CR>
   let R_open_example = 1                                 " Use Vim to display R examples
   let g:Rout_prompt_str = '$ '                           " Start of R command prompt
   let g:Rout_continue_str = '... '                       " Symbol for R string continuation
-  " let R_specialplot = 1                                  " nvim.plot() instead of plot()
+  " let R_specialplot = 1                                " nvim.plot() instead of plot()
   let R_commented_lines = 0                              " Don't send commented lines to term
   let R_openpdf = 1                                      " Automatically open PDFs
   let R_pdfviewer = "zathura"                            " PDF viewer
   let R_close_term = 1                                   " Close terminal when closing vim
   let R_objbr_place = 'RIGHT'                            " Location of object browser
-  " let R_external_term = 1                                " OSX use R.app graphical
-  " let R_applescript = 1                                  " OSX use R.app graphical
-
-  nmap <silent> <LocalLeader>t :call RAction("tail")<CR>
-  nmap <silent> <LocalLeader>H :call RAction("head")<CR>
+  " let R_external_term = 1                              " OSX use R.app graphical
+  " let R_applescript = 1                                " OSX use R.app graphical
+  let Rout_more_colors = 1                               " Make terminal output more colorful
+  let r_indent_align_args = 0                            " ?? where this come from
+  let rout_follow_colorscheme = 0
 
   " Press the space bar to send lines and selection to R console
   " vmap <Space> <Plug>RDSendSelection
   " nmap <Space> <Plug>RDSendLine
 
-  autocmd FileType r inoremap <buffer> > <Esc>:normal! a %>%<CR>a
-  autocmd FileType rnoweb inoremap <buffer> > <Esc>:normal! a %>%<CR>a
-  autocmd FileType rmd inoremap <buffer> > <Esc>:normal! a %>%<CR>
+  " automatic line break
+  " autocmd FileType r setlocal formatoptions+=t
 
-  " Made iTerm2 send ✠ when pressing Shift+Enter
-  autocmd FileType r nnoremap <silent> ✠ :call SendLineToR("stay")<CR><Esc><Home><Down>
-  autocmd FileType r inoremap <silent> ✠ <Esc>:call SendLineToR("stay")<CR><Esc>A
-  autocmd FileType r vnoremap <silent> ✠ :call SendSelectionToR("silent", "stay")<CR><Esc><Esc>
+augroup r_env
+  autocmd!
+  autocmd FileType r,rmd,rnoweb
+    \ if string(g:SendCmdToR) == "function('SendCmdToR_fake')"
+      \ | call StartR("R") | endif|
+    \ nnoremap <silent> ✠ :call SendLineToR("stay")<CR><Esc><Home><Down>|
+    \ inoremap <silent> ✠ <Esc>:call SendLineToR("stay")<CR><Esc>A|
+    \ vnoremap <silent> ✠ :call SendSelectionToR("silent", "stay")<CR><Esc><Esc>|
+    \ inoremap <buffer> > <Esc>:normal! a %>%<CR>a|
+    \ nnoremap <Leader>rs :vs ~/projects/rstudio/nvim-r.md<CR>|
+    \ nnoremap <silent> <LocalLeader>t: call RAction("tail")<CR>|
+    \ nnoremap <silent> <LocalLeader>H: call RAction("head")<CR>|
+    \ vnoremap <silent> ;ff           :Rformat<cr>|
+    \ nnoremap <buffer> ;fF           :Rformat<cr>|
+    \ call     <SID>IndentSize(2)|
+    if has('gui_running') || &termguicolors
+      let rout_color_input    = 'guifg=#9e9e9e'
+      let rout_color_normal   = 'guifg=#f79a32'
+      let rout_color_number   = 'guifg=#889b4a'
+      let rout_color_integer  = 'guifg=#a3b95a'
+      let rout_color_float    = 'guifg=#98676a'
+      let rout_color_complex  = 'guifg=#fcaf00'
+      let rout_color_negnum   = 'guifg=#d7afff'
+      let rout_color_negfloat = 'guifg=#d6afff'
+      let rout_color_date     = 'guifg=#4c96a8'
+      let rout_color_true     = 'guifg=#088649'
+      let rout_color_false    = 'guifg=#ff5d5e'
+      let rout_color_inf      = 'guifg=#f06431'
+      let rout_color_constant = 'guifg=#5fafcf'
+      let rout_color_string   = 'guifg=#502166'
+      let rout_color_error    = 'guifg=#ffffff guibg=#dc3958'
+      let rout_color_warn     = 'guifg=#f14a68'
+      let rout_color_index    = 'guifg=#d3af86'
+    endif
+augroup END
 
-  let Rout_more_colors = 1                                " Make terminal output more colorful
-  let r_indent_align_args = 0
-  " let rout_follow_colorscheme = 1
-
-" === Kimbie === {{{
-if has('gui_running') || &termguicolors
-  let rout_color_input    = 'guifg=#9e9e9e'
-  let rout_color_normal   = 'guifg=#f79a32'
-  let rout_color_number   = 'guifg=#889b4a'
-  let rout_color_integer  = 'guifg=#a3b95a'
-  let rout_color_float    = 'guifg=#98676a'
-  let rout_color_complex  = 'guifg=#fcaf00'
-  let rout_color_negnum   = 'guifg=#d7afff'
-  let rout_color_negfloat = 'guifg=#d6afff'
-  let rout_color_date     = 'guifg=#4c96a8'
-  let rout_color_true     = 'guifg=#088649'
-  let rout_color_false    = 'guifg=#ff5d5e'
-  let rout_color_inf      = 'guifg=#f06431'
-  let rout_color_constant = 'guifg=#5fafcf'
-  let rout_color_string   = 'guifg=#502166'
-  let rout_color_error    = 'guifg=#ffffff guibg=#dc3958'
-  let rout_color_warn     = 'guifg=#f14a68'
-  let rout_color_index    = 'guifg=#d3af86'
-endif
-" }}} === Kimbie ===
 " }}} === NVim-R ===
 
 " === Defualt Terminal === {{{
   let g:term_buf = 0
   let g:term_win = 0
   function! TermToggle(height)
-      if win_gotoid(g:term_win)
-          hide
-      else
-          botright new
-          exec "resize " . a:height
-          try
-              exec "buffer " . g:term_buf
-          catch
-              call termopen("bash", {"detach": 0})
-              let g:term_buf = bufnr("")
-              set nonumber
-              set norelativenumber
-              set signcolumn=no
-          endtry
-          startinsert!
-          let g:term_win = win_getid()
-      endif
+    if win_gotoid(g:term_win)
+        hide
+    else
+        botright new
+        exec "resize " . a:height
+        try
+            exec "buffer " . g:term_buf
+        catch
+            call termopen("bash", {"detach": 0})
+            let g:term_buf = bufnr("")
+            set nonumber
+            set norelativenumber
+            set signcolumn=no
+        endtry
+        startinsert!
+        let g:term_win = win_getid()
+    endif
   endfunction
 
   " Toggle terminal on/off (neovim)
@@ -1513,46 +1585,82 @@ endif
   tnoremap :q! <C-\><C-n>:q!<CR>
 " }}} === Defualt Terminal ===
 
-" === lf === {{{
-  let g:lf_map_keys = 0
-  nnoremap <Leader>lf :Lf<CR>
-  let g:lf_replace_netrw = 1
-" }}} === lf ===
-
 " === Floaterm === {{{
-  nnoremap <Leader>slf :FloatermNew --height=0.6 --wintype=split lf<CR>
-  nnoremap <Leader>flf :FloatermNew --height=0.9 --width=0.9 lf<CR>
-  command! LG FloatermNew --width=0.8 --height=0.8 lazygit
+  nnoremap <Leader>fll :Floaterms<CR>
+  nnoremap <Leader>flt :FloatermToggle<CR>
+  let g:fzf_floaterm_newentries = {
+    \ '+lazygit' : {
+        \ 'title': 'lazygit',
+        \ 'height': 0.9,
+        \ 'width': 0.9,
+        \ 'cmd' : 'lazygit' },
+    \ '+gitui' : {
+        \ 'title': 'gitui',
+        \ 'height': 0.9,
+        \ 'width': 0.9,
+        \ 'cmd' : 'gitui' },
+    \ '+taskwarrior-tui' : {
+        \ 'title': 'taskwarrior-tui',
+        \ 'height': 0.7,
+        \ 'width': 0.7,
+        \ 'cmd' : 'taskwarrior-tui' },
+    \ '+flf' : {
+        \ 'title': 'full screen lf',
+        \ 'height': 0.9,
+        \ 'width': 0.9,
+        \ 'cmd' : 'lf' },
+    \ '+slf' : {
+        \ 'title': 'split screen lf',
+        \ 'wintype': 'split',
+        \ 'height': 0.5,
+        \ 'cmd' : 'lf' },
+    \ '+xplr' : {
+        \ 'title': 'xplr',
+        \ 'cmd' : 'xplr' },
+        \}
   let g:floaterm_wintype = 'float'
   let g:floaterm_height=0.8
   let g:floaterm_width=0.8
+  let g:lf_map_keys = 0
+  let g:lf_replace_netrw = 1
+  nnoremap <Leader>lf :Lf<CR>
 " }}}  === Floaterm ===
 
 " === Neoterm === {{{
   let g:neoterm_default_mod='belowright' " open terminal in bottom split
   let g:neoterm_size=14                  " terminal split size
   let g:neoterm_autoscroll=1             " scroll to the bottom
-  nnoremap <Leader>rf :T ipython --no-autoindent --colors=Linux --matplotlib<CR>
   " nnoremap <Leader>rf :T ptipython<CR>
   " some modules do not work in ptpython
-  nnoremap <Leader>rF :T ptpython<CR>
   nnoremap <Leader>rr :Tclear<CR>
   nnoremap <Leader>rt :Ttoggle<CR>
   nnoremap <Leader>ro :Ttoggle<CR> :Ttoggle<CR>
-  au FileType python,perl nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>
-  au FileType python,perl inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A
-  au FileType python,perl xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
 "}}} === Neoterm ===
 
 " === Vim-Slime === {{{
   let g:slime_target = "neovim"
-  autocmd FileType python,perl xmap <buffer> ,l <Plug>SlimeRegionSend
-  autocmd FileType python,perl nmap <buffer> ,l <Plug>SlimeLineSend
-  autocmd FileType perl nmap <buffer> ,l <Plug>SlimeLineSend
-  autocmd FileType python,perl nmap <buffer> ,p <Plug>SlimeParagraphSend
+  augroup repl
+    autocmd!
+    autocmd FileType python
+      \ xmap <buffer> ,l <Plug>SlimeRegionSend|
+      \ nmap <buffer> ,l <Plug>SlimeLineSend|
+      \ nmap <buffer> ,p <Plug>SlimeParagraphSend|
+      \ nnoremap <silent> ✠ :TREPLSendLine<CR><Esc><Home><Down>|
+      \ inoremap <silent> ✠ <Esc>:TREPLSendLine<CR><Esc>A|
+      \ xnoremap <silent> ✠ :TREPLSendSelection<CR><Esc><Esc>
+      \ nnoremap <Leader>rF :T ptpython<CR>|
+      \ nnoremap <Leader>rf :T ipython --no-autoindent --colors=Linux --matplotlib<CR>|
+      \ nnoremap ,rp :SlimeSend1 <C-r><C-w><CR>|
+      \ nnoremap ,rP :SlimeSend1 print(<C-r><C-w>)<CR>|
+      \ nnoremap ,rs :SlimeSend1 print(len(<C-r><C-w>), type(<C-r><C-w>))<CR>|
+      \ nnoremap ,rt :SlimeSend1 <C-r><C-w>.dtype<CR>|
+      \ nnoremap 223 ::%s/^\(\s*print\)\s\+\(.*\)/\1(\2)<CR>|
+      \ call <SID>IndentSize(4)
+    autocmd FileType perl nmap <buffer> ,l <Plug>SlimeLineSend
+  augroup END
 " }}} === Vim-Slime ===
 
-" === Vim-LSP === {{{
+" === vim-markdown === {{{
   let g:markdown_fenced_languages = [
         \ 'vim',
         \ 'html',
@@ -1570,6 +1678,7 @@ endif
         \ 'toml',
         \ 'help'
         \]
+  let g:vim_markdown_follow_anchor = 1
 "}}} === Vim-LSP ===
 
 " === Vim Commentary === {{{
@@ -1621,20 +1730,27 @@ endif
       \ }))
   endfunction
 
+  " inoremap <buffer><silent><unique> ``` ```<Enter>```<C-o>k<C-o>A
+  " autocmd FileType markdown inoremap <expr> <C-x> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
   augroup markdown
     autocmd!
-    " Include dash in 'word'
-    autocmd FileType markdown setlocal iskeyword+=-
+    autocmd FileType markdown,vimwiki
+      \ setl iskeyword+=-|
+      \ vnoremap ``` <esc>`<O<esc>S```<esc>`>o<esc>S```<esc>k$|
+      \ nnoremap <buffer> <F4> !pandoc % --pdf-engine=xelatex -o %:r.pdf|
+      \ inoremap ** ****<Left><Left>|
+      \ inoremap <expr> <right> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"|
+      \ nnoremap <Leader>tg itags:<Space>macOS<CR>title:<CR>author:<Space>Lucas<Space>Burns<CR>date:<Space><C-r>=strftime('%F')<CR><CR>aside:<CR><CR>#|
   augroup END
+
+  autocmd FileType python vnoremap scw <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
 
   if (!$VIM_DEV)
     " when not developing mkdx, use fancier <leader>I which uses fzf
     " instead of qf to jump to headers in markdown documents.
     nnoremap <silent> <Leader>I :call <SID>MkdxFzfQuickfixHeaders()<Cr>
   endif
-
-  " nnoremap m. m]
-  " nnoremap m, m[
 
   nnoremap <Leader>mcs :vs ~/vimwiki/dotfiles/mkdx.md<CR>
   nnoremap <Leader>mdm :menu Plugin.mkdx<CR>
@@ -1650,24 +1766,25 @@ endif
 " }}} === CocExplorer hack ===
 
 " === vim-table-mode === {{{
-  let g:table_mode_map_prefix = '<Leader>t'
-  let g:table_mode_realign_map = '<Leader>tr'
-  let g:table_mode_delete_row_map = '<Leader>tdd'
-  let g:table_mode_delete_column_map = '<Leader>tdc'
-  let g:table_mode_insert_column_after_map = '<Leader>tic'
-  let g:table_mode_echo_cell_map = '<Leader>t?'
-  let g:table_mode_sort_map = '<Leader>ts'
-  let g:table_mode_tableize_map = '<Leader>tt'
-  let g:table_mode_tableize_d_map = '<Leader>T'           " visual mode
-
-  " <Leader>tt    =
-
-  let g:table_mode_tableize_auto_border = 1
   " let g:table_mode_corner_corner='+'
   " let g:table_mode_header_fillchar='='
-  let g:table_mode_corner='|'
-  let g:table_mode_fillchar = '-'
-  let g:table_mode_separator = '|'
+  augroup tablemode
+    autocmd!
+    autocmd FileType markdown,vimwiki
+      \ let g:table_mode_map_prefix = '<Leader>t'|
+      \ let g:table_mode_realign_map = '<Leader>tr'|
+      \ let g:table_mode_delete_row_map = '<Leader>tdd'|
+      \ let g:table_mode_delete_column_map = '<Leader>tdc'|
+      \ let g:table_mode_insert_column_after_map = '<Leader>tic'|
+      \ let g:table_mode_echo_cell_map = '<Leader>t?'|
+      \ let g:table_mode_sort_map = '<Leader>ts'|
+      \ let g:table_mode_tableize_map = '<Leader>tt'|
+      \ let g:table_mode_tableize_d_map = '<Leader>T' |
+      \ let g:table_mode_tableize_auto_border = 1|
+      \ let g:table_mode_corner='|'|
+      \ let g:table_mode_fillchar = '-'|
+      \ let g:table_mode_separator = '|'|
+  augroup END
 " }}} === vim-table-mode ===
 
 " === vifm === {{{
@@ -1691,11 +1808,12 @@ endif
   "       \   '-interaction=nonstopmode',
   "       \ ],
   "       \}
-  augroup vimrc
+  augroup vimtex
     autocmd!
     autocmd InsertEnter *.tex set conceallevel=0
     autocmd InsertLeave *.tex set conceallevel=2
     autocmd BufEnter *.tex set concealcursor-=n
+    autocmd VimLeave *.tex !texclear %
   augroup END
   "}}} === vimtex ===
 
@@ -1716,12 +1834,13 @@ let g:NERDToggleCheckAllLines = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDCommentEmptyLines = 1
 let g:NERDDefaultAlign = 'left'
+let g:NERDCustomDelimiters = { 'just': { 'left': '#'}}
 " vim registers <C-/> as <C-_>
 nnoremap <C-_> :call NERDComment(0, "toggle")<CR>j
 vnoremap <C-_> :call NERDComment(0, "toggle")<CR>'>j
 " copy & comment
-nnoremap <Leader>cc yyP<c-_>
-vnoremap <Leader>cc yPgp<c-_>
+nnoremap <Leader>cc yyP<C-_>
+vnoremap <Leader>cc yPgp<C-_>
 map gc :call NERDComment(0, "toggle")<CR>
 nmap gcc :call NERDComment(0, "toggle")<CR>
 map gcy :call NERDComment(0, "yank")<CR>
@@ -1764,18 +1883,15 @@ xmap <Leader>gs :EasyAlign//ig['String']<Left><Left><Left><Left><Left><Left><Lef
 " }}} === Easy Align ===
 
 " === minimap === {{{
-nnoremap <Leader>mm :MinimapToggle<CR>
+nnoremap <Leader>mi :MinimapToggle<CR>
 let g:minimap_width = 10
 let g:minimap_auto_start = 1
 let g:minimap_auto_start_win_enter = 1
 let g:minimap_highlight_range = 1
-let g:minimap_block_filetypes = ['fugitive', 'nerdtree', 'tagbar', 'coc-explorer']
+let g:minimap_block_filetypes =
+  \ ['fugitive', 'nerdtree', 'help', 'coc-explorer', 'vista']
 let g:minimap_close_filetypes = ['startify', 'netrw', 'vim-plug', 'floaterm']
 let g:minimap_block_buftypes = ['nofile', 'nowrite', 'quickfix', 'terminal', 'prompt']
-autocmd VimEnter *
-  \ if (winnr("$") == 1 && &filetype ==# "minimap")
-  \| q
-  \| endif
 " }}} === minimap ===
 
 " === todo-comments-vim === {{{
@@ -1804,86 +1920,211 @@ lua << EOF
 EOF
 " }}} === todo-comments-vim ===
 
+" === lightline-buffer === {{{
+" jump mapping
+nmap ,1 <Plug>lightline#bufferline#go(1)
+nmap ,2 <Plug>lightline#bufferline#go(2)
+nmap ,3 <Plug>lightline#bufferline#go(3)
+nmap ,4 <Plug>lightline#bufferline#go(4)
+nmap ,5 <Plug>lightline#bufferline#go(5)
+nmap ,6 <Plug>lightline#bufferline#go(6)
+nmap ,7 <Plug>lightline#bufferline#go(7)
+nmap ,8 <Plug>lightline#bufferline#go(8)
+nmap ,9 <Plug>lightline#bufferline#go(9)
+nmap ,0 <Plug>lightline#bufferline#go(10)
+
+" kill mapping
+nmap ;1 <Plug>lightline#bufferline#delete(1)
+nmap ;2 <Plug>lightline#bufferline#delete(2)
+nmap ;3 <Plug>lightline#bufferline#delete(3)
+nmap ;4 <Plug>lightline#bufferline#delete(4)
+nmap ;5 <Plug>lightline#bufferline#delete(5)
+nmap ;6 <Plug>lightline#bufferline#delete(6)
+nmap ;7 <Plug>lightline#bufferline#delete(7)
+nmap ;8 <Plug>lightline#bufferline#delete(8)
+nmap ;9 <Plug>lightline#bufferline#delete(9)
+nmap ;0 <Plug>lightline#bufferline#delete(10)
+
+let s:nbsp = ' '
+let g:lightline#bufferline#filename_modifier = ":t".s:nbsp
+let g:lightline#bufferline#shorten_path      = 1
+let g:lightline#bufferline#show_number       = 2
+let g:lightline#bufferline#min_buffer_count  = 0
+let g:lightline#bufferline#unnamed           = '[No Name]'
+let g:lightline#bufferline#read_only         = '  '
+let g:lightline#bufferline#modified          = " + "
+let g:lightline#bufferline#enable_devicons = 1
+let g:lightline#bufferline#unicode_symbols = 1
+let g:lightline#bufferline#number_map = {
+\ 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴',
+\ 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹'}
+" \ 0: '₀', 1: '₁', 2: '₂', 3: '₃', 4: '₄',
+" \ 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉'}
+let g:lightline#bufferline#unicode_symbols = 1
+
+let g:lightline#gitdiff#indicator_added = ': '
+let g:lightline#gitdiff#indicator_deleted = ': '
+let g:lightline#gitdiff#indicator_modified = 'ﰲ: '
+let g:lightline#gitdiff#separator = ' '
+" let g:lightline#gitdiff#show_empty_indicators = 1
+" }}} === lightline-buffer ===
+
 " === lightline === {{{
 function! CocDiagnosticError() abort "{{{
   let info = get(b:, 'coc_diagnostic_info', {})
   return get(info, 'error', 0) ==# 0 ? '' : ' ' . info['error'] "   
 endfunction "}}}
+
 function! CocDiagnosticWarning() abort "{{{
   let info = get(b:, 'coc_diagnostic_info', {})
   return get(info, 'warning', 0) ==# 0 ? '' : ' ' . info['warning'] "      !
 endfunction "}}}
+
 function! CocDiagnosticOK() abort "{{{
   let info = get(b:, 'coc_diagnostic_info', {})
   return get(info, 'error', 0) ==# 0 && get(info, 'warning', 0) ==# 0 ? '' : '' "  
 endfunction "}}}
+
 function! CocStatus() abort "{{{
   return get(g:, 'coc_status', '')
 endfunction "}}}
+
 function! GitGlobal() abort "{{{
-    if exists('*FugitiveHead')
-        let branch = FugitiveHead()
-        if branch ==# ''
-            return ' ' . fnamemodify(getcwd(), ':t')
-        else
-            return branch . ' '
-        endif
+  if exists('*FugitiveHead')
+    let branch = FugitiveHead()
+    if branch ==# ''
+      return ' ' . fnamemodify(getcwd(), ':t')
+    else
+      return branch . ' '
     endif
-    return ''
+  endif
+  return ''
 endfunction "}}}
+
 function! DeviconsFiletype() "{{{
-  return winwidth(0) > 100 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ' . &filetype : 'no ft') : ''
+  return winwidth(0) > 80 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ' . &filetype : 'no ft') : ''
   " return winwidth(0) > 100 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
 endfunction "}}}
+
 function! TabNum(n) abort "{{{
   return a:n." \ue0bb"
 endfunction "}}}
 
+" FIX: function
+function! NumBufs() abort "{{{
+  " let num = len(getbufinfo({'buflisted':1}))
+  " let hid = len(filter(getbufinfo({'buflisted':1}), 'empty(v:val.windows)'))
+  return len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+  " return hid ? num-hid."+".hid : num
+endfunction "}}}
+
+" function! FileSize() abort "{{{
+"   let [ bytes, units, i ] = [ getfsize(expand(@%)), ['', 'Ki', 'Mi', 'Gi'], 0 ]
+"   while bytes >= 1024 | let bytes = bytes / 1024.0 | let i += 1 | endwhile
+"   return printf((i ? "~%.1f" : "%d")." %sB", bytes, units[i])
+" endfunction "}}}
+
+let g:ll_blacklist = '\v(help|nerdtree|quickmenu|startify|undotree|neoterm|'
+  \ . 'fugitive|coc-explorer|netrw|vim-plug|floaterm|qf)'
+
+function! FileSize() abort " {{{
+  let l:bytes = getfsize(expand('%:p'))
+  if (l:bytes >= 1024)
+    let l:kbytes = l:bytes / 1024
+  endif
+  if (exists('l:kbytes') && l:kbytes >= 1000)
+    let l:mbytes = l:kbytes / 1000
+  endif
+
+  if l:bytes <= 0
+    return &filetype !~# g:ll_blacklist ? ('0 B') : ''
+  endif
+
+  if (exists('l:mbytes'))
+    return &filetype !~# g:ll_blacklist && winwidth(0) > 70 ? (l:mbytes . ' MB') : ''
+  elseif (exists('l:kbytes'))
+    return &filetype !~# g:ll_blacklist && winwidth(0) > 70 ? (l:kbytes . ' KB') : ''
+  else
+    return &filetype !~# g:ll_blacklist && winwidth(0) > 70 ? (l:bytes . ' B') : ''
+  endif
+endfunction "}}}
+
+function! LightLineReadonly() abort "{{{
+  return &readonly && &filetype !~# g:ll_blacklist ? '' : ''
+endfunction "}}}
+
+function! LightlineFilename() abort "{{{
+  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let modified = &modified ? ' +' : ''
+  return winwidth(0) > 40 ? filename . modified : ''
+endfunction "}}}
+
+function! LightlineGitStatus() abort "{{{
+  let status = get(b:, 'coc_git_status', '')
+  return winwidth(0) > 80 ? status : ''
+endfunction "}}}
+
+function! LightlineFileEncoding() "{{{
+    " only show the file encoding if it's not 'utf-8'
+    return &fileencoding == 'utf-8' ? '' : &fileencoding
+endfunction "}}}
+
+function! NearestMethodOrFunction() abort "{{{
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction "}}}
+
+autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+
 set showtabline=2
 let g:lightline = {}
-" let g:lightline.colorscheme = 'kimbox'
-let g:lightline.colorscheme = 'gruvbox_material'
+let g:lightline.colorscheme = 'kimbox'
+" let g:lightline.colorscheme = 'gruvbox_material'
 " let g:lightline.colorscheme = 'miramare'
 " let g:lightline.colorscheme = 'everforest'
+" let g:lightline.colorscheme = 'nightowl'
 " let g:lightline.colorscheme = 'spaceduck'
 let g:lightline.separator = { 'left': "\ue0b8", 'right': "\ue0be" }
 let g:lightline.subseparator = { 'left': "\ue0b9", 'right': "\ue0b9" }
 let g:lightline.tabline_separator = { 'left': "\ue0bc", 'right': "\ue0ba" }
 let g:lightline.tabline_subseparator = { 'left': "\ue0bb", 'right': "\ue0bb" }
+" 'fileformat'
 let g:lightline.active = {
-            \ 'left':  [['mode', 'paste'],
-            \           ['readonly', 'modified', 'fileformat', 'devicons_filetype'],
-            \           ['coc_status']],
-            \ 'right': [['lineinfo'],
-            \           ['linter_errors', 'linter_warnings', 'linter_ok']]
-            \ }
+    \ 'left':  [['mode', 'paste'],
+    \           ['readonly', 'modified', 'devicons_filetype', 'fsize', 'fileencoding'],
+    \           ['gitdiff', 'coc_status']],
+    \ 'right': [['lineinfo'],
+    \           ['linter_errors', 'linter_warnings', 'linter_ok']]
+    \ }
 let g:lightline.inactive = {
-            \ 'left': [['filename', 'modified', 'fileformat']],
-            \ 'right': [[ 'lineinfo' ]]
-            \ }
+        \ 'left': [['filename', 'modified', 'fileformat']],
+        \ 'right': [[ 'lineinfo' ]]
+        \ }
+" 'tabs'
 let g:lightline.tabline = {
-            \ 'left': [['vim_logo', 'tabs']],
-            \ 'right': [[ 'git_status' ]],
-            \ }
+        \ 'right': [[ 'method', 'git_status' ]],
+        \ 'left': [['vim_logo', 'nbufs', 'buffers']],
+        \ }
 let g:lightline.tab = {
-            \ 'active': ['tabnum', 'filename', 'modified'],
-            \ 'inactive': ['tabnum', 'filename', 'modified']
-            \ }
+        \ 'active': ['bufnum', 'filename'],
+        \ 'inactive': ['bufnum', 'filename']
+        \ }
+" \ 'readonly': 'lightline#tab#readonly',
+" \ 'filename': 'lightline#tab#filename',
+" \ 'modified': 'lightline#tab#modified',
 let g:lightline.tab_component_function = {
       \ 'tabnum': 'TabNum',
-      \ 'filename': 'lightline#tab#filename',
-      \ 'modified': 'lightline#tab#modified',
-      \ 'readonly': 'lightline#tab#readonly',
+      \ 'filename': 'LightlineFilename',
       \ }
+" \ 'fileencoding': '%{&fenc!=#""?&fenc:&enc}',
 let g:lightline.component = {
       \ 'git_status' : '%{GitGlobal()}',
+      \ 'nbufs': '%{NumBufs()}',
       \ 'bufinfo': '%{bufname("%")}:%{bufnr("%")}',
       \ 'vim_logo': "\ue7c5",
       \ 'mode': '%{lightline#mode()}',
       \ 'absolutepath': '%F',
       \ 'relativepath': '%f',
       \ 'filename': '%t',
-      \ 'fileencoding': '%{&fenc!=#""?&fenc:&enc}',
       \ 'fileformat': '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
       \ 'filetype': '%{&ft!=#""?&ft:"no ft"}',
       \ 'modified': '%M',
@@ -1899,23 +2140,31 @@ let g:lightline.component = {
       \ 'line': '%l',
       \ 'column': '%c',
       \ 'close': '%999X X ',
-      \ 'winnr': '%{winnr()}'
+      \ 'winnr': '%{winnr()}',
+      \ 'method': '%{NearestMethodOrFunction()}',
       \ }
 let g:lightline.component_function = {
       \ 'devicons_filetype': 'DeviconsFiletype',
       \ 'coc_status': 'CocStatus',
+      \ 'fsize': 'FileSize',
+      \ 'fileencoding': 'LightlineFileEncoding',
       \ }
 let g:lightline.component_expand = {
-            \ 'linter_warnings': 'CocDiagnosticWarning',
-            \ 'linter_errors': 'CocDiagnosticError',
-            \ 'linter_ok': 'CocDiagnosticOK',
-            \ }
+      \ 'linter_warnings': 'CocDiagnosticWarning',
+      \ 'linter_errors': 'CocDiagnosticError',
+      \ 'linter_ok': 'CocDiagnosticOK',
+      \ 'buffers': 'lightline#bufferline#buffers',
+      \ 'readonly': 'LightLineReadonly',
+      \ 'gitdiff': 'lightline#gitdiff#get',
+      \ }
 let g:lightline.component_type = {
-            \ 'linter_warnings': 'warning',
-            \ 'linter_errors': 'error',
-            \ 'linter_info': 'info',
-            \ 'linter_hints': 'hints',
-            \ }
+      \ 'linter_warnings': 'warning',
+      \ 'linter_errors': 'error',
+      \ 'linter_info': 'info',
+      \ 'linter_hints': 'hints',
+      \ 'buffers': 'tabsel',
+      \ 'gitdiff': 'middle',
+      \ }
 let g:lightline.mode_map = {
             \ 'n':      'N',
             \ 'i':      'I',
@@ -1935,16 +2184,15 @@ let g:lightline.mode_map = {
 " bash bibtex c python r regex rust
 " comment css gomod json lua yaml toml
 " python ?? why not work
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = {
-    "c", "go", "rust"
-    },
-  highlight = {
-    enable = true
-  }
-}
-EOF
+" lua <<EOF
+" require'nvim-treesitter.configs'.setup {
+" ensure_installed = { "go" },
+"   highlight = {
+"     enable = true,
+"     disable = { "python" },
+"   }
+" }
+" EOF
 
   " ensure_installed = "maintained",
   " ignore_install = { "javascript" },
@@ -1978,6 +2226,54 @@ map <Leader>tc :Telescope commands<CR>
 map ® :Telescope live_grep<CR>
 " }}} === telescope ===
 
+" === gutentag === {{{ "
+  " set tags=./.tags;,.tags
+  set tags=tags
+  let $GTAGSLABEL = 'native-pygments'
+  let $GTAGSCONF = '~/.gtags.conf'
+
+  let g:gutentags_modules = ['ctags']
+  let g:gutentags_project_root = ['.git']
+  let g:gutentags_ctags_tagfile = '.tags'
+  let g:gutentags_cache_dir = expand('~/.cache/tags')
+  let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+  let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+  let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+  let g:vista_sidebar_position = 'topleft vertical'
+  let g:vista#renderer#enable_icon = 1
+
+  " nmap <C-S-Up> :Vista finder coc<CR>
+  nmap <C-;> :Vista finder coc<CR>
+  let g:vista_fzf_preview = ['down:50%']
+  let g:vista_fzf_opt = ['--no-border']
+  let g:vista_default_executive = 'coc'
+" }}} === gutentag === "
+
+" === highlight line === {{{ "
+lua << EOF
+local high_str = require("high-str")
+high_str.setup({
+  verbosity = 0,
+  highlight_colors = {
+    color_0 = {"#F06431", "smart"},
+    color_1 = {"#DC3958", "smart"},
+    color_2 = {"#088649", "smart"},
+    color_3 = {"#F79A32", "smart"},
+    color_4 = {"#889B4A", "smart"},
+    color_5 = {"#98676A", "smart"},
+    color_6 = {"#7E5053", "smart"},
+    color_7 = {"#418292", "smart"},
+    color_8 = {"#8AB1B0", "smart"},
+    color_9 = {"#7d5c34", "smart"},
+  },
+})
+EOF
+
+vnoremap <silent> <Leader>hi :<c-u>HSHighlight<space>
+vnoremap <silent> <Leader>hr :<c-u>HSRmHighlight<CR>
+" }}} === highlight line === "
+
 "=== make background transparent === {{{
   " highlight Normal guibg=none ctermbg=NONE
   " highlight NonText guibg=none ctermbg=NONE
@@ -1985,14 +2281,41 @@ map ® :Telescope live_grep<CR>
   " highlight SignColumn guibg=none ctermbg=NONE
   " highlight TrailingWhitespace ctermfg=0 guifg=Black ctermbg=8 guibg=#41535B
   " highlight EndOfBuffer guibg=NONE ctermbg=NONE guifg=Black ctermfg=0
+  highlight! default link CocErrorHighlight WarningMsg
+  highlight! default link CocErrorSign CocErrorHighlight
+  highlight! CocWarningSign  ctermfg=Brown guifg=#ff922b
+  highlight! default link CocInfoSign Title
+  highlight! default link CocHintSign Question
+  highlight clear SignColumn
+  " highlight DiffAdd      ctermfg=65 ctermbg=NONE guifg=#5F875F guibg=NONE
+  " highlight DiffChange   ctermfg=60 ctermbg=NONE guifg=#5F5F87 guibg=NONE
+  " highlight DiffDelete   ctermfg=9  ctermbg=NONE guifg=#cc6666 guibg=NONE
+
+  exec 'hi! SignifySignAdd    ctermfg=Green  guifg=#50FA7B ' . (has('termguicolors')? 'guibg=none':'ctermbg=') . synIDattr(hlID('SignColumn'),'bg')
+  exec 'hi! SignifySignDelete ctermfg=Red    guifg=#FF5555 ' . (has('termguicolors')? 'guibg=none':'ctermbg=') . synIDattr(hlID('SignColumn'),'bg')
+  exec 'hi! SignifySignChange ctermfg=Yellow guifg=#FFB86C ' . (has('termguicolors')? 'guibg=none':'ctermbg=') . synIDattr(hlID('SignColumn'),'bg')
+  hi HighlightedyankRegion ctermbg=Red   guibg=#fb4934
+  hi GitBlameVirtualText   cterm=italic  ctermfg=245   gui=italic guifg=#665c54
 " }}} === transparent ===
 
-" === vim-clang === {{{
-autocmd FileType c nnoremap <Leader>r<CR> :FloatermNew --autoclose=0 gcc % -o %< && ./%< <CR>
-" }}} === vim-clang ===
-
-" Todo: 'pattern' is deprectaed. Please refer to the documentation and use 'highlight.pattern' and 'search.pattern' instead.
-
 source ~/.config/nvim/indentline.vim
+
+" let g:SimpylFold_docstring_preview = 1
+"
+" nmap zuz <Plug>(FastFoldUpdate)
+" let g:fastfold_savehook = 1
+" let g:fastfold_fold_command_suffixes =  ['x','X','a','A','o','O','c','C']
+" let g:fastfold_fold_movement_commands = [']z', '[z', 'zj', 'zk']
+"
+" let g:markdown_folding = 1
+" let g:tex_fold_enabled = 1
+" let g:vimsyn_folding = 'af'
+" let g:xml_syntax_folding = 1
+" let g:sh_fold_enabled= 7
+" let g:ruby_fold = 1
+" let g:perl_fold = 1
+" let g:perl_fold_blocks = 1
+" let g:r_syntax_folding = 1
+" let g:rust_fold = 1
 
 " vim: ft=vim:et:sw=0:ts=2:sts=2:tw=78:fdm=marker:fmr={{{,}}}:

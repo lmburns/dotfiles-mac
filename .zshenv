@@ -18,7 +18,8 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_BIN_HOME="$HOME/bin"
 export XDG_MBIN_HOME="$HOME/mybin"
 
-export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
+# export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
+export BROWSER='w3m'
 export RTV_BROWSER="w3m"
 export EDITOR='nvim'
 # export VISUAL="${EDITOR}"
@@ -40,6 +41,7 @@ export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 
 export VIMRC="${XDG_CONFIG_HOME}/nvim/init.vim"
 export NOTMUCH_CONFIG="${XDG_CONFIG_HOME}/notmuch/notmuch-config"
+export TIMEWARRIORDB="${XDG_DATA_HOME}/timewarrior/tw.db"
 export TASKRC="${XDG_CONFIG_HOME}/task/taskrc"
 export TASKDATA="${XDG_CONFIG_HOME}/task"
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/ripgreprc"
@@ -55,12 +57,12 @@ export GEM_SPEC_CACHE="${XDG_DATA_HOME}/ruby/specs"
 export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
 export IPYTHONDIR="${XDG_CACHE_HOME}/ipython"
 # export PTPYTHON_CONFIG_HOME="${XDG_CONFIG_HOME}/ptpython/config.py"
-export R_USER="${XDG_CONFIG_HOME}/r/R"
+# export R_USER="${XDG_CONFIG_HOME}/r/R"
 export R_ENVIRON_USER="${XDG_CONFIG_HOME}/r/Renviron"
 export R_MAKE_VARS_USER="${XDG_CONFIG_HOME}/r/Makevars"
 export R_HISTFILE="${XDG_CONFIG_HOME}/r/Rhistory"
 export R_PROFILE_USER="${XDG_CONFIG_HOME}/r/Rprofile"
-# export R_LIBS_USER="$HOME/Library/R"
+export R_LIBS_USER="${XDG_CONFIG_HOME}/r"
 export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME}/password-store"
 
@@ -74,6 +76,8 @@ export GPG_TTY=$TTY
 export GPG_AGENT_INFO="${GNUPGHOME}/S.gpg-agent"
 export PINENTRY_USER_DATA="USE_CURSES=1"
 export OSFONTDIR="$HOME/Library/Fonts"
+export UMCONFIG_HOME="${XDG_CONFIG_HOME}/um"
+export PIER_CONFIG_PATH="${XDG_CONFIG_HOME}/pier/config.toml"
 
 export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:treeview;v:imgview;j:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize'
 export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'

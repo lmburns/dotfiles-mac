@@ -6,7 +6,7 @@ fkill() {
     | awk 'BEGIN{OFS="\t"}{print $1, $2, $NF}' \
     | fzf --height=70% \
     | awk '{print $1}' \
-    | xargs -I{} kill -KILL "{}"
+    | xargs -I{} kill -TERM "{}"
 }
 
 fkill

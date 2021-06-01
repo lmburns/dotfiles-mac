@@ -1,1 +1,36 @@
-/Users/lucasburns/backup/packages/npm_20210407
+/usr/local/lib
+├── asciicast2gif@0.2.1
+├── bash-language-server@1.17.0
+├── btc-value-cli@3.0.0
+├── carbon-now-cli@1.4.0
+├── chokidar-cli@2.1.0
+├── cli-sql-formatter@1.3.4
+├── coinmon@0.0.27
+├── ezservices@0.2.5
+├── generator-code@1.3.9
+├── h2m@0.7.0
+├── how-2@1.8.2
+├── imageoptim-cli@3.0.2
+├── imap-notify@0.1.0
+├── instant-markdown-d@0.2.0-rc.2
+├── ios-deploy@1.11.4
+├── is-up-cli@3.0.0
+├── livedown@2.1.1
+├── mklicense@0.1.5
+├── npm@7.13.0
+├── osx-wifi-cli@2.1.0
+├── pageres-cli@6.0.0
+├── parse-columns-cli@2.0.0
+├── sql-formatter-cli@2.3.3
+├── sql-language-server@0.12.0
+├── svgexport@0.4.1
+├── thumbsup@2.16.0
+├── to-markdown-cli@0.4.4
+├── tty-table@4.1.3
+├── underscore-cli@0.2.19
+├── undollar@1.0.0
+├── vmd@1.34.0
+├── wat@0.1.40
+├── yo@3.1.1
+└── zx@1.8.0
+

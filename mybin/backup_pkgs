@@ -11,7 +11,7 @@ PIP_FILE="pip_$(date +'%Y%m%d')"
 
 DIR="$HOME/backup/packages"
 
-mkdir -p "$DIR"
+[[ ! -d "$DIR" ]] && mkdir -p "$DIR"
 
 brew bundle dump --file="${DIR}/${BREW_FILE}" >/dev/null 2>&1
 ls "${CARGO_HOME}/bin" | rg "^(cargo|rust)" -v > "${DIR}/${CARGO_FILE}"

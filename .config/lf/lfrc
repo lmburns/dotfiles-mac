@@ -488,16 +488,18 @@ map R reload
 map C clear
 map U unselect
 
-map <c-x>x $$f                              # execute file
-map <c-x>X !$f                              # execute file and $PAGER output
-map <c-x>l $$f | bat --paging=always -f     # execute file and bat output
-map <c-x>w push :wim<space>                 # open script source code
-map <c-v> $jupview -P "$f"                  # view ipynb file
-map <c-x>p $cat $fx | up                    # cat file to up (unix piper)
-map <c-s> shell                             # enter shell command
+map <c-x>x $$f                                      # execute file
+map <c-x>X !$f                                      # execute file and $PAGER output
+map <c-x>l $$f | bat --paging=always -f             # execute file and bat output
+map <c-x>G !go build $fx && ./$(basename ${fx%.go}) # execute go file
+map <c-x>g !go run $fx                              # execute go file
+map <c-x>w push :wim<space>                         # open script source code
+map <c-v> $jupview -P "$f"                          # view ipynb file
+map <c-x>p $cat $fx | up                            # cat file to up (unix piper)
+map <c-s> shell                                     # enter shell command
 map <c-u> usage
-map <c-f> push :rg<space>                   # search with rg
-map <c-z> push :rgf<space>                 # search interactively with fzf
+map <c-f> push :rg<space>                           # search with rg
+map <c-z> push :rgf<space>                          # search interactively with fzf
 
 map Yj copytojump       # copy to directory with autojump
 map Mj movetojump       # move to directory with autojump

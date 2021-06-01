@@ -4,7 +4,7 @@
   branch = auto
 [user]
   name = Lucas Burns
-  email = burnsac@me.com
+	email = lucas@lucasburns.xyz
   signingkey = C011CBEF6628B679
 # signingkey = E93ACCAAAEB024788C106EDEC011CBEF6628B679
 [alias]
@@ -23,8 +23,8 @@
   l = log -p
   lc = log ORIG_HEAD.. --stat --no-merges
   lo = log --oneline --decorate --stat --graph
-  lp = log --pretty=format:"%h%Cred %ad%Cgreen | %s%C(yellow)%d%C(magenta) [%an]" --graph --date=short
-  lpp = log --graph --pretty=format:'%Cred%h%Creset %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  ; lp = log --pretty=format:"%hCred %a%Cgreen | %s%C(yellow)%d%C(magenta) [%an]" --graph --date=short
+  lp = log --graph --pretty=format:'%Cred%h%Creset %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   lg = log --pretty='format:%h %G? %aN  %s'
   lss = log --show-signature
   m = merge
@@ -50,6 +50,7 @@
   fst = !fstat
   fad = !fadd
   fun = !funtrack
+	pro = "!f() { git fetch -fu ${2:-origin} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
 [blame "gpg"]
   texconv = gpg --no-tty --decrypt --quiet
 [core]
