@@ -54,6 +54,40 @@ Bash parameters and arguments to help with scripting.
 - `BASE=${SRC##*/}`   #=> "foo.cpp" (basepath)
 - `DIR=${SRC%$BASE}`  #=> "/path/to/" (dirpath)
 
+### OPERATORS
+
+`${param@U}`
+: uppercase
+
+`${param@u}`
+: first character uppercase
+
+`${param@L}`
+: lowercase
+
+`${param@Q}`
+: quoted where can be reused as input
+
+`${param@E}`
+: backslash escape sequences expanded like `$'...'`
+
+`${param@P}`
+: expand as if it were prompt string
+
+`${param@A}`
+: assignment/declare statement, if evaled will recreate param w/ attributes
+
+`${param@K}`
+: possibly quoted version, except prints values of index and  associate arrays as sequence of quoted key-value pairs
+
+`${param@a}`
+: flag values representing params attributes
+
+## REGEX
+
+`[[ $1 =! $regex ]] ... `
+: `$BASH_REMATCH` variable contains match
+
 ## CONDITIONALS
 
 |----------------------------|--------------------------|

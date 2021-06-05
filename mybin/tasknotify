@@ -36,7 +36,9 @@ TASKS[overdue]="$(
 )"
 
 local -A opts
-zparseopts -D -A opts p -print n -notify o -overdue a -all e -email d -due h -help
+zparseopts -D -A opts \
+  p -print n -notify o -overdue a -all e -email d -due \
+  t -today h -help
 
 local -A overall
 function _get_overall() {
@@ -54,18 +56,25 @@ function print_task() {
       print -P "%F{5}${x}%f"
     done
   else
-    for x in "${TASK[$1]}"; do
+    for x in "${TASKS[$1]}"; do
       print -P "%F{5}${x}%f"
     done
   fi
 }
 
+function osxnotify() {
+  osascript -e 'display notification "'"${@:2}"'" with title "'"${1}"'"'
+}
+
 function notify_task() {
   local overd
-  (( ${+commands[terminal-notifier]} )) && {
-    overd="${overall[$1]##[[:space:]]#}"
-    overd="${overd##$1 | #}"
+  _get_overall
+  overd="${overall[$1]##[[:space:]]#}"
+  overd="${overd##$1 | #}"
+  if (( ${+commands[terminal-notifirer]} )) {
     terminal-notifier -title "${(C)1} Task" -message "$overd"
+  } else {
+    osxnotify "${(C)1}" "$overd"
   }
 }
 
@@ -88,6 +97,7 @@ function usage() {
   print -- "-p / --print           - print tasks to stdout"
   print -- "-a / --all             - all tasks"
   print -- "-o / --overdue         - overdue tasks"
+  print -- "-t / --today           - due today tasks"
   print -- "-d / --due             - all tasks with due date"
 }
 
@@ -99,14 +109,17 @@ if (( ${+opts[-n]} + ${+opts[--notify]} )) {
   (( ${+opts[-a]} + ${+opts[--all]} )) && { notify_task "all" }
   (( ${+opts[-o]} + ${+opts[--overdue]} )) && { notify_task "overdue" }
   (( ${+opts[-d]} + ${+opts[--due]} )) && { notify_task "due_all" }
+  (( ${+opts[-t]} + ${+opts[--today]} )) && { notify_task "due_today" }
 } elif (( ${+opts[-e]} + ${+opts[--email]} )) {
   (( ${+opts[-a]} + ${+opts[--all]} )) && { email "all" }
   (( ${+opts[-o]} + ${+opts[--overdue]} )) && { email "overdue" "$1" }
   (( ${+opts[-d]} + ${+opts[--due]} )) && { email "due_all" }
+  (( ${+opts[-t]} + ${+opts[--today]} )) && { email "due_today" }
 } elif (( ${+opts[-p]} + ${+opts[--print]} )) {
   (( ${+opts[-a]} + ${+opts[--all]} )) && { print_task "all" "$1" }
   (( ${+opts[-o]} + ${+opts[--overdue]} )) && { print_task "overdue" "$1" }
   (( ${+opts[-d]} + ${+opts[--due]} )) && { print_task "due_all" }
+  (( ${+opts[-t]} + ${+opts[--today]} )) && { print_task "due_today" }
 }
 
 # vim: ft=zsh:et:sw=0:ts=2:sts=2:

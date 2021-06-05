@@ -2,7 +2,7 @@
 
 # desc: search zshall more efficiently
 
-setopt localoptions extendedglob
+setopt extendedglob
 
 man() {
   env \

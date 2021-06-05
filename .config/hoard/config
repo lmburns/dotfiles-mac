@@ -1,0 +1,466 @@
+# exclusivity = [ ["neovim", "vim"] ]
+
+[envs]
+[envs.amfora]
+    exe_exists = ["amfora"]
+
+[envs.bat]
+    exe_exists = ["bat"]
+
+[envs.broot]
+    exe_exists = ["broot"]
+
+[envs.calcurse]
+    exe_exists = ["calcurse"]
+    path_exists = ["/Users/lucasburns/.config/calcurse/caldav"]
+
+[envs.gpg]
+    exe_exists = ["gpg"]
+
+[envs.git]
+    exe_exists = ["git"]
+
+[envs.gh]
+    exe_exists = ["gh"]
+
+[envs.gitui]
+    exe_exists = ["gitui"]
+
+[envs.karabiner]
+    path_exists = ["/Applications/Karabiner-Elements.app"]
+
+[envs.lf]
+    exe_exists = ["lf"]
+
+[envs.limelight]
+    exe_exists = ["limelight"]
+
+[envs.mozilla]
+    path_exists = [
+       "/Applications/LibreWolf.app",
+       "/Applications/Firefox.app"
+    ]
+
+[envs.neovim]
+    exe_exists = ["nvim"]
+
+[envs.skhd]
+    exe_exists = ["skhd"]
+
+[envs.task]
+    exe_exists = ["task"]
+
+[envs.um]
+    exe_exists = ["um"]
+  # or / [[]] = and
+    path_exists = [
+       "/Users/lucasburns/.config/um",
+       "/Users/lucasburns/.um"
+    ]
+
+[envs.vim]
+    exe_exists = ["vim"]
+
+[envs.yabai]
+  exe_exists = ["yabai"]
+
+[envs.zsh]
+    exe_exists = ["zsh"]
+
+[envs.macos]
+    os = ["macos"]
+
+[envs.unix]
+    os = ["linux", "macos", "freebsd"]
+    env = [
+        { var = "HOME" },
+        { var = "XDG_CONFIG_HOME" }
+    ]
+
+[hoards]
+[hoards.amfora]
+    "macos|amfora" = "/Users/lucasburns/.config/amfora/config.toml"
+
+[hoards.arranger]
+    "macos" = "/Users/lucasburns/.config/arranger/arranger.conf"
+
+[hoards.bashtop]
+    "macos" = "/Users/lucasburns/.config/bashtop/bashtop.cfg"
+
+# FIX: can't use bat?
+[hoards.batp]
+    [hoards.batp.conf]
+        "macos|bat" = "/Users/lucasburns/.config/bat/config"
+    [hoards.batp.themes]
+        "macos|bat" = "/Users/lucasburns/.config/bat/themes"
+    [hoards.batp.syntax]
+        "macos|bat" = "/Users/lucasburns/.config/bat/syntaxes"
+
+[hoards.bmux]
+    "macos" = "/Users/lucasburns/.config/bmux"
+
+[hoards.broot]
+    [hoards.broot.myconf]
+        "macos|broot" = "/Users/lucasburns/.config/broot/conf.hjson"
+    [hoards.broot.egconf]
+        "macos|broot" = "/Users/lucasburns/.config/broot/eg.toml"
+
+[hoards.calcurse]
+    [hoards.calcurse.conf]
+        "macos|calcurse" = "/Users/lucasburns/.config/calcurse/conf"
+    [hoards.calcurse.keys]
+        "macos|calcurse" = "/Users/lucasburns/.config/calcurse/keys"
+    [hoards.calcurse.hooks]
+        "macos|calcurse" = "/Users/lucasburns/.config/calcurse/hooks"
+    [hoards.calcurse.caldev]
+        "macos|calcurse" = "/Users/lucasburns/.config/calcurse/caldav"
+    [hoards.calcurse.todohooks]
+        "macos|calcurse" = "/Users/lucasburns/.config/calcurse/todohooks"
+
+[hoards.cdhist]
+    "macos" = "/Users/lucasburns/.config/cdhist/cdhist.rc"
+
+[hoards.cheat]
+    "macos" = "/Users/lucasburns/.config/cheat/conf.yml"
+
+[hoards.dive]
+    "macos" = "/Users/lucasburns/.config/dive/dive.yaml"
+
+[hoards.epy]
+    "macos" = "/Users/lucasburns/.config/epy/config.json"
+
+[hoards.faint]
+    "macos" = "/Users/lucasburns/.config/faint/faintrc"
+
+[hoards.fastsyntaxhighlighting]
+    [hoards.fastsyntaxhighlighting.theme1]
+        "macos|zsh" = "/Users/lucasburns/.config/fsh/mod-default.ini"
+    [hoards.fastsyntaxhighlighting.theme2]
+        "macos|zsh" = "/Users/lucasburns/.config/fsh/forest-2.ini"
+    [hoards.fastsyntaxhighlighting.theme3]
+        "macos|zsh" = "/Users/lucasburns/.config/fsh/mod-backup.ini"
+
+[hoards.gitp]
+    [hoards.gitp.conf]
+        "macos|git" = "/Users/lucasburns/.config/git/config"
+    [hoards.gitp.message]
+        "macos|git" = "/Users/lucasburns/.config/git/gitmessage"
+    [hoards.gitp.globalignore]
+        "macos|git" = "/Users/lucasburns/.config/git/gitignore_global"
+    # [hoards.gitp.gh.hosts]
+    #     "macos|git|gh" = "/Users/lucasburns/.config/gh/hosts.yml"
+    # [hoards.gitp.gh.state]
+    #     "macos|git|gh" = "/Users/lucasburns/.config/gh/state.yml"
+    # [hoards.gitp.gh.config]
+    #     "macos|git|gh" = "/Users/lucasburns/.config/gh/config.yml"
+
+[hoards.gitui]
+    [hoards.gitui.conf]
+        "macos" = "/Users/lucasburns/.config/gitui/key_config.ron"
+    [hoards.gituip.theme]
+        "macos" = "/Users/lucasburns/.config/gitui/theme.ron"
+
+[hoards.gpg]
+    [hoards.gpg.conf]
+        "macos|gpg" = "/Users/lucasburns/.config/gnupg/gpg.conf"
+    [hoards.gpg.agentconf]
+        "macos|gpg" = "/Users/lucasburns/.config/gnupg/gpg-agent.conf"
+
+[hoards.gopass]
+    "macos" = "/Users/lucasburns/.config/gopass/config.yml"
+
+[hoards.grip]
+    "macos" = "/Users/lucasburns/.config/grip/settings.py"
+
+[hoards.hangups]
+    "macos" = "/Users/lucasburns/.config/hangups/hangups.conf"
+
+[hoards.htop]
+    "macos" = "/Users/lucasburns/.config/htop/htoprc"
+
+[hoards.iterm]
+    "macos" = "/Users/lucasburns/.config/iterm-colors"
+
+[hoards.jrnl]
+    "macos" = "/Users/lucasburns/.config/jrnl/jrnl.yaml"
+
+[hoards.karabiner]
+    "macos|karabiner" = "/Users/lucasburns/.config/karabiner/karabiner.json"
+
+[hoards.kitty]
+    [hoards.kitty.conf]
+        "macos" = "/Users/lucasburns/.config/kitty/kitty.conf"
+    [hoards.kitty.theme]
+        "macos" = "/Users/lucasburns/.config/kitty/colors/color.conf"
+
+[hoards.latex]
+    [hoards.latex.awesomecv]
+        "macos" = "/Users/lucasburns/Documents/cv/Awesome-CV/examples"
+    [hoards.latex.cv]
+        "macos" = "/Users/lucasburns/Documents/cv/templates"
+
+[hoards.lazydocker]
+    "macos" = "/Users/lucasburns/.config/lazydocker/config.yml"
+
+[hoards.lazygit]
+    [hoards.lazygit.conf]
+        "macos" = "/Users/lucasburns/.config/lazygit/config.yml"
+    [hoards.lazygit.state]
+        "macos" = "/Users/lucasburns/.config/lazygit/state.yml"
+
+[hoards.lf]
+    [hoards.lf.conf]
+        "macos|lf" = "/Users/lucasburns/.config/lf/lfrc"
+    [hoards.lf.scope]
+        "macos|lf" = "/Users/lucasburns/.config/lf/scope"
+    [hoards.lf.mappings]
+        "macos|lf" = "/Users/lucasburns/.config/lf/mappings"
+    [hoards.lf.icons]
+        "macos|lf" = "/Users/lucasburns/.config/zsh/lficons"
+
+[hoards.mozilla]
+    [hoards.mozilla.chrome]
+        "macos|mozilla" = "/Users/lucasburns/.config/mozilla/userChrome.css"
+    [hoards.mozilla.content]
+        "macos|mozilla" = "/Users/lucasburns/.config/mozilla/userContent.css"
+
+[hoards.mpd]
+    "macos" = "/Users/lucasburns/.config/mpd/mpd.conf"
+
+[hoards.mpv]
+    [hoards.mpv.scripts]
+        "macos" = "/Users/lucasburns/.config/mpv/scripts"
+    [hoards.mpv.scripts_opts]
+        "macos" = "/Users/lucasburns/.config/mpv/script-opts"
+    [hoards.mpv.sockets]
+        "macos" = "/Users/lucasburns/.config/mpv/mpvSockets"
+
+[hoards.mutt]
+    [hoards.mutt.conf]
+        "macos" = "/Users/lucasburns/.config/mutt/muttrc"
+    [hoards.mutt.open_script]
+        "macos" = "/Users/lucasburns/.config/mutt/open-mutt"
+    [hoards.mutt.burnsac]
+        "macos" = "/Users/lucasburns/.config/mutt/accounts/1-burnsac@me.com.muttrc"
+    [hoards.mutt.burnsppl]
+        "macos" = "/Users/lucasburns/.config/mutt/accounts/2-burnsppl@gmail.com.muttrc"
+    [hoards.mutt.chilinux]
+        "macos" = "/Users/lucasburns/.config/mutt/accounts/3-chi@linuxmail.org.muttrc"
+    [hoards.mutt.lmburns]
+        "macos" = "/Users/lucasburns/.config/mutt/accounts/4-lmb@lmburns.com.muttrc"
+    [hoards.mutt.notmuch]
+        "macos" = "/Users/lucasburns/.config/notmuch"
+    [hoards.mutt.msmtp]
+        "macos" = "/Users/lucasburns/.config/msmtp/config"
+
+[hoards.mycli]
+    "macos" = "/Users/lucasburns/.myclirc"
+
+[hoards.mysql]
+    "macos" = "/Users/lucasburns/.my.cnf"
+
+[hoards.naabu]
+    "macos" = "/Users/lucasburns/.config/naabu"
+
+[hoards.ncmpcpp]
+    [hoards.ncmpcpp.conf]
+        "macos" = "/Users/lucasburns/.config/ncmpcpp/config"
+    [hoards.ncmpcpp.bindings]
+        "macos" = "/Users/lucasburns/.config/ncmpcpp/bindings"
+    [hoards.ncmpcpp.conf_cover]
+        "macos" = "/Users/lucasburns/.config/ncmpcpp/config-cover"
+    [hoards.ncmpcpp.conf_minimal]
+        "macos" = "/Users/lucasburns/.config/ncmpcpp/config-minimal"
+
+[hoards.newsboat]
+    [hoards.newsboat.conf]
+        "macos" = "/Users/lucasburns/.config/newsboat/config"
+    [hoards.newsboat.urls]
+        "macos" = "/Users/lucasburns/.config/newsboat/urls"
+
+[hoards.nvim]
+    [hoards.nvim.init]
+        "macos|neovim" = "/Users/lucasburns/.config/nvim/init.vim"
+    [hoards.nvim.coc]
+        "macos|neovim" = "/Users/lucasburns/.config/nvim/coc-settings.json"
+    [hoards.nvim.snippets]
+        "macos|neovim" = "/Users/lucasburns/.config/nvim/UltiSnips"
+    [hoards.nvim.indentline]
+        "macos|neovim" = "/Users/lucasburns/.config/nvim/indentline.vim"
+
+[hoards.pacaptr]
+    "macos" = "/Users/lucasburns/.config/pacaptr/pacaptr.toml"
+
+[hoards.packages]
+    "macos" = "/Users/lucasburns/.config/packages"
+
+[hoards.pet]
+    [hoards.pet.conf]
+        "macos" = "/Users/lucasburns/.config/pet/config.toml"
+    [hoards.pet.snippets]
+        "macos" = "/Users/lucasburns/.config/pet/snippet.toml"
+    [hoards.pet.functions]
+        "macos" = "/Users/lucasburns/.config/zsh/zinit/polaris/share/pet/pet_atload.zsh"
+
+[hoards.pier]
+    "macos" = "/Users/lucasburns/.config/pier/config.toml"
+
+[hoards.ptpython]
+    "macos" = "/Users/lucasburns/.config/ptpython/config.py"
+
+[hoards.procs]
+    "macos" = "/Users/lucasburns/.config/procs/config.toml"
+
+[hoards.rlang]
+    [hoards.rlang.profile]
+        "macos" = "/Users/lucasburns/.config/r/Rprofile"
+    [hoards.rlang.makevars]
+        "macos" = "/Users/lucasburns/.config/r/Makevars"
+
+[hoards.ranger]
+    [hoards.ranger.conf]
+        "macos" = "/Users/lucasburns/.config/ranger/rc.conf"
+    [hoards.ranger.scope]
+        "macos" = "/Users/lucasburns/.config/ranger/scope.sh"
+
+[hoards.rclone]
+    "macos" = "/Users/lucasburns/.config/rclone/rclone.conf"
+
+[hoards.ripgrep]
+    "macos" = "/Users/lucasburns/.config/ripgrep/ripgreprc"
+
+[hoards.rtv]
+    "macos" = "/Users/lucasburns/.config/rtv/rtv.cfg"
+
+[hoards.sc_im]
+    "macos" = "/Users/lucasburns/.config/sc-im/scimrc"
+
+[hoards.shell]
+    "macos" = "/Users/lucasburns/.config/shell"
+
+[hoards.skhd_dir]
+    "macos|skhd" = "/Users/lucasburns/.config/skhd"
+
+[hoards.spacebar]
+    "macos" = "/Users/lucasburns/.config/spacebar/spacebarrc"
+
+[hoards.sxiv]
+    "macos" = "/Users/lucasburns/.config/sxiv/exec/key-handler"
+
+[hoards.task]
+    [hoards.task.conf]
+        "macos|task" = "/Users/lucasburns/.config/task/taskrc"
+    [hoards.task.hooks]
+        "macos|task" = "/Users/lucasburns/.config/task/hooks"
+    [hoards.task.completed]
+        "macos|task" = "/Users/lucasburns/.config/task/completed.data"
+    [hoards.task.undo]
+        "macos|task" = "/Users/lucasburns/.config/task/undo.data"
+    [hoards.task.pending]
+        "macos|task" = "/Users/lucasburns/.config/task/pending.data"
+    [hoards.task.backlog]
+        "macos|task" = "/Users/lucasburns/.config/task/backlog.data"
+    # [hoards.task.data]
+    #     "macos|task" = "/Users/lucasburns/.config/task/taskd/config"
+
+[hoards.tig]
+    "macos" = "/Users/lucasburns/.config/tig/tigrc"
+
+[hoards.thefuck]
+    "macos" = "/Users/lucasburns/.config/thefuck/settings.py"
+
+[hoards.ticker]
+    "macos" = "/Users/lucasburns/.config/ticker/ticker.yaml"
+
+[hoards.tmux]
+    "macos" = "/Users/lucasburns/.config/tmux/tmux.conf"
+
+[hoards.transmission]
+    [hoards.transmission.cli]
+        "macos" = "/Users/lucasburns/.config/transmission/settings.json"
+    [hoards.transmission.gui]
+        "macos" = "/Users/lucasburns/Library/Application Support/transmission-daemon/settings.json"
+
+[hoards.um]
+    [hoards.um.pages]
+        "macos|um" = "/Users/lucasburns/.config/um/pages"
+    [hoards.um.conf]
+        "macos|um" = "/Users/lucasburns/.config/um/umconfig"
+
+[hoards.vifm]
+    [hoards.vifm.conf]
+        "macos" = "/Users/lucasburns/.config/vifm/vifmrc"
+    [hoards.vifm.info]
+        "macos" = "/Users/lucasburns/.config/vifm/vifminfo.json"
+
+[hoards.vim]
+    [hoards.vim.init]
+        "macos|vim" = "/Users/lucasburns/.vim/.vimrc"
+
+[hoards.vimwiki]
+    [hoards.vimwiki.dir]
+        "macos" = "/Users/lucasburns/vimwiki"
+
+[hoards.visidata]
+    "macos" = "/Users/lucasburns/.visidatarc"
+
+[hoards.wget]
+    "macos" = "/Users/lucasburns/.config/wget/wgetrc"
+
+[hoards.wtf]
+    "macos" = "/Users/lucasburns/.config/wtf/config.yml"
+
+[hoards.xbar]
+    "macos" = "/Users/lucasburns/Library/Application Support/xbar/plugins"
+
+[hoards.xplr]
+    "macos" = "/Users/lucasburns/.config/xplr/init.lua"
+
+[hoards.yabai]
+    [hoards.yabai.limelight]
+        "macos|yabai|limelight" = "/Users/lucasburns/.config/limelight/limelightrc"
+    [hoards.yabai.skhd]
+        "macos|yabai|skhd" = "/Users/lucasburns/.config/skhd/skhdrc"
+    [hoards.yabai.yabai]
+        "macos|yabai" = "/Users/lucasburns/.config/yabai/yabairc"
+
+[hoards.youtube_dl]
+    "macos" = "/Users/lucasburns/.config/youtube-dl/config"
+
+[hoards.youtube_viewer]
+    "macos" = "/Users/lucasburns/.config/youtube-viewer/youtube-viewer.conf"
+
+[hoards.ytmdl]
+    "macos" = "/Users/lucasburns/.config/ytmdl/config"
+
+[hoards.zathura]
+    "macos" = "/Users/lucasburns/.config/zathura"
+
+[hoards.zsh]
+    [hoards.zsh.functions]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/functions"
+    [hoards.zsh.patches]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/patches"
+    [hoards.zsh.themes]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/themes"
+    [hoards.zsh.aliases]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/zsh-aliases"
+    [hoards.zsh.env]
+        "zsh|macos" = "/Users/lucasburns/.zshenv"
+    [hoards.zsh.csnippets]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/csnippets"
+    [hoards.zsh.completions]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/completions"
+    [hoards.zsh.dircolors]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/gruv.dircolors"
+
+    # [hoards.zsh.zinit]
+    #     "zsh|macos" = "/Users/lucasburns/.config/zsh/zinit"
+    # [hoards.zsh.confdir]
+    #     "macos|zsh" = "/Users/lucasburns/.config/zsh"
+
+
+# [hoards.fonts]
+#     "/Users/lucasburns" = "~/Library/Fonts/"
+
+# vim: ft=conf:et:sw=0:ts=4:sts=4:fdm=marker:fmr={{{,}}}:

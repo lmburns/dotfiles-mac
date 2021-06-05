@@ -194,6 +194,7 @@ report.next.filter=status:pending
 # taskd.credentials=GROUP\/Lucas\/8191c7c8-b62d-40bc-b49e-a51ea82d4925
 # taskd.server=taskd.lucasburns.xyz.:53589
 
+# TASKWARRIOR TUI
 uda.taskwarrior-tui.keyconfig.quit=q
 uda.taskwarrior-tui.keyconfig.refresh=r
 uda.taskwarrior-tui.keyconfig.go-to-bottom=G
@@ -217,3 +218,13 @@ uda.taskwarrior-tui.keyconfig.zoom=z
 uda.taskwarrior-tui.keyconfig.context-menu=c
 uda.taskwarrior-tui.keyconfig.next-tab=]
 uda.taskwarrior-tui.keyconfig.previous-tab=[
+
+# TASKWARRIOR POMODORO
+pomodoro.taskwarrior_path=~/.config/task
+# pomodoro.defaultFilter=+work # tags
+pomodoro.default.sort=project+,urgency-
+# pomodoro.postCompletionCommand=/path/to/my/script # script after completion
+pomodoro.displayCount=true
+pomodoro.durationSeconds=1500 # 25 mins
+pomodoro.soundName=Bottle
+pomodoro.prefixProject=1 pomodoro.prefixSeparator=" - " # sort by project

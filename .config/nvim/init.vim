@@ -83,6 +83,7 @@
   Plug 'nvim-lua/plenary.nvim'
   Plug 'folke/todo-comments.nvim'
   Plug 'Pocco81/HighStr.nvim'
+  Plug 'wfxr/minimap.vim'
 
   " HTML/CSS
   Plug 'shime/vim-livedown'
@@ -121,13 +122,12 @@
   Plug 'srcery-colors/srcery-vim'
   Plug 'wadackel/vim-dogrun'
   Plug 'glepnir/oceanic-material'
-  Plug 'mhartington/oceanic-next'
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
+  " Plug 'mhartington/oceanic-next'
   " Plug 'aswathkk/DarkScene.vim'
 
-  Plug 'wfxr/minimap.vim'
   call plug#end()
 " }}}  === Plugins ===
 
@@ -242,17 +242,17 @@
   syntax enable
   " colorscheme spaceduck
   " colorscheme bogster
-  colorscheme kimbox
+  " colorscheme kimbox
   " colorscheme material
   " colorscheme everforest
   " colorscheme miramare
-  " colorscheme oceanic_material
+  " colorscheme sonokai
+  colorscheme oceanic_material
   " colorscheme gruvbox-material
+  " colorscheme night-owl
   " colorscheme jellybeans
   " colorscheme gruvbit
-  " colorscheme sonokai
   " colorscheme deep-space
-  " colorscheme night-owl
   " colorscheme melange
   " colorscheme iceberg
   " coloscheme OceanicNext
@@ -403,8 +403,8 @@
   " noremap <C-x> :x<cr>
 
   " save with root
-  cnoremap W!! w !sudo tee % >/dev/null<cr>
-  " cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+  " cnoremap w!! w !sudo tee % >/dev/null<cr>
+  cnoremap w!! execute ':silent w !sudo tee % > /dev/null' <bar> edit!
 
   " Replace all is aliased to S.
   nnoremap S :%s//g<Left><Left>
@@ -412,8 +412,6 @@
   nnoremap <Leader>sr :%s/\<<C-r><C-w>\>/
   " Replace quotes on the line
   nnoremap <Leader>Q :s/'/"/g<CR>:nohlsearch<CR>
-  " convert python 2 print to python3
-  nnoremap <Leader>3 :%s/^\(\s*print\)\s\+\(.*\)/\1(\2)<CR>
 
   " use tab and shift tab to indent and de-indent code
   nnoremap <Tab>   >>
@@ -620,7 +618,6 @@
     " setl noshowcmd
     " setl scrolloff=999
     setl foldlevel=99
-    set fullscreen
     let &background = &background
     Limelight
     " setl statusline = '%M'
@@ -634,7 +631,6 @@
       " silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
     endif
     Limelight!
-    set nofullscreen
     let &background = &background
   endfunction
 
@@ -768,9 +764,9 @@
   " prettier command for coc
   command! -nargs=0 CocMarket :CocList marketplace
   command! -nargs=0 Prettier :CocCommand prettier.formatFile
-  noremap <C-x><C-l> :CocFzfList<CR>
+  nnoremap <C-x><C-l> :CocFzfList<CR>
   " alt-s
-  noremap ß :CocFzfList symbols<CR>
+  nnoremap ß :CocFzfList symbols<CR>
   nnoremap <silent> <Leader>y  :<C-u>CocList yank<CR>
   let g:coc_fzf_opts = ['--no-border', '--layout=reverse-list']
   let g:coc_global_extensions = [
@@ -803,7 +799,7 @@
     \ 'coc-clangd',
     \ ]
 
-" \ 'coc-solargraph',
+" \ 'coc-solargraph', # can't get it to work
 
   let g:coc_explorer_global_presets = {
       \ 'config': {
@@ -1178,7 +1174,7 @@ command! -nargs=? -complete=dir AF
 
   " clipboard manager -- unsure why a direct mapping doesn't work
   inoremap <expr> <C-x><C-b> fzf#vim#complete({
-    \ 'source': 'copyq eval -- "for(i=size(); i>0; --i) print(str(read(i-1)) + \"\n\");"',
+    \ 'source': 'copyq eval -- "tab(\"&clipboard\"); for(i=size(); i>0; --i) print(str(read(i-1)) + \"\n\");"',
     \ 'options': '--no-border',
     \ 'reducer': { line -> substitute(line[0], '^ *[0-9]\+ ', '', '') },
     \ 'window': 'call FloatingFZF()'})
@@ -1617,6 +1613,11 @@ augroup END
     \ '+xplr' : {
         \ 'title': 'xplr',
         \ 'cmd' : 'xplr' },
+    \ '+gpg-tui' : {
+      \ 'title': 'gpg-tui',
+      \ 'height': 0.9,
+      \ 'width': 0.9,
+      \ 'cmd': 'gpg-tui'},
         \}
   let g:floaterm_wintype = 'float'
   let g:floaterm_height=0.8
@@ -1655,6 +1656,7 @@ augroup END
       \ nnoremap ,rs :SlimeSend1 print(len(<C-r><C-w>), type(<C-r><C-w>))<CR>|
       \ nnoremap ,rt :SlimeSend1 <C-r><C-w>.dtype<CR>|
       \ nnoremap 223 ::%s/^\(\s*print\)\s\+\(.*\)/\1(\2)<CR>|
+      \ nnoremap ,rr :FloatermNew --autoclose=0 python %<space>|
       \ call <SID>IndentSize(4)
     autocmd FileType perl nmap <buffer> ,l <Plug>SlimeLineSend
   augroup END
@@ -1686,7 +1688,7 @@ augroup END
 "}}} === Vim Commentary ===
 
 " === Mkdx === {{{
-  let g:polygot_disabled = ['markdown']
+  " let g:polyglot_disabled = ['markdown']
   let g:mkdx#settings     = {
         \ 'restore_visual': 1,
         \ 'gf_on_steroids': 1,
@@ -1842,7 +1844,7 @@ vnoremap <C-_> :call NERDComment(0, "toggle")<CR>'>j
 nnoremap <Leader>cc yyP<C-_>
 vnoremap <Leader>cc yPgp<C-_>
 map gc :call NERDComment(0, "toggle")<CR>
-nmap gcc :call NERDComment(0, "toggle")<CR>
+" nmap gcc :call NERDComment(0, "toggle")<CR>
 map gcy :call NERDComment(0, "yank")<CR>
 nmap <Leader>gcy :call NERDComment(0, "yank")<CR>
 " }}} === NERDComment ===
@@ -2077,12 +2079,13 @@ autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 
 set showtabline=2
 let g:lightline = {}
-let g:lightline.colorscheme = 'kimbox'
+" let g:lightline.colorscheme = 'kimbox'
 " let g:lightline.colorscheme = 'gruvbox_material'
 " let g:lightline.colorscheme = 'miramare'
 " let g:lightline.colorscheme = 'everforest'
 " let g:lightline.colorscheme = 'nightowl'
 " let g:lightline.colorscheme = 'spaceduck'
+let g:lightline.colorscheme = 'sonokai'
 let g:lightline.separator = { 'left': "\ue0b8", 'right': "\ue0be" }
 let g:lightline.subseparator = { 'left': "\ue0b9", 'right': "\ue0b9" }
 let g:lightline.tabline_separator = { 'left': "\ue0bc", 'right': "\ue0ba" }
@@ -2243,8 +2246,8 @@ map ® :Telescope live_grep<CR>
   let g:vista_sidebar_position = 'topleft vertical'
   let g:vista#renderer#enable_icon = 1
 
-  " nmap <C-S-Up> :Vista finder coc<CR>
-  nmap <C-;> :Vista finder coc<CR>
+  " nmap <C-x><C-v> :Vista finder coc<CR>
+  nmap <Leader>ff :Vista finder coc<CR>
   let g:vista_fzf_preview = ['down:50%']
   let g:vista_fzf_opt = ['--no-border']
   let g:vista_default_executive = 'coc'
@@ -2281,12 +2284,12 @@ vnoremap <silent> <Leader>hr :<c-u>HSRmHighlight<CR>
   " highlight SignColumn guibg=none ctermbg=NONE
   " highlight TrailingWhitespace ctermfg=0 guifg=Black ctermbg=8 guibg=#41535B
   " highlight EndOfBuffer guibg=NONE ctermbg=NONE guifg=Black ctermfg=0
-  highlight! default link CocErrorHighlight WarningMsg
-  highlight! default link CocErrorSign CocErrorHighlight
-  highlight! CocWarningSign  ctermfg=Brown guifg=#ff922b
-  highlight! default link CocInfoSign Title
-  highlight! default link CocHintSign Question
-  highlight clear SignColumn
+  " highlight! default link CocErrorHighlight WarningMsg
+  " highlight! default link CocErrorSign CocErrorHighlight
+  " highlight! CocWarningSign  ctermfg=Brown guifg=#ff922b
+  " highlight! default link CocInfoSign Title
+  " highlight! default link CocHintSign Question
+  " highlight clear SignColumn
   " highlight DiffAdd      ctermfg=65 ctermbg=NONE guifg=#5F875F guibg=NONE
   " highlight DiffChange   ctermfg=60 ctermbg=NONE guifg=#5F5F87 guibg=NONE
   " highlight DiffDelete   ctermfg=9  ctermbg=NONE guifg=#cc6666 guibg=NONE

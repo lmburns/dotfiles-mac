@@ -65,7 +65,8 @@ fi
 # }}}
 
 # === zinit === {{{
-zt(){ zinit lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
+# zt(){ zinit lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
+zt(){ zinit depth'3' lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
 grman() {
   local graw="https://raw.githubusercontent.com";
   @zinit-substitute; print -r "${graw}/%USER%/%PLUGIN%/master/${@:1}%PLUGIN%.1";
@@ -104,7 +105,8 @@ zt light-mode for \
 # }}} === annex, prompt ===
 
 # === trigger-load block ==={{{
-zt light-mode for \
+# unsure why only works with number
+zt 0a light-mode for \
   is-snippet trigger-load'!x' blockf svn \
     OMZ::plugins/extract \
   trigger-load'!bd' pick'bd.zsh' \
@@ -311,7 +313,27 @@ zt 0c light-mode null for \
   lbin'* -> git-xargs' from'gh-r' bpick'*darwin_amd64*' \
     gruntwork-io/git-xargs \
   lbin'* -> sd' from'gh-r' bpick'*darwin' \
-    chmln/sd
+    chmln/sd \
+  lbin has'recode' \
+    Bugswriter/tuxi \
+  lbin'!target/release/viu' atclone'cargo install --path .' \
+  atpull'%atclone' has'cargo' \
+    atanunq/viu \
+  lbin from'gh-r' bpick'*darwin*' blockf \
+    x-motemen/ghq \
+  atclone'mkdir -p $XDG_CONFIG_HOME/tmux/plugins/tpm;
+  ln -sf $PWD/tmux-plugins---tpm $XDG_CONFIG_HOME/tmux/plugins/tpm' \
+  atpull'%atclone' \
+    tmux-plugins/tpm
+
+  # ## Mac Debugging helpers
+# zt 0c light-mode null nocompile for \
+# id-as"bitcode-retriever" lbin'!build/bitcode_retriever' make AlexDenisov/bitcode_retriever \
+# id-as"segment_dumper" lbin'!build/segment_dumper' make AlexDenisov/segment_dumper
+
+# orhun/gpg-tui
+# @dalance/procs
+
 #  }}} === wait'0c' - programs ===
 
 # nivekuil/rip == cosmos72/gomacro == gruntwork-io/git-xargs
@@ -475,7 +497,7 @@ rmspace() { f2 -f '\s' -r '_' -RF $@ }
 # monitor core dumps
 moncore() { fswatch --event-flags /cores/ | xargs -I{} terminal-notifier -message {} -title 'coredump'; }
 
-e() { lax nvim "@${1}"; }
+e() { lax -f nvim "@${1}"; }
 macfeh() { open -b "drabweb.macfeh" "$@"; }
 time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
 profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof | bat; }
@@ -486,6 +508,7 @@ jpeg() { jpegoptim -S "${2:-1000}" "$1"; jhead -purejpg "$1" && du -sh "$1"; }
 pngo() { optipng -o"${2:-3}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
 png() { pngquant --speed "${2:-4}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
 osxnotify() { osascript -e 'display notification "'"$*"'"'; }
+taskdate() { date -d "+${*}" "+%FT%R"; }
 # }}}
 
 # === helper functions === {{{
@@ -533,19 +556,8 @@ per-dir-fzf() {
 zle -N per-dir-fzf
 bindkey '®' per-dir-fzf;     # alt+r
 
-zle -N copyqc
-bindkey '^X^b' copyqc
-
-pasteinit() {
-  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
-  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
-}
-
-pastefinish() {
-  zle -N self-insert $OLD_SELF_INSERT
-}
-zstyle :bracketed-paste-magic paste-init pasteinit
-zstyle :bracketed-paste-magic paste-finish pastefinish
+zle -N cqc    # clipboard
+bindkey '^X^b' cqc
 # }}}
 
 #===== variables ===== {{{
@@ -768,8 +780,8 @@ path=(
 )
 
 # llvm
-export LDFLAGS="-L/usr/local/opt/llvm/lib"
-export CPPFLAGS="-I/usr/local/opt/llvm/include"
+# export LDFLAGS="-L/usr/local/opt/llvm/lib"
+# export CPPFLAGS="-I/usr/local/opt/llvm/include"
 # flex
 export LDFLAGS="-L/usr/local/opt/flex/lib"
 export CPPFLAGS="-I/usr/local/opt/flex/include"
@@ -826,4 +838,16 @@ path=( "${path[@]:#}" )                            # remove empties
 typeset -gxU path fpath manpath infopath cdpth     # clean duplicates / export
 
 # vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr={{{,}}}:
+
 # source ~/opt/cli-utilities/zsh/zsh-snap/znap.zsh
+
+# pasteinit() {
+#   OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+#   zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+# }
+#
+# pastefinish() {
+#   zle -N self-insert $OLD_SELF_INSERT
+# }
+# zstyle :bracketed-paste-magic paste-init pasteinit
+# zstyle :bracketed-paste-magic paste-finish pastefinish

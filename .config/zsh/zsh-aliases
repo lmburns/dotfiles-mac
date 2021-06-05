@@ -12,10 +12,17 @@ alias -g G='| rg '
 alias -g H='| head'
 alias -g T='| tail'
 
+alias gpg-tui='gpg-tui --style colored'
+alias tn='terminal-notifier'
+alias googler='googler --colors bjdxxy'
+alias b='buku --suggest --colors gMclo'
+alias downl='xh --download'
+alias hoard='hoard -c $XDG_CONFIG_HOME/hoard/config -h $XDG_CONFIG_HOME/hoard/root'
+
 alias id="/usr/bin/id"
 alias idh="man /usr/share/man/man1/id.1"
 
-alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/firefox-bin'
+alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/librewolf'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
 (( ${+commands[just]} )) && {
@@ -23,6 +30,8 @@ alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
   alias .j='jj --justfile $XDG_DATA_HOME/just/justfile --working-directory .'
   alias .jc='.j --choose'
   alias .je='$EDITOR $XDG_DATA_HOME/just/justfile'
+  alias .jl='.j --list'
+  alias .js='.j --show'
 }
 
 (( ${+commands[tldr]} )) && alias tldru='tldr --update'
@@ -42,7 +51,7 @@ alias hzsubfl="lynx 'http://zsh.sourceforge.net/Doc/Release/Parameters.html#Subs
 alias usudo='sudo -E -s '
 alias _='sudo'
 alias __='doas'
-# alias cp='cp -iv'
+alias cp='cp -ivp'
 alias rcp='rsync -av --ignore-existing --progress'
 alias pl='print -rl --'
 alias mv='mv -iv'
@@ -62,15 +71,18 @@ alias mv='mv -iv'
   alias tree='exa --icons -TL'
 }
 
-alias fdr='fd --changed-within=30m'
-alias fdrd='fd --changed-within=30m -d1'
-alias fdrr='fd --changed-within=1m'
+(( ${+commands[fd]} )) && {
+  alias fdr='fd --changed-within=30m'
+  alias fdrd='fd --changed-within=30m -d1'
+  alias fdrr='fd --changed-within=1m'
+}
+
 alias chx='chmod ug+x'
 alias lns='ln -siv'
 alias ka='killall'
 alias kid='kill -KILL'
 alias yt='youtube-dl --add-metadata -i'
-alias grep="command grep --colour=auto --binary-files=without-match --directories=skip"
+alias grep="command grep --color=auto --binary-files=without-match --directories=skip"
 alias prg="rg --pcre2"
 alias frg="rg -F"
 alias diff='diff --color=auto'
@@ -105,7 +117,7 @@ alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
   alias mwmail='mw -Y'
 }
 
-alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lucas@burnsac.xyz'
+alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lmb@lmburns.com'
 
 # ===locations ==================================================================
 alias prd='cd $HOME/projects'
@@ -231,6 +243,7 @@ alias duso='du -hsx * | sort -rh | bat --paging=always'
 
 alias nnn='nnn -Caxe'
 alias lsn='nnn -deH'
+alias nnncdu='nnn -T d -dH'
 alias dmenu='open -a dmenu-mac'
 
 alias dic='trans -d'
@@ -287,7 +300,7 @@ alias brupdr='brew update-reset'    brupg='brew upgrade'        brupi='brew unpi
 alias bruse='brew uses'             bruta='brew untap'          brse='brew services'
 alias brseli='brew services list'   sbrse='sudo brew services'  brwh='brew which-formula'
 alias brdescs='brew desc --search'  brusei='brew uses --installed' brlin='brew link'
-alias brwhu='brew which-update'
+alias brwhu='brew which-update'     brdept='brdep --tree --installed'
 
 alias glog='git log --oneline --decorate --graph'
 alias gloga='git log --oneline --decorate --graph --all'

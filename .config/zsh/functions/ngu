@@ -5,7 +5,8 @@
 ngu() {
   confu="$(sed -n '/\[remote\s.*/{n;s/\t//g;s/url = //p}' .git/config)"
   echo "${confu}" | pbcopy
-  printf "%s" "$(tput setaf 1)${confu}$(tput sgr0)"
+  # printf "%s" "$(tput setaf 1)${confu}$(tput sgr0)"
+  print $confu
 }
 
 ngu

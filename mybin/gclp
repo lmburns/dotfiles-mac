@@ -1,5 +1,13 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # desc: git clone from clipboard
 
-git clone "$(pbpaste)"
+setopt extendedglob
+
+zparseopts -D -A opts g -ghq
+
+if (( ${+opts[-g]} + ${+opts[--ghq]} )) {
+  ghq get "$(pbpaste)"
+} else {
+  git clone "$(pbpaste)"
+}

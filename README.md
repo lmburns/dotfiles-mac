@@ -498,7 +498,8 @@ rglf                 bash      ripgrep search directory for lf file manager
 rgn                  bash      interactively search files with rg (with reload) no preview
 rmcrap               bash      deletes .DS_Store and __MACOSX directories
 rotdir               sh        rotate image order with sxiv
-rssadd               sh        add rss feed to newsboat
+rss-notify           python    parse rss feeds and get notified
+rssadd               zsh       add url to newsboat, mod Luke Smiths to add tags
 santa-rules          bash      whitelist/blacklist apps with santactl
 santa-uninstall      bash      uninstall santa-ctl
 shortcuts            sh        update all shortcuts when one file is updated

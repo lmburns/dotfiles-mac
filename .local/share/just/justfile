@@ -49,17 +49,22 @@ privoxy +ACTION:
   @echo ''
   scutil --proxy | head
 
+# --log-level INFO \
+# --rc \
+
 rclone-mount:
   $HOME/bin/rclone mount \
     --transfers 8 \
     --volname google-drive \
+    --dir-cache-time 96h \
     --allow-other \
-    --log-level INFO \
     --buffer-size 32M \
     --vfs-cache-mode writes \
     --vfs-cache-max-size 8G \
     --daemon \
     -vv \
+    --log-file $LOCAL_OPT/local/rclone/logs/rclone.log \
+    --umask 002 \
     google-drive:/ /Users/lucasburns/.mount/google-drive
 
 rclg SRC DEST:
@@ -78,4 +83,8 @@ rclg SRC DEST:
     --low-level-retries 10 \
     --stats 1s \
     --progress \
+    --log-file $LOCAL_OPT/local/rclone/logs/rclone.log \
     {{SRC}} "google-drive:{{DEST}}/"
+
+ssh-mount DEST:
+  sshfs -o allow_other,default_permissions,IdentityFile=~/.ssh/burnsac root@lmburns.com:/ {{DEST}}

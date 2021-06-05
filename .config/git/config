@@ -4,7 +4,7 @@
   branch = auto
 [user]
   name = Lucas Burns
-	email = lucas@lucasburns.xyz
+	email = lucas@burnsac.xyz
   signingkey = C011CBEF6628B679
 # signingkey = E93ACCAAAEB024788C106EDEC011CBEF6628B679
 [alias]
@@ -134,5 +134,8 @@
 [pull]
   ff = only
   default = current
+[ghq]
+  vcs = git
+  root = ~/ghq
 
 # vim:ft=gitconfig:et

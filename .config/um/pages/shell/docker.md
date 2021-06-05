@@ -291,3 +291,10 @@ Special location outside of container. Used for databases
 
 `$ docker volume ls`
 : check volumes
+
+### DOCKERFILE
+
+`ubuntu with git`
+: FROM ubuntu:18.04
+: RUN apt update
+: RUN apt install -y git
