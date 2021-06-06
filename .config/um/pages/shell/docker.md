@@ -177,6 +177,15 @@ Container
 `$ docker container run -it alpine sh`
 : very small linux distro
 
+`$ docker start $(docker ps -q -l)`
+: restart container in background
+
+`$ docker attach $(docker ps -q -l)`
+: reattch to terminal
+
+`$ docker start -ai $(docker ps -q -l)`
+: the above in one
+
 ### ==============================
 ### NETWORKING
 

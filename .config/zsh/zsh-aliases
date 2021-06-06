@@ -12,12 +12,13 @@ alias -g G='| rg '
 alias -g H='| head'
 alias -g T='| tail'
 
+alias xx="xplr"
+
 alias gpg-tui='gpg-tui --style colored'
 alias tn='terminal-notifier'
 alias googler='googler --colors bjdxxy'
 alias b='buku --suggest --colors gMclo'
 alias downl='xh --download'
-alias hoard='hoard -c $XDG_CONFIG_HOME/hoard/config -h $XDG_CONFIG_HOME/hoard/root'
 
 alias id="/usr/bin/id"
 alias idh="man /usr/share/man/man1/id.1"
@@ -32,6 +33,11 @@ alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
   alias .je='$EDITOR $XDG_DATA_HOME/just/justfile'
   alias .jl='.j --list'
   alias .js='.j --show'
+}
+
+(( ${+commands[hoard]} )) && {
+  alias hd='hoard -c $XDG_CONFIG_HOME/hoard/config -h $XDG_CONFIG_HOME/hoard/root'
+  alias nhd='$EDITOR $XDG_CONFIG_HOME/hoard/config'
 }
 
 (( ${+commands[tldr]} )) && alias tldru='tldr --update'
@@ -103,6 +109,7 @@ alias niniti='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim +PlugInstall'
 alias ninitu='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim +PlugUpdate'
 alias nlfr='$EDITOR $XDG_CONFIG_HOME/lf/lfrc'
 alias nlfrs='$EDITOR $XDG_CONFIG_HOME/lf/scope'
+alias nxplr='$EDITOR $XDG_CONFIG_HOME/xplr/init.lua'
 alias ngit='$EDITOR $XDG_CONFIG_HOME/git/config'
 alias nyab='$EDITOR $XDG_CONFIG_HOME/yabai/yabairc'
 alias nskhd='$EDITOR $XDG_CONFIG_HOME/skhd/skhdrc'

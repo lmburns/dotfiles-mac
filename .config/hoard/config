@@ -14,9 +14,6 @@
     exe_exists = ["calcurse"]
     path_exists = ["/Users/lucasburns/.config/calcurse/caldav"]
 
-[envs.gpg]
-    exe_exists = ["gpg"]
-
 [envs.git]
     exe_exists = ["git"]
 
@@ -25,6 +22,12 @@
 
 [envs.gitui]
     exe_exists = ["gitui"]
+
+[envs.gpg]
+    exe_exists = ["gpg"]
+
+[envs.just]
+    exe_exists = ["just"]
 
 [envs.karabiner]
     path_exists = ["/Applications/Karabiner-Elements.app"]
@@ -60,6 +63,9 @@
 
 [envs.vim]
     exe_exists = ["vim"]
+
+[envs.xplr]
+    exe_exists = ["xplr"]
 
 [envs.yabai]
   exe_exists = ["yabai"]
@@ -160,6 +166,9 @@
     [hoards.gituip.theme]
         "macos" = "/Users/lucasburns/.config/gitui/theme.ron"
 
+[hoards.gkey]
+    "macos" = "/Users/lucasburns/.local/share/gkeys"
+
 [hoards.gpg]
     [hoards.gpg.conf]
         "macos|gpg" = "/Users/lucasburns/.config/gnupg/gpg.conf"
@@ -183,6 +192,12 @@
 
 [hoards.jrnl]
     "macos" = "/Users/lucasburns/.config/jrnl/jrnl.yaml"
+
+[hoards.just]
+    [hoards.just.justfile]
+        "macos" = "/Users/lucasburns/.local/share/just/justfile"
+    [hoards.just.overall]
+        "macos" = "/Users/lucasburns/.local/share/just/overall.just"
 
 [hoards.karabiner]
     "macos|karabiner" = "/Users/lucasburns/.config/karabiner/karabiner.json"
@@ -414,7 +429,10 @@
     "macos" = "/Users/lucasburns/Library/Application Support/xbar/plugins"
 
 [hoards.xplr]
-    "macos" = "/Users/lucasburns/.config/xplr/init.lua"
+    [hoards.xplr.conf]
+        "macos|xplr" = "/Users/lucasburns/Library/Application Support/xplr/init.lua"
+    [hoards.xplr.theme]
+        "macos|xplr" = "/Users/lucasburns/.config/xplr/theme/init.lua"
 
 [hoards.yabai]
     [hoards.yabai.limelight]

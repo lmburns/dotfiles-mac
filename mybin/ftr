@@ -18,3 +18,4 @@ else
 fi
 
 [ -n "$file" ] && yes 0 | trash-restore "$file" || exit 1
+terminal-notifier -title "Trash CLI" -message "File restored"

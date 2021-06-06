@@ -324,13 +324,19 @@ zt 0c light-mode null for \
   atclone'mkdir -p $XDG_CONFIG_HOME/tmux/plugins/tpm;
   ln -sf $PWD/tmux-plugins---tpm $XDG_CONFIG_HOME/tmux/plugins/tpm' \
   atpull'%atclone' \
-    tmux-plugins/tpm
+    tmux-plugins/tpm \
+  lbin'target/release/hoard' atclone'cargo build --release' \
+  atpull'%atclone' \
+    Shadow53/hoard \
+  lbin from'gh-r' bpick'*macos.tar.gz' \
+  atinit'export XPLR_BOOKMARK_FILE="$XDG_CONFIG_HOME/xplr/bookmarks"' \
+    sayanarijit/xplr \
+  lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
+    dmerejkowsky/ruplacer \
+  lbin'* -> renamer' from'gh-r' bpick'*macos*' \
+    adriangoransson/renamer
 
-  # ## Mac Debugging helpers
-# zt 0c light-mode null nocompile for \
-# id-as"bitcode-retriever" lbin'!build/bitcode_retriever' make AlexDenisov/bitcode_retriever \
-# id-as"segment_dumper" lbin'!build/segment_dumper' make AlexDenisov/segment_dumper
-
+# lbin'target/release/xplr' atclone'cargo install --force --path .' \
 # orhun/gpg-tui
 # @dalance/procs
 
@@ -492,8 +498,9 @@ allcmds() { print -l ${commands[@]} | awk -F'/' '{print $NF}' | fzf; }
 # remove broken symlinks
 rmsym() { command rm -- *(-@D); }
 rmsymr() { command rm -- **/*(-@D); }
-# add -x to apply changes
+# add -x to apply changes -- f2 -f ' '
 rmspace() { f2 -f '\s' -r '_' -RF $@ }
+rndouble() { f2 -f '(\w+) \((\d+)\).(\w+)' -r '$2-$1.$3' $@ }
 # monitor core dumps
 moncore() { fswatch --event-flags /cores/ | xargs -I{} terminal-notifier -message {} -title 'coredump'; }
 
@@ -718,36 +725,35 @@ $FZF_DEFAULT_OPTS
 [[ -z ${path[(re)/usr/local/sbin]} ]] && path=( "/usr/local/sbin" "${path[@]}" )
 
 path=(
-  /usr/local/opt/coreutils/libexec/gnubin
-  /usr/local/opt/gnu-sed/libexec/gnubin
-  /usr/local/opt/gnu-getopt/bin
-  /usr/local/opt/grep/libexec/gnubin
-  /usr/local/opt/gnu-tar/libexec/gnubin
-  /usr/local/opt/gawk/libexec/gnubin
-  /usr/local/opt/findutils/libexec/gnubin
-  /usr/local/opt/ed/libexec/gnubin
-  /usr/local/opt/file-formula/bin
-  /usr/local/opt/util-linux/bin
-  /usr/local/opt/flex/bin
-  /usr/local/opt/libressl/bin
-  /usr/local/opt/unzip/bin
-  /usr/local/opt/openvpn/sbin
-  /usr/local/opt/llvm/bin
+  /usr/local/opt/coreutils/libexec/gnubin(N-/)
+  /usr/local/opt/gnu-sed/libexec/gnubin(N-/)
+  /usr/local/opt/gnu-getopt/bin(N-/)
+  /usr/local/opt/grep/libexec/gnubin(N-/)
+  /usr/local/opt/gnu-tar/libexec/gnubin(N-/)
+  /usr/local/opt/gawk/libexec/gnubin(N-/)
+  /usr/local/opt/findutils/libexec/gnubin(N-/)
+  /usr/local/opt/ed/libexec/gnubin(N-/)
+  /usr/local/opt/file-formula/bin(N-/)
+  /usr/local/opt/util-linux/bin(N-/)
+  /usr/local/opt/flex/bin(N-/)
+  /usr/local/opt/libressl/bin(N-/)
+  /usr/local/opt/unzip/bin(N-/)
+  /usr/local/opt/openvpn/sbin(N-/)
   ${path[@]}
 )
 
 # $HOME/opt/anaconda3/man
 manpath=(
-  /usr/local/opt/gnu-sed/share/man
-  /usr/local/opt/grep/share/man
-  /usr/local/opt/gnu-getopt/share/man
-  /usr/local/opt/gnu-tar/share/man
-  /usr/local/opt/gawk/share/man
-  /usr/local/opt/findutils/share/man
-  /usr/local/opt/gnu-which/share/man
-  /usr/local/opt/file-formula/share/man
-  /usr/local/opt/util-linux/share/man
-  /usr/local/opt/gnu-getopt/share/man
+  /usr/local/opt/gnu-sed/share/man(N-/)
+  /usr/local/opt/grep/share/man(N-/)
+  /usr/local/opt/gnu-getopt/share/man(N-/)
+  /usr/local/opt/gnu-tar/share/man(N-/)
+  /usr/local/opt/gawk/share/man(N-/)
+  /usr/local/opt/findutils/share/man(N-/)
+  /usr/local/opt/gnu-which/share/man(N-/)
+  /usr/local/opt/file-formula/share/man(N-/)
+  /usr/local/opt/util-linux/share/man(N-/)
+  /usr/local/opt/gnu-getopt/share/man(N-/)
   ${manpath[@]}
 )
 
@@ -769,14 +775,15 @@ infopath=(
 # ruby, go, python, mysql
 # $HOME/opt/anaconda3/bin
 path=(
-  $HOME/.rbenv/version/3.0.0/bin
-  $PYENV_ROOT/shims
-  $PYENV_ROOT/bin
-  $CARGO_HOME/bin
-  $XDG_DATA_HOME/gem/bin
-  $GOPATH/bin
-  /usr/local/mysql/bin/
-  ${path[@]}
+  $HOME/.rbenv/version/3.0.0/bin(N-/)
+  $PYENV_ROOT/shims(N-/)
+  $PYENV_ROOT/bin(N-/)
+  $CARGO_HOME/bin(N-/)
+  $XDG_DATA_HOME/gem/bin(N-/)
+  $GOPATH/bin(N-/)
+  /usr/local/mysql/bin(N-/)
+  $HOME/.poetry/bin(N-/)
+  ${path[@]}(N-/)
 )
 
 # llvm
@@ -838,16 +845,3 @@ path=( "${path[@]:#}" )                            # remove empties
 typeset -gxU path fpath manpath infopath cdpth     # clean duplicates / export
 
 # vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr={{{,}}}:
-
-# source ~/opt/cli-utilities/zsh/zsh-snap/znap.zsh
-
-# pasteinit() {
-#   OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
-#   zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
-# }
-#
-# pastefinish() {
-#   zle -N self-insert $OLD_SELF_INSERT
-# }
-# zstyle :bracketed-paste-magic paste-init pasteinit
-# zstyle :bracketed-paste-magic paste-finish pastefinish

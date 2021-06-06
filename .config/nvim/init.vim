@@ -797,6 +797,7 @@
     \ 'coc-go',
     \ 'coc-rust-analyzer',
     \ 'coc-clangd',
+    \ 'coc-lua',
     \ ]
 
 " \ 'coc-solargraph', # can't get it to work
@@ -2082,10 +2083,10 @@ let g:lightline = {}
 " let g:lightline.colorscheme = 'kimbox'
 " let g:lightline.colorscheme = 'gruvbox_material'
 " let g:lightline.colorscheme = 'miramare'
-" let g:lightline.colorscheme = 'everforest'
+let g:lightline.colorscheme = 'everforest'
 " let g:lightline.colorscheme = 'nightowl'
 " let g:lightline.colorscheme = 'spaceduck'
-let g:lightline.colorscheme = 'sonokai'
+" let g:lightline.colorscheme = 'sonokai'
 let g:lightline.separator = { 'left': "\ue0b8", 'right': "\ue0be" }
 let g:lightline.subseparator = { 'left': "\ue0b9", 'right': "\ue0b9" }
 let g:lightline.tabline_separator = { 'left': "\ue0bc", 'right': "\ue0ba" }
