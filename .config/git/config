@@ -4,7 +4,7 @@
   branch = auto
 [user]
   name = Lucas Burns
-	email = lucas@burnsac.xyz
+	email = burnsac@me.com
   signingkey = C011CBEF6628B679
 # signingkey = E93ACCAAAEB024788C106EDEC011CBEF6628B679
 [alias]

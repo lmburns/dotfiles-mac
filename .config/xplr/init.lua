@@ -1,4 +1,4 @@
-version = "0.13.7"
+version = "0.14.0"
 
 -- BashExec: {command: bash, args: ["-c", "${command}"], silent: false}
 -- PopMode: Pop the last mode from the history and switch to it.
@@ -77,7 +77,7 @@ key.D = {
 key.S = {
   help = "folder sizes",
   messages = {
-    { BashExec = [[dust]] },
+    { BashExec = [[dust && read -p "[enter to continue]"]] },
     "PopMode",
   },
 }
