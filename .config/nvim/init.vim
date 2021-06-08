@@ -13,6 +13,7 @@
   Plug 'scrooloose/nerdtree'
   " Plug 'vifm/vifm.vim'
   Plug 'ptzz/lf.vim'
+  Plug 'sayanarijit/xplr.vim'
   " Plug 'junegunn/vim-journal'
   " Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
   " Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
@@ -242,12 +243,12 @@
   syntax enable
   " colorscheme spaceduck
   " colorscheme bogster
-  " colorscheme kimbox
+  colorscheme kimbox
   " colorscheme material
   " colorscheme everforest
   " colorscheme miramare
   " colorscheme sonokai
-  colorscheme oceanic_material
+  " colorscheme oceanic_material
   " colorscheme gruvbox-material
   " colorscheme night-owl
   " colorscheme jellybeans
@@ -499,7 +500,7 @@
   nnoremap <Leader>nt :setlocal noexpandtab<CR>
   xnoremap <Leader>re :retab!<CR>
   " close quickfix
-  nnoremap <Leader>qc :cclose<CR>
+  nnoremap <Leader>cc :cclose<CR>
   " toggle scrollbar
 
   " automatically deletes all tralling whitespace on save.
@@ -584,7 +585,7 @@
   augroup ccommtitle
     autocmd!
     autocmd Syntax * syn match
-      \ cmTitle /\v(#|--)\s*\u\w*(\s+\u\w*)*:/
+      \ cmTitle /\v(#|--|\%)\s*\u\w*(\s+\u\w*)*:/
       \ contained containedin=.*Comment,vimCommentTitle
     autocmd Syntax * syn match myTodo
       \ /\v(#|--|")\s(FIXME|FIX|DISCOVER|NOTE|NOTES|INFO|OPTIMIZE|XXX|EXPLAIN|TODO|CHECK|HACK|BUG|BUGS):/
@@ -1329,6 +1330,8 @@ nnoremap <Leader>gp :Git push<CR>
   noremap <Leader>sp [s
   noremap <Leader>sa zg
   noremap <Leader>s? z=
+  noremap <Leader>su zuw
+  noremap <Leader>su1 zug
   augroup spell
     " add markdown
     autocmd!
@@ -1842,8 +1845,8 @@ let g:NERDCustomDelimiters = { 'just': { 'left': '#'}}
 nnoremap <C-_> :call NERDComment(0, "toggle")<CR>j
 vnoremap <C-_> :call NERDComment(0, "toggle")<CR>'>j
 " copy & comment
-nnoremap <Leader>cc yyP<C-_>
-vnoremap <Leader>cc yPgp<C-_>
+nnoremap <Leader>yc yyP<C-_>
+vnoremap <Leader>yc yPgp<C-_>
 map gc :call NERDComment(0, "toggle")<CR>
 " nmap gcc :call NERDComment(0, "toggle")<CR>
 map gcy :call NERDComment(0, "yank")<CR>

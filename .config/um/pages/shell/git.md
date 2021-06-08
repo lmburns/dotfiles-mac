@@ -80,6 +80,9 @@
 `g checkout <commit>`
 : *gco* -- *wfxr*
 
+`g switch -c <new-brach>`
+: move changes to new branch
+
 ## FIXUP AND AUTOSQUASH
 
 `g commit -a --fixup 981fffd`
@@ -93,6 +96,11 @@
 
 `g rebase -i`
 : *grb* -- *wfxr*
+
+## COMMITS
+
+`g reset --soft HEAD~1`
+: revert back a commit
 
 ## PULL REQUEST
 

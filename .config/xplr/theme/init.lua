@@ -356,8 +356,11 @@ local function setup()
   xplr.config.general.focus_ui.suffix = ""
   -- xplr.config.general.focus_ui.prefix = "▸["
   -- xplr.config.general.focus_ui.suffix = "]"
-  xplr.config.general.focus_ui.style.fg = { Rgb = {170,150,130} }
-  -- xplr.config.general.focus_ui.style.fg = "Magenta"
+
+  -- Hover style
+  -- xplr.config.general.focus_ui.style.fg = { Rgb = {170,150,130} }
+  xplr.config.general.focus_ui.style.fg = "Magenta"
+
   xplr.config.general.focus_ui.style.bg = { Rgb = {50,50,50} }
   xplr.config.general.focus_ui.style.add_modifiers = {"Bold"}
 
@@ -373,14 +376,16 @@ local function setup()
   xplr.config.general.sort_and_filter_ui.separator.style.fg = nil
   xplr.config.general.sort_and_filter_ui.separator.style.sub_modifiers = nil
 
-  xplr.config.general.panel_ui.default.title.style.bg = { Rgb = {170,150,130} }
+  -- xplr.config.general.panel_ui.default.title.style.bg = { Rgb = {170,150,130} }
   xplr.config.general.panel_ui.default.title.style.fg = { Rgb = {40,40,40} }
   xplr.config.general.panel_ui.default.title.style.add_modifiers = {"Bold"}
   xplr.config.general.panel_ui.default.style.fg = { Rgb = {170,150,130} }
-  xplr.config.general.panel_ui.default.style.bg = { Rgb = {33,33,33} }
+  -- xplr.config.general.panel_ui.default.style.bg = { Rgb = {33,33,33} }
+
   xplr.config.general.panel_ui.default.borders = {}
-  xplr.config.general.panel_ui.help_menu.style.bg = { Rgb = {26,26,26} }
-  xplr.config.general.panel_ui.selection.style.bg = { Rgb = {26,26,26} }
+  -- Creates solid background
+  -- xplr.config.general.panel_ui.help_menu.style.bg = { Rgb = {26,26,26} }
+  -- xplr.config.general.panel_ui.selection.style.bg = { Rgb = {26,26,26} }
 
   xplr.config.general.sort_and_filter_ui.default_identifier.style.add_modifiers = { "Bold" }
 

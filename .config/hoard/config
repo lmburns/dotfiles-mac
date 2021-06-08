@@ -10,6 +10,9 @@
 [envs.broot]
     exe_exists = ["broot"]
 
+[envs.buku]
+    exe_exists = ["buku"]
+
 [envs.calcurse]
     exe_exists = ["calcurse"]
     path_exists = ["/Users/lucasburns/.config/calcurse/caldav"]
@@ -49,6 +52,9 @@
 
 [envs.skhd]
     exe_exists = ["skhd"]
+
+[envs.surfraw]
+    exe_exists = ["surfraw"]
 
 [envs.task]
     exe_exists = ["task"]
@@ -110,6 +116,12 @@
         "macos|broot" = "/Users/lucasburns/.config/broot/conf.hjson"
     [hoards.broot.egconf]
         "macos|broot" = "/Users/lucasburns/.config/broot/eg.toml"
+
+[hoards.buku]
+    [hoards.buku.database]
+        "macos|buku" = "/Users/lucasburns/.local/share/buku/bookmarks.db"
+    [hoards.buku.exported]
+        "macos|buku" = "/Users/lucasburns/backup/bookmarks/buku-bookmarks.html"
 
 [hoards.calcurse]
     [hoards.calcurse.conf]
@@ -359,6 +371,12 @@
 [hoards.spacebar]
     "macos" = "/Users/lucasburns/.config/spacebar/spacebarrc"
 
+[hoards.surfraw]
+    [hoards.surfraw.conf]
+        "macos" = "/Users/lucasburns/.config/surfraw/conf"
+    [hoards.surfraw.bookmarks]
+        "macos" = "/Users/lucasburns/.config/surfraw/bookmarks"
+
 [hoards.sxiv]
     "macos" = "/Users/lucasburns/.config/sxiv/exec/key-handler"
 
@@ -430,9 +448,9 @@
 
 [hoards.xplr]
     [hoards.xplr.conf]
-        "macos|xplr" = "/Users/lucasburns/Library/Application Support/xplr/init.lua"
+        "macos" = "/Users/lucasburns/.config/xplr/init.lua"
     [hoards.xplr.theme]
-        "macos|xplr" = "/Users/lucasburns/.config/xplr/theme/init.lua"
+        "macos" = "/Users/lucasburns/.config/xplr/theme/init.lua"
 
 [hoards.yabai]
     [hoards.yabai.limelight]

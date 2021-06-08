@@ -1,0 +1,10 @@
+git_protocol: ssh
+editor: nvim
+prompt: enabled
+pager: bat
+
+aliases:
+    co: pr checkout
+    c: repo clone
+    ob: repo view --web
+    o: repo view

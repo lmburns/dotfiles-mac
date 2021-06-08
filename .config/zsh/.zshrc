@@ -90,6 +90,9 @@ zt light-mode for \
   atinit'Z_A_USECOMP=1' \
   NICHOLAS85/z-a-eval
 
+# zinit-zsh/z-a-rust
+# zinit-zsh/z-a-as-monitor
+
 (){
   [[ -f "${thmf}/${1}-pre.zsh" || -f "${thmf}/${1}-post.zsh" ]] && {
     zt light-mode for \
@@ -159,6 +162,8 @@ zt 0a light-mode for \
     anatolykopyl/doas-zsh-plugin \
   pick'timewarrior.plugin.zsh' \
      svenXY/timewarrior
+  # pick'zsh-pipx.plugin.zsh' \
+  #   thuandt/zsh-pipx
 # }}} === wait'0a' block ===
 
 # zdharma/zflai
@@ -231,7 +236,8 @@ zt 0c light-mode binary for \
     eth-p/bat-extras \
   lbin'cht.sh -> cht' id-as'cht.sh' \
     https://cht.sh/:cht.sh \
-  lbin"$ZPFX/bin/git-*" atclone'rm -f **/*ignore' src"etc/git-extras-completion.zsh" make"PREFIX=$ZPFX" \
+  lbin"$ZPFX/bin/git-*" atclone'rm -f **/*ignore' \
+  src"etc/git-extras-completion.zsh" make"PREFIX=$ZPFX" \
     tj/git-extras \
   lbin atload'alias gi="git-ignore"'\
     laggardkernel/git-ignore \
@@ -245,7 +251,9 @@ zt 0c light-mode binary for \
   atclone'(){local f;builtin cd -q src;for f (*.sh){mv ${f} ${f:r:l}};}' \
   atclone"command mv -f config $ZPFX/share/ptSh/config" \
   atload'alias ppwd="ptpwd" mkd="ptmkdir -pv" touch="pttouch"' \
-    jszczerbinsky/ptSh
+    jszczerbinsky/ptSh \
+  lbin from'gh-r' bpick atload'alias tt="taskwarrior-tui"' \
+    kdheepak/taskwarrior-tui
 #  }}} === wait'0c' - programs - sourced ===
 
 #  === wait'0c' - programs + man === {{{
@@ -256,10 +264,18 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     @sharkdp/fd \
   atclone'mv -f **/**.zsh _exa' atpull'%atclone' \
     ogham/exa \
+  atclone'mv -f **/**.zsh _dog' atpull'%atclone' \
+    ogham/dog \
   atclone'./just --completions zsh > _just' atpull'%atclone' \
     casey/just \
   atclone'./wutag/wutag print-completions zsh > _wutag' atpull'%atclone' \
-    wojciechkepka/wutag
+    wojciechkepka/wutag \
+  lbin'**/gh' atclone'./**/gh completion --shell zsh > _gh' atpull'%atclone' \
+    cli/cli \
+  lbin'rclone/rclone' bpick'*osx-amd64*' mv'rclone* -> rclone' \
+  atclone'./rclone/rclone genautocomplete zsh _rclone' \
+  atpull'%atclone' \
+    rclone/rclone
 #  }}} === wait'0c' - programs + man ===
 
 #  === wait'0c' - programs === {{{
@@ -334,15 +350,32 @@ zt 0c light-mode null for \
   lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
     dmerejkowsky/ruplacer \
   lbin'* -> renamer' from'gh-r' bpick'*macos*' \
-    adriangoransson/renamer
+    adriangoransson/renamer \
+  lbin'target/release/fclones' atclone'cargo build --release'  \
+  atpull'%atclone' \
+    pkolaczk/fclones \
+  lbin'target/release/tldr' atclone'cargo build --release' \
+  atclone"mv -f zsh_* _tldr" \
+    dbrgn/tealdeer \
+  lbin from'gh-r' \
+    koalaman/shellcheck \
+  lbin'shfmt* -> shfmt' from'gh-r' bpick'*darwin_amd64' \
+    @mvdan/sh \
+  lbin'sops* -> sops' from'gh-r' bpick'*darwin' \
+    mozilla/sops \
+  lbin'q-* -> q' from'gh-r' bpick'*Darwin' \
+    harelba/q \
+  lbin from'gh-r' bpick'*darwin*' \
+    wagoodman/dive \
+  lbin lman make"YANKCMD=pbcopy PREFIX=$ZPFX install" \
+    mptre/yank
 
-# lbin'target/release/xplr' atclone'cargo install --force --path .' \
 # orhun/gpg-tui
 # @dalance/procs
 
 #  }}} === wait'0c' - programs ===
 
-# nivekuil/rip == cosmos72/gomacro == gruntwork-io/git-xargs
+# nivekuil/rip == cosmos72/gomacro == gruntwork-io
 
 #  === snippet block === {{{
 zt light-mode is-snippet for \
@@ -390,6 +423,7 @@ bindkey -M viins 'jk' vi-cmd-mode;              bindkey -M viins 'kj' vi-cmd-mod
 bindkey -M vicmd 'H' beginning-of-line;         bindkey -M vicmd 'L' end-of-line
 bindkey -M vicmd 'E' backward-kill-line;        bindkey -M viins '^b' backward-delete-word
 bindkey -M vicmd 'U' redo;                      bindkey -M vicmd 'u' undo;
+bindkey -s '^B' 'obmark\n';
 # }}}
 
 # zt 1c light-mode null for \
@@ -435,23 +469,6 @@ zstyle ':completion:*:exa' sort false
 zstyle ':completion:*:manuals' separate-sections true
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-# }}}
-
-# === conda initialize === {{{
-# _conda_initialize() {
-#   if [ -n "${CONDA_EXE}" ]; then
-#     $CONDA_EXE config --set auto_activate_base false
-#     __conda_setup="$($CONDA_EXE 'shell.zsh' 'hook' 2>/dev/null)"
-#     [ $? -eq 0 ] && eval "$__conda_setup"
-#   fi
-#   unset __conda_setup
-# }
-#
-# conda() {
-#   unset -f conda
-#   _conda_initialize
-#   conda "$@"
-# }
 # }}}
 
 # === functions === {{{
@@ -516,6 +533,17 @@ pngo() { optipng -o"${2:-3}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
 png() { pngquant --speed "${2:-4}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
 osxnotify() { osascript -e 'display notification "'"$*"'"'; }
 taskdate() { date -d "+${*}" "+%FT%R"; }
+
+function xd() {
+  pth="$(xplr)"
+  if [[ "$pth" != "$PWD" ]]; then
+    if [[ -d "$pth" ]]; then
+      cd "$pth"
+    elif [[ -f "$pth" ]]; then
+      cd "$(dirname "$pth")"
+    fi
+  fi
+}
 # }}}
 
 # === helper functions === {{{
@@ -567,6 +595,17 @@ zle -N cqc    # clipboard
 bindkey '^X^b' cqc
 # }}}
 
+#===== completions ===== {{{
+  zt 0c light-mode as'completion' for \
+    id-as'poetry_comp' atclone='poetry completions zsh > _poetry' \
+    atpull='%atclone' has'poetry' \
+      zdharma/null \
+    id-as'rust_comp' atclone'rustup completions zsh > _rustup' \
+    atclone'rustup completions zsh cargo > _cargo' \
+    atpull='%atclone' has'rustup' \
+      zdharma/null
+# }}} ===== completions =====
+
 #===== variables ===== {{{
 # Ω = alt-z
 zt 0c light-mode null for \
@@ -587,11 +626,13 @@ zt 0c light-mode null for \
     zdharma/null \
   id-as'pyenv_init' has'pyenv' nocd eval'pyenv init - zsh' \
     zdharma/null \
+  id-as'pipx_comp' has'pipx' nocd eval'register-python-argcomplete pipx' \
+    zdharma/null \
   id-as'Cleanup' nocd atinit'unset -f zt grman; _zsh_autosuggest_bind_widgets' \
     zdharma/null
 
+# FIX: pipx comp doesn't work -- timew as well (bashcompinit)
 # id-as'pip_comp' has'pip' nocd eval'pip completion --zsh' zdharma/null
-# export PYTHON_CONFIGURE_OPTS="--enable-shared"
 # eval "$(/usr/local/mybin/rakubrew init Zsh)"
 # eval "$(fakedata --completion zsh)"
 
@@ -613,7 +654,7 @@ typeset -gx UPDATELOCAL_GITDIR="${HOME}/opt"
 typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
 typeset -g DUMP_LOG="${ZPFX}/share/dump/log"
 typeset -gx BREW_PREFIX="$(brew --prefix)"
-typeset -gx CDHISTSIZE=75 CDHISTTILDE=TRUE CDHISTCOMMAND=xd
+typeset -gx CDHISTSIZE=75 CDHISTTILDE=TRUE CDHISTCOMMAND=jd
 typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 typeset -gx FZFGIT_DEFAULT_OPTS="--preview-window=':nohidden,right:65%:wrap'"
 typeset -gx NQDIR="$TMPDIR/nq"

@@ -1,6 +1,5 @@
 #show-read-feeds no
 auto-reload yes
-prepopulate-query-feeds yes
 refresh-on-startup yes
 browser "$BROWSER %u &"
 prepopulate-query-feeds yes
@@ -14,9 +13,10 @@ notify-always yes
 notify-program newsb-notifier
 notify-format "Newsboat: %n unread articles in %f feeds %t"
 
-bookmark-cmd "~/bin/nbookmark.sh"
-bookmark-interactive no
-bookmark-autopilot yes
+# bookmark-cmd "~/bin/nbookmark.sh"
+bookmark-cmd "~/mybin/srb"
+bookmark-interactive yes
+bookmark-autopilot no
 
 bind-key ; macro-prefix
 bind-key j down
@@ -66,6 +66,11 @@ macro w set browser "w3m" ; open-in-browser ;
 macro l set browser "links" ; open-in-browser ;
 macro C set browser "youtube-viewer --comments=%u" ; open-in-browser ;
 macro y set browser "echo %u | pbcopy" ; open-in-browser ; set browser linkhandler
+
+# Podboat:
+download-path "~/Downloads/podcasts/"
+player "mpv --audio-display=no"
+max-downloads 10
 
 highlight all "---.*---" yellow
 highlight feedlist ".*(0/0))" black

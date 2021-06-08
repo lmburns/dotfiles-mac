@@ -1,5 +1,6 @@
 version = "0.14.0"
 
+-- == HELP == {{{
 -- BashExec: {command: bash, args: ["-c", "${command}"], silent: false}
 -- PopMode: Pop the last mode from the history and switch to it.
 -- SwitchModeBuiltin: Switch to a builtin mode.
@@ -7,7 +8,6 @@ version = "0.14.0"
 -- ChangeDirectory: Change the present working directory ($PWD)
 -- FocusPath: Focus on the given path.
 -- Enter: Enter into the currently focused path if it’s a directory.
--- Refresh: refresh UI, not explore dir if is same (use Explore if same dir)
 -- ClearScreen: clears screen
 -- ExplorePwdAsync: explore CWD and register filtered nodes async
 -- Call: e.g., {command: bash, args: ["-c", "read -p test"]}
@@ -15,7 +15,7 @@ version = "0.14.0"
   -- may need to pass ExplorePwd depending on expectation
 
 -- XPLR_PIPE_MSG_IN:  read messages from other programs
--- XPLR_PIPE_FOCUS_OUT:  write focused node path for other progs
+-- XPLR_FOCUS_PATH:  write focused node path for other progs
 -- XPLR_PIPE_SELECTION_OUT: write new-line delim selected paths for other progs
 -- XPLR_PIPE_GLOBAL_HELP_MENU_OUT:  write global help menu for anyone to read
 -- XPLR_PIPE_LOGS_OUT: write logs for anyone to read
@@ -25,16 +25,62 @@ version = "0.14.0"
 -- Examples:
   -- echo ChangeDirectory: /tmp >> "${XPLR_PIPE_MSG_IN:?}"
   -- echo FocusNext >> "${XPLR_PIPE_MSG_IN:?}"
+-- }}} == HELP ==
 
--- === ui === {{{
 local xplr = xplr
 package.path = os.getenv("XDG_CONFIG_HOME") .. '/xplr/?/init.lua'
--- require("icons").setup{}
 require("theme").setup{}
 
--- require("nnn_preview_wrapper").setup(os.getenv("HOME") .. "/.config/nnn/plugins/preview-tabbed", "/tmp/nnn.fifo")
+require("nnn_preview").setup{
+  plugin_path = os.getenv("HOME") .. "/.config/nnn/plugins/preview-tui",
+  fifo_path = "/tmp/xplr.fifo",
+  mode = "action",
+  key = "p",
+}
 
 xplr.config.general.enable_mouse = true
+
+-- == functions == {{{
+-------- Function equivalent to basename in POSIX systems
+xplr.fn.custom.basename = function(path)
+  return string.gsub(path, "(.*/)(.*)", "%2")
+end
+
+-------- Function equivalent to dirname in POSIX systems
+xplr.fn.custom.dirname = function(path)
+  if str:match(".-/.-") then
+    local name = string.gsub(path, "(.*/)(.*)", "%1")
+    return name
+  else
+    return ''
+  end
+end
+
+-------- Shell escape. See https://github.com/ncopa/lua-shell
+xplr.fn.custom.shell_escape = function(args)
+  local ret = {}
+  for _,a in pairs(args) do
+    local s = tostring(a)
+    if s:match("[^A-Za-z0-9_/:=-]") then
+      s = "'"..s:gsub("'", "'\\''").."'"
+    end
+    table.insert(ret,s)
+  end
+  return table.concat(ret, " ")
+end
+
+-------- Shell run. See https://github.com/ncopa/lua-shell
+xplr.fn.custom.shell_run = function(args)
+  local h = io.popen(xplr.fn.builtin.shell_escape(args))
+  local outstr = h:read("*a")
+  return h:close(), outstr
+end
+
+-------- Shell execute. See https://github.com/ncopa/lua-shell
+xplr.fn.custom.shell_execute = function(args)
+  return os.execute(xplr.fn.builtin.shell_escape(args))
+end
+-- }}} == functions ==
 
 -- KEYS: default mode {{{
 key = xplr.config.modes.builtin.default.key_bindings.on_key
@@ -48,14 +94,21 @@ key["ctrl-o"] = nil
 
 key.c = xplr.config.modes.builtin.action.key_bindings.on_key.c -- create mode
 
+-- TODO: get dirname of current dir on exit if selection is file
+-- key.enter = {
+--   help = "print dir",
+--   messages = {
+--     { BashExec = [[ cat "${XPLR_PIPE_DIRECTORY_NODES_OUT:?}" ]] }
+--   }
+-- }
+
 -- shell
 key['!'] = {
   help = "shell",
   messages = {
-    { Call = { command = "zsh", args = {"-i"} } },
+    { Call = { command = "zsh", args = {"-i", "-l"} }},
     "ExplorePwdAsync",
     "PopMode",
-    "Refresh"
   }
 }
 
@@ -69,7 +122,6 @@ key.D = {
   messages = {
     { BashExec = [[dua i]] },
     "ClearScreen",
-    "Refresh",
   },
 }
 
@@ -132,7 +184,7 @@ key.R = {
 }
 
 -- Jump: zoxide
-key.J = {
+key.n = {
   help = "zoxide jump",
   messages = {
     { BashExec = [===[
@@ -147,7 +199,7 @@ key.J = {
 -- Copy: binding
 key.y = {
   help = "copy",
-  messages = { "PopMode", { SwitchModeCustom = "copy" }, "Refresh"
+  messages = { "PopMode", { SwitchModeCustom = "copy" },
   }
 }
 
@@ -158,7 +210,6 @@ key.p = {
     { BashExecSilently = [[
       xclip-pastefile > /dev/null && echo ExplorePwdAsync >> "${XPLR_PIPE_MSG_IN:?}"
       ]]},
-    "Refresh",
   },
 }
 
@@ -175,7 +226,6 @@ key["ctrl-n"] = {
         end tell
       end tell
     ]] },
-    "Refresh",
   },
 }
 
@@ -185,7 +235,6 @@ key.P = {
   messages = {
     "PopMode",
     { SwitchModeCustom = "paste.rs" },
-    "Refresh",
   },
 }
 
@@ -228,7 +277,7 @@ actkey.l = {
 }
 -- }}} === action mode ===
 
--- KEYS: delete mode  {{
+-- KEYS: delete mode  {{{
 delkey = xplr.config.modes.builtin.delete.key_bindings.on_key
 
 -- Trash: delete
@@ -295,7 +344,7 @@ gokey.b = {
     | gsed "${pattern}" \
     | fzf --ansi \
         --height '40%' \
-        --preview="echo {}|sed 's#.*->  ##'| xargs $list --color=always" \
+        --preview="echo {}|sed 's#.*->  ##'| xargs exa --color=always" \
         --preview-window="right:50%" \
     | sed 's#.*->  ##')
     if [ "$PTH" ]; then
@@ -355,7 +404,6 @@ cmodes["paste.rs"] = {
             read -p "[enter to continue]"]],
           },
         "PopMode",
-        "Refresh",
         },
       },
       l = {
@@ -368,7 +416,6 @@ cmodes["paste.rs"] = {
             read -p "[enter to continue]"]],
           },
         "PopMode",
-        "Refresh",
         },
       },
       o = {
@@ -384,7 +431,6 @@ cmodes["paste.rs"] = {
             fi]],
           },
         "PopMode",
-        "Refresh",
         },
       },
       d = {
@@ -402,14 +448,12 @@ cmodes["paste.rs"] = {
             fi]],
           },
         "PopMode",
-        "Refresh",
         },
       },
       esc = {
         help = "cancel",
         messages = {
         "PopMode",
-        "Refresh",
         },
       },
     },
@@ -427,14 +471,12 @@ cmodes["copy"] = {
             BashExecSilently = [[xclip-copyfile $(cat "${XPLR_PIPE_RESULT_OUT:?}")]],
           },
         "PopMode",
-        "Refresh",
         },
       },
       esc = {
         help = "cancel",
         messages = {
           "PopMode",
-          "Refresh",
         },
       },
     },
@@ -450,6 +492,11 @@ cmodes["bookmark"] = {
         messages = {
           { BashExecSilently = [[
           PTH="${XPLR_FOCUS_PATH:?}"
+          if [ -d "${PTH}" ]; then
+            PTH="${PTH}"
+          elif [ -f "${PTH}" ]; then
+            PTH="$(dirname "${PTH}")"
+          fi
           if echo "${PTH:?}" >> "${XPLR_BOOKMARK_FILE:?}"; then
             echo "LogSuccess: ${PTH:?} added to bookmarks" >> "${XPLR_PIPE_MSG_IN:?}"
           else
@@ -484,7 +531,6 @@ cmodes["bookmark"] = {
         help = "cancel",
         messages = {
           "PopMode",
-          "Refresh",
         },
       },
     },
@@ -594,3 +640,5 @@ cmodes["f2"] = {
 }
 
 -- }}} === custom mode ===
+
+-- vim: ft=lua:et:sw=0:ts=2:sts=2:fdm=marker:fmr={{{,}}}:

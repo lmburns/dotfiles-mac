@@ -19,8 +19,8 @@ export XDG_BIN_HOME="$HOME/bin"
 export XDG_MBIN_HOME="$HOME/mybin"
 export LOCAL_OPT="$HOME/opt"
 
-# export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
-export BROWSER='w3m'
+export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
+export SR_BROWSER='w3m'
 export RTV_BROWSER="w3m"
 export EDITOR='nvim'
 # export VISUAL="${EDITOR}"
@@ -80,11 +80,10 @@ export OSFONTDIR="$HOME/Library/Fonts"
 export UMCONFIG_HOME="${XDG_CONFIG_HOME}/um"
 export PIER_CONFIG_PATH="${XDG_CONFIG_HOME}/pier/config.toml"
 
-export NNN_PLUG='f:finder;o:fzopen;d:diffs;t:treeview;v:imgview;J:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize;B:_renamer;p:_bat $nnn*;y:-_sync*;L:-_git log;k:-_fuser -kiv $nnn*'
+export NNN_PLUG='P:preview-tui;f:finder;o:fzopen;d:diffs;t:treeview;v:imgview;J:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize;B:_renamer;p:_bat $nnn*;y:-_sync*;L:-_git log;k:-_fuser -kiv $nnn*'
 export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 export NNN_BMS="d:$XDG_CONFIG_HOME/;u:$LOCAL_OPT/;D:$HOME/Documents/"
 export NNN_TRASH=1
-export NNN_PLUG='o:fzopen'
 export NNN_FIFO='/tmp/nnn.fifo'
 
 export GRIPHOME="${XDG_CONFIG_HOME}/grip"

@@ -37,7 +37,10 @@ alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
 (( ${+commands[hoard]} )) && {
   alias hd='hoard -c $XDG_CONFIG_HOME/hoard/config -h $XDG_CONFIG_HOME/hoard/root'
+  alias hde='hoard -c $XDG_CONFIG_HOME/hoard/config -h /Volumes/SSD/manual-bkp/hoard'
   alias nhd='$EDITOR $XDG_CONFIG_HOME/hoard/config'
+  alias hdocs='hoard -c $XDG_CONFIG_HOME/hoard/docs-config -h $XDG_CONFIG_HOME/hoard/docs'
+  alias nhdocs='$EDITOR $XDG_CONFIG_HOME/hoard/docs-config'
 }
 
 (( ${+commands[tldr]} )) && alias tldru='tldr --update'
@@ -107,6 +110,7 @@ alias ezsh='$EDITOR $HOME/.zshenv'
 alias ninit='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim'
 alias niniti='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim +PlugInstall'
 alias ninitu='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim +PlugUpdate'
+alias ntask='$EDITOR $XDG_CONFIG_HOME/task/taskrc'
 alias nlfr='$EDITOR $XDG_CONFIG_HOME/lf/lfrc'
 alias nlfrs='$EDITOR $XDG_CONFIG_HOME/lf/scope'
 alias nxplr='$EDITOR $XDG_CONFIG_HOME/xplr/init.lua'
@@ -115,6 +119,7 @@ alias nyab='$EDITOR $XDG_CONFIG_HOME/yabai/yabairc'
 alias nskhd='$EDITOR $XDG_CONFIG_HOME/skhd/skhdrc'
 alias ntmux='$EDITOR $XDG_CONFIG_HOME/tmux/tmux.conf'
 alias nurls='$EDITOR $XDG_CONFIG_HOME/newsboat/urls'
+alias nnews='$EDITOR $XDG_CONFIG_HOME/newsboat/config'
 alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
 
 # === mail ======================================================================
@@ -223,9 +228,13 @@ alias nerdfont='source $XDG_DATA_HOME/fonts/i_all.sh'
 alias mpd='mpd ~/.config/mpd/mpd.conf'
 alias hangups='hangups -c $XDG_CONFIG_HOME/hangups/hangups.conf'
 alias newsboat='newsboat -C $XDG_CONFIG_HOME/newsboat/config'
+alias podboat='podboat -C $XDG_CONFIG_HOME/newsboat/config'
 alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
-alias tt='taskwarrior-tui'
+alias taske='task edit'
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
+
+# alias sr='sr -browser=w3m'
+# alias srg='sr -browser="$BROWSER"'
 
 alias img='/usr/local/bin/imgcat'
 alias getmime='file --dereference --brief --mime-type'

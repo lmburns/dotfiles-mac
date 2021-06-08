@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# desc: git clone from clipboard
+# desc: git clone from clipboar or name/repo
 
 setopt extendedglob
 
@@ -8,6 +8,8 @@ zparseopts -D -A opts g -ghq
 
 if (( ${+opts[-g]} + ${+opts[--ghq]} )) {
   ghq get "$(pbpaste)"
-} else {
+} elif [[ "$(pbpaste)" =~ https:// ]] {
   git clone "$(pbpaste)"
+} elif (( $# > 0 )) {
+  gh repo clone "$@"
 }

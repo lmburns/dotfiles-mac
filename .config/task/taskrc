@@ -13,8 +13,8 @@ data.location=~/.config/task/
 locking=on
 
 # Terminal
+curses=on
 confirmation=yes
-echo.command=yes
 next=2                                  # Number of tasks per project report
 bulk=2                                  # More than 2 tasks confirmation
 nag=
@@ -24,7 +24,7 @@ verbose=blank,footnote,label,new-id,affected,edit,special,project,sync,unwait
 
 # Date
 report.long.dateformat=a M-D-Y
-report.list.dateformat=a M-D-Y
+report.list.dateformat=a M-D H:M
 dateformat=M-D-Y
 weekstart=Sunday
 displayweeknumber=yes
@@ -35,32 +35,43 @@ search.case.sensitive=no
 alias.burndown=burndown.daily
 alias.rm=delete
 alias.p=project
+alias.e=edit
+alias.d=done
+alias.a=add
+alias.m=modify
 alias.cal=calendar
 active.indicator=>
+uda.priority.values=H,M,L,
 
 # Color controls.
 color=1                               # Use color
-color.overdue=red                 # Color of overdue tasks
-color.due=yellow                  # Color of due tasks
-# color.pri.H=bold                       # Color of priority:H tasks
-# color.pri.M=on_yellow                 # Color of priority:M tasks
-# color.pri.L=on_green                  # Color of priority:L tasks
-# color.pri.none=white on_blue          # Color of priority:  tasks
+color.uda.priority.H=green bold                       # Color of priority:H tasks
+color.uda.priority.M=yellow                 # Color of priority:M tasks
+color.uda.priority.L=magenta                  # Color of priority:L tasks
+color.uda.priority.none=white          # Color of priority:  tasks
 color.active=green              # Color of active tasks
-color.tagged=yellow                    # Color of tagged tasks
-#color.tag.bug=yellow                  # Color of +bug tasks
-color.project.imp=blue
+color.due=yellow                  # Color of due tasks
+color.due.today=cyan
+color.overdue=red                 # Color of overdue tasks
+color.tagged=white
+# color.tagged=yellow                    # Color of tagged tasks
+color.scheduled=yellow
+# color.completed
+# color.blocked
+# color.blocking
+# color.deleted
+color.recurring=underline magenta                # Color of recur.any: tasks
+
+color.project.important=bold magenta
+color.project.appt=bold cyan
+color.tag.important=bold magenta                  # Color of +bug tasks
+color.tag.bug=yellow                  # Color of +bug tasks
 #color.keyword.car=on_blue             # Color of description.contains:car tasks
-#color.recurring=on_red                # Color of recur.any: tasks
-#color.header=bold_green               # Color of header messages
+color.header=bold yellow               # Color of header messages
 color.footnote=on blue             # Color of footnote messages
 
-#shadow.file=/tmp/shadow.txt           # Location of shadow file
-#shadow.command=list                   # Task command for shadow file
-#shadow.notify=on                      # Footnote when updated
-
 default.project=general                # Unless otherwise specified
-default.priority=M                    # Unless otherwise specified
+# default.priority=M                    # Unless otherwise specified
 default.command=list                   # Unless otherwise specified
 
 # Fields: id,uuid,project,priority,entry,start,due,recur,recur_ind,age,
@@ -68,6 +79,21 @@ default.command=list                   # Unless otherwise specified
 # Description:   This report is ...
 # Sort:          due+,priority-,project+
 # Filter:        pro:x pri:H +bug limit:10
+
+# LIST:
+# id - ID
+# start.age - Active
+# entry.age - Age
+# depends.indicator - D
+# priority - P
+# project - Project
+# tags - Tags
+# recur.indicator - R
+# scheduled.countdown - Sch
+# due - Until
+# until.age - Until
+# description.count - Description
+# urgency - Urg
 
 # task long
 report.long.description=Lists all task, all data, matching the specified criteria

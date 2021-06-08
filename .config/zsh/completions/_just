@@ -1,0 +1,42 @@
+#compdef just
+
+# zsh completions for 'just'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+  '--choose[select one or more recipes to run using a binary. If `--chooser` is not passed the chooser]'
+  '--clear-shell-args[clear shell arguments]'
+  '--dry-run[print what just would do without doing it]'
+  '--dump[print entire justfile]'
+  {-e,--edit}'[edit justfile with editor given by $VISUAL or $EDITOR, falling back to `vim`]'
+  '--evaluate[evaluate and print all variables. If a variable name is given as an argument, only print]'
+  '--highlight[highlight echoed recipe lines in bold]'
+  '--init[initialize new justfile in project root]'
+  {-l,--list}'[list available recipes and their arguments]'
+  '--no-dotenv[dont load `.env` file]'
+  '--no-highlight[dont highlight echoed recipe lines in bold]'
+  {-q,--quiet}'[suppress all output]'
+  '--shell-command[invoke <COMMAND> with the shell used to run recipe lines and backticks]'
+  '--summary[list names of available recipes]'
+  {-u,--unsorted}'[return list and summary entries in source order]'
+  '--variables[list names of variables]'
+  {-v,--verbose}'[use verbose output]'
+  {-h,--help}'[print help information]'
+  {-V,--version}'[print version information]'
+  '--chooser[override binary invoked by `--choose`]'
+  '--color[print colorful output \[default: auto\]  \[possible values: auto, always, never\]]'
+  {-c,--command}'[run an arbitrary command with the working directory, `.env`, overrides, and exports set]'
+  '--completions[print shell completion script for <SHELL> \[possible values: zsh, bash, fish, powershell, elvish\]]'
+  {-f,--justfile}'[use <JUSTFILE> as justfile]'
+  '--list-heading[print <TEXT> before list]'
+  '--list-prefix[print <TEXT> before each list item]'
+  '--set[<VALUE>                   Override <VARIABLE> with <VALUE>]'
+  '--shell[invoke <SHELL> to run recipes \[default: sh\]]'
+  '--shell-arg[...                 Invoke shell with <SHELL-ARG> as an argument \[default: -cu\]]'
+  {-s,--show}'[show information about <RECIPE>]'
+  {-d,--working-directory}'[use <WORKING-DIRECTORY> as working directory. --justfile must also be set]'
+  '*:filename:_files'
+)
+
+_arguments -s $arguments

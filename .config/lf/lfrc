@@ -20,14 +20,19 @@ set drawbox on        # draw a border around all panes
 set ratios '1:2:3'    # ratio of pane widths
 set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
-# vars that depend on environmental variables
+# set shell zsh
+# set shellopts '-eu:--shwordsplit'
+# set ifs "\n"
+# set filesep "\n"  # default already
+
+# -- Previewer: custom
 $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
 
-# lfimg
+# -- Previewer: lfimg
 # $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/preview"
 # $lf -remote "send $id set cleaner ${XDG_CONFIG_HOME}/lf/cleaner"
 
-# stpv
+# -- Previewer: stpv
 # set previewer stpv
 # set cleaner stpvimgclr
 # &stpvimg --listen $id
@@ -48,6 +53,7 @@ $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Commands / Functions                                                      │
 # └───────────────────────────────────────────────────────────────────────────┘
+# -- Open: any file
 cmd open ${{
     case $(file --mime-type $f -b) in
       application/pdf|application/vnd*|application/epub*) nohup zathura $fx >/dev/null 2>&1 ;;
@@ -70,7 +76,7 @@ cmd open ${{
 }}
 
 
-# Delete single file
+# -- Delete: single file - whiptail
 cmd delete ${{
   clear
   if (whiptail --title "$(echo $fx | xargs -r basename -a)" --yesno "Delete?[y/N]" --defaultno 8 40); then
@@ -81,7 +87,7 @@ cmd delete ${{
   fi
 }}
 
-# trash; no confirmation
+# -- Trash: no confirmation
 cmd trash ${{
   clear
   files=$(printf "$fx" | tr '\n' ';')
@@ -97,7 +103,7 @@ cmd trash ${{
   terminal-notifier -title "🗑️  File(s) deleted" -message "File(s) moved to trash" && echo "$fx deleted"
 }}
 
-# move to directory from autojump
+# -- Move: autojump
 cmd movetojump ${{
   clear
   prompt="Move to: "
@@ -109,7 +115,7 @@ cmd movetojump ${{
 }}
 
 
-# copy to directory from autojump
+# -- Copy: autojump
 cmd copytojump ${{
   clear
   prompt="Copy to: "
@@ -121,7 +127,7 @@ cmd copytojump ${{
 }}
 
 
-# paste and view progress
+# -- Paste: view progress
 cmd ppaste &{{
     set -- $(lf -remote load)
     mode="$1"
@@ -141,6 +147,7 @@ cmd ppaste &{{
 }}
 
 
+# -- CD: broot
 cmd br_dir ${{
   clear
   f=$(mktemp)
@@ -154,6 +161,7 @@ cmd br_dir ${{
   lf -remote "send $id $cmd \"$res\""
 }}
 
+# -- Jump: broot
 cmd broot_jump ${{
   f=$(mktemp)
   res="$(broot --outcmd $f && cat $f | sed 's/cd //')"
@@ -166,32 +174,15 @@ cmd broot_jump ${{
   lf -remote "send $id $cmd \"$res\""
 }}
 
-
-cmd z ${{
-  set +u
-  prefix=''
-  dest="$(zoxide query "$@")"
-  if test -n "${dest}"; then
-    lf -remote "send $id cd '${dest}'"
-  else
-    lf -remote "send $id echo 'Invalid directory ${dest}'"
-  fi
-}}
-
-
-# zoxide query directory jump
+# -- Jump: zoxide
 cmd fzf_z ${{
-  sel="$(zoxide query -l | fzf +s)"
-  [ -d "$sel" ] && lf -remote "send $id cd \"$sel\""
-}}
-
-cmd zoxide_i ${{
   sel="$(zoxide query -i)"
   [ -d "$sel" ] && lf -remote "send $id cd \"$sel\""
 }}
+# zoxide query -l | fzf
 
 
-## Archive
+# -- Archive: unarchive
 cmd unarchive ${{
   case "$f" in
     *.zip) unzip "$f" ;;
@@ -204,7 +195,7 @@ cmd unarchive ${{
 }}
 
 
-# git
+# -- Git: branch
 cmd git_branch ${{
     git branch | fzf | xargs git checkout
     pwd_shell=$(pwd)
@@ -213,7 +204,7 @@ cmd git_branch ${{
 }}
 
 
-# symlinks
+# -- Symlinks:
 # y (select for copy) and P to paste soft-link
 # d (select for cut) and P to paste hard-link
 cmd link %{{
@@ -231,12 +222,20 @@ cmd link %{{
 }}
 
 
-# preview the highlighted file with quicklook
+# -- Preview: quicklook
 cmd ql_preview &{{
   qlmanage -p "$fx" &> /dev/null;
 }}
 
-# change permissions
+
+# -- Preview: video thumbnails
+cmd video_preview ${{
+    cache="$(mktemp "${TMPDIR:-/tmp}/thumb_cache.XXXXX")"
+    ffmpegthumbnailer -i "$f" -o "$cache" -s 0
+    ~/.config/lf/other/draw_img.sh "$cache"
+}}
+
+# -- Permissions: change
 cmd chmod ${{
   clear;
   printf "\nPermissions: "
@@ -250,7 +249,7 @@ cmd chmod ${{
 }}
 
 
-# gpg encrypt with recipient
+# -- GPG: encrypt recipient
 cmd pgp_encrypt_recipient %{{
   printf "Recipient: "
   read -r recipient
@@ -261,49 +260,42 @@ cmd pgp_encrypt_recipient %{{
 }}
 
 
-# preview video thumbnails
-cmd video_preview ${{
-    cache="$(mktemp "${TMPDIR:-/tmp}/thumb_cache.XXXXX")"
-    ffmpegthumbnailer -i "$f" -o "$cache" -s 0
-    ~/.config/lf/other/draw_img.sh "$cache"
-}}
-
-# gpg encrypt with only password
+# -- GPG: encrypt symmetric
 cmd pgp_encrypt_pass ${{
   gpg --symmetric $f;
 }}
 
-# gpg decrypt
+# -- GPG: decrypt
 cmd pgp_decrypt ${{
   gpg --output ${f%.gpg} --decrypt $f
 }}
 
-# Encode input into  ASCII-armored output with an integrated signature
+# -- GPG: sign
 cmd pgp_sign ${{
   gpg --sign $f
 }}
 
-# Wrap input in plaintext signature
+# -- GPG: clearsign file
 cmd pgp_sign_clear ${{
   gpg --clearsign $f
 }}
 
 
-# open the lfrc, and source after saving
+# -- Config: lfrc
 cmd edit_config :{{
   $$EDITOR ~/.config/lf/lfrc
   source ~/.config/lf/lfrc
 }}
 
 
-# open the lfrc scope.sh
+# -- Config: lf scope
 cmd edit_scope :{{
   $$EDITOR ~/.config/lf/scope
   source ~/.config/lf/scope
 }}
 
 
-# select all file in directory
+# -- Select: all files
 cmd select-files ${{
   { echo "$fs"; find -L "$(pwd)" -mindepth 1 -maxdepth 1 -type f; } |
       if [ "$lf_hidden" = "false" ]; then
@@ -317,7 +309,7 @@ cmd select-files ${{
 }}
 
 
-# select all directories in current directory
+# -- Select: all directories
 cmd select-dirs ${{
   { echo "$fs"; find -L "$(pwd)" -mindepth 1 -maxdepth 1 -type d; } |
       if [ "$lf_hidden" = "false" ]; then
@@ -329,11 +321,33 @@ cmd select-dirs ${{
       gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
 }}
 
-# TODO: formarks
+# cmd jumpi ${{
+#   zsh -c "TRAPWINCH() { zle && { zle reset-prompt; zle -R }; }; source $ZDOTDIR/zinit/plugins/wfxr---formarks/formarks.plugin.zsh; jump"
+# }}
+
+# -- Jump: wfxr plugin
 cmd jumpi ${{
-  zsh -c "TRAPWINCH() { zle && { zle reset-prompt; zle -R }; }; source $ZDOTDIR/zinit/plugins/wfxr---formarks/formarks.plugin.zsh; jump"
+    field='\(\S\+\s*\)'
+    esc=$(printf '\033')
+    N="${esc}[0m"
+    R="${esc}[31m"
+    G="${esc}[32m"
+    Y="${esc}[33m"
+    B="${esc}[34m"
+    pattern="s#^${field}${field}${field}${field}#$Y\1$R\2$N\3$B\4$N#"
+    PTH=$(sed 's#: # -> #' "$PATHMARKS_FILE"| nl| column -t \
+    | gsed "${pattern}" \
+    | fzf --ansi \
+        --height '40%' \
+        --preview="echo {}|sed 's#.*->  ##'| xargs exa --color=always" \
+        --preview-window="right:50%" \
+    | sed 's#.*->  ##')
+    if [ -d "$PTH" ]; then
+       cd "$PTH"
+    fi
 }}
 
+# -- Archive: archive
 cmd zip %zip -r "$f" "$f"
 cmd tar %tar cvf "$f.tar" "$f"
 cmd targz %tar cvzf "$f.tar.gz" "$f"
@@ -398,7 +412,7 @@ map r $rmcrap                                   # delete .DS_Store etc
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
 map ? $lf -doc | bat -f                         # open lfrc docs
-map gH $bat -f ~/.config/lf/mappings            # open these mappings
+map gH $bat -l bash -f ~/.config/lf/mappings            # open these mappings
 map Ow push :open-with<space>                   # open w/ specified program
 map Op $open $PWD
 
@@ -456,7 +470,8 @@ map fo push :fzf<space>   # fzf search and open
 map fd push :fd<space>    # use fd to find file
 map fa ajfzf              # use fzf with autojump
 # map <c-b> broot_jump      # use broot to jump to directory
-map n fzf_z               # fzf zioxide
+map nn fzf_z               # fzf zioxide
+map nb jumpi              # wfxr plugin
 map zi zoxide_i           # zoxide interactive
 map zz push :z<space>     # very similar to autojump
 map <c-j> push :aj<space> # auto jump

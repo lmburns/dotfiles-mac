@@ -88,3 +88,33 @@ rclg SRC DEST:
 
 ssh-mount DEST:
   sshfs -o allow_other,default_permissions,IdentityFile=~/.ssh/burnsac root@lmburns.com:/ {{DEST}}
+
+# dsmemberutil
+# dscacheutil
+# dscl
+# dseditgroup
+
+users-list-full:
+  dscacheutil -q user
+
+users-list:
+  dscl . -ls /Users
+
+user-info-full USER:
+  dscl . -read /Users/{{USER}}
+
+user-info USER:
+  dscacheutil -q user -a name {{USER}}
+
+group-info GROUP:
+  dscacheutil -q group -a name {{GROUP}}
+
+group-adduser USER GROUP:
+  sudo dseditgroup -o edit -a {{USER}} -t user {{GROUP}}
+
+group-deluser USER GROUP:
+  sudo dseditgroup -o edit -d {{USER}} -t user {{GROUP}}
+
+# dseditgroup -o checkmember -m {{USER}} {{GROUP}}
+group-checkmember USER GROUP:
+  dsmemberutil checkmembership -U {{USER}} -G {{GROUP}}

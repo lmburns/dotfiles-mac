@@ -1,0 +1,13 @@
+#compdef zoxide
+
+# zsh completions for 'zoxide'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+  {-h,--help}'[prints help information]'
+  {-V,--version}'[prints version information]'
+  '*:filename:_files'
+)
+
+_arguments -s $arguments

@@ -165,6 +165,31 @@ Addressing mechanism to provide access to all stored data, used in scripts.
 `$ task _get 12.due.week`
 : week number on which task 12 is due
 
+### WAIT
+
+`$ task add Send Alice a birthday card \`
+: `due:2016-11-08 \`
+: `scheduled:2016-11-04 \`
+: `wait:november`
+: only shows up wat wait day
+
+`$ task waiting`
+: shows the hidden tasks
+
+### UNTIL
+
+`$ task add Send Alice a birthday card \`
+: `due:2016-11-08 \`
+: `scheduled:due-4d \`
+: `wait:due-7d \`
+: `until:due+2d`
+: task self descripts on until
+
+### START
+
+`$ task start`
+: makes it *active*
+
 ### MISCELLANEOUS
 
 `$ task newest rc.verbose=nothing limit:1 | cut -f1 -d' '`
