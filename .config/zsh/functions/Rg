@@ -1,3 +1,5 @@
+# desc: nvim like fzf function (similar to bash rgf)
+
 Rg() {
   rg --column --line-number --no-heading --color=always --smart-case "$1" |
     fzf --ansi \

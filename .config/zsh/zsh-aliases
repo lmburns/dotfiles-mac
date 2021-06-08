@@ -233,6 +233,11 @@ alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
 alias taske='task edit'
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 
+alias pu='pueue'
+alias .ts='TS_SOCKET=/tmp/ts1 ts'
+alias .nq='NQDIR=/tmp/nq1 nq'
+alias .fq='NQDIR=/tmp/nq1 fq'
+
 # alias sr='sr -browser=w3m'
 # alias srg='sr -browser="$BROWSER"'
 

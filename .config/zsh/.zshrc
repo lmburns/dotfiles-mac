@@ -348,6 +348,7 @@ zt 0c light-mode null for \
   atinit'export XPLR_BOOKMARK_FILE="$XDG_CONFIG_HOME/xplr/bookmarks"' \
     sayanarijit/xplr \
   lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
+  atinit'alias rup="ruplacer"' \
     dmerejkowsky/ruplacer \
   lbin'* -> renamer' from'gh-r' bpick'*macos*' \
     adriangoransson/renamer \
@@ -372,10 +373,9 @@ zt 0c light-mode null for \
 
 # orhun/gpg-tui
 # @dalance/procs
+# nivekuil/rip == cosmos72/gomacro == gruntwork-io
 
 #  }}} === wait'0c' - programs ===
-
-# nivekuil/rip == cosmos72/gomacro == gruntwork-io
 
 #  === snippet block === {{{
 zt light-mode is-snippet for \
@@ -499,12 +499,6 @@ lnbin() { ln -siv $HOME/mybin/$1 $XDG_BIN_HOME; }
 unlbin() { rm -v /$XDG_BIN_HOME/$1; }
 # latex documentation serch (as best I can)
 latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
-# get help on builtin commands -- quote $1 to prevent having to quote on CLI
-zb() { man -P "less -p'^       "$1" '" zshbuiltins; }
-# ${(p)foo} - ${var:h3}
-zp() { man -P "less -p'^       "$1" '" zshexpn; }
-# ${foo[(re)bar]}
-zs() { man -P "less -p'^       "$1" '" zshparam; }
 # cd into directory
 take() { mkdir -p $@ && cd ${@:$#} }
 # html to markdown
@@ -517,7 +511,7 @@ rmsym() { command rm -- *(-@D); }
 rmsymr() { command rm -- **/*(-@D); }
 # add -x to apply changes -- f2 -f ' '
 rmspace() { f2 -f '\s' -r '_' -RF $@ }
-rndouble() { f2 -f '(\w+) \((\d+)\).(\w+)' -r '$2-$1.$3' $@ }
+rmdouble() { f2 -f '(\w+) \((\d+)\).(\w+)' -r '$2-$1.$3' $@ }
 # monitor core dumps
 moncore() { fswatch --event-flags /cores/ | xargs -I{} terminal-notifier -message {} -title 'coredump'; }
 
@@ -534,7 +528,7 @@ png() { pngquant --speed "${2:-4}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
 osxnotify() { osascript -e 'display notification "'"$*"'"'; }
 taskdate() { date -d "+${*}" "+%FT%R"; }
 
-function xd() {
+xd() {
   pth="$(xplr)"
   if [[ "$pth" != "$PWD" ]]; then
     if [[ -d "$pth" ]]; then
@@ -598,11 +592,14 @@ bindkey '^X^b' cqc
 #===== completions ===== {{{
   zt 0c light-mode as'completion' for \
     id-as'poetry_comp' atclone='poetry completions zsh > _poetry' \
-    atpull='%atclone' has'poetry' \
+    atpull'%atclone' has'poetry' \
       zdharma/null \
     id-as'rust_comp' atclone'rustup completions zsh > _rustup' \
     atclone'rustup completions zsh cargo > _cargo' \
     atpull='%atclone' has'rustup' \
+      zdharma/null \
+    id-as'pueue_comp' atclone'pueue completions zsh "${GENCOMP_DIR}"' \
+    atpull'%atclone' has'pueue' \
       zdharma/null
 # }}} ===== completions =====
 
@@ -866,7 +863,7 @@ zt light-mode null id-as for \
     zdharma/null
 
 # atload"source $XDG_DATA_HOME/fonts/i_all.sh" zdharma/null
-# nocd atinit"ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight"
+# nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight"
 
 # recache keychain if older than GPG cache time or first login
 # FIX: || $(tty) =~ ttys00

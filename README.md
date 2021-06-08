@@ -348,18 +348,29 @@ The <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings a
 ```sh
  $ pflist                                                 【  ~/.conf/zs/functions】─╯
 ======================================================================================
+.btitle                    buku - change title
+.btm                       buku - remove tags
+.btp                       buku -- add tags
 @append_dir-history-var    helper function for per-dir-hist
 @chwpd_dir-history-var     helper function for per-dir-hist
+Rg                         nvim like fzf function (similar to bash rgf)
+autoenv-files              NICHOLAS85: find all autoenv zsh files and edit
 bcp                        delete (one or multiple) selected application(s)
 bip                        brew install package fzf
 bup                        update (one or multiple) selected application(s)
 ccheat                     cheatsheet of cheat and tldr
+ccp                        preserve xattr for gnu copy
 cdown                      countdown timer
+cdownq                     countdown timer; no display
+cf                         Create lazily loaded Functions
 cfile                      copy contents of file to clipboard
 chpwd_ls                   func ran on every cd
+codeline                   get specific lang lines colorized
+delta                      delta variable column width side by side
 exchange                   swap files
 fbd                        cd to selected parent directory
 fcd                        change directories with fzf
+fcq                        use copyq to copy clipboard with fzf
 fe                         open the selected file with the default editor
 fenv                       search environment vars with fzf
 ff                         mage commands to run
@@ -372,25 +383,34 @@ fpdf                       search directory for pdf and open in zathura
 frd                        fzf recent directories
 from-where                 tells from-where a zsh completion is coming from
 fsearch                    search fonts on system
-gkey                       print keyboard shortcuts to application (iteractive option)
+getpid                     get pid and pipe to pstree
+gkey                       print keyboard shortcuts to application - iteractive option
+gman                       wrapper for gman to colorize
 gnubin_off                 removes gnubins from $PATH
 gnubin_on                  adds gnubins to PATH
 gsha                       show sha of branch
 hgrep                      grep history
 hist_stat                  zsh history stats
+id_process                 get num of process by id
 iso2dmg                    Converts file  (iso) to .dmg
 listening                  listen on port entered
 listports                  list open ports
 lowercasecurdir            lowercase every file in current dir
 manfind                    find location of manpage
 mp3                        use youtube-dl to get audio
+ngu                        get git repo url
+ob                         use fzf to open bookmark with buku
 osx-ls-download-history    list download history
 palette                    display colors
+palette2                   palette alternative
 pblist                     lists mybin funcs with their embedded descriptions
+perldoc                    wrapper to colorize perldoc man pages
 pflist                     lists ZDOTDIR/functions/* with their embedded descriptions
 printc                     escape code for colors
 prompt_my_per_dir_status   helper function for per-dir-hist
+rm                         remove wrapper depending on if root
 rmhist                     remove a line from history
+sudo                       sudo wrapper
 tab                        open new terminal tab in current dir
 tms                        select selected tmux session
 um                         wrapper to colorize um man pages
