@@ -839,7 +839,7 @@ export CPPFLAGS="-I/usr/local/opt/libressl/include"
 export PKG_CONFIG_PATH="/usr/local/opt/libressl/lib/pkgconfig"
 # }}}
 
-# === sourcing === {{{
+# == sourcing === {{{
 # atload'x="$XDG_CONFIG_HOME/broot/launcher/bash/br"; [ -f "$x" ] && source "$x"'
 # atload'x="$HOME/.fzf.zsh"; [ -f "$x" ] && source "$x"'
 
