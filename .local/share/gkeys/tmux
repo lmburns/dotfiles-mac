@@ -1,24 +1,56 @@
-c-d = close pane
-pref - c-n = next window
-pref - c-p = prev window
-pref - a = last window
+# -- Keybindings ---------------------------------------------------------------
 pref - r = source tmux
-pref - c-i = install plugin
-pref - c-u = update plugin
-pref - c-f = tmux-fzf
-pref - s = bmux
-pref - x = kill pane
-pref - & = kill window
-pref - ) = switch sessions
-pref - ( = switch sessions
+pref - m = mouse on
+pref - M = mouse off
 pref - e = switch between synchronize
+pref - - = split horizontally
+pref - | = split vertically
+pref - HJKL = resize
+
+pref - & = kill window
+pref - W = swap window
+pref - { = swap window
+pref - } = swap window
+
+pref - x = kill pane
+pref - P = swap pane
+pref - [ = swap pane
+pref - ] = swap pane
 pref - v = throw pane into current pane
 pref - h = throw pane into current pane
 pref - q = swap pane with selected pane
 pref - Q = swap pane with selected pane
-pref - - = split horizontally
-pref - | = split vertically
-pref - HJKL = resize
+pref - W = interactively move pane to other window
+pref - P = interactively move pane to other window
+
+pref - X = kill all sessions
+pref - ) = switch sessions
+pref - ( = switch sessions
+pref - c-p = choose tree
+pref - alt-w = swap current window prompt
+pref - alt-shift-p = swap current pane prompt
+pref - alt-p = move current pane prompt
+
+pref - I = install plugin
+pref - U = update plugin
+
+pref - c-f = tmux-fzf
+pref alt-m = neomutt
+pref alt-r = newsboat
+pref alt-s = task spooler
+pref - s = bmux
+pref - Enter = sr
+pref Y = youtube-viewer
+pref b = open browser Buku (split)
+pref c-\ = open browser Buku
+
+# Default
+c-d = close pane
+c-o = swap pane
+x = close pane
+d = detach window
+c = new window
+w = list windows
 
 # =================================================================
 # =================================================================

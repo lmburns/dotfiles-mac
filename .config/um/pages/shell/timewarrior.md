@@ -6,6 +6,59 @@
 ## SYNOPSIS
 Track time
 
+## OPTIONS
+
+`start`
+: start task
+
+`continue`
+: continue task
+
+`start 'Using Tags' Software`
+: use two tags
+
+`summary <tag>`
+: summary of tags
+
+`tags`
+: show all tags
+
+`help continue`
+: help with cmd
+
+`track 9:00 - 11:00 'outline tutorial'`
+: add time post facto
+
+`track 9am for 2hr 'outline'`
+: alt
+
+`track 9am to 11am 'outline'`
+: alt
+
+### HINTS
+
+`:quiet`
+: suppress
+
+`:yes`
+: confirmation
+
+`:yesterday`
+: shortcut
+
+`:lastweek`
+: tag
+
+### CHARTS
+
+`summary yesterday - now`
+
+`day`
+: chart
+
+`week`
+: chart
+
 ## DESCRIPTION
 Example taken from github
 

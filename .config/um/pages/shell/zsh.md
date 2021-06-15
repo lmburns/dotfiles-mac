@@ -42,7 +42,7 @@ https://zsh.fyi/expansion
 | `(#anum)`  | Match with num approximations                |
 | `(#s)`     | Match only at start of test string           |
 | `(#e)`     | Match only at end of test string             |
-| `(#qexpr)` | `expr` is a a set of glob qualifiers (below) |
+| `(#qexpr)` | `expr` is a set of glob qualifiers (below) |
 
 ### GLOB QUALIFIERS - PARENTEHSIS AFTER FILE NAME PATTERN
 
@@ -70,6 +70,7 @@ https://zsh.fyi/expansion
 | `D`    | Match hidden files                        |
 
 ### GLOBBING QUALIFIERS
+
 `(.)`
 : regular files only
 
@@ -111,6 +112,111 @@ https://zsh.fyi/expansion
 
 `ls **/*(.aM-1)`
 : accessed last month
+
+### GLOB OPERATORS - LONG
+
+`[^...], [!...]`
+: Like *[...]*, except that it matches any character which is not in the given set.
+
+`<[x]-[y]>`
+: Matches any number in the range *x* to *y*, inclusive. Either of the numbers may be omitted to make the range open-ended; hence `<->` matches any number. To match individual digits, the `[...]` form is more efficient.
+
+Be careful when using other wildcards adjacent to patterns of this form; for example, `<0-9>*` will actually match any number whatsoever at the start of the string, since the `<0-9>` will match the first digit, and the `*` will match any others. This is a trap for the unwary, but is in fact an inevitable consequence of the rule that the longest possible match always succeeds. Expressions such as `<0-9>[^[:digit:]]*` can be used instead.
+
+`(...)`
+: Matches the enclosed pattern. This is used for grouping. If the *KSH_GLOB* option is set, then a `@`, `*`, `+`, `?` or `!` immediately preceding the `(` is treated specially, as detailed below. The option *SH_GLOB* prevents bare parentheses from being used in this way, though the *KSH_GLOB* option is still available.
+
+Note that grouping cannot extend over multiple directories: it is an error to have a `/` within a group (this only applies for patterns used in filename generation). There is one exception: a group of the form *(pat/)#* appearing as a complete path segment can match a sequence of directories. For example, *foo/(a/)#bar* matches `foo/bar`, `foo/any/bar`, `foo/any/anyother/bar`, and so on.
+
+`x|y`
+: Matches either *x* or *y*. This operator has lower precedence than any other. The `|` character must be within parentheses, to avoid interpretation as a pipeline. The alternatives are tried in order from left to right.
+
+`^x`
+: (Requires *EXTENDED_GLOB* to be set.) Matches anything except the pattern `x`. This has a higher precedence than `/`, so `^foo/bar` will search directories in `.` except `./foo` for a file named `bar`.
+
+`x~y`
+: (Requires *EXTENDED_GLOB* to be set.) Match anything that matches the pattern `x` but does not match `y`. This has lower precedence than any operator except `|`, so `*/*~foo/bar` will search for all files in all directories in `.` and then exclude `foo/bar` if there was such a match. Multiple patterns can be excluded by `foo~bar~baz`. In the exclusion pattern (*y*), `/` and `.` are not treated specially the way they usually are in globbing.
+
+`x#`
+: (Requires *EXTENDED_GLOB* to be set.) Matches zero or more occurrences of the pattern *x*. This operator has high precedence; `12#` is equivalent to `1(2#)`, rather than `(12)#`. It is an error for an unquoted `#` to follow something which cannot be repeated; this includes an empty string, a pattern already followed by `##`, or parentheses when part of a *KSH_GLOB* pattern (for example, `!(foo)#` is invalid and must be replaced by `*(!(foo))`).
+
+`x##`
+: (Requires *EXTENDED_GLOB* to be set.) Matches one or more occurrences of the pattern `x`. This operator has high precedence; `12##` is equivalent to `1(2##)`, rather than `(12)##`. No more than two active `#` characters may appear together. (Note the potential clash with glob qualifiers in the form `1(2##)` which should therefore be avoided.)
+
+### GLOBBING FLAGS - LONG
+
+All take the form *#X* where *X* may have any of the following:
+
+`i`
+: Case insensitive: upper or lower case characters in the pattern match upper or lower case characters.
+
+`l`
+: Lower case characters in the pattern match upper or lower case characters; upper case characters in the pattern still only match upper case characters.
+
+`I`
+: Case sensitive: locally negates the effect of *i* or *l* from that point on.
+
+`b`
+: Activate *backreferences* for parenthesised groups in the pattern; this does not work in filename generation. When a pattern with a set of active parentheses is matched, the strings matched by the groups are stored in the array *$match*, the indices of the beginning of the matched parentheses in the array *$mbegin*, and the indices of the end in the array *$mend*, with the **first element of each array corresponding to the first parenthesised group**, and so on. These arrays are not otherwise special to the shell. Elements of *$mend* and *$mbegin* may be used in subscripts. Sets of globbing flags are not considered parenthesised groups; only the first nine active parentheses can be referenced.
+
+For example,
+
+:    `foo="a_string_with_a_message"`
+:    `if [[ $foo = (a|an)_(#b)(*) ]]; then`
+:      `print ${foo[$mbegin[1],$mend[1]]}`
+:    `fi`
+
+Prints `string_with_a_message`. Note that the first set of parentheses is before the *(#b)* and does not create a backreference.
+
+Backreferences work with all forms of pattern matching other than filename generation, but note that when performing matches on an entire array, such as `${array#pattern}`, or a global substitution, such as `${param//pat/repl}`, **only the data for the last match remains available**. Global replacements this may still be useful. See the example for the *m* flag below.
+
+The numbering of backreferences strictly follows the order of the opening parentheses from left to right in the pattern string, although sets of parentheses may be nested. There are special rules for parentheses followed by `#` or `##`. Only the last match of the parenthesis is remembered: for example, in `[[ abab = (#b)([ab])# ]]`, only the final `b` is stored in *match[1]*. Thus extra parentheses may be necessary to match the complete segment: for example, use `X((ab|cd)#)Y` to match a whole string of either `ab` or `cd` between `X` and `Y`, using the value of *$match[1]* rather than *$match[2]*.
+
+If the match *fails* none of the parameters is altered, so in some cases it may be necessary to initialize them beforehand. If some of the backreferences fail to match — which happens if they are in an alternate branch which fails to match, or if they are followed by *#* and matched zero times — then the matched string is set to the empty string, and the start and end indices are set to -1.
+
+`B`
+: Deactivate backreferences, negating the effect of the *b* flag from that point on.
+
+`cN,M`
+: The flag *(#cN,M)* can be used anywhere that the *#* or *##* operators can be used except in the expressions `(*/)#` and `(*/)##` in filename generation, where `/` has special meaning; it cannot be combined with other globbing flags and a bad pattern error occurs if it is misplaced. It is equivalent to the form *{N,M}* in regular expressions. The previous character or group is required to match between *N* and *M* times, inclusive. The form `(#cN)` requires exactly *N* matches; `(#c,M)` is equivalent to specifying *N* as *0*; `(#cN,)` specifies that there is no maximum limit on the number of matches.
+
+`m`
+: Set references to the match data for the **entire string matched**; this is similar to backreferencing and does not work in filename generation. The flag must be in effect at the end of the pattern, i.e. not local to a group. The parameters *$MATCH*, *$MBEGIN* and *$MEND* will be set to the string matched and to the indices of the beginning and end of the string, respectively. This is most useful in parameter substitutions, as otherwise the string matched is obvious.
+
+For example,
+
+: `arr=(veldt jynx grimps waqf zho buck)`
+: `print ${arr//(#m)[aeiou]/${(U)MATCH}}`
+
+Forces all the matches (i.e. all vowels) into uppercase, printing `vEldt jynx grImps wAqf zhO bUck`.
+
+Unlike backreferences, there is no speed penalty for using match references, other than the extra substitutions required for the replacement strings in cases such as the example shown.
+
+`M`
+: Deactivate the *m* flag, hence no references to match data will be created.
+
+`anum`
+: Approximate matching: *num* errors are allowed in the string matched by the pattern. The rules for this are described in the next subsection.
+
+`s, e`
+: Unlike the other flags, these have only a *local* effect, and each must appear on its own: `(#s)` and `(#e)` are the only valid forms. The `(#s)` flag succeeds only at the *start* of the test string, and the `(#e)` flag succeeds only at the *end* of the test string; they correspond to `^` and `$` in standard regular expressions. They are useful for matching path segments in patterns other than those in filename generation (where path segments are in any case treated separately). For example, `*((#s)|/)test((#e)|/)*` matches a path segment `test` in any of the following strings: test, test/at/start, at/end/test, in/test/middle.
+
+Another use is in parameter substitution; for example `${array/(#s)A*Z(#e)}` will remove only elements of an array which match the *complete pattern* `A*Z`. There are other ways of performing many operations of this type, however the combination of the substitution operations `/` and `//` with the `(#s)` and `(#e)` flags provides a single simple and memorable method.
+
+**Note** that assertions of the form `(^(#s))` also work, i.e. match anywhere except at the start of the string, although this actually means `anything except a zero-length portion at the start of the string`; you need to use `(""~(#s))` to match a zero-length portion of the string not at the start.
+
+`q`
+: A `q` and everything up to the closing parenthesis of the globbing flags are *ignored by the pattern matching code*. This is intended to support the use of glob qualifiers, see below. The result is that the pattern `(#b)(*).c(#q.)` can be used both for globbing and for matching against a string. In the former case, the `(#q.)` will be treated as a glob qualifier and the `(#b)` will not be useful, while in the latter case the `(#b)` is useful for backreferences and the `(#q.)` will be ignored. Note that colon modifiers in the glob qualifiers are also not applied in ordinary pattern matching.
+
+`u`
+: Respect the current locale in determining the presence of multibyte characters in a pattern, provided the shell was compiled with *MULTIBYTE_SUPPORT*. This overrides the *MULTIBYTE* option; the default behaviour is taken from the option. Compare U. (Mnemonic: typically multibyte characters are from Unicode in the UTF-8 encoding, although any extension of ASCII supported by the system library may be used.)
+
+`U`
+: All characters are considered to be a single byte long. The opposite of u. This overrides the MULTIBYTE option.
+
+For example, the test string `fooxx` can be matched by the pattern *(#i)FOOXX*, but not by *(#l)FOOXX*, *(#i)FOO(#I)XX* or *((#i)FOOX)X*. The string `(#ia2)readme` specifies case-insensitive matching of readme with up to two errors.
+
+When using the ksh syntax for grouping both *KSH_GLOB* and *EXTENDED_GLOB* must be set and the left parenthesis should be preceded by @. Note also that the flags do not affect letters inside [...] groups, in other words *(#i)[a-z]* still matches only lowercase letters. Finally, note that when examining whole paths case-insensitively every directory must be searched for all files which match, so that a pattern of the form *(#i)/foo/bar/...* is potentially slow.
 
 ## ==============================================================
 
@@ -769,3 +875,103 @@ Basic forms: str will also be expanded; most forms work onwords of array separat
 
 `typeset +m 'foo*'`
 : print all env vars who match apttern
+
+
+## ==============================================================
+
+## ===============================================================
+
+## ZINIT ZSH SCRIPTING GUIDE
+
+### @ IS ABOUT KEEPING ARRAY FORM
+
+Bash: `${array[@]}` -- ZSH: `$array`
+
+`@`
+: means *do not join* or *keep in array form*
+
+`"$array"`
+: quoting joins all elements into single string, adding *@* is to have elements still quoted (empty elements preserved) but not joined
+
+### EXTENDED_GLOB
+
+*#b* and *#m* require `setopt extended_glob`. Patterns utilizing `~` and `^` also require it.
+
+## CONSTRUCTS
+
+### READING A FILE
+
+`declare -a lines; lines=( "${(@f)"$(<path/file)"}" )`
+: Preserves empty lines because *double quoting* (outside one). The *@*-flag is used to obtain array instead of scalar. Not using *@* with not preserve empty lines.
+
+`declare -a lines; lines=( ${(f)"$(<path/file)"} )`
+: Note `$(<...)` construct strips trailing empty lines
+
+### READING FROM STDIN
+
+Instead of `"$(<file-path)"`, `$(command arg1 ...)` is used instead
+
+`declare -a lines; lines=( ${(f)"$(command arg1 ...)"} )`
+: Reads *command*'s output into array *lines*.
+
+`declare -a lines; lines=( "${(f@)$(command arg1 ...)}" )`
+: Instead of four double-quotes, an idiom that is justified that was previously used `... "${(@f)"$(<path/file)"}" ...)`, only *two* double-quotes are being used. Single outside quoting of `${(f@)...}` substitution works as if it as also separately applied to `$(command ...)` or to `$(<file-path)` inner substitution, so the second double quoting isn't needed.
+
+### SKIPPING GREP
+
+`declare -a lines; lines=( "${(@f)"$(<path/file)"}" )`
+: ~
+
+`declare -a grepped; grepped=( ${(M)lines:#*query*} )`
+: To have `grep -v` affect, skip *M*-flag.
+
+`...:#(#i)*query*}`
+: To grep case insensitively, use *#i* glob flag
+
+`${...:#...}`
+: Filtering of array, which by default filters-out elements (*(M)* flag induces opposite behavior). When used with *string*, not array, it behaves similarly: returns empty string when `{input_string_var:#pattern}` matches whole input string.
+
+*Side Note*:
+: *(M)* flag can be also used with `${(M)var#pattern}` and other substitutions to retain what's matched by pattern, instead of removing it.
+
+### MULTI-LINE MATCHING LIKE GREP
+
+`[[ -n "$(echo "$(svn status)" | grep \^\?)" ]] && echo 'found'`
+: bash style
+
+`local svn_status="$(svn status)" nl=$'\n'`
+: `[[ "$svn_status" = *((#s)|$nl)\?* ]] && echo 'found'`
+: Just check if matched lines is greater than 0. The *(#s)* means **start of string**. So *((#s)|$n1)* means start of string OR **preceded** by new-line.
+
+`local needle="?" required_preceding='[[:space:]]#'`
+: `[[ "$(svn status)" = *((#s)|$nl)${~required_preceding}${needle}* ]] && echo found`
+: Multi-line matching falls into this idiom. It does a single fork (calls `svn` status). The `${~variable}` means *the variable is holding a pattern, interpret it*. Instead of regex, we are using globs.
+
+### PATTERN MATCHING IN AND-FASHION
+
+`^, ~`
+: negations
+
+`${a[(R)*pat*]}`
+: search hash
+
+`[[ "abc xyz efg" = *abc*~^*efg* ]] && print Match found`
+: The `~` is a negation -- `(match *abc* but not ...)`. Then `^` is also a negation. The effect is: `*abc* but not those that don't have *efg*`, which equals to `*abc* but those that also have *efg*`. This is a pattern that can be used with *:#* above to search arrays, or with *R*-subscript flag to search hashes (`${hsh[(R)*pattern*]}`)
+
+### SKIPPING TR
+
+`declare -A map; map=( a 1 b 2 );`
+: `text=( "ab" "ba" )`
+: `text=( ${text[@]//(#m)?/${map[$MATCH]}} )`
+: `print $text ▶ 12 21`
+
+`#m`
+: Enables *$MATCH* parameter. At each `//` substitution, `$map` is queried for char-replacement. Can substitute a text variable too, just skip `[@]` and parenthesis in assignment.
+
+### TERNARY EXPRESSIONS WITH +,-,:+,:- SUBSTITUTIONS
+
+`HELP="yes"; print ${${HELP:+help enabled}:-help disabled} ▶ help enabled`
+: `HELP=""; print ${${HELP:+help enabled}:-help disabled} ▶ help disabled`
+
+`(( a = a > 0 ? b : c ))`
+: Ternary only found directly in math context.

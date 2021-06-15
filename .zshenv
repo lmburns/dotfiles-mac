@@ -15,6 +15,7 @@ export LC_ALL="${LANGUAGE}"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_RUNTIME_DIR="/tmp"
 export XDG_BIN_HOME="$HOME/bin"
 export XDG_MBIN_HOME="$HOME/mybin"
 export LOCAL_OPT="$HOME/opt"
@@ -87,7 +88,5 @@ export NNN_TRASH=1
 export NNN_FIFO='/tmp/nnn.fifo'
 
 export GRIPHOME="${XDG_CONFIG_HOME}/grip"
-
-source "${XDG_DATA_HOME}/cargo/env"
 
 # vim:ft=zsh:et:sw=0:ts=2:sts=2:

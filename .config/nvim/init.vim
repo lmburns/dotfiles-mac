@@ -139,7 +139,6 @@
   " <F4> = compile markdown file using pandoc
   " <F5> = compile rmarkdown based on `output`
   " <F6> = compile rmarkdown (only pdf) using `RMarkdown`
-  " <F10> = spell check
 
   " g; / g, = previous/next insertion
   " ysiw' = add quotes around word
@@ -1335,7 +1334,7 @@ nnoremap <Leader>gp :Git push<CR>
   augroup spell
     " add markdown
     autocmd!
-    autocmd FileType text,gitcommit setlocal spell
+    autocmd FileType text,gitcommit,markdown setlocal spell
     autocmd BufRead,BufNewFile neomutt-void* setlocal spell
   augroup END
 " }}} === Spell Check ===
@@ -1748,6 +1747,7 @@ augroup END
       \ inoremap ** ****<Left><Left>|
       \ inoremap <expr> <right> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"|
       \ nnoremap <Leader>tg itags:<Space>macOS<CR>title:<CR>author:<Space>Lucas<Space>Burns<CR>date:<Space><C-r>=strftime('%F')<CR><CR>aside:<CR><CR>#|
+      \ vnoremap <Leader>si :s/`/*/g<CR>
   augroup END
 
   autocmd FileType python vnoremap scw <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
@@ -2297,6 +2297,11 @@ vnoremap <silent> <Leader>hr :<c-u>HSRmHighlight<CR>
   " highlight DiffAdd      ctermfg=65 ctermbg=NONE guifg=#5F875F guibg=NONE
   " highlight DiffChange   ctermfg=60 ctermbg=NONE guifg=#5F5F87 guibg=NONE
   " highlight DiffDelete   ctermfg=9  ctermbg=NONE guifg=#cc6666 guibg=NONE
+
+hi DiffAdd      gui=none    guifg=NONE          guibg=#819C3B
+hi DiffChange   gui=none    guifg=NONE          guibg=#FF9500
+hi DiffDelete   gui=bold    guifg=#ff8080       guibg=#DC3958
+hi DiffText     gui=none    guifg=NONE          guibg=#4C96A8
 
   exec 'hi! SignifySignAdd    ctermfg=Green  guifg=#50FA7B ' . (has('termguicolors')? 'guibg=none':'ctermbg=') . synIDattr(hlID('SignColumn'),'bg')
   exec 'hi! SignifySignDelete ctermfg=Red    guifg=#FF5555 ' . (has('termguicolors')? 'guibg=none':'ctermbg=') . synIDattr(hlID('SignColumn'),'bg')

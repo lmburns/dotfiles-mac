@@ -10,11 +10,17 @@ weather:
 weather_full:
   @curl v2d.wttr.in/65202
 
-gbatch:
+batch-all:
   gitbatch -r 2 -d $HOME/opt
 
-zbatch:
-  gitbatch -r 2 -d $ZINIT_HOME
+batch-zinit:
+  gitbatch -r 2 -d $ZINIT_HOME/plugins
+
+batch-ghq:
+  gitbatch -r 3 -d $HOME/ghq
+
+batch-dot:
+  gitbatch -r 3 -d $HOME/opt/dotfiles
 
 sdns:
   sudo networksetup -setdnsservers "Wi-Fi" 127.0.0.1 ::1
@@ -118,3 +124,33 @@ group-deluser USER GROUP:
 # dseditgroup -o checkmember -m {{USER}} {{GROUP}}
 group-checkmember USER GROUP:
   dsmemberutil checkmembership -U {{USER}} -G {{GROUP}}
+
+load-at:
+  sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.atrun.plist
+
+clear-xcode:
+  rm -rf ~/Library/Developer/Xcode/DerivedData
+
+connect-lucas:
+  m wifi connect lucas_iphone $(pass wifi-lucas_iphone)
+
+zsh-modif:
+  w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers'
+
+zsh-param:
+  w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion'
+
+zhs-param-flags:
+  w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags'
+
+zsh-hist-exp:
+  w3m 'http://zsh.sourceforge.io/Doc/Release/Expansion.html#History-Expansion'
+
+zsh-glob-flags:
+  w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Globbing-Flags'
+
+zsh-glob-qual:
+  w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Glob-Qualifiers'
+
+zsh-subflags:
+  w3m 'http://zsh.sourceforge.net/Doc/Release/Parameters.html#Subscript-Flags'

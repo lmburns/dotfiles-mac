@@ -2,6 +2,8 @@
 
 # desc: get git repo url
 
+# git remote get-url origin
+
 ngu() {
   confu="$(sed -n '/\[remote\s.*/{n;s/\t//g;s/url = //p}' .git/config)"
   echo "${confu}" | pbcopy

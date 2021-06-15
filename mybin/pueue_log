@@ -1,0 +1,3 @@
+#!/bin/sh
+# This expects the character after `\(.id)` in `offer_options()` to be a comma.
+pueue log "${1%%,*}" ;

@@ -285,7 +285,7 @@ delkey.d = {
   help = "delete",
   messages = {
       {
-        BashExec = [===[
+        BashExecSilently = [===[
         while IFS= read -r line; do trash-put -- "${line:?}";
         done < "${XPLR_PIPE_RESULT_OUT:?}"
         echo ExplorePwdAsync >> "${XPLR_PIPE_MSG_IN:?}"

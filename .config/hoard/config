@@ -50,6 +50,9 @@
 [envs.neovim]
     exe_exists = ["nvim"]
 
+[envs.pueue]
+    exe_exists = ["pueue"]
+
 [envs.skhd]
     exe_exists = ["skhd"]
 
@@ -69,6 +72,9 @@
 
 [envs.vim]
     exe_exists = ["vim"]
+
+[envs.w3m]
+    exe_exists = ["w3m"]
 
 [envs.xplr]
     exe_exists = ["xplr"]
@@ -158,6 +164,7 @@
     [hoards.fastsyntaxhighlighting.theme3]
         "macos|zsh" = "/Users/lucasburns/.config/fsh/mod-backup.ini"
 
+# FIX: 'git' won't work
 [hoards.gitp]
     [hoards.gitp.conf]
         "macos|git" = "/Users/lucasburns/.config/git/config"
@@ -165,12 +172,12 @@
         "macos|git" = "/Users/lucasburns/.config/git/gitmessage"
     [hoards.gitp.globalignore]
         "macos|git" = "/Users/lucasburns/.config/git/gitignore_global"
-    # [hoards.gitp.gh.hosts]
-    #     "macos|git|gh" = "/Users/lucasburns/.config/gh/hosts.yml"
-    # [hoards.gitp.gh.state]
-    #     "macos|git|gh" = "/Users/lucasburns/.config/gh/state.yml"
-    # [hoards.gitp.gh.config]
-    #     "macos|git|gh" = "/Users/lucasburns/.config/gh/config.yml"
+
+[hoards.gh]
+    [hoards.gh.hosts]
+        "macos|gh" = "/Users/lucasburns/.config/gh/hosts.yml"
+    [hoards.gh.conf]
+        "macos|gh" = "/Users/lucasburns/.config/gh/config.yml"
 
 [hoards.gitui]
     [hoards.gitui.conf]
@@ -338,6 +345,12 @@
 [hoards.procs]
     "macos" = "/Users/lucasburns/.config/procs/config.toml"
 
+[hoards.pueue]
+    [hoards.pueue.conf]
+        "macos|pueue" = "/Users/lucasburns/.config/pueue/pueue.yml"
+    [hoards.pueue.aliases]
+        "macos|pueue" = "/Users/lucasburns/.config/pueue/pueue_aliases.yml"
+
 [hoards.rlang]
     [hoards.rlang.profile]
         "macos" = "/Users/lucasburns/.config/r/Rprofile"
@@ -437,6 +450,20 @@
 [hoards.visidata]
     "macos" = "/Users/lucasburns/.visidatarc"
 
+[hoards.w3m]
+    [hoards.w3m.conf]
+        "macos|w3m" = "/Users/lucasburns/.w3m/config"
+    [hoards.w3m.keymap]
+        "macos|w3m" = "/Users/lucasburns/.w3m/keymap"
+    [hoards.w3m.mailcap]
+        "macos|w3m" = "/Users/lucasburns/.w3m/mailcap"
+    [hoards.w3m.urimethodmap]
+        "macos|w3m" = "/Users/lucasburns/.w3m/urimethodmap"
+    [hoards.w3m.cgi-bin]
+        "macos|w3m" = "/Users/lucasburns/.w3m/cgi-bin"
+    [hoards.w3m.root-cgi-bin]
+        "macos|w3m" = "/Users/lucasburns/.w3m/root-cgi-bin"
+
 [hoards.wget]
     "macos" = "/Users/lucasburns/.config/wget/wgetrc"
 
@@ -459,6 +486,9 @@
         "macos|yabai|skhd" = "/Users/lucasburns/.config/skhd/skhdrc"
     [hoards.yabai.yabai]
         "macos|yabai" = "/Users/lucasburns/.config/yabai/yabairc"
+
+[hoards.ytfzf]
+    "macos" = "/Users/lucasburns/.config/ytfzf/conf.sh"
 
 [hoards.youtube_dl]
     "macos" = "/Users/lucasburns/.config/youtube-dl/config"
@@ -489,6 +519,12 @@
         "zsh|macos" = "/Users/lucasburns/.config/zsh/completions"
     [hoards.zsh.dircolors]
         "zsh|macos" = "/Users/lucasburns/.config/zsh/gruv.dircolors"
+    [hoards.zsh.history]
+        "zsh|macos" = "/Users/lucasburns/.cache/zsh/zsh_history"
+    [hoards.zsh.daemons]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/daemon"
+    [hoards.zsh.vim]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/vim"
 
     # [hoards.zsh.zinit]
     #     "zsh|macos" = "/Users/lucasburns/.config/zsh/zinit"

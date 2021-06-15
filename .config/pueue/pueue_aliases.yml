@@ -1,0 +1,4 @@
+rsync: 'rsync --recursive --partial --perms --progress'
+callback: "osascript -e 'display notification \"Finished with status {{ result }}\" with title \"Pueue task {{ id }}\" subtitle \"{{ command }}\"'"
+bruin: 'brew uninstall'
+brins: 'brew install'

@@ -102,6 +102,11 @@
 `g reset --soft HEAD~1`
 : revert back a commit
 
+## CLEAN
+
+`g clean`
+: remove untracked from repo
+
 ## PULL REQUEST
 
 `g checkout -b bname`

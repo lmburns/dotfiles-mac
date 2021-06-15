@@ -22,39 +22,46 @@ man() {
 
 zmp() { man -P "less -p'^${@}'" zshall; }
 zmo() { man -P "less -p'^${@}'" zshmodules; }
+zlm() { man -P "less -p'^${@}'" zshzle; }
+zd() { man -P "less -p'^THE ZSH/$1 MODULE$'" zshmodules; }
 zb() { man -P "less -p'^       "$1" '" zshbuiltins; }
+zo() { man -P "less -p'^       "$1"'" zshoptions; }
 zp() { man -P "less -p'^       ${1/#[ewspfrRiInbkK]/"${1}"} '" zshexpn; }
 zs() { man -P "less -p'^       ${1/#[AacCefFikLnoOPqQtuUvVwWXzpjslrSIBEMNR]/"${1}"} '" zshparam; }
 
 usage() {
-  print -P "%F{2}-t, --test -- [[ -e ]]%f"
-  print -P "%F{4}-e, --example%f"
-  print -P "%F{2}--pf, --pexpf -- \"\$ {(f)foo}\"%f"
-  print -P "%F{4}--pexp, --paramexp -- \"\$ {~foo}\"%f"
-  print -P "%F{2}--he, --histexp -- $ {var:h3}%f"
-  print -P "%F{4}--hf, histflags%f"
-  print -P "%F{2}-a, --arrparam%f"
-  print -P "%F{4}--ars, --arrsubscript%f"
-  print -P "%F{2}--arsf, --arrflag -- $ {array[(i)pattern]}%f"
-  print -P "%F{4}-c, --complex%f"
-  print -P "%F{2}-g, --glob -- (#X)%f"
-  print -P "%F{4}-o, --opts -- AUTO_CD%f"
-  print -P "%F{2}--sopts, --1opts%f"
-  print -P "%F{4}--prompt, --promptchars -- %%B%f"
-  print -P "%F{2}-r, --redir%f"
-  print -P "%F{4}--bind --bindkey -- vi-backward-kill%f"
-  print -P "%F{2}-z, --zparse%f"
-  print -P "%F{4}b, built -- echoti%f"
-  print -P "%F{2}p, param -- $ {var:h}, $ {(f)foo}%f"
-  print -P "%F{4}s, subscript -- $ {foo[(re)bar]}%f"
+  print -Pr -- "%F{2}-t, --test -- [[ -e ]]%f"
+  print -Pr -- "%F{4}-e, --example%f"
+  print -Pr -- "%F{2}--pf, --pexpf -- \"\$ {(f)foo}\"%f"
+  print -Pr -- "%F{4}--pexp, --paramexp -- \"\$ {~foo}\"%f"
+  print -Pr -- "%F{2}--he, --histexp -- $ {var:h3}%f"
+  print -Pr -- "%F{4}--hf, histflags%f"
+  print -Pr -- "%F{2}-a, --arrparam%f"
+  print -Pr -- "%F{4}--ars, --arrsubscript%f"
+  print -Pr -- "%F{2}--arsf, --arrflag -- $ {array[(i)pattern]}%f"
+  print -Pr -- "%F{4}-c, --complex%f"
+  print -Pr -- "%F{2}-g, --glob -- (#X)%f"
+  print -Pr -- "%F{4}-o, --opts -- AUTO_CD%f"
+  print -Pr -- "%F{2}--sopts, --1opts%f"
+  print -Pr -- "%F{4}--prompt, --promptchars -- %%B%f"
+  print -Pr -- "%F{2}-r, --redir%f"
+  print -Pr -- "%F{4}--wid --widget -- vi-backward-kill%f"
+  print -Pr -- "%F{2}-z, --zparse%f"
+  print -Pr -- "%F{4}--ru, --rules%f"
+  print -Pr -- "%F{2}--vared, --bindkey%f"
+  print -Pr -- "%F{4}-b, --built -- echoti%f"
+  print -Pr -- "%F{2}-p, --param -- $ {var:h}, $ {(f)foo}%f"
+  print -Pr -- "%F{4}-s, --subscript -- $ {foo[(re)bar]}%f"
+  print -Pr -- "%F{2}-m, --module -- ZSH/ZUTIL%f"
 }
 
 lopts=(test example pf pexpf pexp paramexp he histexp hf histflags arrparam arrsubscript help)
-lopts+=(arsf arrflag complex glob shopts sopts 1opts prompt promptchars redir bind bindkey zparse)
+lopts+=(arsf arrflag complex glob shopts sopts 1opts prompt promptchars redir wid widget zparse)
+lopts+=(ars ru rules bindkey vared opts)
 
-zparseopts -D -E -a opts ${(s::):-teacgorzh} \
+zparseopts -D -E -a opts ${(s::):-teacgrzh} \
   ${lopts//(#m)*/\-${MATCH}} \
-  ${${(@)${(s::):-bps}//(#m)*/${MATCH}\:\=opts}}
+  ${${(@)${(s::):-bpsmo}//(#m)*/${MATCH}\:\=opts}}
 
   # b:=opts p:=opts s:=opts
   # ${(j.:=opts .)${(s::):-bps}}:=opts
@@ -63,6 +70,7 @@ zparseopts -D -E -a opts ${(s::):-teacgorzh} \
   # 'b' 'built' \
   # 'p' 'param' \
   # 's' 'subscript' \
+  # 'm' 'module' \
   # 'h' 'help'
 
 [[ -z "${opts[1]}" && -z "${1}" ]] && { usage; exit 1 }
@@ -81,13 +89,17 @@ case ${opts[1]} in
   --arsf|-a-rrflag|"arr flags"|"array flags") zmp "   Subscript Flags$" ;;
   -c|--complex) zmp "COMPLEX COMMANDS$" ;;
   -g|--glob) zmp "   Globbing Flags$" ;;
-  -o|--shopts) zmp "DESCRIPTION OF OPTIONS$" ;;
+  --opts) zmp "DESCRIPTION OF OPTIONS$" ;;
   --sopts|--1opts) zmp "SINGLE LETTER OPTIONS$" ;;
   --prompt|--promptchars) zmp "SIMPLE PROMPT ESCAPES$" ;;
   -r|--redir) zmp "REDIRECTION$" ;;
-  --bind|--bindkey) zmp "STANDARD WIDGETS$" ;;
+  --wid|--widgets) zmp "STANDARD WIDGETS$" ;;
+  --bindkey|--vared) zlm "ZLE BUILTINS$" ;;
   -z|--zparse) zmo "       zparseopts$" ;;
+  --ru|--rules) zmp "   Rules$" ;;
+  -m) zd "${(U)opts[2]}" ;;
   -b) zb "${opts[2]}" ;;
+  -o) zo "${opts[2]}" ;;
   -p) zp "${opts[2]}" ;;
   -s) zs "${opts[2]}" ;;
   -h|--help) usage ;;

@@ -1,12 +1,11 @@
 #show-read-feeds no
 auto-reload yes
 refresh-on-startup yes
-browser "$BROWSER %u &"
 prepopulate-query-feeds yes
-bookmark-autopilot yes
 history-limit 400
 text-width 88
-# bookmark-cmd "$XDG_DATA_DIR/newsboat/send-to-pocket.sh"
+reload-threads 4
+
 # external-url-viewer "urlscan -dc -r 'linkhandler {}'"
 
 notify-always yes
@@ -36,7 +35,35 @@ bind-key n next-unread
 bind-key N prev-unread
 bind-key D pb-download
 bind-key U show-urls
+bind-key i sort
+bind-key I rev-sort
+
+# browser "$BROWSER %u &"
+# browser open -a LibreWolf
+browser linkhandler
+macro , open-in-browser
+macro t set browser "qndl" ; open-in-browser ; set browser linkhandler
+macro a set browser "youtube-dl --add-metadata -xic -f bestaudio/best" ; open-in-browser ;
+macro v set browser "nohup mpv" ; open-in-browser ;
+macro w set browser "w3m" ; open-in-browser ;
+macro l set browser "links" ; open-in-browser ;
+macro C set browser "youtube-viewer --comments=%u" ; open-in-browser ;
+macro y set browser "echo %u | pbcopy" ; open-in-browser ; set browser linkhandler
+macro B set browser "newsboat_video_download" ; open-in-browser
+
+# FIX: use saved articles
+macro s set browser "tmux split-window && tmux send-keys 'lf ~/.newsboat/saved_articles && tmux kill-pane\n'" ; open-in-browser ; set browser "~/mybin/urlportal %u"
+
+macro r set browser "tmux split-window -p 80 && tmux send-keys 'rtv -l %u && tmux kill-pane\n'"; open-in-browser ; set browser "~/mybin/urlportal %u"
+
+# Podboat:
+download-path "~/Downloads/podcasts/%n"
+player "mpv --audio-display=no"
+max-downloads 10
+
 bind-key x pb-delete
+bind-key b pb-toggle-download-all
+bind-key M pb-mark-as-finished
 
 ##############################
 # color background default default
@@ -55,22 +82,6 @@ color listfocus color16 cyan
 color listfocus_unread color16 cyan
 color info default black
 color article default default
-
-# browser open -a LibreWolf
-browser linkhandler
-macro , open-in-browser
-macro t set browser "qndl" ; open-in-browser ; set browser linkhandler
-macro a set browser "youtube-dl --add-metadata -xic -f bestaudio/best" ; open-in-browser ;
-macro v set browser "nohup mpv" ; open-in-browser ;
-macro w set browser "w3m" ; open-in-browser ;
-macro l set browser "links" ; open-in-browser ;
-macro C set browser "youtube-viewer --comments=%u" ; open-in-browser ;
-macro y set browser "echo %u | pbcopy" ; open-in-browser ; set browser linkhandler
-
-# Podboat:
-download-path "~/Downloads/podcasts/"
-player "mpv --audio-display=no"
-max-downloads 10
 
 highlight all "---.*---" yellow
 highlight feedlist ".*(0/0))" black

@@ -1,8 +1,24 @@
 #!/bin/bash
 
+COMPUTER_NAME='void'
+
 osascript -e 'tell application "System Preferences" to quit'
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+# Set computer name (as done via System Preferences → Sharing)
+sudo scutil --set ComputerName "$COMPUTER_NAME"
+sudo scutil --set HostName "$COMPUTER_NAME"
+sudo scutil --set LocalHostName "$COMPUTER_NAME"
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$COMPUTER_NAME"
+
+############################################################################
+#   Created: 2021-06-10 13:24                                              #
+############################################################################
+
+
+# Set standby delay to 24 hours (default is 1 hour)
+sudo pmset -a standbydelay 86400
 
 # If you want to view the download history
 # sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 'select LSQuarantineDataURLString from LSQuarantineEvent'| sort > ~/quarantine
@@ -85,4 +101,3 @@ defaults write com.apple.screencapture type -string "png"
 
 # Build the locate database (it may take a while, but useful)
 sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
-

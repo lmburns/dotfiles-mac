@@ -1,4 +1,4 @@
-# desc: sudo wrapper
+# desc: sudo wrapper to allow aliases
 
 function _do_sudo() {
   [[ -z ${__do_sudo_glob+x} ]] && local __do_sudo_glob=1

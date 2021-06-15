@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+
+# desc: keep limelight running
+
+keep-alive() {
+  if pueue log 0 | rg -Fq 'running'; then
+    return
+  elif pueue log 0 | rg -Fq 'lock'; then
+    if pgrep limelight; then
+      pkill "$(pgrep limelight)"
+    fi
+  else
+    chronic pueue clean && pueue status | rg -Fq "limelight" \
+      || chronic pueue add limelight
+  fi
+}
+
+keep-alive

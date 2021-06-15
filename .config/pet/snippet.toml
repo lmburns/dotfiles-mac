@@ -45,7 +45,7 @@
 
 [[snippets]]
   description = "cpu/memory"
-  command = "ps -A -o %cpu,%mem | awk '{ cpu += \\$1; mem += \\$2} END {print \\\"CPU: \\\"  cpu,\\\"MEM: \\\"  mem}'"
+  command = "ps -A -o %cpu,%mem | awk '{ cpu += $1; mem += $2} END {print \"CPU: \"  cpu,\"MEM: \"  mem}'"
   output = ""
 
 [[snippets]]

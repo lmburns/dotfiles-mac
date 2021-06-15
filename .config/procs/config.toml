@@ -1,6 +1,6 @@
 [[columns]]
 kind = "Pid"
-style = "BrightYellow"
+style = "BrightYellow|Yellow"
 numeric_search = true
 nonnumeric_search = false
 align = "Left"
@@ -85,12 +85,12 @@ color_w = "BrightYellow"
 color_p = "BrightYellow"
 
 [style.by_unit]
-color_k = "BrightBlue"
-color_m = "BrightGreen"
-color_g = "BrightYellow"
-color_t = "BrightRed"
-color_p = "BrightRed"
-color_x = "BrightBlue"
+color_k = "BrightBlue|Blue"
+color_m = "BrightGreen|Green"
+color_g = "BrightYellow|Yellow"
+color_t = "BrightRed|Red"
+color_p = "BrightRed|Red"
+color_x = "BrightBlue|Blue"
 
 [search]
 numeric_search = "Exact"
@@ -117,6 +117,5 @@ order = "Ascending"
 path = "unix:///var/run/docker.sock"
 
 [pager]
-mode = "Auto"
+mode = "bat"
 detect_width = false
-
