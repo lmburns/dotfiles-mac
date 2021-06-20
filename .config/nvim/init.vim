@@ -115,7 +115,6 @@
   Plug 'sainnhe/sonokai'
   Plug 'sainnhe/everforest'
   Plug 'joshdick/onedark.vim'
-  Plug 'embark-theme/vim', { 'as': 'embark' }
   Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
   Plug 'kaicataldo/material.vim', { 'branch': 'main' }
   Plug 'ghifarit53/daycula-vim' , {'branch' : 'main'}
@@ -126,6 +125,7 @@
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
+  " Plug 'embark-theme/vim', { 'as': 'embark' }
   " Plug 'mhartington/oceanic-next'
   " Plug 'aswathkk/DarkScene.vim'
 
@@ -240,15 +240,15 @@
       \,sm:block-blinkwait175-blinkoff150-blinkon175
 
   syntax enable
+  " colorscheme kimbox
   " colorscheme spaceduck
   " colorscheme bogster
-  colorscheme kimbox
   " colorscheme material
   " colorscheme everforest
   " colorscheme miramare
   " colorscheme sonokai
   " colorscheme oceanic_material
-  " colorscheme gruvbox-material
+  colorscheme gruvbox-material
   " colorscheme night-owl
   " colorscheme jellybeans
   " colorscheme gruvbit
@@ -2294,14 +2294,14 @@ vnoremap <silent> <Leader>hr :<c-u>HSRmHighlight<CR>
   " highlight! default link CocInfoSign Title
   " highlight! default link CocHintSign Question
   " highlight clear SignColumn
-  " highlight DiffAdd      ctermfg=65 ctermbg=NONE guifg=#5F875F guibg=NONE
-  " highlight DiffChange   ctermfg=60 ctermbg=NONE guifg=#5F5F87 guibg=NONE
-  " highlight DiffDelete   ctermfg=9  ctermbg=NONE guifg=#cc6666 guibg=NONE
+  highlight DiffAdd      ctermfg=65 ctermbg=NONE guifg=#5F875F guibg=NONE
+  highlight DiffChange   ctermfg=60 ctermbg=NONE guifg=#5F5F87 guibg=NONE
+  highlight DiffDelete   ctermfg=9  ctermbg=NONE guifg=#cc6666 guibg=NONE
 
-hi DiffAdd      gui=none    guifg=NONE          guibg=#819C3B
-hi DiffChange   gui=none    guifg=NONE          guibg=#FF9500
-hi DiffDelete   gui=bold    guifg=#ff8080       guibg=#DC3958
-hi DiffText     gui=none    guifg=NONE          guibg=#4C96A8
+" hi DiffAdd      gui=none guifg=#819C3B guibg=NONE
+" hi DiffChange   gui=none    guifg=NONE          guibg=#FF9500
+" hi DiffDelete   gui=bold guifg=#DC3958 guibg=NONE
+" hi DiffText     gui=none guifg=#4C96A8 guibg=NONE
 
   exec 'hi! SignifySignAdd    ctermfg=Green  guifg=#50FA7B ' . (has('termguicolors')? 'guibg=none':'ctermbg=') . synIDattr(hlID('SignColumn'),'bg')
   exec 'hi! SignifySignDelete ctermfg=Red    guifg=#FF5555 ' . (has('termguicolors')? 'guibg=none':'ctermbg=') . synIDattr(hlID('SignColumn'),'bg')

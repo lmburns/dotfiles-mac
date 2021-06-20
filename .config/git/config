@@ -161,6 +161,8 @@
   bclone = clone --bare
   # Rebase interactive for all commits on feature branch
   rebase-branch = !git rebase -i `git merge-base master HEAD`
+  # Get remote url
+  origin = remote get-url origin
   # Get name of default head branch
   main = !git remote show $(git upstream) | awk '/HEAD branch/ {print $NF}'
   unstage = reset -q HEAD --

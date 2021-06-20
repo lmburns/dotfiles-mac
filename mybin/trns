@@ -6,11 +6,12 @@
 # if an option is detected, remove it from
 # the positional parameters of the calling shell
 
-zparseopts -D -a option \
+zparseopts -D -E -a option \
   'c' '-create' \
   'd' '-daemon' \
   'e' '-edit' \
   'r' '-remote' \
+  'a' '-add' \
   'q' '-quit' \
   'h' '-help'
 case ${option[1]} in
@@ -18,6 +19,7 @@ case ${option[1]} in
   -d | --daemon) transmission-daemon ${@} ;;
   -e | --edit) transmission-edit ${@} ;;
   -r | --remote) transmission-remote ${@} ;;
+  -a | --add) transmission-remote -a ${@} ;;
   -q | --quit) transmission-remote --exit; exit 0 ;;
   -h | --help)
       print -rl -- "-c, --create transmission-create"

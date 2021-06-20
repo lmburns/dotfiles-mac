@@ -32,6 +32,9 @@
 [envs.just]
     exe_exists = ["just"]
 
+[envs.khard]
+    exe_exists = ["khard"]
+
 [envs.karabiner]
     path_exists = ["/Applications/Karabiner-Elements.app"]
 
@@ -221,6 +224,12 @@
 [hoards.karabiner]
     "macos|karabiner" = "/Users/lucasburns/.config/karabiner/karabiner.json"
 
+[hoards.khard]
+    [hoards.khard.conf]
+        "macos|khard" = "/Users/lucasburns/.config/khard/khard.conf"
+    [hoards.khard.address]
+        "macos|khard" = "/Users/lucasburns/.local/share/mates2"
+
 [hoards.kitty]
     [hoards.kitty.conf]
         "macos" = "/Users/lucasburns/.config/kitty/kitty.conf"
@@ -384,6 +393,24 @@
 [hoards.spacebar]
     "macos" = "/Users/lucasburns/.config/spacebar/spacebarrc"
 
+[hoards.ssh]
+    [hoards.ssh.conf]
+        "macos" = "/Users/lucasburns/.ssh/config"
+    [hoards.ssh.known_hosts]
+        "macos" = "/Users/lucasburns/.ssh/known_hosts"
+    [hoards.ssh.git]
+        "macos" = "/Users/lucasburns/.ssh/git"
+    [hoards.ssh.git-pub]
+        "macos" = "/Users/lucasburns/.ssh/git.pub"
+    [hoards.ssh.burnsac]
+        "macos" = "/Users/lucasburns/.ssh/burnsac"
+    [hoards.ssh.burnsac-pub]
+        "macos" = "/Users/lucasburns/.ssh/burnsac.pub"
+    [hoards.ssh.gitlab]
+        "macos" = "/Users/lucasburns/.ssh/gitlab-new"
+    [hoards.ssh.gitlab-pub]
+        "macos" = "/Users/lucasburns/.ssh/gitlab-new.pub"
+
 [hoards.surfraw]
     [hoards.surfraw.conf]
         "macos" = "/Users/lucasburns/.config/surfraw/conf"
@@ -525,6 +552,10 @@
         "zsh|macos" = "/Users/lucasburns/.config/zsh/daemon"
     [hoards.zsh.vim]
         "zsh|macos" = "/Users/lucasburns/.config/zsh/vim"
+
+[hoards.zshplug]
+    [hoards.zshplug.formarks]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/zinit/polaris/share/fzf-marks/marks"
 
     # [hoards.zsh.zinit]
     #     "zsh|macos" = "/Users/lucasburns/.config/zsh/zinit"

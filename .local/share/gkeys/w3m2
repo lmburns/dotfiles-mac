@@ -1,0 +1,6 @@
+## W3M
+
+xw = $BROWSER
+XW = $BROWSER
+yx = copy url
+YX = copy url

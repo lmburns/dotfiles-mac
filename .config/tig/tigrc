@@ -1,7 +1,6 @@
 # vim:set sw=4 ts=4 et:
 
-# Options {{{
-
+# Options [[[
 set main-options = -n 1000 # useful for large repos
 set horizontal-scroll = 33%
 set line-graphics = utf-8
@@ -10,10 +9,9 @@ set status-show-untracked-dirs = false
 set tab-size = 2
 set vertical-split = horizontal
 set wrap-lines = yes
+# ]]]
 
-# }}}
-# Views {{{
-
+# Views [[[
 set blame-view	= date:default author:full file-name:auto id:yes,color line-number:no,interval=5 text
 set grep-view	= file-name:no line-number:yes,interval=1 text
 set main-view	= line-number:no,interval=5 id:yes date:relative author:full commit-title:yes,graph,refs,overflow=no
@@ -21,9 +19,9 @@ set refs-view	= date:default author:full ref commit-title
 set stash-view	= line-number:no,interval=5 id:no date:default author:full commit-title
 set status-view	= line-number:no,interval=5 status:short file-name
 set tree-view	= line-number:no,interval=5 mode author:full file-size date:default id:no file-name
+# ]]]
 
-# }}}
-# Colors {{{
+# Colors [[[
 color cursor white blue
 color status white default
 color title-focus white blue
@@ -37,18 +35,21 @@ color stat-unstaged red default
 color stat-untracked yellow default
 color tree.header white default
 color tree.directory cyan default
-# }}}
-# Bindings {{{
+# ]]]
 
-# Generic {{{
+# Bindings [[[
 
-
+# Generic [[[
 # Vim-style keybindings for Tig
 
 bind generic h scroll-left
 bind generic j move-down
 bind generic k move-up
 bind generic l scroll-right
+
+# Less-like scrolling
+bind generic <Ctrl-f> scroll-page-down
+bind generic <Ctrl-b> scroll-page-up
 
 bind generic g  none
 bind generic gg move-first-line
@@ -133,12 +134,22 @@ bind generic > !git push %(remote) %(branch)
 bind generic <Ctrl-x> !git branch -D %(branch)
 bind generic <Ctrl-b> !git push %(remote) --delete %(branch)
 bind generic <Ctrl-j> !git checkout %(branch)
+bind generic xcpc +sh -c "printf %(commit) | xsel -ib && printf \"The commit ID has been copied.\" || printf \"Problems copying the commit ID.\""
+bind generic xcpf +sh -c "xsel -ib <\"%(file)\" && printf \"The file contents have been copied.\" || printf \"Problems copying the file contents.\""
 bind refs    <Ctrl-h> !@git reset --hard %(remote)/%(branch)
 
-# }}}
-# Main {{{
+# Compare changed file in status view
+bind status xdf !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
 
+# Create a new branch from the selected one
+bind refs xnb !@git checkout -b "%(prompt New branch name: )" %(branch)
 
+# Add notes to a commit
+bind generic T !git notes edit %(commit)
+
+# ]]]
+
+# Main [[[
 bind main g none
 bind main gf !git fetch
 bind main gr !git revert %(commit)
@@ -148,22 +159,47 @@ bind main A @git commit --amend --reuse-message=HEAD
 bind main C !?git checkout %(commit)
 bind main H !?git reset --hard %(commit)
 bind main R !git rebase -i --autosquash %(commit)^
-bind main P !git cherry-pick %(commit)
+bind main Z !git cherry-pick %(commit)
 bind main F @git commit --fixup %(commit)
 # bind main E !<sh -c "vim -c 'Gedit %(commit)' $(ls | head -1)"
 bind main V !<sh -c "nvim $(git show %(commit) --pretty=format: --name-only | xargs)"
 bind main Y !@csh -c "echo -n %(commit) | pbcopy"
 
-# }}}
-# Diff {{{
+# Delete a file
+bind status D none
+bind status DD !@?rm %(file)
 
+# Revert a commit
+bind main ! !git revert %(commit)
+
+bind main P !git push %(remote)
+bind main xpga !git push
+bind main xpom !git push origin master
+bind main xpog !git push origin
+
+# Compare selected commit in log view (main view) with its parent
+bind main xdp !git difftool -d %(commit)^!
+
+# Compare two selected commits
+bind main xd2 !sh -c "echo Checking branch existence; \
+    if [ \"$(git branch --list temp-compare-base)\" != \"\" ]; then\
+        echo Branch exists, comparing with %(commit); \
+        git difftool -d temp-compare-base..%(commit); \
+        git branch --delete temp-compare-base; \
+    else \
+        echo Creating initial branch at %(commit); \
+        git branch temp-compare-base %(commit); \
+    fi;"
+# ]]]
+
+# Diff [[[
 bind diff <Up> move-up
 bind diff <Down> move-down
 
 # Edit all files of commit
 bind diff A !git add %(file)              # Add current file
 bind diff C !git commit -av               # Add and commit
-bind diff P !git add -p %(file)           # Partially add current file
+bind diff p !git add -p %(file)           # Partially add current file
 bind diff F !@sh -c "git show %(commit) --pretty=format: --name-only | xargs | xsel -ib"
 bind diff E !<sh -c "nvim -c 'Gedit %(commit)' $(ls | head -1)"
 bind diff V !<sh -c "nvim $(git show %(commit) --pretty=format: --name-only | xargs)"
@@ -173,22 +209,26 @@ bind diff ] none
 bind diff [c :toggle diff-context -5
 bind diff ]c :toggle diff-context +5
 
-# }}}
-# Tree {{{
+bind diff P !git push %(remote)
+bind diff xpga !git push
+bind diff xpom !git push origin master
+bind diff xpog !git push origin
 
+# ]]]
+
+# Tree [[[
 bind tree V !nvim %(file)
+bind tree B !bat --paging=always -f %(file)
+# ]]]
 
-# }}}
-# Branch {{{
-
+# Branch [[[
 bind branch N !@git branch %(prompt)
 bind branch C !@git co %(branch)
 bind branch R !@git rebase
 bind branch D !@git branch -D %(branch)
+# ]]]
 
-# }}}
-# Refs {{{
-
+# Refs [[[
 bind refs C !git checkout %(ref)
 bind refs D !@git branch -D %(branch)
 bind refs ! ?@git branch -D %(branch)
@@ -198,20 +238,38 @@ bind refs dd !@git branch -D %(branch)
 
 bind refs g none
 bind refs gc !@git checkout %(ref)
+# ]]]
 
-# }}}
-# Status {{{
-
+# Status [[[
 bind status R !@git reset HEAD %(file)
 bind status A !@git commit --amend
 bind status N !@git add -N %(file)
+bind status P !git push %(remote)
+bind status xpga !git push
+bind status xpom !git push origin master
+bind status xpog !git push origin
+# ]]]
 
-# }}}
-# Stage {{{
-
+# Stage [[[
 bind stage 1 stage-update-line # Stage a single line
 bind stage C !@git commit # Commit staging changes
+bind stage P !git push %(remote)
+bind stage xpga !git push
+bind stage xpom !git push origin master
+bind stage xpog !git push origin
+# ]]]
 
-# }}}
+# Stash [[[
+# Stash save
+bind status xss @git stash save "%(prompt New stash name: )"
+# Stash all – also untracked files
+bind status xsis @git stash save --include-untracked "%(prompt New stash name: )"
+# Drop the selected stash
+bind stash D !?git stash drop %(stash)
+# Apply the selected stash
+bind stash A !?git stash apply %(stash)
+# ]]]
 
-# }}}
+# ]]]
+
+# vim: ft=conf:et:sw=4:ts=4:sts=2:fdm=marker:fmr=[[[,]]]:

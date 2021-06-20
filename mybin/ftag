@@ -1,65 +1,177 @@
 #!/usr/bin/env zsh
 
-# desc: use fzf with tag
+############################################################################
+#    Author: Lucas Burns                                                   #
+#     Email: burnsac@me.com                                                #
+#   Created: 2021-06-14 20:45                                              #
+#   Description: Fzf TUI for jdberry's tagging on macOS                    #
+############################################################################
 
+# == Setup == [[[
 emulate -LR zsh
 builtin setopt extendedglob typesetsilent
 # localoptions noksharrays noshortloops warncreateglobal
 
-# TODO: add support for skim
-# Set search as optional args to prevent errors
-local -A opts
-local prog query filter
-zparseopts -D -A opts w -wutag h -help s -skim b -boxes c -lolcat t -toilet -\
-    l -local q::=query -query::=query
-
 0="${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}"
+0="${${(M)0:#/*}:-$PWD/$0}"
+local prog prog_dir
 prog="${0:A:t}"
-query=${${(v)opts[(I)(-q|--query)]}:-}  # fzf query
-filter="${@:-*}"                        # tag searching filter (exact)
+prog_dir="${0:A:h}"
 
-typeset -g +h LESS
-LESS=${(j. .)${${(@)${(s: :)LESS}}//[[:space:]]#-r[[:space:]]#/}}
-export LESS="$LESS -r"
-
-local boxes lolcat toilet figlet lpager filemanager
-(( ${+commands[figlet]} )) && figlet="figlet" || figlet="cat"
-(( ${+commands[bat]} )) && lpager="bat --paging=always" || lpager="less"
-(( ${+commands[tag]} )) || { print -P "%F{1}Error:%f %F{2}tag%f is not in PATH" 2>&1; exit }
-filemanager=${commands[lf]:-${commands[ranger]:-${commands[xplor]}}}
-
-warning() { builtin print -P "%F{3}Warning%f: $*"; return 1; }
-error() { builtin print -P "%F{1}Error%f: $*"; exit 1; }
+# TODO: add support for skim
+# TODO: does query need to be =query?
+# Set query as optional args to prevent errors
+local -A opts
+zparseopts -D -A opts h -help s -skim b -boxes c -lolcat t -toilet -\
+    l -local z -zoxide j -jump a -all \
+    p:=opts -path:=opts q::=query -query::=query w+=wtag -wutag+=wtag
 
 # zparseopts
-zmodload zsh/zutil || error "zsh/zutil is required to use this program"
+zmodload -Fa zsh/zutil b:zparseopts \
+  || Ftag::error "zsh/zutil is required to use this program"
 # ${commands[@]} array
-zmodload zsh/parameter || error "zsh/parameter is requred to use this program"
+zmodload -Fa zsh/parameter p:commands \
+  || Ftag::error "zsh/parameter is requred to use this program"
 # tput $COLUMNS
 zmodload zsh/terminfo 2>/dev/null
 zmodload zsh/termcap 2>/dev/null
+# ]]]
 
-_boxes() {
+# == Functions: Helper == [[[
+function Ftag::warning() { builtin print -Pu2 "%F{3}[Warning]%f: $*"; return 1; }
+function Ftag::error() { builtin print -Pu2 "%F{1}[Error]%f: $*"; exit 1; }
+# Check dependencies, if -e, then throw error
+function Ftag::dep() {
+  local -a opts
+  zparseopts -a opts -D ${(s::):-e}
+  if (( ${+opts[(r)-e]} )); then
+    (( ${+commands[$1]} )) || Ftag::error "%F{2}$1%f is not in PATH"
+  else
+    (( ${+commands[$1]} ))
+  fi
+}
+function Ftag::opts() { (( ${+opts[-${${(@s. .)@}[1]}]} || ${+opts[--${${(@s. .)@}[2]}]} )); }
+function Ftag::is_git() { command git -C "${(z)@}" rev-parse --is-inside-work-tree >/dev/null; }
+
+# TODO: use this or no?
+function Ftag::declare() {
+  typeset -p "${@}" &>/dev/null; local exists=$?
+  # Returns > 0 if exists
+  (( exists != 0 )) && {
+    readonly "${@}"
+    return 0
+  }
+  return 1
+}
+
+# TODO: use this or no?
+function Ftag::copy() {
+  if Ftag::dep "pbcopyy" ; then ftag_copy="pbcopy"
+  elif Ftag::dep "xclip" ; then ftag_copy="xclip -sel primary"
+  elif Ftag::dep "xsel"  ; then ftag_copy="xsel -p"
+  fi
+}
+
+# TODO: add option to permanently set notifications
+function OS::notify() { osascript -e 'display notification "'"$*"'"'; }
+# ]]]
+
+# == Functions: Actions == [[[
+function Ftag::zoxide() {
+  _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --prompt ' Zoxide Tag> '" zoxide query -i
+}
+
+# TODO: possibly provide autojump as a fallthrough for above
+function Ftag::autojump() {
+  autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt ' Jump Tag> '
+}
+
+# TODO: create a prompt to switch
+function Ftag::path::find() {
+  tag -tf '*' $FZFTAG_PATH | fzf --prompt ' Path> '
+  # builtin cd -q "$FZFTAG_PATH" && \
+    # tag -el $FZFTAG_PATH | fzf --prompt ' Path> '
+}
+
+function Ftag::gitui() {
+  # gitui -d "${(z)@}" - Freezes
+  if Ftag::dep "lazygit"; then lazygit -p "${(z)@}"
+  elif Ftag::dep "tig"; then tig -C "${(z)@}"
+  fi
+}
+
+function Ftag::wutag() {
+  # Arguments: $1 = directory; $2 = filename; $3 = tag
+  local -a opts
+  zparseopts -a opts -D ${(s::):-sar}
+  if (( ${+opts[(r)-s]} )); then
+    # set
+    wutag -d "${1}/" clear "$2"
+    wutag -d "${1}/" set "$2" "$3"
+  elif (( ${+opts[(r)-a]} )); then
+    # add
+    wutag -d "${1}/" set "$2" "$3"
+  elif (( ${+opts[(r)-r]} )); then
+    # remove
+    wutag -d "${1}/" clear "$2"
+  fi
+}
+
+function Ftag::boxes() {
   (( ${+commands[boxes]} )) && boxes -d tex-box || {
-    cat; warning "'boxes' is required to use this feature"
+    cat; Ftag::warning "'boxes' is required to use this feature"
   }
 }
-_lolcat() {
+function Ftag::lolcat() {
   (( ${+commands[lolcat]} )) && lolcat || {
-    cat; warning "'lolcat' is required to use this feature"
+    cat; Ftag::warning "'lolcat' is required to use this feature"
   }
 }
-_toilet() {
+function Ftag::toilet() {
   # smblock smmono12
   (( ${+commands[toilet]} )) && toilet -f smmono12 -F border --filter gay "${(j. .)@}" || {
-    cat "${(j. .)@}"; warning "'toilet' is required to use this feature"
+    cat; Ftag::warning "'toilet' is required to use this feature"
   }
 }
 
-# Default printing
-default_header() {
+function Ftag::gpg() {
+  local -a mime opts
+  local tmpfile
+  zparseopts -a opts -D ${(s::):-e}
+  # zmodload -Fa zsh/files b:zf_rm # TODO: use?
+  trap "rm -f $tmpfile" EXIT SIGINT SIGTERM
+  tmpfile="${TMPDIR:-/tmp}/ftag.dump.$RANDOM"
+  mime=(${(@s./.)${(f)$(file --mime-type --brief "${(z)@}")}})
+  matched=${(M)mime[@]:#(#i)*pgp-encrypted*}
+  # Prevent adding armor if user prefers binary encryption
+  # If encrypted and edit
+  if [[ -n "${matched}" ]] && (( ${+opts[(r)-e]} )) {
+    gpg -dq "${(z)@}" > "$tmpfile"
+    "${EDITOR:-vim}" "$tmpfile"
+    gpg -eq "$tmpfile"
+    [[ -f "${tmpfile}.asc" ]] && mv "${tmpfile}.asc" "${(z)@}"
+    [[ -f "${tmpfile}.gpg" ]] && mv "${tmpfile}.gpg" "${(z)@}"
+    rm -f "$tmpfile"
+  # If encrypted, decrypt it
+  } elif [[ -n "${matched}" ]] {
+    gpg -dq "${(z)@}" > "$tmpfile"
+    mv "$tmpfile" "${(z)@}"
+  # If decrypted and edit
+  } elif [[ -z "${matched}" ]] && (( ${+opts[(r)-e]} )) {
+    "${EDITOR:-vim}" "${(z)@}"
+  # If decrypted, encrypt it
+  } else {
+    gpg -eq "${(z)@}"
+    [[ -f "${(z)@}.asc" ]] && mv "${(z)@}.asc" "${(z)@}"
+    [[ -f "${(z)@}.gpg" ]] && mv "${(z)@}.gpg" "${(z)@}"
+  }
+}
+# ]]]
+
+# == Functions: Formatting and Display == [[[
+function Ftag::default_header() {
   local -a fig; integer max color; local -A opts
-  zparseopts -D -- s:=opts x:=opts c::=color
+  zparseopts -D -- s:=opts c::=color
   fig=( "${(@f)$(figlet ${(v)opts[(e)-s]} )}" )
   max=${#${(On)fig}[1]}
   print -nPr "%F{${${color/-c/}:-2}}"
@@ -68,94 +180,180 @@ default_header() {
   print -Pr -- "%F{1}${(l:COLUMNS::=:):-}%f"
 }
 
-parse_format() {
+function Ftag::parse_format() {
   # Toilet:
   if (( FZFTAG_TOILET )); then
     if (( FZFTAG_LOLCAT )); then
       if (( FZFTAG_BOXES )); then
-        terminal-notifier -title 'tcb' -message 'x'
-        # toilet -f smmono12 -F border --filter gay "${(j. .)@}" | boxes -d tex-box | lolcat # tcb
-        _toilet "${(j. .)@}" | _boxes | _lolcat
+        Ftag::toilet "${(j. .)@}" | Ftag::boxes | Ftag::lolcat
       else
-        _toilet "${(j. .)@}" | _lolcat          # tc
+        Ftag::toilet "${(j. .)@}" | Ftag::lolcat          # tc
       fi
     else
-      _toilet "${(j. .)@}"                      # t
+      Ftag::toilet "${(j. .)@}"                      # t
     fi
   # Figlet:
   elif (( FZFTAG_LOLCAT )); then
       if (( FZFTAG_BOXES )); then
-        $figlet "${(j. .)@}" | _boxes | _lolcat # cb
+        $figlet "${(j. .)@}" | Ftag::boxes | Ftag::lolcat # cb
       else
-        $figlet "${(j. .)@}" | _lolcat          # c
+        $figlet "${(j. .)@}" | Ftag::lolcat          # c
       fi
   elif (( FZFTAG_BOXES )); then
-      $figlet "${(j. .)@}" | _boxes             # b
+      $figlet "${(j. .)@}" | Ftag::boxes             # b
   else
-    default_header -s "${(j. .)@}" -c 2         # default
+    Ftag::default_header -s "${(j. .)@}" -c 2         # default
   fi
 }
 
-usage() {
-  default_header -s "ftag" -c 13
+function Ftag::usage() {
+  Ftag::default_header -s "ftag" -c 13
   print -P -- "%F{12}USAGE:%f"
   print -P -- "\t%F{2}ftag%f %F{13} [wsh]%f %F{2}<tag>%f"
-  print -P -- "\t%F{12}ftag%f is an fzf TUI type for %F{2}tags%f on macOS"
+  print -P -- "\t%F{14}ftag%f is an fzf TUI type for %F{2}tags%f on macOS"
   print -P -- "\tIt uses 'figlet' by default to display headers, though it is not needed"
   print -P -- "\t%F{2}<tag>%f is optional (has to be an exact match)"
   print -P -- "%F{12}FLAGS:%f"
-  print -P -- "\t%F{2}-w%f,%F{2}--wutag%f\t\tAlso tag files with wutag"
+  print -P -- "\t%F{2}-w%f,%F{2}--wutag%f\t\tAlso tag files with %F{3}wutag%f (%F{2}-ww%f only uses wutag)"
   print -P -- "\t%F{2}-q%f,%F{2}--query <query>%f\tStart fzf with a query"
-  # print -P -- "\t%F{2}-s%f,%F{2}--skim%f\tUse skim instead of fzf"
   print -P -- "\t%F{2}-h%f,%F{2}--help%f\t\tDisplay this help message"
   print -P -- "%F{12}FORMAT:%f"
-  print -P -- "\t%F{2}-b%f,%F{2}--boxes%f\t\tAdd a box aroud header with %F{3}boxes%f"
-  print -P -- "\t%F{2}-c%f,%F{2}--lolcat%f\t\tColor to header with %F{3}lolcat%f"
+  print -P -- "\t%F{2}-b%f,%F{2}--boxes%f\t\tAdd a box around header with %F{3}boxes%f"
+  print -P -- "\t%F{2}-c%f,%F{2}--lolcat%f\t\tColor the header with %F{3}lolcat%f"
   print -P -- "\t%F{2}-t%f,%F{2}--toilet%f\t\tColor and format header with %F{3}toilet%f"
+  print -P -- "\t%F{2}-l%f,%F{2}--local%f\t\tUse %F{3}tags%f in local directory"
+  print -P -- "\t%F{2}-z%f,%F{2}--zoxide%f\t\tUse %F{3}zoxide%f to select directory to use tags (only shows tagged files)"
+  print -P -- "\t%F{2}-j%f,%F{2}--jump%f\t\tUse %F{3}autojump%f to select directory to use tags (only shows tagged files)"
+  # print -P -- "\t%F{2}-s%f,%F{2}--skim%f\tUse skim instead of fzf"
   print -P -- "\tThe above flags can be used in any combination. Figlet is ran if toilet isn't"
   print -P -- "\tspecified and vice-versa. Although figlet doesn't have a flag, it is ran by default."
   print -P -- "\tThe default printing (no flags specified and figlet installed) looks the nicest."
   print -P -- "%F{12}INSIDE FZF:%f"
-  show_keys
+  Ftag::show_keys
 }
 
-show_keys() {
+function Ftag::show_keys() {
   print -P -- "\t%F{2}A%f\tAdd/append tags"
   print -P -- "\t%F{2}S%f\tSet tags (overwrites)"
   print -P -- "\t%F{2}D%f\tDelete/remove tags"
   print -P -- "\t%F{2}R%f\tReload the tag search"
   print -P -- "\t%F{2}U%f\tShow tag usage"
   print -P -- "\t%F{2}E%f\tEdit selected tags with \$EDITOR"
-  print -P -- "\t%F{2}F%f\tOpen directory in which tagged file resides"
+  print -P -- "\t%F{2}F%f\tOpen directory with file manager in which tagged file resides"
+  print -P -- "\t%F{2}I%f\tOpen gitui/lazygit if directory is a git-dir"
   print -P -- "\t%F{2}L%f\tSwitch to local mode (i.e., current directory)"
   print -P -- "\t%F{2}G%f\tSwitch to global mode (i.e., default mode/all tags on file system)"
+  print -P -- "\t%F{2}Z%f\tSwitch to zoxide query (i.e., select dir and list tags)"
+  print -P -- "\t%F{2}J%f\tSwitch to autojump query (i.e., select dir and list tags)"
+  print -P -- "\t%F{2}Ctrl-e%f\tEdit a gpg-encrypted file"
+  print -P -- "\t%F{2}Ctrl-g%f\tEncrypt or decrypt a file with gpg. If encrypted, decrypt and vice versa"
+  print -P -- "\t%F{2}P%f\tToggle preview of file or directory)"
+  print -P -- "\t%F{2}Ctrl-y%f\tCopy the file or directory)"
   print -P -- "\t%F{2}?%f\tShow keys"
 }
+# ]]]
 
-(( ${+opts[-h]} + ${+opts[--help]} )) && usage && exit 0
+# == Setting Variables == [[[
+typeset -gH FZFTAG_QUERY
+FZFTAG_QUERY=${${(v)opts[(I)(-q|--query)]}:-}  # fzf query
+export FZFTAG_QUERY
 
+typeset -gH FZFTAG_PATH
+FZFTAG_PATH=${${(v)opts[(I)(-p|--path)]}:-}  # search path
+export FZFTAG_PATH
+
+typeset -g +h LESS
+local space
+space="[[:space:]]#"
+# Prevent -r from being added twice; -F prevents paging if less than screen size
+LESS=${(j. .)${${(@)${(s: :)LESS}}//(${~space}-r${~space}|${~space}-F${~space})/}}
+export LESS="-r $LESS"
+
+Ftag::opts "h help" && Ftag::usage && exit 0
+
+local boxes lolcat toilet figlet
+Ftag::dep -e "tag"
+Ftag::dep "figlet" && figlet="figlet" || figlet="cat"
+# ]]]
+
+# == Config == [[[
+# @user
+local ftag_fmanager ftag_pager
+ftag_pager=${FTAG_PAGER:-${commands[bat]:-less}}
+[[ $ftag_pager == */bat ]] && ftag_pager="bat --paging=always -f"
+ftag_fmanager=${FTAG_FMANAGER:-${commands[lf]:-${commands[ranger]:-${commands[xplr]}}}}
+ftag_modifier=${FTAG_MODIFIER:-ctrl}
+ftag_copy=${FTAG_COPY:-pbcopy}
+
+readonly TTY_REDIRECTION="< /dev/tty > /dev/tty 2>&1"
+readonly FTAG_PRINT="+print-query"
+readonly ACTION_ADD="execute(env FZFTAG_ACTION=add $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_SET="execute(env FZFTAG_ACTION=set $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_EDIT="execute(env FZFTAG_ACTION=edit $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_REMOVE="execute(env FZFTAG_ACTION=remove $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_USAGE="execute(env FZFTAG_ACTION=usage $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_TEST="execute(env FZFTAG_ACTION=test $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_FILEMANAGER="execute(env FZFTAG_ACTION=file-manager $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_GIT="execute(env FZFTAG_ACTION=git $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_GPG_EDIT="execute(env FZFTAG_ACTION=gpg-edit $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_GPG="execute(env FZFTAG_ACTION=gpg $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_LOCAL="execute(env FZFTAG_ACTION=local $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_GLOBAL="execute(env FZFTAG_ACTION=global $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_ZOXIDE="execute(env FZFTAG_ACTION=zoxide $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_AUTOJUMP="execute(env FZFTAG_ACTION=autojump $prog {+f} ${(z)TTY_REDIRECTION})${(z)FTAG_PRINT}"
+readonly ACTION_COPY="execute-silent(echo {1} | ${(z)ftag_copy} )"
+readonly ACTION_RELOAD="reload(env _FZFTAG_INTERNAL=reload $prog)"
+readonly ACTION_PREVIEW="toggle-preview"
+readonly ACTION_HELP="execute(env _FZFTAG_SHOW=keys $prog | ${(z)ftag_pager} )${(z)FTAG_PRINT}"
+
+typeset -gA FZFTAG_KEYBINDINGS
+: ${FZFTAG_KEYBINDINGS[A]:=$ACTION_ADD}
+: ${FZFTAG_KEYBINDINGS[S]:=$ACTION_SET}
+: ${FZFTAG_KEYBINDINGS[E]:=$ACTION_EDIT}
+: ${FZFTAG_KEYBINDINGS[D]:=$ACTION_REMOVE}
+: ${FZFTAG_KEYBINDINGS[U]:=$ACTION_USAGE}
+: ${FZFTAG_KEYBINDINGS[T]:=$ACTION_TEST}
+: ${FZFTAG_KEYBINDINGS[F]:=$ACTION_FILEMANAGER}
+: ${FZFTAG_KEYBINDINGS[I]:=$ACTION_GIT}
+: ${FZFTAG_KEYBINDINGS[${ftag_modifier}-e]:=$ACTION_GPG_EDIT}
+: ${FZFTAG_KEYBINDINGS[${ftag_modifier}-g]:=$ACTION_GPG}
+: ${FZFTAG_KEYBINDINGS[L]:=$ACTION_LOCAL}
+: ${FZFTAG_KEYBINDINGS[G]:=$ACTION_GLOBAL}
+: ${FZFTAG_KEYBINDINGS[Z]:=$ACTION_ZOXIDE}
+: ${FZFTAG_KEYBINDINGS[J]:=$ACTION_AUTOJUMP}
+: ${FZFTAG_KEYBINDINGS[${ftag_modifier}-y]:=${(z)ACTION_COPY}}
+: ${FZFTAG_KEYBINDINGS[R]:=$ACTION_RELOAD}
+: ${FZFTAG_KEYBINDINGS[P]:=$ACTION_PREVIEW}
+: ${FZFTAG_KEYBINDINGS[?]:=$ACTION_HELP}
+
+typeset -a FZFTAG_ACTIONS
+FZFTAG_ACTIONS=( ${(@)${(k)FZFTAG_KEYBINDINGS//(#m)*/\-\-bind=$MATCH:${FZFTAG_KEYBINDINGS[$MATCH]}}} )
+# ]]]
+
+# == Create Filter == [[[
 # File path content marks how to execute next command in the main loop
 local current_filter
 current_filter=${XDG_RUNTIME_DIR:-${XDG_CACHE_DIR:-${TMP-/tmp}}}/tag-filter
 if ! touch $current_filter; then
   echo "${prog}: Can't create a marker file needed for internal state management." >&2
 fi
+# ]]]
 
-# Write the initial tag search to the filter
-echo $filter >! $current_filter
-
+# == Actions == [[[
 # Keys to show within the TUI
 if [[ "${_FZFTAG_SHOW}" = "keys" ]]; then
-  print -P -- "\t%F{9}KEY%f\t%F{13}Action%f"
-  print -P -- "\t%F{14}===\t======================%f"
-  show_keys
+  print -P -- "%F{9}KEY%f\t%F{13}Action%f"
+  print -P -- "%F{14}===\t======================%f"
+  print -P -- "%F{14}===\t======================%f"
+  local -a keys
+  keys=( ${(f)"$(show_keys)"} )
+  print -rl -- ${keys[@]/$'\t'/}
   exit 0
 fi
 
 # FIXME: try and use this instead of awk
 # declare -a input; input=($@)
 # print -l "${input[@]/(#b)([^\/]##\/)##([^\/]##)*/${match[3]}}"
-
 if [[ -n "$FZFTAG_ACTION" ]]; then
   clear
   # Get the filename
@@ -163,42 +361,57 @@ if [[ -n "$FZFTAG_ACTION" ]]; then
   [[ -f $tag_args ]] || echo 'Not a file'
   case "$FZFTAG_ACTION" in
     test)
-      parse_format "test"
+      # Testing for development
+      Ftag::parse_format "test"
       vared -cp "Set tags for ${tag_args:t3}: " tag
-      echo "-- ${(kv)opts}"
       ;;
     set)
-      parse_format "set tags"
+      local fname fdir tag file
+      Ftag::parse_format "set tags"
       vared -cp "Set tags for ${tag_args:t3}: " tag
       for file in "${(f)tag_args[@]}"; do
-        tag --set "${tag}" "$file"
         # Wutag only works if variables are set first
         fname="${file:t}"; fdir="${file:h}"
-        (( FZFTAG_WTAG )) && {
-          wutag -d "${fdir}/" clear $fname
-          wutag -d "${fdir}/" set $fname $tag
+        # Wutag is called in addition unless -ww
+        if (( FZFTAG_WTAG > 1 )) {
+          Ftag::wutag -s "$fdir" "$fname" "$tag"
+        } elif (( FZFTAG_WTAG == 1 )) {
+          tag --set "${tag}" "$file"
+          Ftag::wutag -s "$fdir" "$fname" "$tag"
+        } else {
+          tag --set "${tag}" "$file"
         }
       done
       ;;
     add)
-      parse_format "add tags"
+      local fname fdir tag file
+      Ftag::parse_format "add tags"
       vared -cp "Add tags for ${tag_args:t3}: " tag
       for file in "${(f)tag_args[@]}"; do
-        tag --add "${tag}" "$file"
         fname="${file:t}"; fdir="${file:h}"
-        (( FZFTAG_WTAG )) && {
-          wutag -d "${fdir}/" set $fname $tag
+        if (( FZFTAG_WTAG > 1 )) {
+          Ftag::wutag -a "$fdir" "$fname" "$tag"
+        } elif (( FZFTAG_WTAG == 1 )) {
+          tag --add "${tag}" "$file"
+          Ftag::wutag -a "$fdir" "$fname" "$tag"
+        } else {
+          tag --add "${tag}" "$file"
         }
       done
       ;;
     remove)
-      parse_format "remove tags"
+      local fname fdir tag file
+      Ftag::parse_format "remove tags"
       vared -cp "Remove tags for ${tag_args:t3}: " tag
       for file in "${(f)tag_args[@]}"; do
-        tag --remove "${tag}" "$file"
         fname="${file:t}"; fdir="${file:h}"
-        (( FZFTAG_WTAG )) && {
-          wutag -d "${fdir}/" clear $fname
+        if (( FZFTAG_WTAG > 1 )) {
+          Ftag::wutag -r "$fdir" "$fname"
+        } elif (( FZFTAG_WTAG == 1 )) {
+          tag --remove "${tag}" "$file"
+          Ftag::wutag -r "$fdir" "$fname"
+        } else {
+          tag --remove "${tag}" "$file"
         }
       done
       ;;
@@ -206,10 +419,20 @@ if [[ -n "$FZFTAG_ACTION" ]]; then
       tag --usage | ${(z)lpager}
       ;;
     edit)
-      $EDITOR "$tag_args"
+      ${EDITOR:-vim} "$tag_args"
       ;;
     file-manager)
-      $filemanager "${tag_args:h}"
+      $ftag_fmanager "${tag_args:h}"
+      ;;
+    git)
+      Ftag::is_git "${tag_args:h}" || return 1
+      Ftag::gitui "${tag_args:h}"
+      ;;
+    gpg-edit)
+      Ftag::gpg -e "$tag_args"
+      ;;
+    gpg)
+      Ftag::gpg "$tag_args"
       ;;
   esac
   clear
@@ -219,79 +442,149 @@ if [[ -n "$FZFTAG_ACTION" ]]; then
   read
   exit $?
 fi
+# ]]]
 
+# == State Change == [[[
+local FZFTAG_CMD dir_switch
+if [[ -n "$FZFTAG_STATE_CHANGE" ]]; then
+  case "$FZFTAG_STATE_CHANGE" in
+    local)
+      FZFTAG_CMD="-l"
+      ;;
+    global)
+      FZFTAG_CMD="-tf *"
+      ;;
+    path)
+      dir_switch=$(Ftag::path::find)
+      FZFTAG_CMD="-tf * ${(q)dir_switch}"
+      ;;
+    zoxide)
+      dir_switch=$(Ftag::zoxide)
+      FZFTAG_CMD="-tf * ${(q)dir_switch}"
+      ;;
+    autojump)
+      dir_switch=$(Ftag::autojump)
+      FZFTAG_CMD="-tf * ${(q)dir_switch}"
+      ;;
+  esac
+
+  echo "$FZFTAG_CMD" > $current_filter
+  exit
+fi
+# ]]]
+
+# == Reload == [[[
+local filter
 if [[ -n "$_FZFTAG_RELOAD" ]]; then
-  tag_arguments="$(<$current_filter)"
-  if (( FZFTAG_LOCAL )); then
-    output="$(tag -l | column -t)"
-  else
-    output="$(tag -tf "$filter" | column -t)"
-  fi
+  filter="$(<$current_filter)"
+  output="$(tag ${(z)filter} | column -t)"
+
   if [[ -n "$output" ]]; then
     echo "$output"
   else
-    echo "No tags were found: $tag_arguments"
+    echo "No tags were found: $filter"
   fi
   exit
 fi
+# ]]]
 
-# Reload mentioned specifically in case more features are added
-if [[ "${FZFTAG_ACTION:+1}" && "${${(M)_FZFTAG_RELOAD:#reload}:+1}" ]]; then
+# == Remove Filter == [[[
+# No state change, no action, and no reload, remove filter
+if [[ -z "${FZFTAG_STATE_CHANGE+1}" ]] && [[ -z "${FZFTAG_ACTION+1}" ]] && [[ "${_FZFTAG_INTERNAL}" != "reload" ]]; then
   rm -f $current_filter
 fi
+# ]]]
 
+# == Main Loop == [[[
 # Variables have to be exported to be picked up on the next iteration of the loop
-typeset -gH FZFTAG_WTAG FZFTAG_BOXES FZFTAG_LOLCAT FZFTAG_TOILET FZFTAG_LOCAL
+typeset -giH FZFTAG_WTAG FZFTAG_BOXES FZFTAG_LOLCAT FZFTAG_TOILET
+typeset -gH  FZFTAG_STATE_CHANGE
 while (( $? != 130 )); do
 
-  if (( ${+opts[-w]} + ${+opts[--wutag]} )); then
-    if (( ${+commands[wutag]} )); then
-      export FZFTAG_WTAG=1
+  if Ftag::opts "w wutag"; then
+    if Ftag::dep "wutag"; then
+      if (( $#wtag > 1 )) {
+        export FZFTAG_WTAG=2
+      } else {
+        export FZFTAG_WTAG=1
+      }
     else
-      print -P "%F{1}Error:%f %F{2}wutag%f is not in PATH" 2>&1
-      print -P "Install %F{2}wutag%f or don't use %F{2}-w%f,%F{2}--wutag%f'" 2>&1
+      Ftag::warning "%F{2}wutag%f is not in PATH
+      Install %F{2}wutag%f or don't use %F{2}-w%f,%F{2}--wutag%f'"
     fi
   fi
 
-  (( ${+opts[-b]} + ${+opts[--boxes]} ))  && export FZFTAG_BOXES=1
-  (( ${+opts[-c]} + ${+opts[--lolcat]} )) && export FZFTAG_LOLCAT=1
-  (( ${+opts[-t]} + ${+opts[--toilet]} )) && export FZFTAG_TOILET=1
+  Ftag::opts "b boxes"  && export FZFTAG_BOXES=1
+  Ftag::opts "c lolcat" && export FZFTAG_LOLCAT=1
+  Ftag::opts "t toilet" && export FZFTAG_TOILET=1
 
+  local tag_arguments
+  # If writeable, that means theres a state change
   if [[ -w "$current_filter" ]]; then
     tag_arguments="$(<$current_filter)"
   else
-    tag_arguments="$@"
+  # First time ran
+    if Ftag::opts "l local"; then
+      tag_arguments="-l"
+    elif Ftag::opts "p path"; then
+      tag_arguments="-tf * $FZFTAG_PATH"
+    elif Ftag::opts "z zoxide"; then
+      Ftag::dep -e "zoxide"
+      dir_switch=$(Ftag::zoxide)
+      tag_arguments="-tf * $dir_switch"
+    elif Ftag::opts "j jump"; then
+      Ftag::dep -e "autojump"
+      dir_switch=$(Ftag::autojump)
+      tag_arguments="-tf * $dir_switch"
+    else
+      # Don't quote *
+      tag_arguments="-tf ${@:-*}"
+    fi
     echo "$tag_arguments" >! $current_filter
   fi
 
-  local cmd
+  # TODO: pickup with-nth on reload
+  # Set initial prompt
   local -a FZFTAG_OPTS
-  if (( ${+opts[-l]} + ${+opts[--local]} || FZFTAG_LOCAL )); then
-    export FZFTAG_LOCAL=1
-    cmd="tag -l"
-    FZFTAG_OPTS=( "--prompt 'Local Tag> '" )
+  if Ftag::opts "l local" || [[ "$FZFTAG_STATE_CHANGE" == "local" ]]; then
+    FZFTAG_OPTS=( "--prompt ' Local Tag> '" )
+  elif Ftag::opts "p path" || [[ "$FZFTAG_STATE_CHANGE" == "path" ]]; then
+    FZFTAG_OPTS=( "--prompt ' Path> '" )
+  elif Ftag::opts "z zoxide" || [[ "$FZFTAG_STATE_CHANGE" == "zoxide" ]]; then
+    FZFTAG_OPTS=( "--prompt ' Zoxide Tag> '" )
+  elif Ftag::opts "j jump" || [[ "$FZFTAG_STATE_CHANGE" == "autojump" ]]; then
+    FZFTAG_OPTS=( "--prompt ' Jump Tag> '" )
   else
-    cmd="tag -tf "${@:-*}""
-    FZFTAG_OPTS=( "--prompt 'Tag> '" "--delimiter /" "--with-nth 4.." )
+    # FZFTAG_OPTS=( "--prompt 'Tag> '" "--delimiter /" "--with-nth 4.." )
+    FZFTAG_OPTS=( "--prompt 'Tag> '" )
   fi
-  ${(z)cmd} \
+
+  if [[ "${_FZFTAG_INTERNAL}" == "reload" ]]; then
+    tag "${(z)tag_arguments}" | column -t
+    exit $?
+  fi
+
+  typeset -g FZFTAG_FILE_PREV FZFTAG_DIR_PREV
+  local FILE_PREV DIR_PREV
+  [[ -z FZFTAG_FILE_PREV ]] && FZFTAG_FILE_PREV="bat --style=numbers --color=always"
+  [[ -z FZFTAG_DIR_PREV ]] && FZFTAG_DIR_PREV="exa -TL 3"
+  FILE_PREV="([[ -f {1} ]] && $FZFTAG_FILE_PREV {1})"
+  DIR_PREV="([[ -d {1} ]] && $FZFTAG_DIR_PREV {1} | less)"
+  # TODO: add a header and column separator
+  tag "${(z)tag_arguments}" \
     | column -t \
     | fzf \
     ${${(z)${(j. .)FZFTAG_OPTS}}//\'} \
+    --keep-right \
     --ansi \
-    --query "$query" \
+    --query "$FZFTAG_QUERY" \
     --multi \
-    --bind="A:execute(env FZFTAG_ACTION=add $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
-    --bind="S:execute(env FZFTAG_ACTION=set $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
-    --bind="E:execute(env FZFTAG_ACTION=edit $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
-    --bind="D:execute(env FZFTAG_ACTION=remove $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
-    --bind="U:execute(env FZFTAG_ACTION=usage $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
-    --bind="T:execute(env FZFTAG_ACTION=test $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
-    --bind="F:execute(env FZFTAG_ACTION=file-manager $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
-    --bind="L:reload(env FZFTAG_LOCAL=1 _FZFTAG_RELOAD=reload $0)" \
-    --bind="G:reload(env FZFTAG_LOCAL=0 _FZFTAG_RELOAD=reload $0)" \
-    --bind="R:reload(env _FZFTAG_RELOAD=reload $0)" \
-    --bind="?:execute(env _FZFTAG_SHOW=keys $0 | "${(e)lpager}" --paging=always)+print-query"
+    --info=inline \
+    --pointer '➤' \
+    --preview-window=':hidden,right:60%' \
+    --preview "$FILE_PREV || $DIR_PREV" \
+    "${FZFTAG_ACTIONS[@]}"
 done
+# ]]]
 
 # vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr=[[[,]]]:

@@ -42,6 +42,7 @@ yabai -m rule --add app="Bear" manage=off layer=above
 yabai -m rule --add app="^iTerm2$" manage=on
 yabai -m rule --add app="^DaisyDisk$" sticky=on layer=above manage=off
 yabai -m rule --add app="KnockKnock" sticky=on layer=above manage=off
+yabai -m rule --add app="Contacts" sticky=on layer=above manage=off
 yabai -m rule --add app="^Flux$" manage=off
 
 # === global settings ========================================================

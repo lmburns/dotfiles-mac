@@ -4,7 +4,7 @@
 #      Home: https://github.com/lmburns                                    #
 ############################################################################
 
-# === general settings === {{{
+# === general settings === [[[
 0="${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}"
 0="${${(M)0:#/*}:-$PWD/$0}"
 
@@ -50,28 +50,29 @@ fpath=( ${0:h}/{functions,completions} "${fpath[@]}")
 autoload -Uz $fpath[1]/*(:t)
 module_path+=( "$ZINIT[BIN_DIR]/zmodules/Src" ); zmodload zdharma/zplugin &>/dev/null
 
+# ${(u)^${(f@Q)"$( < $XDG_DATA_HOME/zsh/chpwd-recent-dirs )"}[@]:#($PWD|${TMPDIR:A}/*)}(N-/)
 if ! [[ $MYPROMPT = dolphin ]]; then
+  zmodload -F zsh/parameter p:dirstack
   autoload -Uz chpwd_recent_dirs add-zsh-hook
   add-zsh-hook chpwd chpwd_recent_dirs
   zstyle ':chpwd:*' recent-dirs-file "${TMPDIR}/chpwd-recent-dirs"
   dirstack=($(awk -F"'" '{print $2}' ${$(zstyle -L ':chpwd:*' recent-dirs-file)[4]} 2>/dev/null))
-  [[ ${PWD} = ${HOME}  || ${PWD} = "." ]] && (){
+  [[ ${PWD} = ${HOME} || ${PWD} = "." ]] && (){
     local dir
     for dir ($dirstack){
       [[ -d "${dir}" ]] && { cd -q "${dir}"; break }
     }
   } 2>/dev/null
 fi
-# }}}
+# ]]]
 
-# === zinit === {{{
+# === zinit === [[[
 # zt(){ zinit lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
 zt(){ zinit depth'3' lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
 grman() {
-  local plugin="%PLUGIN%" graw="https://raw.githubusercontent.com"; local -A opts
-  zparseopts -D -E -A opts r:
-  (( ${+opts[(r)-r]} )) && plugin="${opts[-r]}"
-  @zinit-substitute; print -r "${graw}/%USER%/%PLUGIN%/master/${@:1}${plugin}.1";
+  local graw="https://raw.githubusercontent.com"; local -A opts
+  zparseopts -D -E -A opts -- r: e: ; @zinit-substitute
+  print -r "${graw}/%USER%/%PLUGIN%/master/${@:1}${opts[-r]:-%PLUGIN%}.${opts[-e]:-1}";
 }
 
 [[ ! -f $ZINIT[BIN_DIR]/zinit.zsh ]] && {
@@ -83,7 +84,7 @@ source "$ZINIT[BIN_DIR]/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# === annex, prompt === {{{
+# === annex, prompt === [[[
 zt light-mode for \
   zinit-zsh/z-a-patch-dl \
   zinit-zsh/z-a-submods \
@@ -108,9 +109,9 @@ zt light-mode for \
 } "${MYPROMPT=p10k}"
 
 [[ $MYPROMPT != dolphin ]] && add-zsh-hook chpwd chpwd_ls
-# }}} === annex, prompt ===
+# ]]] === annex, prompt ===
 
-# === trigger-load block ==={{{
+# === trigger-load block ===[[[
 # unsure why only works with number
 zt 0a light-mode for \
   is-snippet trigger-load'!x' blockf svn \
@@ -122,8 +123,6 @@ zt 0a light-mode for \
   patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' \
   trigger-load'!updatelocal' blockf compile'f*/*~*.zwc' \
     NICHOLAS85/updatelocal \
-  trigger-load'!ga;!grh;!grb;!glo;!gd;!gcf;!gclean;!gss;!gcp;!gcb' \
-    wfxr/forgit \
   trigger-load'!zhooks' \
     agkozak/zhooks \
   trigger-load'!gcomp' blockf \
@@ -132,11 +131,13 @@ zt 0a light-mode for \
   nevesnunes/sh-manpage-completions -> lib/sh-manpage-completions' \
   atload'gcomp(){gencomp "${@}" && zinit creinstall -q "${GENCOMP_DIR}" 1>/dev/null}' \
     Aloxaf/gencomp
-# }}} === trigger-load block ===
+
+  # trigger-load'!ga;!grh;!grb;!glo;!gd;!gcf;!gclean;!gss;!gcp;!gcb' \
+# ]]] === trigger-load block ===
 
 # OMZP::sudo/sudo.plugin.zsh
 
-# === wait'0a' block === {{{
+# === wait'0a' block === [[[
 zt 0a light-mode for \
   atload'zstyle ":completion:*" special-dirs false' \
     OMZ::lib/completion.zsh \
@@ -159,20 +160,21 @@ zt 0a light-mode for \
     kazhala/bmux \
     anatolykopyl/doas-zsh-plugin \
   pick'timewarrior.plugin.zsh' \
-    svenXY/timewarrior
+    svenXY/timewarrior \
+  pick"forgit.plugin.zsh" \
+    wfxr/forgit
 
 # lbin'!hist' blockf nocompletions compile'functions/*~*.zwc' \
 #     marlonrichert/zsh-hist \
-
 # pick'zsh-pipx.plugin.zsh' thuandt/zsh-pipx
 # pick'zsh-history-filter.plugin.zsh' MichaelAquilina/zsh-history-filter \
-# }}} === wait'0a' block ===
+# ]]] === wait'0a' block ===
 
 # zdharma/zflai
 # FIX: why doesn't work with zsh-edit ? bindkey -c maybe
 # trackbinds bindmap'!"∂" -> _dirstack; "^[-" -> "ß"; "^[=" -> "ƒ"' \
 
-#  === wait'0b' - patched === {{{
+#  === wait'0b' - patched === [[[
 zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert)' \
     hlissner/zsh-autopair \
@@ -192,9 +194,9 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atload'bindkey "^[[A" history-substring-search-up;
   bindkey "^[[B" history-substring-search-down' \
     zsh-users/zsh-history-substring-search
-#  }}} === wait'0b' - patched ===
+#  ]]] === wait'0b' - patched ===
 
-#  === wait'0b' === {{{
+#  === wait'0b' === [[[
 zt 0b light-mode for \
   blockf compile'lib/*f*~*.zwc' \
     Aloxaf/fzf-tab \
@@ -216,10 +218,14 @@ zt 0b light-mode for \
     marzocchi/zsh-notify \
   pick'autoenv.zsh' nocompletions \
   atload'AUTOENV_AUTH_FILE="${ZPFX}/share/autoenv/autoenv_auth"' \
-    Tarrasch/zsh-autoenv
-#  }}} === wait'0b' ===
+    Tarrasch/zsh-autoenv \
+  lbin'!bin/*' \
+    bigH/git-fuzzy \
+  lbin \
+    Bhupesh-V/ugit
+#  ]]] === wait'0b' ===
 
-#  === wait'0c' - programs - sourced === {{{
+#  === wait'0c' - programs - sourced === [[[
 zt 0c light-mode binary for \
   lbin'rgg;rgv' atclone='rm -f ^(rgg|rgv);
   command cp -f --remove-destination $(readlink rgv) rgv' \
@@ -289,13 +295,13 @@ zt 0c light-mode binary for \
 
 # TODO: add specific ostype
 
-#  }}} === wait'0c' - programs - sourced ===
+#  ]]] === wait'0c' - programs - sourced ===
 
 # atclone'INSTALL_DIR="$ZPFX" ./install.sh' atpull'%atclone' \
 #   rgcr/m-cli
 # atdelete'm --uninstall' \
 
-#  === wait'0c' - programs + man === {{{
+#  === wait'0c' - programs + man === [[[
 zt 0c light-mode binary lbin lman from'gh-r' for \
   atclone'mv -f **/*.zsh _bat' atpull'%atclone' \
     @sharkdp/bat \
@@ -323,14 +329,14 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     aria2/aria2 \
   lman'*/**.1' atinit'export _ZO_DATA_DIR="${XDG_DATA_HOME}/zoxide"' \
     ajeetdsouza/zoxide
-#  }}} === wait'0c' - programs + man ===
+#  ]]] === wait'0c' - programs + man ===
 
-#  === wait'0c' - programs === {{{
+#  === wait'0c' - programs === [[[
 zt 0c light-mode null for \
   lbin from'gh-r' dl"$(grman man/man1/ -r sk)" lman \
-  lotabout/skim \
+    lotabout/skim \
   multisrc'shell/{completion,key-bindings}.zsh' id-as'skim_comp' pick'/dev/null' \
-  lotabout/skim \
+    lotabout/skim \
   lbin from'gh-r' dl"$(grman man/man1/)" lman \
     junegunn/fzf \
   multisrc'shell/{completion,key-bindings}.zsh' id-as'fzf_comp' pick'/dev/null' \
@@ -365,28 +371,6 @@ zt 0c light-mode null for \
     traefik/yaegi \
   lbin'bin/*' dl"$(grman man/)" lman \
     mklement0/perli \
-  lbin from'gh-r' bpick'*darwin*' \
-    ms-jpq/sad \
-  lbin from'gh-r' \
-    ducaale/xh \
-  lbin from'gh-r' \
-    itchyny/mmv \
-  lbin'* -> sd' from'gh-r' bpick'*darwin' \
-    chmln/sd \
-  lbin'*/*/hoard' atclone'cargo build --release' \
-  atpull'%atclone' \
-    Shadow53/hoard \
-  lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
-  atinit'alias rup="ruplacer"' \
-    dmerejkowsky/ruplacer \
-  lbin'* -> renamer' from'gh-r' bpick'*macos*' \
-    adriangoransson/renamer \
-  lbin'*/*/fclones' atclone'cargo build --release'  \
-  atpull'%atclone' \
-    pkolaczk/fclones \
-  lbin'target/release/tldr' atclone'cargo build --release' \
-  atclone"mv -f zsh_* _tldr" \
-    dbrgn/tealdeer \
   lbin from'gh-r' \
     koalaman/shellcheck \
   lbin'shfmt* -> shfmt' from'gh-r' bpick'*darwin_amd64' \
@@ -399,26 +383,75 @@ zt 0c light-mode null for \
     mptre/yank \
   lbin'uni* -> uni' from'gh-r' bpick'*n-amd64*' \
     arp242/uni \
+  lbin'dad;diana' atinit'export DIANA_DOWNLOAD_DIR="$HOME/Downloads/Aria"' \
+    baskerville/diana \
+  lbin has'recode' \
+    Bugswriter/tuxi \
+  lbin from'gh-r' bpick'*win-x86*' \
+    orf/gping \
+  lbin'jq-* -> jq' from'gh-r' dl"$(grman -e '1.prebuilt')" lman \
+    stedolan/jq \
+  lbin'yq_* -> yq' from'gh-r' atclone'yq shell-completion zsh > _yq' \
+  atpull'%atclone' \
+    mikefarah/yq
+
+# Can't get to wor
+# zt 0c light-mode null for \
+#   extract'regex-opt-1.2.4.tar.gz' \
+#   atclone'cd r*/r*/; make all' \
+#     https://bisqwit.iki.fi/src/arch/regex-opt-1.2.4.tar.gz
+
+# == rust [[[
+zt 0c light-mode null for \
+  lbin from'gh-r' \
+    muesli/duf \
+  lbin from'gh-r' \
+    pemistahl/grex \
+  lbin from'gh-r' \
+    XAMPPRocky/tokei \
+  lbin'**/**/viu' atclone'cargo install --path .' \
+  atpull'%atclone' has'cargo' \
+    atanunq/viu \
+  lbin from'gh-r' bpick'*darwin*' \
+    ms-jpq/sad \
+  lbin from'gh-r' \
+    ducaale/xh \
+  lbin from'gh-r' \
+    itchyny/mmv \
+  lbin'* -> sd' from'gh-r' bpick'*darwin' \
+    chmln/sd \
+  lbin'**/**/hoard' atclone'cargo build --release' \
+  atpull'%atclone' \
+    Shadow53/hoard \
+  lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
+  atinit'alias rup="ruplacer"' \
+    dmerejkowsky/ruplacer \
+  lbin'* -> renamer' from'gh-r' bpick'*macos*' \
+    adriangoransson/renamer \
+  lbin'**/**/fclones' atclone'cargo build --release'  \
+  atpull'%atclone' \
+    pkolaczk/fclones \
+  lbin'target/release/tldr' atclone'cargo build --release' \
+  atclone"mv -f zsh_* _tldr" \
+    dbrgn/tealdeer \
   lbin'pueued-* -> pueued' lbin'pueue-* -> pueue' from'gh-r' \
   bpick'*ue-mac*' bpick'*ued-mac*' \
     Nukesor/pueue \
   lbin from'gh-r' bpick'*mac*' \
     @dalance/procs \
-  lbin'*/*/bandwhich' atclone'cargo install --path .' \
+  lbin'tar*/rel*/bandwhich' atclone"cargo install --path ." \
     imsnif/bandwhich \
-  lbin'dad;diana' atinit'export DIANA_DOWNLOAD_DIR="$HOME/Downloads/Aria"' \
-    baskerville/diana \
-  lbin has'recode' \
-    Bugswriter/tuxi \
-  lbin'*/*/viu' atclone'cargo install --path .' \
-  atpull'%atclone' has'cargo' \
-    atanunq/viu
+  lbin'tar*/rel*/choose' atclone"cargo build --release" \
+    theryangeary/choose \
+  lbin from'gh-r' \
+    Byron/dua-cli
+# ]]] == rust
 
-# === tui specifi block === {{{
+# === tui specifi block === [[[
 zt 0c light-mode null for \
   lbin from'gh-r' bpick'*darwin*' \
     wagoodman/dive \
-  lbin'*/*/gpg-tui' atclone'cargo build --release' \
+  lbin'*/*/gpg-tui' atclone'cargo build --release' atpull'%atclone' \
     orhun/gpg-tui \
   lbin from'gh-r' bpick'*n_x86*' \
     charmbracelet/glow \
@@ -433,14 +466,16 @@ zt 0c light-mode null for \
   atinit'export XPLR_BOOKMARK_FILE="$XDG_CONFIG_HOME/xplr/bookmarks"' \
     sayanarijit/xplr \
   lbin from'gh-r' atload'alias tt="taskwarrior-tui"' \
-    kdheepak/taskwarrior-tui
-# }}} === tui specifi block ===
+    kdheepak/taskwarrior-tui \
+  lbin from'gh-r' atload'alias ld="lazydocker"' \
+    jesseduffield/lazydocker
+# ]]] === tui specifi block ===
 
-# === git specific block === {{{
+# === git specific block === [[[
 zt 0c light-mode null for \
   lbin from'gh-r' bpick'*darwin_amd64*' \
     isacikgoz/gitbatch \
-  lbin from'gh-r' bpick'*n_x86*' \
+  lbin from'gh-r' bpick'*n_x86*' atload'alias lg="lazygit"' \
     jesseduffield/lazygit \
   lbin from'gh-r' bpick'*darwin*' blockf \
     x-motemen/ghq \
@@ -450,32 +485,34 @@ zt 0c light-mode null for \
   make'install' atpull'%atclone' \
     jonas/tig \
   lbin'*/delta;git-dsf' from'gh-r' patch"${pchf}/%PLUGIN%.patch" \
-    dandavison/delta
-
-# }}} === git specific block ===
+    dandavison/delta \
+  lbin from'gh-r' \
+    extrawurst/gitui
+# ]]] === git specific block ===
 
 # nivekuil/rip == cosmos72/gomacro == gruntwork-io
 
-#  }}} === wait'0c' - programs ===
+#  ]]] === wait'0c' - programs ===
 
-#  === snippet block === {{{
+#  === snippet block === [[[
 zt light-mode is-snippet for \
   atload'zle -N RG; bindkey "^P" RG' \
     $ZDOTDIR/csnippets/*.zsh \
     OMZ::plugins/iterm2 \
-  atload'unalias ofd && alias ofd="open $(pwd)"' \
+  atload"unalias ofd; alias ofd='open $PWD'" \
   mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
     OMZ::plugins/osx
-#  }}} === snippet block ===
-# }}} == zinit closing ===
+#  ]]] === snippet block ===
+# ]]] == zinit closing ===
 
-# === powerlevel10k === {{{
+
+# === powerlevel10k === [[[
 if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-# }}}
+# ]]]
 
-# === zsh keybindings === {{{
+# === zsh keybindings === [[[
 # sed -n l -- infocmp -L1 -- zle -L
 # bindkey -M vicmd 'ys' add-surround
 stty intr '^C'
@@ -486,7 +523,7 @@ zmodload zsh/zprof
 autoload +X zman
 # ztodo
 autoload -Uz zmv zcalc zargs zed
-alias zmv='noglob zmv -W'
+alias zmv='noglob zmv -v' zcp='noglob zmv -Cv' zln='noglob zmv -Lv' zmvn='noglob zmv -W'
 unalias run-help && autoload run-help && alias help=run-help
 typeset -g HELPDIR='/usr/local/share/zsh/help'
 # zshexpn -- zsh -o SOURCE_TRACE -lic ''
@@ -506,12 +543,12 @@ bindkey -M vicmd 'H' beginning-of-line;         bindkey -M vicmd 'L' end-of-line
 bindkey -M vicmd 'E' backward-kill-line;        bindkey -M viins '^b' backward-delete-word
 bindkey -M vicmd 'U' redo;                      bindkey -M vicmd 'u' undo;
 bindkey -s '^B' 'bo\n';                         bindkey -M vicmd 'c.' vi-change-whole-line
-# }}}
+# ]]]
 
 # zt 1c light-mode null for \
 #   atinit'bindkey -c "$terminfo[kf1]" "frd"' zdharma/null
 
-# === completion === {{{
+# === completion === [[[
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
   '[[ $group == "[process ID]" ]] && ps -p $word -o comm="" -w -w'
@@ -534,26 +571,28 @@ zstyle ':fzf-tab:*' switch-group ',' '.'      # switch between header groups
 # zstyle ':fzf-tab:*' single-group color header # single header is shown
 zstyle ':fzf-tab:*' fzf-pad 4                 # increased because of fzf border
 # zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' use-cache true
+zstyle ':completion:*' use-cache on
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*' accept-exact '*(N)'
-zstyle ':completion:*' completer _complete _match _list _ignored _correct _approximate
+zstyle ':completion:*' completer _complete _match _list _ignored _correct _approximate _extensions
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' ignore-parents parent pwd
 zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
 zstyle ':completion:*:match:*' original only
-zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{1}-- no matches found --%f'
+zstyle ':completion:*:*:*:*:corrections' format '%F{5}!- %d (errors: %e) -!%f'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:exa' file-sort modification
 zstyle ':completion:*:exa' sort false
 zstyle ':completion:*:manuals' separate-sections true
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-# }}}
+# ]]]
 
-# === functions === {{{
+# === functions === [[[
 # howdoi
 # h() { howdoi $@ -c -n 5; }
 # hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
@@ -620,9 +659,9 @@ xd() {
     fi
   fi
 }
-# }}}
+# ]]]
 
-# === helper functions === {{{
+# === helper functions === [[[
 # prevent failed commands from being added to history
 zshaddhistory() {
   emulate -L zsh
@@ -665,13 +704,16 @@ per-dir-fzf() {
   fi
 }
 zle -N per-dir-fzf
-bindkey '®' per-dir-fzf;     # alt+r
+bindkey '®' per-dir-fzf; # alt+r
 
-zle -N cqc    # clipboard
+zle -N cqc               # clipboard
 bindkey '^X^b' cqc
-# }}}
 
-#===== completions ===== {{{
+zle -N fcd-zle
+bindkey '…' fcd-zle              # alt-;
+# ]]]
+
+#===== completions ===== [[[
   zt 0c light-mode as'completion' for \
     id-as'poetry_comp' atclone='poetry completions zsh > _poetry' \
     atpull'%atclone' has'poetry' \
@@ -683,35 +725,39 @@ bindkey '^X^b' cqc
     id-as'pueue_comp' atclone'pueue completions zsh "${GENCOMP_DIR}"' \
     atpull'%atclone' has'pueue' \
       zdharma/null
-# }}} ===== completions =====
+# ]]] ===== completions =====
 
-#===== variables ===== {{{
+#===== variables ===== [[[
 # Ω = alt-z
-# FIX: pipx completions
-zt 0c light-mode null for \
+zt 0c light-mode run-atpull for \
+  id-as'brew_setup' has'brew' nocd eval'brew shellenv' \
+    zdharma/null \
+  id-as'pipx_comp' has'pipx' nocd eval"register-python-argcomplete pipx" \
+    zdharma/null \
+  id-as'antidot_conf' has'antidot' nocd eval'antidot init' \
+    zdharma/null \
+  id-as'pyenv_init' has'pyenv' nocd eval'pyenv} init - zsh' \
+    zdharma/null \
+  id-as'pipenv_comp' has'pipenv' nocd eval'pipenv --completion' \
+    zdharma/null \
+  id-as'navi_comp' has'navi' nocd eval'navi widget zsh' \
+    zdharma/null \
   id-as'ruby_env' has'rbenv' nocd eval'rbenv init - --no-rehash' \
     zdharma/null \
-  id-as'thefuck_alias' has'thefuck' nocd eval'thefuck --alias' run-atpull \
+  id-as'thefuck_alias' has'thefuck' nocd eval'thefuck --alias' \
     zdharma/null \
   id-as'zoxide_init' has'zoxide' nocd eval'zoxide init --no-aliases zsh' \
-  atload'alias o=__zoxide_z c=__zoxide_zi' atinit'bindkey -s "ø" "c\n"' run-atpull \
+  atload'alias o=__zoxide_z c=__zoxide_zi' atinit'bindkey -s "ø" "c\n"' \
     zdharma/null \
-  id-as'keychain_init' has'keychain' run-atpull nocd \
+  id-as'keychain_init' has'keychain' nocd \
   eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac \
   && keychain --agents gpg -q --eval 0xC011CBEF6628B679' \
     zdharma/null \
   id-as'dircolors' has'gdircolors' nocd eval"gdircolors ${0:h}/gruv.dircolors" \
     zdharma/null \
-  id-as'antidot_conf' has'antidot' nocd eval'antidot init' \
-    zdharma/null \
-  id-as'pyenv_init' has'pyenv' nocd eval'pyenv init - zsh' \
-    zdharma/null \
-  id-as'pipx_comp' has'pipx' nocd eval'register-python-argcomplete pipx' \
-    zdharma/null \
-  id-as'navi_comp' has'navi' nocd eval'navi widget zsh' \
-    zdharma/null \
   id-as'Cleanup' nocd atinit'unset -f zt grman; _zsh_autosuggest_bind_widgets' \
     zdharma/null
+
 
 # FIX: pipx comp doesn't work -- timew as well (bashcompinit)
 # id-as'pip_comp' has'pip' nocd eval'pip completion --zsh' zdharma/null
@@ -737,28 +783,34 @@ typeset -g PER_DIRECTORY_HISTORY_BASE="${ZPFX}/share/per-directory-history"
 typeset -gx UPDATELOCAL_GITDIR="${HOME}/opt"
 typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
 typeset -g DUMP_LOG="${ZPFX}/share/dump/log"
-typeset -gx BREW_PREFIX="$(brew --prefix)"
 typeset -gx CDHISTSIZE=75 CDHISTTILDE=TRUE CDHISTCOMMAND=jd
 typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 typeset -gx FZFGIT_DEFAULT_OPTS="--preview-window=':nohidden,right:65%:wrap'"
 typeset -gx NQDIR="$TMPDIR/nq"
+typeset -gx BREW_PREFIX="$(/usr/local/bin/brew --prefix)"
 
 typeset -g KEYTIMEOUT=15
 
 typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
-typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${BREW_PREFIX}/lib/password-store/extensions"
-# }}}
+typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${HOMEBREW_PREFIX}/lib/password-store/extensions"
+# ]]]
 
-# === fzf === {{{
+# === fzf === [[[
 # ❱❯❮ --border ,border-left
 (( ${+commands[fd]} )) && {
   _fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
   _fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
 }
 
+# FZF_COLORS="
+# --color=fg:-1,bg:-1,hl:#458588,fg+:-1,bg+:-1,hl+:#689d6a
+# --color=prompt:#fabd2f,marker:#fe8019,spinner:#b8bb26
+# "
+
 FZF_COLORS="
---color=fg:-1,bg:-1,hl:#458588,fg+:-1,bg+:-1,hl+:#689d6a
---color=prompt:#fabd2f,marker:#fe8019,spinner:#b8bb26
+--color=fg:-1,fg+:-1,hl:#458588,hl+:#689d6a,bg+:-1
+--color=pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
+--color=header:#fb4934,prompt:#b16286
 "
 SKIM_COLORS="
 --color=fg:#b16286,fg+:#d3869b,hl:#458588,hl+:#689d6a
@@ -813,9 +865,9 @@ export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 export FORGIT_FZF_DEFAULT_OPTS="--preview-window='right:60%:nohidden'"
 
 alias db='dotbare'
-export DOTBARE_DIR="$XDG_DATA_HOME/dotfiles"
+export DOTBARE_DIR="${XDG_DATA_HOME}/dotfiles"
 export DOTBARE_TREE="$HOME"
-export DOTBARE_BACKUP="$XDG_DATA_HOME/dotbare-b"
+export DOTBARE_BACKUP="${XDG_DATA_HOME}/dotbare-b"
 export DOTBARE_FZF_DEFAULT_OPTS="
 $FZF_DEFAULT_OPTS
 --header='A:select-all, B:pager, Y:copy, E:nvim'
@@ -826,53 +878,33 @@ $FZF_DEFAULT_OPTS
 --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
 --bind 'ctrl-e:execute(echo {+} | xargs -o nvim)'
 "
-# }}}
+# ]]]
 
-# === paths (GNU) === {{{
+# === paths (GNU) === [[[
 [[ -z ${path[(re)$HOME/.local/bin]} ]] && path=( "$HOME/.local/bin" "${path[@]}" )
 [[ -z ${path[(re)/usr/local/bin]} ]] && path=( "/usr/local/bin" "${path[@]}" )
 [[ -z ${path[(re)/usr/local/sbin]} ]] && path=( "/usr/local/sbin" "${path[@]}" )
 
+# HOMEBREW_PREFIX is not reliable when sourced (brew shellenv)
 path=(
-  /usr/local/opt/coreutils/libexec/gnubin(N-/)
-  /usr/local/opt/gnu-sed/libexec/gnubin(N-/)
-  /usr/local/opt/gnu-getopt/bin(N-/)
-  /usr/local/opt/grep/libexec/gnubin(N-/)
-  /usr/local/opt/gnu-tar/libexec/gnubin(N-/)
-  /usr/local/opt/gawk/libexec/gnubin(N-/)
-  /usr/local/opt/findutils/libexec/gnubin(N-/)
-  /usr/local/opt/ed/libexec/gnubin(N-/)
-  /usr/local/opt/file-formula/bin(N-/)
-  /usr/local/opt/util-linux/bin(N-/)
-  /usr/local/opt/flex/bin(N-/)
-  /usr/local/opt/libressl/bin(N-/)
-  /usr/local/opt/unzip/bin(N-/)
-  /usr/local/opt/openvpn/sbin(N-/)
-  ${path[@]}
+  ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
+  ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
+  ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
+  ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
+  ${BREW_PREFIX}/opt/openvpn/sbin
+  "${path[@]}"
 )
 
-# $HOME/opt/anaconda3/man
+# $/opt/anaconda3/man
 manpath=(
-  /usr/local/opt/gnu-sed/share/man(N-/)
-  /usr/local/opt/grep/share/man(N-/)
-  /usr/local/opt/gnu-getopt/share/man(N-/)
-  /usr/local/opt/gnu-tar/share/man(N-/)
-  /usr/local/opt/gawk/share/man(N-/)
-  /usr/local/opt/findutils/share/man(N-/)
-  /usr/local/opt/gnu-which/share/man(N-/)
-  /usr/local/opt/file-formula/share/man(N-/)
-  /usr/local/opt/util-linux/share/man(N-/)
-  /usr/local/opt/gnu-getopt/share/man(N-/)
-  /usr/local/opt/task-spooler/share/man(N-/)
-  ${manpath[@]}
+  ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
+  ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
+  ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
+  "${manpath[@]}"
 )
 
 typeset -gxU infopath INFOPATH
-infopath=(
-  /usr/local/info
-  /usr/local/share/info
-  ${infopath[@]}
-)
+infopath=( $HOMEBREW_PREFIX/{share,}/info "${infopath[@]}" )
 
 # typeset -gxU cdpath CDPATH
 # cdpath=(
@@ -886,12 +918,11 @@ infopath=(
 # $HOME/opt/anaconda3/bin
 path=(
   $HOME/.rbenv/version/3.0.0/bin(N-/)
-  $PYENV_ROOT/shims(N-/)
-  $PYENV_ROOT/bin(N-/)
+  $PYENV_ROOT/{shims,bin}
   $CARGO_HOME/bin(N-/)
   $XDG_DATA_HOME/gem/bin(N-/)
   $GOPATH/bin(N-/)
-  /usr/local/mysql/bin(N-/)
+  $HOMEBREW_PREFIX/mysql/bin(N-/)
   $HOME/.poetry/bin(N-/)
   ${path[@]}(N-/)
 )
@@ -909,9 +940,9 @@ export LDFLAGS="-L/usr/local/opt/bison/lib"
 export LDFLAGS="-L/usr/local/opt/libressl/lib"
 export CPPFLAGS="-I/usr/local/opt/libressl/include"
 export PKG_CONFIG_PATH="/usr/local/opt/libressl/lib/pkgconfig"
-# }}}
+# ]]]
 
-# == sourcing === {{{
+# == sourcing === [[[
 # atload'x="$XDG_CONFIG_HOME/broot/launcher/bash/br"; [ -f "$x" ] && source "$x"'
 # atload'x="$HOME/.fzf.zsh"; [ -f "$x" ] && source "$x"'
 
@@ -932,10 +963,9 @@ zt light-mode null id-as for \
   nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || TS_SOCKET=/tmp/ts1 ts limelight >/dev/null" \
     zdharma/null \
   atload'local x="$XDG_CONFIG_HOME/cdhist/cdhist.rc"; [ -f "$x" ] && source "$x"' \
-    zdharma/null \
-  atload'local x="${XDG_DATA_HOME}/cargo/env"; [ -f "$x" ] && source "$x"'\
     zdharma/null
 
+# atload'local x="${XDG_DATA_HOME}/cargo/env"; [ -f "$x" ] && source "$x"'\
 # atload"source $XDG_DATA_HOME/fonts/i_all.sh" zdharma/null
 # atload'chronic pueue clean && pueue status | rg -Fq limelight || chronic pueue add limelight' \
 # nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight"
@@ -946,15 +976,14 @@ zt light-mode null id-as for \
   zinit recache keychain_init
   print -P "%F{12}===> Keychain recached <===%f"
 }
-# }}}
+# ]]]
 
-local fdir="${BREW_PREFIX}/share/zsh/site-functions"
+local fdir="${HOMEBREW_PREFIX}/share/zsh/site-functions"
 [[ -z ${fpath[(re)$fdir]} && -d "$fdir" ]] && fpath=( "${fpath[@]}" "${fdir}" )
 
 [[ -z ${path[(re)$XDG_BIN_HOME]} && -d "$XDG_BIN_HOME" ]] && path=( "$XDG_BIN_HOME" "${path[@]}")
-[[ -z ${path[(re)/$ZPFX/bin]} ]] && path=( "${ZPFX}/bin" "${path[@]}" )
-
+path=( "${ZPFX}/bin" "${path[@]}" )                # add back to be beginning
 path=( "${path[@]:#}" )                            # remove empties
 typeset -gxU path fpath manpath infopath cdpth     # clean duplicates / export
 
-# vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr={{{,}}}:
+# vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr=[[[,]]]:

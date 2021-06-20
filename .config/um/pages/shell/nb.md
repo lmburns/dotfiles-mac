@@ -6,6 +6,122 @@
 ## SYNOPSIS
 Notebook / note taking
 
+## SUBCOMMANDS
+
+`(default)`
+: List notes and notebooks. This is an alias for `nb ls`.; When a <url> is provided, create a new bookmark.
+
+`add`
+: Add a note, folder, or file.
+
+`archive`
+: Archive the current or specified notebook.
+
+`bookmark`
+: Add, open, list, and search bookmarks.
+
+`browse`
+: Browse and manage linked items in terminal and GUI browsers.
+
+`completions`
+: Install and uninstall completion scripts.
+
+`count`
+: Print the number of items in a notebook or folder.
+
+`delete`
+: Delete a note.
+
+`edit`
+: Edit a note.
+
+`export`
+: Export a note to a variety of different formats.
+
+`git`
+: Run `git` commands within the current notebook.
+
+`help`
+: View help information for the program or a subcommand.
+
+`history`
+: View git history for the current notebook or a note.
+
+`import`
+: Import a file into the current notebook.
+
+`init`
+: Initialize the first notebook.
+
+`list`
+: List notes in the current notebook.
+
+`ls`
+: List notebooks and notes in the current notebook.
+
+`move`
+: Move or rename a note.
+
+`notebooks`
+: Manage notebooks.
+
+`open`
+: Open a bookmarked web page or notebook folder, or edit a note.
+
+`peek`
+: View a note, bookmarked web page, or notebook in the terminal.
+
+`pin`
+: Pin an item so it appears first in lists.
+
+`plugins`
+: Install and uninstall plugins and themes.
+
+`remote`
+: Configure the remote URL and branch for the notebook.
+
+`run`
+: Run shell commands within the current notebook.
+
+`search`
+: Search notes.
+
+`settings`
+: Edit configuration settings.
+
+`shell`
+: Start the `nb` interactive shell.
+
+`show`
+: Show a note or notebook.
+
+`status`
+: Print notebook status information.
+
+`subcommands`
+: List, add, alias, and describe subcommands.
+
+`sync`
+: Sync local notebook with the remote repository.
+
+`unarchive`
+: Unarchive the current or specified notebook.
+
+`unset`
+: Return a setting to its default value.
+
+`unpin`
+: Unpin a pinned item.
+
+`update`
+: Update `nb` to the latest version.
+
+`use`
+: Switch to a notebook.
+
+`version`
+: Display version information.
+
 ## EXAMPLES AND USAGE
 
 ## NB ADD
@@ -304,12 +420,124 @@ Notebook / note taking
 `$ nb list 1/2/`
 : list with *ids*
 
+`$ nb example:sample/`
+: list the contents of the "sample" folder in the "example" notebook
+
+`$ nb add example:sample/demo/`
+: add an item to the "sample/demo" folder in the "example" notebook
+
+`$ nb edit example:sample/demo/3`
+: edit item 3 in the "sample/demo" folder in the "example" notebook
+
+## ===================================================x
+
+## PIN
+
+`$ nb pin / unpin`
+: pin / unpin
+
+`export NB_PINNED_PATTERN="#pinned"`
+: all tagged with #pinned are pinned
+
+`export NB_INDICATOR_PINNED="💖"`
+: icon
+
 ## ===================================================x
 
 ## SEARCH
 
+`$ nb search`
+: search
+
+`$ nb q`
+: search alias
+
 `$ nb search "#tag1" "#tag2"`
 : search for tagged items
+
+`$ nb search "example query"`
+: search current notebook for "example query"
+
+`$ nb search example: "example query"`
+: search the notebook "example" for "example query"
+
+`$ nb search demo/ "example query"`
+: search the folder named "demo" for "example query"
+
+`$ nb search "example query" --all --list`
+: search all unarchived notebooks for "example query" and list matching items
+
+`$ nb search "example" "demo"`
+: search for "example" AND "demo" with multiple arguments
+
+`$ nb search "example" --and "demo"`
+: search for "example" AND "demo" with option
+
+`$ nb search "example|sample"`
+: search for "example" OR "sample" with argument
+
+`$ nb search "example" --or "sample"`
+: search for "example" OR "sample" with option
+
+`$ nb search ":example"`
+: search items containing the hashtag "#example"
+
+`$ nb search "\d\d\d-\d\d\d\d"`
+: search with a regular expression
+
+`$ nb search "example" --type bookmark`
+: search bookmarks for "example"
+
+`$ nb bk q "example"`
+: search bookmarks for "example", alternative
+
+`$ nb q "example query"`
+: search the current notebook for "example query"
+
+`$ nb q example: "example query"`
+: search the notebook named "example" for "example query"
+
+`$ nb q -la "example query"`
+: search all unarchived notebooks for "example query" and list matching items
+
+`$ nb search "example" --list`
+: print only filename
+
+`$ nb q "#example" "#demo" "#sample"`
+: multiple query treated as and
+
+`$ nb q "example|sample"`
+: with or
+
+`$ nb q "example" --or "sample" --and "demo"`
+: or and
+
+`$ nb browse --query "#example"`
+: browse query
+
+### OPTIONS
+
+`--utility`
+: use *rg* instead
+
+## ===================================================x
+
+## MOVE AND RENAME
+
+`$ nb move / rename / mv`
+: aliases
+
+`$ nb move example.md sample.org`
+: move "example.md" to "sample.org"
+
+`$ nb rename 2 "New Name"`
+: rename note 2 ("example.md") to "New Name.md"
+
+`$ nb move example:12 demo:Sample\ Folder/`
+: move note 12 from the "example" notebook into "Sample Folder" in the "demo" notebook
+
+`$ nb rename 5 .org`
+: change ext
 
 ## ===================================================x
 
@@ -323,3 +551,9 @@ Notebook / note taking
 
 `$ nb set limit <number>`
 : set number of items to show in *ls*
+
+`$ nb set color_theme blacklight`
+: theme
+
+`$ nb settings list --long`
+: list all

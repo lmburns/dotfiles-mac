@@ -11,13 +11,13 @@
   "diagnostic.refreshOnInsertMode": false,
   "diagnostic.virtualText": true,
   "diagnostic-languageserver.filetypes": {
-    "sh": "shellcheck",
-    "zsh": "shellcheck"
+    "sh": "shellcheck"
+    // "zsh": "shellcheck"
   },
-  "diagnostic-languageserver.formatFiletypes": {
-    "sh": "shfmt",
-    "zsh": "shfmt"
-  },
+  // "diagnostic-languageserver.formatFiletypes": {
+  //   "sh": "shfmt",
+  //   "zsh": "shfmt"
+  // },
   "coc.preferences.formatOnSaveFiletypes": ["go"],
   "coc.preferences.formatOnType": true,
   "signature.enable": true,

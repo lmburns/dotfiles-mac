@@ -5,8 +5,9 @@ prepopulate-query-feeds yes
 history-limit 400
 text-width 88
 reload-threads 4
-
-# external-url-viewer "urlscan -dc -r 'linkhandler {}'"
+mark-as-read-on-hover yes
+save-path ~/.newsboat/saved_articles
+cleanup-on-quit yes
 
 notify-always yes
 notify-program newsb-notifier
@@ -38,23 +39,31 @@ bind-key U show-urls
 bind-key i sort
 bind-key I rev-sort
 
+# external-url-viewer "urlscan -dc -r 'linkhandler {}'"
 # browser "$BROWSER %u &"
 # browser open -a LibreWolf
-browser linkhandler
-macro , open-in-browser
+# browser linkhandler
+browser urlportal
+# macro , open-in-browser
 macro t set browser "qndl" ; open-in-browser ; set browser linkhandler
 macro a set browser "youtube-dl --add-metadata -xic -f bestaudio/best" ; open-in-browser ;
 macro v set browser "nohup mpv" ; open-in-browser ;
 macro w set browser "w3m" ; open-in-browser ;
-macro l set browser "links" ; open-in-browser ;
 macro C set browser "youtube-viewer --comments=%u" ; open-in-browser ;
 macro y set browser "echo %u | pbcopy" ; open-in-browser ; set browser linkhandler
 macro B set browser "newsboat_video_download" ; open-in-browser
 
 # FIX: use saved articles
-macro s set browser "tmux split-window && tmux send-keys 'lf ~/.newsboat/saved_articles && tmux kill-pane\n'" ; open-in-browser ; set browser "~/mybin/urlportal %u"
+macro s set browser "tmux split-window && tmux send-keys 'lf ~/.newsboat/saved_articles && tmux kill-pane\n'" ; open-in-browser ; set browser "$URLPORTAL %u"
 
-macro r set browser "tmux split-window -p 80 && tmux send-keys 'rtv -l %u && tmux kill-pane\n'"; open-in-browser ; set browser "~/mybin/urlportal %u"
+# Open reddit
+macro r set browser "tmux split-window -p 80 && tmux send-keys 'rtv -l %u && tmux kill-pane\n'"; open-in-browser ; set browser "$URLPORTAL %u"
+
+# Open w3m
+macro o set browser "tmux split-window -p 80 && tmux send-keys 'w3m %u && tmux kill-pane\n'"; open-in-browser ; set browser "$URLPORTAL %u"
+
+# Open in GUI
+macro W set browser "$BROWSER"; open-in-browser ; set browser "$URLPORTAL %u"
 
 # Podboat:
 download-path "~/Downloads/podcasts/%n"

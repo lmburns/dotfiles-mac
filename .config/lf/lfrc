@@ -312,9 +312,9 @@ cmd edit_scope :{{
 # -- Select: all files
 cmd select-files ${{
   { echo "$fs"; fd . -L -d1 -tf; } |
-      if [ "$lf_hidden" = "false" ]; then
+      if [[ "$lf_hidden" = "false" ]]; then
         # remove any hidden files so you only select files you can see.
-        grep -v '/\.[^/]\+$'
+        grep '/\.[^/]\+$'
       else
         cat
       fi |
@@ -547,13 +547,14 @@ map .
 
 # File Openers
 map ee $$EDITOR "$f"                            # open file in editor
+map et $$EDITOR ~/.config/tmux/tmux.conf        # edit & source lfrc
 map ec edit_config                              # edit & source lfrc
 map ev $nvim ~/.config/nvim/init.vim            # open nvim config
 map ew $nvim ~/vimwiki/index.md                 # open vimwiki
 map es edit_scope                               # edit lfrc scope
 map ez $nvim $ZDOTDIR/.zshrc                    # edit zshrc
 map ea $nvim $ZDOTDIR/zsh-aliases               # edit zsh aliases
-map b $gcp --force --suffix=.bak "$f" "$f"      # backup file
+map bk $gcp --force --suffix=.bak "$f" "$f"      # backup file
 map r $rmcrap                                   # delete .DS_Store etc
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
 map V push :!nvim<space>
@@ -684,7 +685,7 @@ map td gpg_decrypt
 map ts. gpg_sign
 map tsc gpg_sign_clear
 map tsd gpg_sign_detach
-map tT !gpg-tui
+map tT $gpg-tui
 
 map toa $transmission-remote --add $fx
 map toT %tide
@@ -702,17 +703,17 @@ map Twl wutag-list
 map gtb :git_branch
 map gtp ${{clear; git pull --rebase || true; echo "press ENTER"; read ENTER}}
 map gtz ${{clear; git status; echo "press ENTER"; read ENTER}}
-map gtp ${{clear; git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit}}
+map gtl ${{clear; git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit}}
 map gttr ${{clear; git ls-tree -r master --name-only | bat}}
 map gttt ${{clear; git ls-tree -r master --name-only | as-tree --color always | bat -p}}
 map gttu ${{clear; git ls-files --other | bat}}
 
-map gtd ${{clear; f::diff}}
-map gtc ${{clear; f::clean}}
-map gts ${{clear; fstat}}
-map gta ${{clear; fadd}}
-map gtl ${{clear; flog}}
-map gtu ${{clear; funtrack}}
+map gFd ${{clear; f::diff}}
+map gFc ${{clear; f::clean}}
+map gFs ${{clear; fstat}}
+map gFa ${{clear; fadd}}
+map gFl ${{clear; flog}}
+map gFu ${{clear; funtrack}}
 
 map gfa ${{clear; dotbare fadd -f}}
 map gfs ${{clear; dotbare fstat}}
@@ -722,8 +723,9 @@ map gftt ${{clear; dotbare ls-tree -r master --name-only | as-tree --color alway
 map gftu ${{clear; dotbare ls-files --other | bat}}
 
 # TUI's
-map gTt %tig show
-map gTu %gitui
+map gTt $tig show # tig
+map gTu $gitui    # git
+map bo $bow       # buku bookmarks
 
 # Movement
 map gd cd ~/Documents

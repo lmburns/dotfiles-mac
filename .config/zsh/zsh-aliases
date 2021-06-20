@@ -8,6 +8,9 @@ hash -d git=$HOME/projects/github
 hash -d pro=$HOME/projects
 hash -d opt=$HOME/opt
 hash -d ghq=$HOME/ghq
+hash -d TMPDIR=${TMPDIR:A}
+
+alias \$= %=
 
 alias -g G='| rg '
 alias -g H='| head'
@@ -104,6 +107,7 @@ alias nzsh='$EDITOR $ZDOTDIR/.zshrc'
 alias azsh='$EDITOR $ZDOTDIR/zsh-aliases'
 alias ezsh='$EDITOR $HOME/.zshenv'
 alias ninit='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim'
+alias ncoc='$EDITOR $XDG_CONFIG_HOME/nvim/coc-settings.json'
 alias niniti='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim +PlugInstall'
 alias ninitu='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim +PlugUpdate'
 alias ntask='$EDITOR $XDG_CONFIG_HOME/task/taskrc'
@@ -117,6 +121,8 @@ alias ntmux='$EDITOR $XDG_CONFIG_HOME/tmux/tmux.conf'
 alias nurls='$EDITOR $XDG_CONFIG_HOME/newsboat/urls'
 alias nnews='$EDITOR $XDG_CONFIG_HOME/newsboat/config'
 alias nw3m='$EDITOR $HOME/.w3m/keymap'
+alias ntig='$EDITOR $TIGRC_USER'
+alias nmutt='$EDITOR $XDG_CONFIG_HOME/mutt/muttrc'
 
 alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
 
@@ -218,7 +224,6 @@ alias gloga='git log --oneline --decorate --graph --all'
 alias magit='nvim -c MagitOnly'
 alias ngc='$EDITOR .git/config'
 alias nbconvert='jupyter nbconvert --to python'
-alias lg='lazygit'
 
 (( ${+commands[gitbatch]} )) && {
   alias gball='gitbatch -r 2 -d "$HOME/opt"'
@@ -296,6 +301,8 @@ alias svi="sudo $EDITOR"
 alias sv="sudo $EDITOR"
 alias vimdiff='nvim -d'
 alias jrnl=' jrnl'
+alias jrnlw=' jrnl wiki'
+alias nb='BROWSER=w3m nb'
 
 alias ume='um edit'
 

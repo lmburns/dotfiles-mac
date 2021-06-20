@@ -1,0 +1,13 @@
+# desc: install app with mas and fzf
+
+fmas() {
+  app_id="$(\
+    mas search contacts \
+    | column -ts $'\t' | fzf | awk '{print $1}'
+  )"
+  [[ -n "$app_id" ]] && mas install "$app_id"
+}
+
+fmas "$@"
+
+# vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr={{{,}}}:

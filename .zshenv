@@ -21,8 +21,9 @@ export XDG_MBIN_HOME="$HOME/mybin"
 export LOCAL_OPT="$HOME/opt"
 
 export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
-export SR_BROWSER='w3m'
-export RTV_BROWSER="w3m"
+export BROWSERCLI="w3m"
+export SR_BROWSER="$BROWSERCLI"
+export RTV_BROWSER="$BROWSERCLI"
 export EDITOR='nvim'
 # export VISUAL="${EDITOR}"
 export GIT_EDITOR="${EDITOR}"
@@ -49,14 +50,15 @@ export TASKDATA="${XDG_CONFIG_HOME}/task"
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/ripgreprc"
 export WGETRC="${XDG_CONFIG_HOME}/wget/wgetrc"
 export TIGRC_USER="${XDG_CONFIG_HOME}/tig/tigrc"
-export CONDARC="${XDG_CONFIG_HOME}/conda/condarc"
-export PYENV_ROOT="${XDG_DATA_HOME}/pyenv"
 export CARGO_HOME="${XDG_DATA_HOME}/cargo"
 export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
 export GOPATH="${HOME}/go"
 export GEM_HOME="${XDG_DATA_HOME}/ruby/gems"
 export GEM_SPEC_CACHE="${XDG_DATA_HOME}/ruby/specs"
 export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
+export CONDARC="${XDG_CONFIG_HOME}/conda/condarc"
+export PYENV_ROOT="${XDG_DATA_HOME}/pyenv"
+export PIPX_BIN_DIR="${XDG_DATA_HOME:h}/bin"
 export IPYTHONDIR="${XDG_CACHE_HOME}/ipython"
 # export PTPYTHON_CONFIG_HOME="${XDG_CONFIG_HOME}/ptpython/config.py"
 # export R_USER="${XDG_CONFIG_HOME}/r/R"
@@ -72,6 +74,8 @@ export DO_NOT_TRACK=1
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_BAT=1
 export HOMEBREW_BAT_CONFIG_PATH="${XDG_CONFIG_HOME}/bat/config"
+export HOMEBREW_COLOR=1
+export HOMEBREW_NO_AUTO_UPDATE=1
 export BAT_CONFIG_PATH="${XDG_CONFIG_HOME}/bat/config"
 export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
 export GPG_TTY=$TTY
@@ -80,6 +84,7 @@ export PINENTRY_USER_DATA="USE_CURSES=1"
 export OSFONTDIR="$HOME/Library/Fonts"
 export UMCONFIG_HOME="${XDG_CONFIG_HOME}/um"
 export PIER_CONFIG_PATH="${XDG_CONFIG_HOME}/pier/config.toml"
+export GRIPHOME="${XDG_CONFIG_HOME}/grip"
 
 export NNN_PLUG='P:preview-tui;f:finder;o:fzopen;d:diffs;t:treeview;v:imgview;J:autojump;e:gpge;d:gpgd;m:mimelist;b:nbak;s:organize;B:_renamer;p:_bat $nnn*;y:-_sync*;L:-_git log;k:-_fuser -kiv $nnn*'
 export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
@@ -87,6 +92,9 @@ export NNN_BMS="d:$XDG_CONFIG_HOME/;u:$LOCAL_OPT/;D:$HOME/Documents/"
 export NNN_TRASH=1
 export NNN_FIFO='/tmp/nnn.fifo'
 
-export GRIPHOME="${XDG_CONFIG_HOME}/grip"
+export URLPORTAL="$XDG_MBIN_HOME/urlportal"
+export MATES_DIR="${XDG_DATA_HOME}/mates"
+
+source "${XDG_DATA_HOME}/cargo/env"
 
 # vim:ft=zsh:et:sw=0:ts=2:sts=2:
