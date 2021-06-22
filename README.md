@@ -15,7 +15,6 @@
     + [More Complex Scripts](#complex-scripts)
 
 There are several more configuration file than the ones listed in contents. These are the ones that have been configured the most.
----
 
 ## <a name="terminal-colors"></a>Colorschemes
 
@@ -353,10 +352,11 @@ The <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings a
 .btp                       buku -- add tags
 @append_dir-history-var    helper function for per-dir-hist
 @chwpd_dir-history-var     helper function for per-dir-hist
-Rg                         nvim like fzf function (similar to bash rgf)
 autoenv-files              NICHOLAS85: find all autoenv zsh files and edit
 bcp                        delete (one or multiple) selected application(s)
+be                         use fzf to edit bookmark with buku
 bip                        brew install package fzf
+bo                         use fzf to open bookmark with buku
 bup                        update (one or multiple) selected application(s)
 ccheat                     cheatsheet of cheat and tldr
 ccp                        preserve xattr for gnu copy
@@ -366,10 +366,14 @@ cf                         Create lazily loaded Functions
 cfile                      copy contents of file to clipboard
 chpwd_ls                   func ran on every cd
 codeline                   get specific lang lines colorized
+da                         select a docker container to start and attach to
 delta                      delta variable column width side by side
+deploy-code
+ds                         select a running docker container to stop
 exchange                   swap files
 fbd                        cd to selected parent directory
 fcd                        change directories with fzf
+fcd-zle                    change directories with fzf
 fcq                        use copyq to copy clipboard with fzf
 fe                         open the selected file with the default editor
 fenv                       search environment vars with fzf
@@ -379,10 +383,13 @@ fif                        using ripgrep combined with preview
 fjj                        autojump fzf
 fjrnl                      search JRNL headlines
 fkill                      interactively kill process with fzf
+fmas                       install app with mas and fzf
+fmates                     use fzf with mates contacts open mutt
 fpdf                       search directory for pdf and open in zathura
 frd                        fzf recent directories
 from-where                 tells from-where a zsh completion is coming from
 fsearch                    search fonts on system
+ftags                      search ctags
 getpid                     get pid and pipe to pstree
 gkey                       print keyboard shortcuts to application - iteractive option
 gman                       wrapper for gman to colorize
@@ -399,8 +406,8 @@ lowercasecurdir            lowercase every file in current dir
 manfind                    find location of manpage
 mp3                        use youtube-dl to get audio
 ngu                        get git repo url
-ob                         use fzf to open bookmark with buku
 osx-ls-download-history    list download history
+paleta
 palette                    display colors
 palette2                   palette alternative
 pblist                     lists mybin funcs with their embedded descriptions
@@ -408,11 +415,13 @@ perldoc                    wrapper to colorize perldoc man pages
 pflist                     lists ZDOTDIR/functions/* with their embedded descriptions
 printc                     escape code for colors
 prompt_my_per_dir_status   helper function for per-dir-hist
+psfind                     queries mdfind by kMDItemDisplayName
 rm                         remove wrapper depending on if root
 rmhist                     remove a line from history
-sudo                       sudo wrapper
+sudo                       sudo wrapper to allow aliases
 tab                        open new terminal tab in current dir
 tms                        select selected tmux session
+tsl                        select selected tmux session
 um                         wrapper to colorize um man pages
 vf                         fuzzy open with vim from anywhere
 vii                        open file interactively with twf

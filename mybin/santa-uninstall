@@ -2,8 +2,6 @@
 
 # desc: uninstall santa-ctl
 
-#!/bin/bash
-
 # Uninstalls Santa from the boot volume, clearing up everything but logs/configs.
 # Unloads the kernel extension, services, and deletes component files.
 # If a user is logged in, also unloads the GUI agent.

@@ -712,6 +712,7 @@ keymap  XM      EXTERN        'ts mpv --ontop --no-border --force-window --autof
 
 # open external image viewer
 # keymap  xi      EXTERN_LINK   'w3m -o display_image=1 -o imgdisplay=w3mimgdisplay'
+# open -b "drabweb.macfeh" "$@";
 keymap  xf      EXTERN_LINK   'feh -. -x -B black -g 900x600-15+60 %s &'
 keymap  xF      EXTERN_LINK   'mpv --loop --quiet --ontop --no-border --force-window --autofit=900x600 --geometry=-15+60'
 
@@ -783,7 +784,7 @@ keymap  xa      COMMAND       "SHELL ~/.w3m/cgi-bin/save_bookmark_surfraw.cgi"
 # keymap  XA      COMMAND       "EXTERN '(echo -n %s | pbcopy)' ; SHELL ~/.w3m/cgi-bin/save_bookmark.cgi"
 
 keymap  xu      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_buku.cgi ; GOTO /Users/lucasburns/.config/zsh/zinit/polaris/libexec/w3m/cgi-bin/goto_clipboard.cgi"
-keymap  xs      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; GOTO /Users/lucasburns/.config/zsh/zinit/polaris/libexec/w3m/cgi-bin/goto_clipboard.cgi"
+keymap  xs      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; GOTO /Users/lucasburns/.config/zsh/zinit/polaris/libexec/w3m/cgi-bin/goto_clipboard.ci"
 keymap  XS      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; TAB_GOTO /Users/lucasburns/.config/zsh/zinit/polaris/libexec/w3m/cgi-bin/goto_clipboard.cgi"
 
 # keymap  xs      COMMAND       "SHELL ~/.w3m/cgi-bin/fzf_surfraw.cgi ; GOTO /Users/lucasburns/.config/zsh/zinit/polaris/libexec/w3m/cgi-bin/goto_clipboard.cgi"

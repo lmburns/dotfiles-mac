@@ -241,14 +241,15 @@
 
   syntax enable
   " colorscheme kimbox
+  " colorscheme everforest
+  colorscheme oceanic_material
+  " colorscheme gruvbox-material
+  " colorscheme edge
+  " colorscheme sonokai
   " colorscheme spaceduck
   " colorscheme bogster
   " colorscheme material
-  " colorscheme everforest
   " colorscheme miramare
-  " colorscheme sonokai
-  " colorscheme oceanic_material
-  colorscheme gruvbox-material
   " colorscheme night-owl
   " colorscheme jellybeans
   " colorscheme gruvbit
@@ -757,7 +758,7 @@
 "}}} === Vim Wiki ===
 
 " === coc-nvim === {{{
-  let g:python3_host_prog = '/Users/lucasburns/opt/anaconda3/bin/python3'
+  let g:python3_host_prog = '/Users/lucasburns/.local/share/pyenv/shims/python3'
   let g:syntastic_python_pylint_post_args="--max-line-length=120"
   set pyxversion=3
 
@@ -1107,6 +1108,8 @@ command! -nargs=? -complete=dir AF
         \ 1,
         \ {'options':  '--delimiter : --nth 4..'},
         \ 0)
+
+    " TODO: add option for trans -d
 
   " FIX: open line in current buffer only
     command! -bang -nargs=* Rgf call RGF()
@@ -1805,15 +1808,27 @@ augroup END
 " === vimtex === {{{
   let g:vimtex_view_method = 'zathura'
   let g:tex_flavor='latex'
+  let g:vimtex_compiler_latexmk = {
+        \ 'executable' : 'latexmk',
+        \ 'options' : [
+        \   '-xelatex',
+        \   '-file-line-error',
+        \   '-synctex=1',
+        \   '-interaction=nonstopmode',
+        \ ],
+        \}
   " let g:vimtex_compiler_latexmk = {
-  "       \ 'executable' : 'latexmk',
-  "       \ 'options' : [
-  "       \   '-xelatex',
-  "       \   '-file-line-error',
-  "       \   '-synctex=1',
-  "       \   '-interaction=nonstopmode',
-  "       \ ],
-  "       \}
+  "         \ 'build_dir' : '',
+  "         \ 'callback' : 1,
+  "         \ 'continuous' : 1,
+  "         \ 'executable' : 'latexmk',
+  "         \ 'hooks' : [function('UpdateSkim')],
+  "         \   'options' : [
+  "         \       '-file-line-error',
+  "         \       '-synctex=1',
+  "         \       '-interaction=nonstopmode',
+  "         \     ],
+  "         \}
   augroup vimtex
     autocmd!
     autocmd InsertEnter *.tex set conceallevel=0

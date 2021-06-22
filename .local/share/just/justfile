@@ -154,3 +154,6 @@ zsh-glob-qual:
 
 zsh-subflags:
   w3m 'http://zsh.sourceforge.net/Doc/Release/Parameters.html#Subscript-Flags'
+
+rm-bigdir DIR:
+  sudo rm -rv {{DIR}} | pv -l -s $(sudo du -a {{DIR}} | wc -l) > /dev/null

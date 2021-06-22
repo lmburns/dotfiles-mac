@@ -17,12 +17,13 @@
 ├── is-up-cli@3.0.0
 ├── livedown@2.1.1
 ├── mklicense@0.1.5
-├── npm@7.13.0
+├── npm@7.15.1
 ├── osx-wifi-cli@2.1.0
 ├── pageres-cli@6.0.0
 ├── parse-columns-cli@2.0.0
 ├── sql-formatter-cli@2.3.3
 ├── sql-language-server@0.12.0
+├── supdock@2.7.1
 ├── svgexport@0.4.1
 ├── thumbsup@2.16.0
 ├── to-markdown-cli@0.4.4

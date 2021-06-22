@@ -886,25 +886,59 @@ $FZF_DEFAULT_OPTS
 [[ -z ${path[(re)/usr/local/sbin]} ]] && path=( "/usr/local/sbin" "${path[@]}" )
 
 # HOMEBREW_PREFIX is not reliable when sourced (brew shellenv)
+# path=(
+#   ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
+#   ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
+#   ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
+#   ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
+#   ${BREW_PREFIX}/opt/openvpn/sbin
+#   ${BREW_PREFIX}/texlive/2021/bin
+#   "${path[@]}"
+# )
+
 path=(
-  ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
-  ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
-  ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
-  ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
-  ${BREW_PREFIX}/opt/openvpn/sbin
-  "${path[@]}"
+  /usr/local/opt/coreutils/libexec/gnubin(N-/)
+  /usr/local/opt/gnu-sed/libexec/gnubin(N-/)
+  /usr/local/opt/gnu-getopt/bin(N-/)
+  /usr/local/opt/grep/libexec/gnubin(N-/)
+  /usr/local/opt/gnu-tar/libexec/gnubin(N-/)
+  /usr/local/opt/gawk/libexec/gnubin(N-/)
+  /usr/local/opt/findutils/libexec/gnubin(N-/)
+  /usr/local/opt/ed/libexec/gnubin(N-/)
+  /usr/local/opt/file-formula/bin(N-/)
+  /usr/local/opt/util-linux/bin(N-/)
+  /usr/local/opt/flex/bin(N-/)
+  /usr/local/opt/libressl/bin(N-/)
+  /usr/local/opt/unzip/bin(N-/)
+  /usr/local/opt/openvpn/sbin(N-/)
+  ${path[@]}
 )
 
-# $/opt/anaconda3/man
+
+# manpath=(
+#   ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
+#   ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
+#   ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
+#   "${manpath[@]}"
+# )
+
+# $HOME/opt/anaconda3/man
 manpath=(
-  ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
-  ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
-  ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
-  "${manpath[@]}"
+  /usr/local/opt/gnu-sed/share/man(N-/)
+  /usr/local/opt/grep/share/man(N-/)
+  /usr/local/opt/gnu-getopt/share/man(N-/)
+  /usr/local/opt/gnu-tar/share/man(N-/)
+  /usr/local/opt/gawk/share/man(N-/)
+  /usr/local/opt/findutils/share/man(N-/)
+  /usr/local/opt/gnu-which/share/man(N-/)
+  /usr/local/opt/file-formula/share/man(N-/)
+  /usr/local/opt/util-linux/share/man(N-/)
+  /usr/local/opt/gnu-getopt/share/man(N-/)
+  ${manpath[@]}
 )
 
 typeset -gxU infopath INFOPATH
-infopath=( $HOMEBREW_PREFIX/{share,}/info "${infopath[@]}" )
+infopath=( ${BREW_PREFIX}/{share,}/info "${infopath[@]}" )
 
 # typeset -gxU cdpath CDPATH
 # cdpath=(
