@@ -1,3 +1,47 @@
+# remove broken symbolics
+function wfxr::rm-broken-links() {
+    local ls links
+    [[ $+commands[exa] ]] && ls=exa || ls=ls
+    IFS=$'\n' links=(`eval "find $1 -xtype l"`)
+    [[ -z $links ]] && return
+    $ls -l --color=always ${links[@]}
+    echo -n "Remove? [y/N]: "
+    read -q && rm -- ${links[@]}
+}
+function rm-broken-links-all() { wfxr::rm-broken-links               }
+function rm-broken-links()     { wfxr::rm-broken-links '-maxdepth 1' }
+
+#########################################
+
+FZF_ALT_E_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_E_COMMAND
+FZF_ALT_E_OPTS="
+--preview \"($FZF_FILE_PREVIEW || $FZF_DIR_PREVIEW) 2>/dev/null | head -200\"
+--bind 'alt-e:execute($EDITOR {} >/dev/tty </dev/tty)'
+--preview-window default:right:60%
+"
+export FZF_ALT_E_OPTS
+
+# ALT-E - Edit selected file
+function wfxr::fzf-file-edit-widget() {
+    setopt localoptions pipefail 2> /dev/null
+    local files
+    files=$(eval "$FZF_ALT_E_COMMAND" |
+        FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse $FZF_DEFAULT_OPTS $FZF_ALT_E_OPTS" fzf -m |
+        sed 's/^\s\+.\s//')
+    local ret=$?
+
+    [[ $ret -eq 0 ]] && echo $files | xargs sh -c "$EDITOR \$@ </dev/tty" $EDITOR
+
+    zle redisplay
+    typeset -f zle-line-init >/dev/null && zle zle-line-init
+    return $ret
+}
+zle     -N    wfxr::fzf-file-edit-widget
+# bindkey '\ee' wfxr::fzf-file-edit-widget
+
+#########################################
+
 # Tmux switch session
 function wfxr::tmux-switch() {
     [[ ! $TMUX ]] && return 1 # Not in tmux session
@@ -59,11 +103,3 @@ function t() {
     zle redisplay 2>/dev/null || true
 }
 # https://issue.life/questions/37597191
-bindkey -s '†' 't\n'
-
-if [[ $TMUX ]]; then
-    zle -N t
-    bindkey '†' t                       # alt-t
-    zle -N wfxr::tmux-select-window
-    bindkey '∑' wfxr::tmux-select-window # alt-w
-fi

@@ -1,6 +1,6 @@
 # vim:ft=zsh:
 
-# desc: escape code for colors
+# Desc: escape code for colors
 
 printc() {
     local color="%F{$1}"

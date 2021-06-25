@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# desc: parse rss feeds and get notified
+# Desc: parse rss feeds and get notified
 
 import subprocess
 import sys

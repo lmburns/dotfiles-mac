@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: backup packages from brew, cargo, gem, go, npm, pip
+# Desc: backup packages from brew, cargo, gem, go, npm, pip
 
 BREW_FILE="brew_$(date +'%Y%m%d')"
 CARGO_FILE="cargo_$(date +'%Y%m%d')"
@@ -8,6 +8,7 @@ GEM_FILE="gem_$(date +'%Y%m%d')"
 GO_FILE="go_$(date +'%Y%m%d')"
 NPM_FILE="npm_$(date +'%Y%m%d')"
 PIP_FILE="pip_$(date +'%Y%m%d')"
+PIPX_FILE="pipx_$(date +'%Y%m%d')"
 
 DIR="$HOME/backup/packages"
 
@@ -19,6 +20,7 @@ gem list > "${DIR}/${GEM_FILE}"
 ls "${HOME}/go/bin" > "${DIR}/${GO_FILE}"
 npm list -g --depth=0 > "${DIR}/${NPM_FILE}"
 pip list > "${DIR}/${PIP_FILE}"
+pipx list > "${DIR}/${PIPX_FILE}"
 
 /bin/cp -f "${DIR}/${BREW_FILE}" "${XDG_CONFIG_HOME}/packages/brew_pkgs"
 /bin/cp -f "${DIR}/${CARGO_FILE}" "${XDG_CONFIG_HOME}/packages/cargo_pkgs"
@@ -26,6 +28,7 @@ pip list > "${DIR}/${PIP_FILE}"
 /bin/cp -f "${DIR}/${GO_FILE}" "${XDG_CONFIG_HOME}/packages/go_pkgs"
 /bin/cp -f "${DIR}/${NPM_FILE}" "${XDG_CONFIG_HOME}/packages/npm_pkgs"
 /bin/cp -f "${DIR}/${PIP_FILE}" "${XDG_CONFIG_HOME}/packages/pip_pkgs"
+/bin/cp -f "${DIR}/${PIPX_FILE}" "${XDG_CONFIG_HOME}/packages/pipx_pkgs"
 
 dotbare add "${XDG_CONFIG_HOME}/packages/brew_pkgs"
 dotbare add "${XDG_CONFIG_HOME}/packages/cargo_pkgs"
@@ -33,3 +36,4 @@ dotbare add "${XDG_CONFIG_HOME}/packages/gem_pkgs"
 dotbare add "${XDG_CONFIG_HOME}/packages/go_pkgs"
 dotbare add "${XDG_CONFIG_HOME}/packages/npm_pkgs"
 dotbare add "${XDG_CONFIG_HOME}/packages/pip_pkgs"
+dotbare add "${XDG_CONFIG_HOME}/packages/pipx_pkgs"

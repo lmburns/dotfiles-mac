@@ -1,11 +1,11 @@
-# desc: lists ZDOTDIR/functions/* with their embedded descriptions
+# Desc: lists ZDOTDIR/functions/* with their embedded descriptions
 
 setopt localoptions extendedglob
 
 local -a lines desc files
 
 integer pass longest=0 longest2=0
-local p file header="# desc: "
+local p file header="# Desc: "
 
 for (( pass = 1; pass <= 2; ++ pass )); do
   files=( $ZDOTDIR/functions/*(N) )

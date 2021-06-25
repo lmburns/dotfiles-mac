@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: a launchctl wrapper
+# Desc: a launchctl wrapper
 
 usage() {
     cat << "EOF"

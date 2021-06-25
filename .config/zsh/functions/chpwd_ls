@@ -1,4 +1,4 @@
-# desc: func ran on every cd
+# Desc: func ran on every cd
 
 emulate -L zsh
 if [[ "$OLDPWD" != "$PWD" ]]; then

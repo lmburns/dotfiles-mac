@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: add reminders from command line
+# Desc: add reminders from command line
 # args: remind <title> <date> <time>
 
 list="all_combined"

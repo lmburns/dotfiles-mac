@@ -1,4 +1,4 @@
-# desc: update (one or multiple) selected application(s)
+# Desc: update (one or multiple) selected application(s)
 # mnemonic [B]rew [U]pdate [P]lugin
 
 local upd=$(brew leaves | fzf -m)

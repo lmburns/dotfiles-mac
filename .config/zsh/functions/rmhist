@@ -1,4 +1,4 @@
-# desc: remove a line from history
+# Desc: remove a line from history
 
 rmhist() {
   local hist_bak="${HISTFILE}.bak"

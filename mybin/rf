@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: search directory for files using ripgrep (obsolte, used fd)
+# Desc: search directory for files using ripgrep (obsolte, used fd)
 
 if [ -z "$2" ]
 then

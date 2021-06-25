@@ -1,4 +1,4 @@
-# desc: list download history
+# Desc: list download history
 
 emulate -L zsh
 

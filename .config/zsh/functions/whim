@@ -1,4 +1,4 @@
-# desc: edit script from path
+# Desc: edit script from path
 
 local fulldir="$(which ${1})"
 

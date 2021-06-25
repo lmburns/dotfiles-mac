@@ -1,6 +1,6 @@
 # vim:ft=zsh:
 
-# desc: mage commands to run
+# Desc: mage commands to run
 
 ff() {
   if [ $# -eq 0 ]; then

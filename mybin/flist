@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: fzf view of script directory with descriptions
+# Desc: fzf view of script directory with descriptions
 
 RG_PREFIX="rg --no-line-number --no-heading --color=always "
 INITIAL_QUERY="${*:-}"
@@ -11,7 +11,7 @@ read -ra selected < <(
     fzf --ansi \
         --delimiter / \
         --with-nth -1 \
-        --preview="rg --no-line-number '^# desc:' {}" \
+        --preview="rg --no-line-number '^# Desc:' {}" \
         --preview-window=down,2,wrap,nohidden,border
 )
 

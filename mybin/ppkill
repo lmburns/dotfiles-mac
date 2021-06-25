@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: interactive process killer
+# Desc: interactive process killer
 
 ppgrep() {
   if [ "$1" = "" ]; then

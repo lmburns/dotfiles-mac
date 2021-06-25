@@ -1,6 +1,6 @@
 # vim:ft=zsh:
 
-# desc: brew install package fzf
+# Desc: brew install package fzf
 
 # Install (one or multiple) selected application(s)
 # using "brew search" as source input

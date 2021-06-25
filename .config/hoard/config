@@ -1,6 +1,9 @@
 # exclusivity = [ ["neovim", "vim"] ]
 
 [envs]
+[envs.afew]
+    exe_exists = ["afew"]
+
 [envs.amfora]
     exe_exists = ["amfora"]
 
@@ -99,6 +102,9 @@
     ]
 
 [hoards]
+[hoards.afe]
+    "macos|afew" = "/Users/lucasburns/.config/afew/config"
+
 [hoards.amfora]
     "macos|amfora" = "/Users/lucasburns/.config/amfora/config.toml"
 
@@ -330,6 +336,8 @@
         "macos|neovim" = "/Users/lucasburns/.config/nvim/UltiSnips"
     [hoards.nvim.indentline]
         "macos|neovim" = "/Users/lucasburns/.config/nvim/indentline.vim"
+    [hoards.nvim.syntax]
+        "macos|neovim" = "/Users/lucasburns/backup/vim"
 
 [hoards.pacaptr]
     "macos" = "/Users/lucasburns/.config/pacaptr/pacaptr.toml"
@@ -413,9 +421,11 @@
 
 [hoards.surfraw]
     [hoards.surfraw.conf]
-        "macos" = "/Users/lucasburns/.config/surfraw/conf"
+        "macos|surfraw" = "/Users/lucasburns/.config/surfraw/conf"
     [hoards.surfraw.bookmarks]
-        "macos" = "/Users/lucasburns/.config/surfraw/bookmarks"
+        "macos|surfraw" = "/Users/lucasburns/.config/surfraw/bookmarks"
+    [hoards.surfraw.elvi]
+        "macos|surfraw" = "/Users/lucasburns/.config/surfraw/elvi"
 
 [hoards.sxiv]
     "macos" = "/Users/lucasburns/.config/sxiv/exec/key-handler"

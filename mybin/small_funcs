@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: list of all kinds of small functions to work on
+# Desc: list of all kinds of small functions to work on
 
 save_4chan_thread_imgs() {
     requires mkdir lynx grep uniq xargs wget

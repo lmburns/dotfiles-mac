@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: wrapper for diana - aria2
+# Desc: wrapper for diana - aria2
 
 # printf '%s\n' "====BANDWIDTH===="
 diana stats

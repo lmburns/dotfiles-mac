@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: open output of file for vim
+# Desc: open output of file for vim
 
 # opout: "open output": A general handler for opening a file's intended output,
 # usually the pdf of a compiled document.  I find this useful especially

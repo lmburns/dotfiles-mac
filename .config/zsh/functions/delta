@@ -1,4 +1,4 @@
-# desc: delta variable column width side by side
+# Desc: delta variable column width side by side
 
 if [[ -n "$COLUMNS" ]] && [[ "$COLUMNS" -gt 120 ]]; then
   command delta --side-by-side --width "$COLUMNS" "${@}"

@@ -6,7 +6,7 @@ history-limit 400
 text-width 88
 reload-threads 4
 mark-as-read-on-hover yes
-save-path ~/.newsboat/saved_articles
+save-path ~/.local/share/newsboat/saved_articles/
 cleanup-on-quit yes
 
 notify-always yes
@@ -15,8 +15,8 @@ notify-format "Newsboat: %n unread articles in %f feeds %t"
 
 # bookmark-cmd "~/bin/nbookmark.sh"
 bookmark-cmd "~/mybin/srb"
-bookmark-interactive yes
-bookmark-autopilot no
+# bookmark-interactive yes
+# bookmark-autopilot no
 
 bind-key ; macro-prefix
 bind-key j down
@@ -54,7 +54,7 @@ macro y set browser "echo %u | pbcopy" ; open-in-browser ; set browser linkhandl
 macro B set browser "newsboat_video_download" ; open-in-browser
 
 # FIX: use saved articles
-macro s set browser "tmux split-window && tmux send-keys 'lf ~/.newsboat/saved_articles && tmux kill-pane\n'" ; open-in-browser ; set browser "$URLPORTAL %u"
+macro s set browser "tmux split-window && tmux send-keys 'lf ~/.local/share/newsboat/saved_articles && tmux kill-pane\n'" ; open-in-browser ; set browser "$URLPORTAL %u"
 
 # Open reddit
 macro r set browser "tmux split-window -p 80 && tmux send-keys 'rtv -l %u && tmux kill-pane\n'"; open-in-browser ; set browser "$URLPORTAL %u"

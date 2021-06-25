@@ -1,4 +1,4 @@
-# desc: Searches zshall with special keyword ($1) matching
+# Desc: Searches zshall with special keyword ($1) matching
 
 zmp() { man -P "less -p'^${@}'" zshall; }
 zmo() { man -P "less -p'^${@}'" zshmodules; }

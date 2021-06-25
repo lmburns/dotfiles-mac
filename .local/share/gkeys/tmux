@@ -1,17 +1,24 @@
 # -- Keybindings ---------------------------------------------------------------
 pref - r = source tmux
+pref - e = edit config
 pref - m = mouse on
 pref - M = mouse off
-pref - e = switch between synchronize
+pref - E = switch between synchronize
 pref - - = split horizontally
 pref - | = split vertically
 pref - HJKL = resize
+pref - . = rename session
 
 pref - & = kill window
 pref - W = swap window
 pref - { = swap window
 pref - } = swap window
+pref - shift + -> = swap window
+pref - shift + <- = swap window
+pref - shift + up = choose tree
 
+pref - C-hjkl = navigate panes
+pref - c-x = send pane to background
 pref - x = kill pane
 pref - P = swap pane
 pref - [ = swap pane
@@ -22,29 +29,62 @@ pref - q = swap pane with selected pane
 pref - Q = swap pane with selected pane
 pref - W = interactively move pane to other window
 pref - P = interactively move pane to other window
+pref - alt-shift-p = swap current pane prompt
+pref - alt-p = move current pane prompt
+
+alt-shift-a = select pane and zoom
+alt-shift-s = select pane
+alt-shift-q = select prev window
+alt-shift-w = select next window
 
 pref - X = kill all sessions
 pref - ) = switch sessions
 pref - ( = switch sessions
 pref - c-p = choose tree
 pref - alt-w = swap current window prompt
-pref - alt-shift-p = swap current pane prompt
-pref - alt-p = move current pane prompt
 
+pref - W = choose swap window
+pref - P = choose swap pane
+pref - c-p = choose move pane
+
+pref - G = hide/show statusbar
+
+pref - c-t = clock mode
+pref - alt-c = open buffer in vim
+pref - alt-o = screencapture
+
+=== Copy Mode ===
+esc = copy mode
+p = paste buffer
++ = delete buffer
+o = surfraw google
+U = youtube-viewer
+O = w3m
+
+=== Choose Mode ===
+
+== External Programs ==
 pref - I = install plugin
 pref - U = update plugin
 
 pref - c-f = tmux-fzf
-pref alt-m = neomutt
-pref alt-r = newsboat
-pref alt-s = task spooler
+pref - alt-t = task spooler
 pref - s = bmux
-pref - Enter = sr
-pref Y = youtube-viewer
+pref - Enter = sr (split)
+pref - Y = youtube-viewer
 pref b = open browser Buku (split)
-pref c-\ = open browser Buku
 
-# Default
+pref - t = tmux-fzf-words
+pref - T = tmux-fzf-words all
+pref - 0 = tmux-fzf-panes
+
+alt-v = ytfzf
+alt-s = surfraw
+alt-m = neomutt
+alt-r = newsboat
+c-\ = open browser Buku
+
+Default
 c-d = close pane
 c-o = swap pane
 x = close pane

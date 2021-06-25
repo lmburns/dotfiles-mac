@@ -1,4 +1,4 @@
-# desc: get specific lang lines colorized
+# Desc: get specific lang lines colorized
 
 codelines() {
   # tokei -t="$1" --output json | jq ".${(U)1}.code"

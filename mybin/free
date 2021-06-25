@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# desc: get free memory like debian's 'free'
+# Desc: get free memory like debian's 'free'
 
 import subprocess
 import re

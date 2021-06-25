@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: interactively search for files (preview on size)
+# Desc: interactively search for files (preview on size)
 
 # --preview="[[ ! -z {} ]] && rg --pretty --context 5 {q} {}" \
 # --preview 'bat --color=always {1} --highlight-line {2}' \

@@ -1,4 +1,4 @@
-# desc: countdown timer; no display
+# Desc: countdown timer; no display
 
 countdown "${*}" && terminal-notifier -title "Timer finished" -message "${*} is up"
 

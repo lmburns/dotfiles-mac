@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: check crypocurrency prices
+# Desc: check crypocurrency prices
 
 ShortName="BTC\nXMR\nETH"
 

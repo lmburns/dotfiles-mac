@@ -1,4 +1,4 @@
-# desc: countdown timer
+# Desc: countdown timer
 
 zparseopts -D -A opts d -display
 

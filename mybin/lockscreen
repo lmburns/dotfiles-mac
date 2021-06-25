@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: lockscreen, change wallpaper
+# Desc: lockscreen, change wallpaper
 
 timeout="10000"
 

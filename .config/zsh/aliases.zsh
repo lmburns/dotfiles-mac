@@ -10,7 +10,11 @@ hash -d opt=$HOME/opt
 hash -d ghq=$HOME/ghq
 hash -d TMPDIR=${TMPDIR:A}
 
-alias \$= %=
+# alias \$= %=
+
+alias dlpaste='aria2c "$(pbpaste)"'
+alias :q='exit'
+alias dl='aria2c -x 4 --dir="${HOME}/Downloads/Aria"'
 
 alias -g G='| rg '
 alias -g H='| head'
@@ -45,6 +49,7 @@ alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
   alias hde='hoard -c $XDG_CONFIG_HOME/hoard/config -h /Volumes/SSD/manual-bkp/hoard'
   alias nhd='$EDITOR $XDG_CONFIG_HOME/hoard/config'
   alias hdocs='hoard -c $XDG_CONFIG_HOME/hoard/docs-config -h $XDG_CONFIG_HOME/hoard/docs'
+  alias hdocse='hoard -c $XDG_CONFIG_HOME/hoard/docs-config -h /Volumes/SSD/manual-bkp/hoard-docs'
   alias nhdocs='$EDITOR $XDG_CONFIG_HOME/hoard/docs-config'
 }
 
@@ -60,7 +65,6 @@ alias usudo='sudo -E -s '
 alias _='sudo'
 alias __='doas'
 alias cp='/bin/cp -ivp'
-alias rcp='rsync -av --ignore-existing --progress'
 alias pl='print -rl --'
 alias mv='mv -iv'
 # alias mkd='mkdir -pv'
@@ -85,7 +89,13 @@ alias mv='mv -iv'
   alias fdrr='fd --changed-within=1m'
 }
 
+(( $+commands[rsync] )) && {
+  alias rcp='rsync -av --ignore-existing --progress'
+  alias rsync='rsync -rz --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS'
+}
+
 alias chx='chmod ug+x'
+alias chmx='chmod -x'
 alias lns='ln -siv'
 alias ka='killall'
 alias kid='kill -KILL'
@@ -98,6 +108,13 @@ alias sha='shasum -a 256'
 alias wh="whence -f"
 alias wa="whence -va"
 alias wm="whence -m"
+
+alias cdr='cd "$(git rev-parse --show-toplevel)"'
+alias pvim='vim -u NONE'
+
+# alias f='pushd'
+# alias b='popd'
+# alias dirs='dirs -v'
 
 (( ${+commands[dua]} )) && alias ncdu='dua i'
 (( ${+commands[coreutils]} )) && alias cu='coreutils'
@@ -155,10 +172,6 @@ alias downd='cd $HOME/Downloads'
 alias mbd='cd $HOME/mybin'
 alias vwdir='cd $HOME/vimwiki'
 alias nvimd='cd /usr/local/share/nvim/runtime'
-
-# alias f='pushd'
-# alias b='popd'
-# alias dirs='dirs -v'
 
 # === internet / vpn / etc ======================================================
 alias wget='wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts'
@@ -263,6 +276,11 @@ alias cleanzsh='sudo rm -rf /private/var/log/asl/*.asl'
 alias zath='zathura'
 alias n='man'
 # alias n='gman'
+
+alias tn='tmux new-session -s'
+alias tl='tmux list-sessions'
+
+alias mycli='LESS="-S $LESS" mycli'
 
 (( ${+commands[pacaptr]} )) && {
   alias pacman='pacaptr'

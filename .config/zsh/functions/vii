@@ -1,4 +1,4 @@
-# desc: open file interactively with twf
+# Desc: open file interactively with twf
 
 vii() {
   files=("$(

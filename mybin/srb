@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: surfraw bookmarks - add
+# Desc: surfraw bookmarks - add
 
 url="$1"
 title="$2"

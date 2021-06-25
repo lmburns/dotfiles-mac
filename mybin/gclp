@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# desc: git clone from clipboar or name/repo
+# Desc: git clone from clipboar or name/repo
 
 setopt extendedglob
 

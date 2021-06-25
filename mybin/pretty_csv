@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# desc: create a pretty csv
+# Desc: create a pretty csv
 
 perl -pe 's/((?<=,)|(?<=^)),/ ,/g;' "$@" | column -t -s, | exec less  -F -S -X -K

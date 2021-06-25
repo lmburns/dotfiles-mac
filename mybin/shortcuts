@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: update all shortcuts when one file is updated
+# Desc: update all shortcuts when one file is updated
 
 bmdirs="${XDG_CONFIG_HOME}/shell/bm-dirs"
 bmfiles="${XDG_CONFIG_HOME}/shell/bm-files"

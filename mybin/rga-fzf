@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: ripgrep preview matches with fzf
+# Desc: ripgrep preview matches with fzf
 
 rga-fzf() {
   RG_PREFIX="rga --files-with-matches"

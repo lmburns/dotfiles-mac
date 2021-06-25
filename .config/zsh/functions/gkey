@@ -1,4 +1,4 @@
-# desc: print keyboard shortcuts to application - iteractive option
+# Desc: print keyboard shortcuts to application - iteractive option
 
 local file
 
@@ -9,7 +9,7 @@ batf() {
 }
 
 gkey() {
-  zparseopts -D -E -a opt 'f' '-fzf' 't' '-twf' 's' '-search'
+  zparseopts -D -E -a opt 'f' '-fzf' 't' '-twf' 's' '-search' 'e' '-edit'
   if [[ "${(M)opt[@]:#-(f|-fzf)}" == -(f|-fzf) ]]; then
     if [[ "${(M)opt[@]:#-(s|-search)}" == -(s|-search) ]]; then
       rg "${2:-^}" "${XDG_DATA_HOME}/gkeys/${1}" | fzf
@@ -30,6 +30,8 @@ gkey() {
         --dir="${XDG_DATA_HOME}/gkeys"
     )
     [[ -n "$file" ]] && batf "${file:t}"
+  elif [[ "${(M)opt[@]:#-(e|-edit)}" == -(e|-edit) ]]; then
+    $EDITOR "${XDG_DATA_HOME}/gkeys/${1}"
   else
     batf "${1}"
   fi

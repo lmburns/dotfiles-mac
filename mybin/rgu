@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: interactively search files with rg (with reload) - fullscreen
+# Desc: interactively search files with rg (with reload) - fullscreen
 
 RG_PREFIX="rg --column --hidden --line-number --no-heading --color=always --smart-case "
 INITIAL_QUERY="${*:-}"

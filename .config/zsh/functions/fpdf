@@ -1,4 +1,4 @@
-# desc: search directory for pdf and open in zathura
+# Desc: search directory for pdf and open in zathura
 
 open=zathura
 

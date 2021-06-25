@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: backup calcurse reminders
+# Desc: backup calcurse reminders
 
 FILE="/calcurse-bkp-$(date +'%Y%m%d').tar.gz"
 DIR="$HOME/backup/calcurse"

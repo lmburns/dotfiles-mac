@@ -1,6 +1,6 @@
 # vim:ft=zsh:
 
-# desc: get git repo url
+# Desc: get git repo url
 
 # git remote get-url origin
 

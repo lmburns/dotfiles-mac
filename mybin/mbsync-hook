@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: mbsync hook
+# Desc: mbsync hook
 
 POSTSYNC="notmuch new"
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: output manpage and view in zathura
+# Desc: output manpage and view in zathura
 
 DIR="$HOME/Documents/manpages"
 [[ ! -d $DIR ]] && mkdir -p "$DIR"

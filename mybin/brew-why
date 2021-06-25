@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: list all installed apps & dependencies
+# Desc: list all installed apps & dependencies
 
 brew list -1 --formula \
   | while read cask;  do

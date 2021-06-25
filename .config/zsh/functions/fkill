@@ -1,4 +1,4 @@
-# desc: interactively kill process with fzf
+# Desc: interactively kill process with fzf
 
 fkill() {
   px \

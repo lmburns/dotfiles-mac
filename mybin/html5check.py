@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# desc: check html5 syntax
+# Desc: check html5 syntax
 
 # Copyright (c) 2007-2008 Mozilla Foundation
 #

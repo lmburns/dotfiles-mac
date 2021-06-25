@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: queue up tasks for urls
+# Desc: queue up tasks for urls
 
 # $1 is a url; $2 is a command
 [ -z "$1" ] && exit

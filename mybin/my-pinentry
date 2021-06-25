@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: choose pinentry depending on PINENTRY_USER_DATA
+# Desc: choose pinentry depending on PINENTRY_USER_DATA
 
 # requires pinentry-curses and pinentry-gtk2
 # this *only works* with gpg 2

@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# desc: keep limelight running
+# Desc: keep limelight running
 
 keep-alive() {
   if pueue log 0 | rg -Fq 'running'; then

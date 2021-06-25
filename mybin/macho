@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: fzf man pages macOS
+# Desc: fzf man pages macOS
 ################################################################
 
 # removed 'makewhatis: /Library/TeX/texbin/man: Not a directory'

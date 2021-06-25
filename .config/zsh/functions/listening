@@ -1,4 +1,4 @@
-# desc: listen on port entered
+# Desc: listen on port entered
 
 listening() {
     if [ $# -eq 0 ]; then

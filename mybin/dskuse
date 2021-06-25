@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: get disk usage
+# Desc: get disk usage
 
 # === one way =============================================================
 # duf --hide special --output mountpoint,used,size \

@@ -1,4 +1,4 @@
-# desc: install app with mas and fzf
+# Desc: install app with mas and fzf
 
 fmas() {
   app_id="$(\

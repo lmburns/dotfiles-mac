@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: general rclone copier
+# Desc: general rclone copier
 
 /usr/local/bin/rclone copy \
   --update \

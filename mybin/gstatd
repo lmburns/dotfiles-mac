@@ -1,5 +1,5 @@
 #!/bin/sh
 
-# desc: directory size information
+# Desc: directory size information
 
 gstat $1 || stat $1; echo ; du -sh $1 ; echo ; file -I -b -p $1

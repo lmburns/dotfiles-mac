@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: select mac address for anyinterface
+# Desc: select mac address for anyinterface
 
 set -e
 unset -v restore manual interface help version

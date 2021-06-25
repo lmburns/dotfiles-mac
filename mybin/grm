@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: git repo manager for self-hosted git servers
+# Desc: git repo manager for self-hosted git servers
 
 # TODO: add option to input category
 
@@ -165,7 +165,7 @@ ${BLUE}enter index [default: ${GREEN}1${BLUE}]${RESET}"
 
   printf "%b%s%b\n> " "${BLUE}description [${GREEN}" "$default_desc" "${BLUE}]${RESET}"
   read -r repo_desc
-  repo_desc=${repo_desc:-$default_desc}
+  repo_desc=${repo_Desc:-$default_desc}
 
   printf "%b%s%b\n> " "${BLUE}owner [${GREEN}" "$default_owner" "${BLUE}]${RESET}"
   read -r owner

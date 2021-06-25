@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: taskwarrior fzf
+# Desc: taskwarrior fzf
 # Forked From: gitlab.com/doronbehar/taskwarrior-fzf
 
 # -----------------------------

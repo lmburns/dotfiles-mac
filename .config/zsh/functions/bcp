@@ -1,4 +1,4 @@
-# desc: delete (one or multiple) selected application(s)
+# Desc: delete (one or multiple) selected application(s)
 # mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
 local uninst=$(brew leaves | fzf -m)
 

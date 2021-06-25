@@ -241,15 +241,14 @@
 
   syntax enable
   " colorscheme kimbox
-  " colorscheme everforest
-  colorscheme oceanic_material
-  " colorscheme gruvbox-material
-  " colorscheme edge
-  " colorscheme sonokai
   " colorscheme spaceduck
   " colorscheme bogster
   " colorscheme material
+  " colorscheme everforest
   " colorscheme miramare
+  " colorscheme sonokai
+  " colorscheme oceanic_material
+  colorscheme gruvbox-material
   " colorscheme night-owl
   " colorscheme jellybeans
   " colorscheme gruvbit

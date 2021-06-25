@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: update block lists
+# Desc: update block lists
 
 dnsmasq_dir="/usr/local/etc/dnsmasq.d"
 

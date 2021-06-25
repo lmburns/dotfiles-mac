@@ -1,4 +1,4 @@
-# desc: open the selected file with the default editor
+# Desc: open the selected file with the default editor
 # from: https://github.com/ahmedelgabri/dotfiles/blob/master/config/zsh.d/zsh/functions/fe
 
 emulate -L zsh

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: check dnsmas, stubby, and dns servers
+# Desc: check dnsmas, stubby, and dns servers
 
 echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1
 

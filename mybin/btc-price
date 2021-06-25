@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: send email to myself of current bitcoin price
+# Desc: send email to myself of current bitcoin price
 
 VAL=$(btc-value | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g")
 PCT=$(btc-value -p h | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g")

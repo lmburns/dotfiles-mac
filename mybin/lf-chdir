@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: change directories with lf file manager
+# Desc: change directories with lf file manager
 
 lfcd () {
     tmp="$(mktemp)"

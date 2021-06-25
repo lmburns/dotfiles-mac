@@ -1,6 +1,6 @@
 # vim:ft=zsh:
 
-# desc: fzf-extras cd to parent directory
+# Desc: fzf-extras cd to parent directory
 
 zdr() {
   local dirs=()

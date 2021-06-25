@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: harden a link (convert it to a singly linked file)
+# Desc: harden a link (convert it to a singly linked file)
 
 cp $1 $1.xx
 rm $1

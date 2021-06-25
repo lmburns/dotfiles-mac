@@ -1,4 +1,4 @@
-# desc: lowercase every file in current dir
+# Desc: lowercase every file in current dir
 
 lowercasecurdir(){
   for i in *; do mv $i ${(L)i}; done

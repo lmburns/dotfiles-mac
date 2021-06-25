@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: fzf surfraw bookmarks
+# Desc: fzf surfraw bookmarks
 
 fsr() {
   surfraw "$(cat ~/.config/surfraw/bookmarks \

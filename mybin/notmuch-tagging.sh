@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: tag notmuch mail
+# Desc: tag notmuch mail
 
 echo "Importing new mail"
 notmuch new

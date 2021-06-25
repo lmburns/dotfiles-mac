@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: performs port scan using nmap
+# Desc: performs port scan using nmap
 
 print_usage() {
 cat << _EOF_

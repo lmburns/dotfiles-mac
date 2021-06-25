@@ -58,8 +58,16 @@ privoxy +ACTION:
 # --log-level INFO \
 # --rc \
 
+start-tor:
+  @sudo networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 9050 off
+  @sudo networksetup -setsocksfirewallproxystate Wi-Fi on
+  @curl --socks5 localhost:9050 --socks5-hostname localhost:9050 -s https://check.torproject.org/
+
+stop-tor:
+  @sudo networksetup -setsocksfirewallproxystate Wi-Fi off
+
 rclone-mount:
-  $HOME/bin/rclone mount \
+  $ZPFX/bin/rclone mount \
     --transfers 8 \
     --volname google-drive \
     --dir-cache-time 96h \
@@ -74,7 +82,7 @@ rclone-mount:
     google-drive:/ /Users/lucasburns/.mount/google-drive
 
 rclg SRC DEST:
-  /usr/local/bin/rclone copy \
+  $ZPFX/bin/rclone copy \
     --update \
     --verbose \
     --delete-after \
@@ -89,7 +97,6 @@ rclg SRC DEST:
     --low-level-retries 10 \
     --stats 1s \
     --progress \
-    --log-file $LOCAL_OPT/local/rclone/logs/rclone.log \
     {{SRC}} "google-drive:{{DEST}}/"
 
 ssh-mount DEST:

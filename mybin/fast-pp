@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: fast-p pdf finder source code
+# Desc: fast-p pdf finder source code
 
 # This file is kept only for historical reasons.
 # It is recommended to use the go binary and the installatoin procedure

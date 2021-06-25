@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# desc: adds call to _pass-vera completion from _pass completion
+# Desc: adds call to _pass-vera completion from _pass completion
 # for whatever reason I cannot get it to work without this, unless I call pass-vera, which is not a command
 
 [ -f "$HOME/.zshrc" ] && . $HOME/.zshrc

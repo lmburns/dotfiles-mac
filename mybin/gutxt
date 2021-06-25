@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: upload text files to google drive
+# Desc: upload text files to google drive
 
 /usr/local/bin/rclone copy \
   --update \

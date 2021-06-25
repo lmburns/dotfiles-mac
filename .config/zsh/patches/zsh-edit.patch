@@ -1,50 +1,20 @@
-diff --git i/functions/_dirstack_ w/functions/_dirstack_
-index fd459b5..847e856 100644
---- i/functions/_dirstack_
-+++ w/functions/_dirstack_
-@@ -1,7 +1,6 @@
- #autoload
- if [[ ! -v _comp_setup ]]; then
--  autoload -Uz compinit
--  compinit
-+  zicompinit
- fi
-
- _dirstack_() {
 diff --git i/zsh-edit.plugin.zsh w/zsh-edit.plugin.zsh
-index be7e76d..d00d564 100644
+index 2d06462..3216d3e 100644
 --- i/zsh-edit.plugin.zsh
 +++ w/zsh-edit.plugin.zsh
-@@ -5,9 +5,12 @@ setopt autopushd pushdminus
+@@ -7,12 +7,10 @@ zmodload zsh/complist
    typeset -gHa _edit_opts=( extendedglob NO_listbeep NO_shortloops warncreateglobal )
    setopt $_edit_opts
-
+ 
 -  local fdir=${${(%):-%x}:h}/functions
 +  local fdir=${${(%):-%x}:A:h}/functions
    unfunction bindkey 2>/dev/null
-   autoload -Uz $fdir/bindkey $fdir/_*~*.zwc
+-  autoload -Uz $fdir/bindkey $fdir/_*~*.zwc
+-
+-  bindkey -M emacs '^U'  backward-kill-line
+-  bindkey -M emacs '^[e' redo
 +  autoload -Uz $fdir/bindkey
 +  autoload -Uz $fdir/_*~*.zwc(:t)
-+
-
-   local widget
-   for widget in {forward,backward,kill,backward-kill}-word; do
-@@ -17,14 +20,14 @@ setopt autopushd pushdminus
-     zle -N $widget _visual_yank
-   done
-
--  bindkey -M emacs '^[Y' reverse-yank-pop
-+  bindkey -M viins '≤' reverse-yank-pop # alt-,
-
-   zle -N _dirstack
--  bindkey -M emacs '^[`' _dirstack # Show dir stack.
-+  bindkey -M viins '∂' _dirstack # Show dir stack. alt-d
-
-   zle -N _pushd
--  bindkey -M emacs -c '^[-' '-pushd -1'  # Go backward one dir.
--  bindkey -M emacs -c '^[=' '-pushd +0'  # Go forward one dir.
-+  bindkey -M viins -c 'ß' '-pushd -1'  # Go backward one dir. alt-s
-+  bindkey -M viins -c 'ƒ' '-pushd +0'  # Go forward one dir. alt-f
-   bindkey -M menuselect '^[-' menu-complete
-   bindkey -M menuselect '^[=' reverse-menu-complete
- }
+ 
+   .beginning-of-buffer() {
+     CURSOR=0

@@ -116,7 +116,7 @@ cmd movetojump ${{
 cmd movetopath ${{
   # clear; read -p "Move to: " dest
   clear; vared -cp "Move to: " dest
-  mv -iv -- $fx "$dest"
+  mv -iv -- $fx "${~dest}"
   terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
 }}
 
@@ -132,10 +132,9 @@ cmd copytojump ${{
 
 # -- Copy: path
 cmd copytopath ${{
-  # clear; read -p "Copy to: " dest
   clear; vared -cp "Copy to: " dest
-  cp -pivr -- $fx "$dest"
-  terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
+  cp -pivr -- $fx ${~dest}
+  terminal-notifier -title "🚚 File(s) copied." -message "copied to $dest."
 }}
 
 
@@ -309,31 +308,55 @@ cmd edit_scope :{{
 }}
 
 
+
 # -- Select: all files
 cmd select-files ${{
-  { echo "$fs"; fd . -L -d1 -tf; } |
-      if [[ "$lf_hidden" = "false" ]]; then
-        # remove any hidden files so you only select files you can see.
-        grep '/\.[^/]\+$'
-      else
-        cat
-      fi |
-      gsed '/^$/d' | sort | uniq -u |
-      gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+  typeset -a files; files=( $(fd . -L -d1 -tf) )
+  for fi in "${files[@]}"; do
+    lf -remote "send $id toggle $fi"
+  done
 }}
 
-
-# -- Select: all directories
+# -- Select: all dirs
 cmd select-dirs ${{
-  { echo "$fs"; fd . -L -d1 -td; } |
-      if [ "$lf_hidden" = "false" ]; then
-        grep -v '/\.[^/]\+$'
-      else
-        cat
-      fi |
-      gsed '/^$/d' | sort | uniq -u |
-      gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+  typeset -a dirs; dirs=( $(fd . -L -d1 -td) )
+  for dir in "${dirs[@]}"; do
+    lf -remote "send $id toggle $dir"
+  done
 }}
+
+# -- Select: all executables
+cmd select-exec ${{
+  typeset -a xx; xx=( $(fd . -L -d1 -tx) )
+  for x in "${xx[@]}"; do
+    lf -remote "send $id toggle $x"
+  done
+}}
+
+# # -- Select: all files
+# cmd select-files ${{
+#   { echo "$fs"; fd . -L -d1 -tf; } |
+#   if [[ "$lf_hidden" = "false" ]]; then
+# # remove any hidden files so you only select files you can see.
+#     grep '/\.[^/]\+$'
+#   else
+#     cat
+#       fi |
+#       gsed '/^$/d' | sort | uniq -u |
+#       gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+# }}
+
+# # -- Select: all directories
+# cmd select-dirs ${{
+#   { echo "$fs"; fd . -L -d1 -td; } |
+#       if [ "$lf_hidden" = "false" ]; then
+#         grep -v '/\.[^/]\+$'
+#       else
+#         cat
+#       fi |
+#       gsed '/^$/d' | sort | uniq -u |
+#       gxargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+# }}
 
 # -- Bookmark Jump: specifically for lf
 cmd njump ${{
@@ -569,6 +592,7 @@ map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file --mime -b -p $f
 
 map sf select-files
 map sd select-dirs
+map sx select-exec
 map sr :{{ set nopreview; set ratios 1:3; }}
 map sp :{{ set preview;   set ratios 1:2:3; }}
 map sP :{{ set preview;   set ratios 1:2; }}
@@ -725,6 +749,7 @@ map gftu ${{clear; dotbare ls-files --other | bat}}
 # TUI's
 map gTt $tig show # tig
 map gTu $gitui    # git
+map gTl $lazygit    # git
 map bo $bow       # buku bookmarks
 
 # Movement

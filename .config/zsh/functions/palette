@@ -1,6 +1,6 @@
 # vim:ft=zsh:
 
-# desc: display colors
+# Desc: display colors
 
 palette() {
     local -a colors

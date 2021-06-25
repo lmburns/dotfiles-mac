@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: backup crontab
+# Desc: backup crontab
 
 FILE="crontab_$(date +'%Y%m%d')"
 DIR="$HOME/backup/crontab"

@@ -1,4 +1,4 @@
-# desc: Searches zshall with special keyword ($1) matching
+# Desc: Searches zshall with special keyword ($1) matching
 # doesn't work consistently as function, does just fine as script
 
 # zp() { man -P "less -p'^       "$1" '" zshexpn; }

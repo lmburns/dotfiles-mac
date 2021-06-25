@@ -1,6 +1,6 @@
 # vim:ft=zsh:
 
-# desc: change directories with fzf
+# Desc: change directories with fzf
 
 function fcd-zle() {
   local dir

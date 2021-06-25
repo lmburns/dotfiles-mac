@@ -1,4 +1,4 @@
-# desc: cd to selected parent directory
+# Desc: cd to selected parent directory
 
 fdr() {
   local declare dirs=()

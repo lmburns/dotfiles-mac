@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: updatedb for bash, macOS is sh which it is not
+# Desc: updatedb for bash, macOS is sh which it is not
 
 if [ "$(id -u)" = "0" ]; then
 	rc=0

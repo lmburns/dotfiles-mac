@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: general rules for macos
+# Desc: general rules for macos
 
 osascript -e 'tell application "System Preferences" to quit'
 sudo -v

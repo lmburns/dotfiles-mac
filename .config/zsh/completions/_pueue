@@ -113,14 +113,16 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (restart)
 _arguments "${_arguments_options[@]}" \
-'(-s --stashed)-k[Immediately start the tasks]' \
-'(-s --stashed)--start-immediately[Immediately start the tasks]' \
+'(-a --all-failed)-g+[Like `--all-failed`, but only restart tasks failed tasks of a specific group. The group will be set to running and its paused tasks will be resumed]' \
+'(-a --all-failed)--failed-in-group=[Like `--all-failed`, but only restart tasks failed tasks of a specific group. The group will be set to running and its paused tasks will be resumed]' \
+'-a[Restart all failed tasks accross all groups. Nice to use in combination with `-i/--in-place`]' \
+'--all-failed[Restart all failed tasks accross all groups. Nice to use in combination with `-i/--in-place`]' \
+'(-s --stashed)-k[Immediately start the tasks, no matter how many open slots there are. This will ignore any dependencies tasks may have]' \
+'(-s --stashed)--start-immediately[Immediately start the tasks, no matter how many open slots there are. This will ignore any dependencies tasks may have]' \
 '-s[Set the restarted task to a "Stashed" state. Useful to avoid immediate execution]' \
 '--stashed[Set the restarted task to a "Stashed" state. Useful to avoid immediate execution]' \
 '-i[Restart the task by reusing the already existing tasks. This will overwrite any previous logs of the restarted tasks]' \
 '--in-place[Restart the task by reusing the already existing tasks. This will overwrite any previous logs of the restarted tasks]' \
-'-a[Restart all failed tasks]' \
-'--all-failed[Restart all failed tasks]' \
 '-e[Edit the tasks'\'' command before restarting]' \
 '--edit[Edit the tasks'\'' command before restarting]' \
 '-p[Edit the tasks'\'' path before restarting]' \
@@ -153,6 +155,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '(-a --all)-g+[Kill all running tasks in a group. This also pauses the group]' \
 '(-a --all)--group=[Kill all running tasks in a group. This also pauses the group]' \
+'-s+[Send a UNIX signal instead of simply killing the process. DISCLAIMER: This bypasses Pueue'\''s process handling logic! You might enter weird invalid states, use at your own descretion]' \
+'--signal=[Send a UNIX signal instead of simply killing the process. DISCLAIMER: This bypasses Pueue'\''s process handling logic! You might enter weird invalid states, use at your own descretion]' \
 '-a[Kill all running tasks across ALL groups. This also pauses all groups]' \
 '--all[Kill all running tasks across ALL groups. This also pauses all groups]' \
 '-c[Send the SIGTERM signal to all children as well. Useful when working with shell scripts]' \
@@ -213,8 +217,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '(-f --full)-l+[Only print the last X lines of each task'\''s output. This is done by default if you'\''re looking at multiple tasks]' \
 '(-f --full)--lines=[Only print the last X lines of each task'\''s output. This is done by default if you'\''re looking at multiple tasks]' \
-'-j[Print the resulting tasks and output as json. Can be very large!]' \
-'--json[Print the resulting tasks and output as json. Can be very large!]' \
+'-j[Print the resulting tasks and output as json. By default only the last stdout/-err lines will be returned unless --full is provided. Take care, as the json cannot be streamed! If your logs are really huge, using --full can use all of your machine'\''s RAM]' \
+'--json[Print the resulting tasks and output as json. By default only the last stdout/-err lines will be returned unless --full is provided. Take care, as the json cannot be streamed! If your logs are really huge, using --full can use all of your machine'\''s RAM]' \
 '-f[Show the whole stdout and stderr output. This is the default if only a single task is being looked at]' \
 '--full[Show the whole stdout and stderr output. This is the default if only a single task is being looked at]' \
 '-h[Prints help information]' \

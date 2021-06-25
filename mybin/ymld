@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: parse a yaml file
+# Desc: parse a yaml file
 
 # sed -e 's/:[^:]/="/g; s/=" */="/g; s/$/"/g'
 

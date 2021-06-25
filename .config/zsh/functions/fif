@@ -1,4 +1,4 @@
-# desc: using ripgrep combined with preview
+# Desc: using ripgrep combined with preview
 # find-in-file - usage: fif <searchTerm>
 
 if [ ! "$#" -gt 1 ]; then echo "Need a string to search for!"; return 1; fi

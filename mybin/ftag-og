@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# desc: use fzf with tag
+# Desc: use fzf with tag
 
 emulate -LR zsh
 builtin setopt extendedglob typesetsilent

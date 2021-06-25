@@ -1,4 +1,4 @@
-# desc: preserve xattr for gnu copy
+# Desc: preserve xattr for gnu copy
 
 zparseopts -D -A opts 'p' '-preserve'
 

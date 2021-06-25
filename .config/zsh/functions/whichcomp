@@ -1,4 +1,4 @@
-# desc: tell which completion a command is using
+# Desc: tell which completion a command is using
 # taken from psprint, creator of zinit
 
 whichcomp() {

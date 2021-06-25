@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: manipulate pfctl firewall
+# Desc: manipulate pfctl firewall
 
 sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
 sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on

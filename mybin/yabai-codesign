@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: codesign yabai
+# Desc: codesign yabai
 
 identities="$(security find-identity -v -p codesigning | sed '$d')"
 id_count="$(echo "${identities}" | wc -l)"

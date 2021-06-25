@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: open script in editor
+# Desc: open script in editor
 
 Z="${ZDOTDIR}/functions/${*}"
 fullp=$(which $*)

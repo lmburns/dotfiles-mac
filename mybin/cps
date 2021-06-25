@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# desc: git alias, send multiple remotes
+# Desc: git alias, send multiple remotes
 
 source $ZDOTDIR/.zshrc > /dev/null 2>&1
 

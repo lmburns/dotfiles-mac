@@ -1,4 +1,4 @@
-# desc: wrapper for gman to colorize
+# Desc: wrapper for gman to colorize
 
 # termcap
 # ks       make the keypad send commands

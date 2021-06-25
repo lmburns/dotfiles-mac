@@ -1,0 +1,4 @@
+for i in {1..255}; do
+    print -n $'\e'"[38;5;$i"m${(l:3::0:)i}" "
+done
+print

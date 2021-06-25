@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# desc: search zshall more efficiently
+# Desc: search zshall more efficiently
 
 setopt extendedglob
 

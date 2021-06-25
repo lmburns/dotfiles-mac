@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: count mail with mutt
+# Desc: count mail with mutt
 
 /usr/local/bin/mw -Y
 

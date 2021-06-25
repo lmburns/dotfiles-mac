@@ -1,4 +1,4 @@
-# desc: select selected tmux session
+# Desc: select selected tmux session
 
 #   - Bypass fuzzy finder if there's only one match (--select-1)
 #   - Exit if there's no match (--exit-0)

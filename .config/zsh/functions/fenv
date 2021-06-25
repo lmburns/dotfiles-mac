@@ -1,4 +1,4 @@
-# desc: search environment vars with fzf
+# Desc: search environment vars with fzf
 # taken: https://github.com/nikitavoloboev/dotfiles/blob/master/zsh/functions/fzf-functions.zsh
 
 fenv() {

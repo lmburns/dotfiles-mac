@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: open buku in w3m
+# Desc: open buku in w3m
 
 url=$(
   buku -p -f4 \

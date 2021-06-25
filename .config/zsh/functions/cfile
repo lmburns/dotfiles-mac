@@ -1,6 +1,6 @@
 # vim:ft=zsh:
 
-# desc: copy contents of file to clipboard
+# Desc: copy contents of file to clipboard
 
 cfile() {
   print -l ${(f)"$(<$1)"} | pbcopy

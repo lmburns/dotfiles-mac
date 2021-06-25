@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: generate launch daemon/agent
+# Desc: generate launch daemon/agent
 
 identifier=""   # com.company.package
 packageName=""  # Package

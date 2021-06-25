@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: whitelist/blacklist apps with santactl
+# Desc: whitelist/blacklist apps with santactl
 
 # sudo /bin/launchctl unload /Library/LaunchAgents/com.google.santa.plist
 # sudo /bin/launchctl unload /Library/LaunchAgents/com.google.santad.plist

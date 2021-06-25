@@ -823,3 +823,5 @@ keymap  \\\x    COMMAND       "LIST; SEARCH \.torrent$; EXTERN_LINK ~/.scripts/p
 keymap  \\\m    COMMAND       "LIST; SEARCH magnet:\?; EXTERN_LINK ~/.scripts/privatescripts/addtorrent-thinkcentre"
 
 # }}}
+
+# vim: ft=bash:et:sw=0:ts=2:sts=2:fdm=marker:fmr={{{,}}}:

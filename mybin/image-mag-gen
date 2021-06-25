@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: search for font files and add to imagemagick
+# Desc: search for font files and add to imagemagick
 
 fd --search-path ~/Library/Fonts -e otf -e ttf \
   | perl ~/.local/share/imagemagick/type_gen.pl -f \

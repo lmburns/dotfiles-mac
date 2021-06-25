@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# desc: send a notification of cryptocurrency prices
+# Desc: send a notification of cryptocurrency prices
 
 local file
 local -a files output

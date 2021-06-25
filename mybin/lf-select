@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: reads file names from stdin and selects them in lf
+# Desc: reads file names from stdin and selects them in lf
 
 while read -r file; do
 	[ -z "$file" ] && continue

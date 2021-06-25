@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: handle urls and do some action
+# Desc: handle urls and do some action
 
 # Feed script a url or file location.
 # If an image, it will view in sxiv,

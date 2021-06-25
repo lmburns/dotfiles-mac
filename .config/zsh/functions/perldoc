@@ -1,4 +1,4 @@
-# desc: wrapper to colorize perldoc man pages
+# Desc: wrapper to colorize perldoc man pages
 
 # taken from colorized man pages
 # ks       make the keypad send commands

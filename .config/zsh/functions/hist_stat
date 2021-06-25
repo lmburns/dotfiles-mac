@@ -1,4 +1,4 @@
 # vim:ft=zsh:
-# desc: zsh history stats
+# Desc: zsh history stats
 
 fc -ln 0 | awk '{print $1}' | sort | uniq -c | sort -nr | head

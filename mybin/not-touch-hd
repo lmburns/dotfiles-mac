@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: use something without it touching harddrive
+# Desc: use something without it touching harddrive
 
 PIPE="$OUTPUT_DIR/key.pipe"
 mkfifo -m 0600 "$PIPE"

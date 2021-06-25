@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# desc: view manpage in zathura
+# Desc: view manpage in zathura
 
 man -t "$1" | ps2pdf - "$1".pdf | zathura "$1".pdf && rm -f "$1".pdf >/dev/null

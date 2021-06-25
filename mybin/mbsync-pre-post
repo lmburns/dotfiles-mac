@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# desc: mbsync pre-post hooks
+# Desc: mbsync pre-post hooks
 
 PRESYNC="imapfilter"
 POSTSYNC="notmuch new"

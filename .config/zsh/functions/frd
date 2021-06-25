@@ -1,4 +1,4 @@
-# desc: fzf recent directories
+# Desc: fzf recent directories
 
 frd() {
   dir=$(dirs -lp | fzf)

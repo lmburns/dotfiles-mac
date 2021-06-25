@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# desc: clean macos cache
+# Desc: clean macos cache
 
 #user cache file
 echo "cleaning user cache file from ~/Library/Caches"

@@ -1,4 +1,4 @@
-# desc: removes gnubins from \$PATH
+# Desc: removes gnubins from \$PATH
 
 path=( "${path[@]:#/usr/local/opt/coreutils/libexec/gnubin}" )
 path=( "${path[@]:#/usr/local/opt/gnu-sed/libexec/gnubin}" )

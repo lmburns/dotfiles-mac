@@ -1,0 +1,210 @@
+#!/usr/bin/env zsh
+
+# setopt xtrace
+
+typeset -gAH ZINIT ZINIT_SNIPPETS ZINIT_REPORTS ZINIT_ICES ZINIT_SICE ZINIT_CUR_BIND_MAP ZINIT_EXTS ZINIT_EXTS2
+
+if [[ -z ${ZINIT[HOME_DIR]} ]]; then
+    # Ignore ZDOTDIR if user manually put Zinit to $HOME.
+    if [[ -d $HOME/.zinit ]]; then
+        ZINIT[HOME_DIR]="$HOME/.zinit"
+    elif [[ -d ${ZDOTDIR:-$HOME}/.zinit ]]; then
+        ZINIT[HOME_DIR]="${ZDOTDIR:-$HOME}/.zinit"
+    elif [[ -d ${ZDOTDIR:-$HOME}/zinit ]]; then
+        ZINIT[HOME_DIR]="${ZDOTDIR:-$HOME}/zinit"
+    elif [[ -d $HOME/.zplugin ]]; then
+        ZINIT[HOME_DIR]="$HOME/.zplugin"
+    elif [[ -d ${ZDOTDIR:-$HOME}/.zplugin ]]; then
+        ZINIT[HOME_DIR]="${ZDOTDIR:-$HOME}/.zplugin"
+    else
+        ZINIT[HOME_DIR]="${ZDOTDIR:-$HOME}/.zinit"
+    fi
+fi
+
+: ${ZINIT[PLUGINS_DIR]:=${ZINIT[HOME_DIR]}/plugins}
+
+    ZINIT+=(
+        # Old colors: 31m
+        col-pname   $'\e[1;4m\e[32m'     col-uname   $'\e[1;4m\e[35m'     col-keyword $'\e[32m'
+        col-note    $'\e[38;5;148m'       col-error   $'\e[1m\e[38;5;204m' col-p       $'\e[38;5;81m'
+        col-info    $'\e[38;5;82m'       col-info2   $'\e[38;5;227m'      col-profile $'\e[38;5;148m'
+        col-uninst  $'\e[38;5;118m'      col-info3   $'\e[1m\e[38;5;227m' col-slight  $'\e[38;5;230m'
+        col-failure $'\e[38;5;204m'      col-happy   $'\e[1m\e[38;5;82m'  col-annex   $'\e[38;5;153m'
+        col-id-as   $'\e[4;38;5;220m'    col-version $'\e[3;38;5;87m'
+        # The more recent, fresh ones:
+        col-pre  $'\e[38;5;135m'  col-msg   $'\e[0m'        col-msg2  $'\e[38;5;172m'
+        col-obj  $'\e[38;5;218m'  col-obj2  $'\e[38;5;118m' col-file  $'\e[3;38;5;117m'
+        col-dir  $'\e[3;38;5;153m' col-func $'\e[38;5;219m'
+        col-url  $'\e[38;5;75m'   col-meta  $'\e[38;5;57m'  col-meta2 $'\e[38;5;147m'
+        col-data $'\e[38;5;82m'   col-data2 $'\e[38;5;117m' col-hi    $'\e[1m\e[38;5;183m'
+        col-var  $'\e[38;5;81m'   col-glob  $'\e[38;5;227m' col-ehi   $'\e[1m\e[38;5;210m'
+        col-cmd  $'\e[38;5;82m'   col-ice   $'\e[38;5;39m'  col-nl    $'\n'
+        col-txt  $'\e[38;5;254m' col-num  $'\e[3;38;5;155m' col-term  $'\e[38;5;185m'
+        col-warn $'\e[38;5;214m'  col-apo $'\e[1;38;5;220m' col-ok    $'\e[38;5;220m'
+        col-faint $'\e[38;5;238m' col-opt   $'\e[38;5;219m' col-lhi   $'\e[38;5;81m'
+        col-tab  $' \t '            col-msg3  $'\e[38;5;238m' col-b-lhi $'\e[1m\e[38;5;75m'
+        col-bar  $'\e[38;5;82m'  col-th-bar $'\e[38;5;82m'
+        col-…    "${${${(M)LANG:#*UTF-8*}:+…}:-...}"  col-ndsh  "${${${(M)LANG:#*UTF-8*}:+–}:-}"
+        col-mdsh $'\e[1;38;5;220m'"${${${(M)LANG:#*UTF-8*}:+–}:--}"$'\e[0m'
+        col-mmdsh $'\e[1;38;5;220m'"${${${(M)LANG:#*UTF-8*}:+――}:--}"$'\e[0m'
+        col--…   "${${${(M)LANG:#*UTF-8*}:+⋯⋯}:-···}" col-lr    "${${${(M)LANG:#*UTF-8*}:+↔}:-"«-»"}"
+        col-↔    ${${${(M)LANG:#*UTF-8*}:+$'\e[38;5;82m↔\e[0m'}:-$'\e[38;5;82m«-»\e[0m'}
+        col-rst  $'\e[0m'        col-b     $'\e[1m'        col-nb     $'\e[22m'
+        col-u    $'\e[4m'        col-it    $'\e[3m'        col-st     $'\e[9m'
+        col-nu   $'\e[24m'       col-nit   $'\e[23m'       col-nst    $'\e[29m'
+        col-bspc $'\b'        col-b-warn $'\e[1;38;5;214m' col-u-warn $'\e[4;38;5;214m'
+    )
+
+
+# FUNCTION: util-shands-path. [[[
+# Replaces parts of path with %HOME, etc.
+util-shands-path() {
+    builtin setopt extendedglob typesetsilent noshortloops rcquotes \
+         ${${${+REPLY}:#0}:+warncreateglobal}
+
+    local -A map
+    map=( \~ %HOME $HOME %HOME $ZINIT[SNIPPETS_DIR] %SNIPPETS $ZINIT[PLUGINS_DIR] %PLUGINS
+        "$ZPFX" %ZPFX HOME %HOME SNIPPETS %SNIPPETS PLUGINS %PLUGINS "" "" )
+    REPLY=${${1/(#b)(#s)(%|)(${(~j:|:)${(@k)map:#$HOME}}|$HOME|)/$map[$match[2]]}}
+    return 0
+} # ]]]
+
+any-to-pid() { # [[[
+    builtin setopt extendedglob typesetsilent noshortloops rcquotes \
+         ${${${+REPLY}:#0}:+warncreateglobal}
+
+    1=${~1} 2=${~2}
+
+    # Two components given?
+    if [[ -n $2 ]] {
+        if [[ $1 == (%|/)* || ( -z $1 && $2 == /* ) ]] {
+            util-shands-path $1${${(M)1#(%/?|%[^/]|/?)}:+/}$2
+            REPLY=${${REPLY:#%*}:+%}$REPLY
+        } else {
+            REPLY=$1${1:+/}$2
+        }
+        return 0
+    }
+
+    # Is it absolute path?
+    if [[ $1 = (%|/|\~)* ]] {
+        util-shands-path $1
+        REPLY=${${REPLY:#%*}:+%}$REPLY
+        return 0
+    }
+
+    # Single component given.
+    REPLY=${1//---//}
+
+    return 0
+} # ]]]
+
+any-colorify() { # [[[
+    any-to-user "$1" "$2"
+    local user="${reply[-2]}" plugin="${reply[-1]}"
+    if [[ "$user" = "%" ]] {
+        any-to-pid "" $plugin
+        REPLY="${REPLY/https--github.com--(robbyrussell--oh-my-zsh|ohmyzsh--ohmyzsh)--trunk--plugins--/OMZP::}"
+        REPLY="${REPLY/https--github.com--(robbyrussell--oh-my-zsh|ohmyzsh--ohmyzsh)--trunk--plugins/OMZP}"
+        REPLY="${REPLY/https--github.com--(robbyrussell--oh-my-zsh|ohmyzsh--ohmyzsh)--trunk--lib--/OMZL::}"
+        REPLY="${REPLY/https--github.com--(robbyrussell--oh-my-zsh|ohmyzsh--ohmyzsh)--trunk--lib/OMZL}"
+        REPLY="${REPLY/https--github.com--(robbyrussell--oh-my-zsh|ohmyzsh--ohmyzsh)--trunk--themes--/OMZT::}"
+        REPLY="${REPLY/https--github.com--(robbyrussell--oh-my-zsh|ohmyzsh--ohmyzsh)--trunk--themes/OMZT}"
+        REPLY="${REPLY/https--github.com--(robbyrussell--oh-my-zsh|ohmyzsh--ohmyzsh)--trunk--/OMZ::}"
+        REPLY="${REPLY/https--github.com--(robbyrussell--oh-my-zsh|ohmyzsh--ohmyzsh)--trunk/OMZ}"
+        REPLY="${REPLY/https--github.com--sorin-ionescu--prezto--trunk--modules--/PZTM::}"
+        REPLY="${REPLY/https--github.com--sorin-ionescu--prezto--trunk--modules/PZTM}"
+        REPLY="${REPLY/https--github.com--sorin-ionescu--prezto--trunk--/PZT::}"
+        REPLY="${REPLY/https--github.com--sorin-ionescu--prezto--trunk/PZT}"
+        REPLY="${REPLY/(#b)%([A-Z]##)(#c0,1)(*)/%$ZINIT[col-uname]$match[1]$ZINIT[col-pname]$match[2]$ZINIT[col-rst]}"
+    } elif [[ $user == http(|s): ]] {
+        REPLY="${ZINIT[col-ice]}${user}/${plugin}${ZINIT[col-rst]}"
+    } else {
+        REPLY="${user:+${ZINIT[col-uname]}${user}${ZINIT[col-rst]}/}${ZINIT[col-pname]}${plugin}${ZINIT[col-rst]}"
+    }
+} # ]]]
+
+# FUNCTION: zin-recently [[[
+# Shows plugins that obtained commits in specified past time.
+#
+# User-action entry point.
+#
+# $1 - time spec, e.g. "1 week"
+zin-recently() {
+    builtin setopt nullglob extendedglob warncreateglobal \
+                typesetsilent noshortloops
+
+    local IFS=.
+    local gitout
+    local timespec=${*// ##/.}
+    timespec=${timespec//.##/.}
+    [[ -z $timespec ]] && timespec=1.week
+
+    # unfunction @append_dir-history-var
+    # unfunction @chwpd_dir-history-var
+
+    typeset -a plugins
+    plugins=( ${ZINIT[PLUGINS_DIR]}/*(DN-/) )
+
+    local p uspl1
+    for p in ${plugins[@]}; do
+        uspl1=${p:t}
+        [[ $uspl1 = custom || $uspl1 = _local---zinit ]] && continue
+
+        pushd "$p" >/dev/null || continue
+        if [[ -d .git ]]; then
+          gitout=$(command git log --all --max-count=1 --since=$timespec 2>/dev/null)
+            if [[ -n $gitout ]]; then
+                any-colorify "$uspl1"
+                builtin print -r -- "$REPLY"
+            fi
+        fi
+        popd >/dev/null
+    done
+
+} # ]]]
+
+any-to-user() { # [[[
+    builtin setopt extendedglob typesetsilent noshortloops rcquotes \
+         ${${${+reply}:#0}:+warncreateglobal}
+
+    # Two components given?
+    # That's a pretty fast track to call this function this way.
+    if [[ -n $2 ]]; then
+        2=${~2}
+        reply=( ${1:-${${(M)2#/}:+%}} ${${${(M)1#%}:+$2}:-${2//---//}} )
+        return 0
+    fi
+
+    # Is it absolute path?
+    if [[ $1 = /* ]]; then
+        reply=( % $1 )
+        return 0
+    fi
+
+    # Is it absolute path in zinit format?
+    if [[ $1 = %* ]]; then
+        local -A map
+        map=( ZPFX "$ZPFX" HOME $HOME SNIPPETS $ZINIT[SNIPPETS_DIR] PLUGINS $ZINIT[PLUGINS_DIR] )
+        reply=( % ${${1/(#b)(#s)%(${(~j:|:)${(@k)map}}|)/$map[$match[1]]}} )
+        reply[2]=${~reply[2]}
+        return 0
+    fi
+
+    # Rest is for single component given.
+    # It doesn't touch $2
+
+    1=${1//---//}
+    if [[ $1 = */* ]]; then
+        reply=( ${1%%/*} ${1#*/} )
+        return 0
+    fi
+
+    reply=( "" "${1:-_unknown}" )
+
+    return 0
+} # ]]]
+
+zin-recently "$@"
+
+# vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr=[[[,]]]:

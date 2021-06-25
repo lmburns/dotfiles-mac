@@ -1,6 +1,6 @@
 # vim: ft=zsh:et:sw=0:ts=2:sts=2:
 
-# desc: get pid and pipe to pstree
+# Desc: get pid and pipe to pstree
 
 getpid() {
   pid=$(px \

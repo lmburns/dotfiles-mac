@@ -1,4 +1,4 @@
-# desc: swap files
+# Desc: swap files
 
 [[ ! -e "$1" || ! -e "$2" ]] && { print -r -- "The args do not exist"; return 1; }
 

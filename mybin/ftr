@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# desc: fzf trash-restore
+# Desc: fzf trash-restore
 
 zparseopts -D -E -a opt 'l' '-local'
 

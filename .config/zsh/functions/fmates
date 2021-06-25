@@ -1,4 +1,4 @@
-# desc: use fzf with mates contacts open mutt
+# Desc: use fzf with mates contacts open mutt
 
 fmates() {
   mutt "$(MATES_GREP='fzf -q' mates email-query)"

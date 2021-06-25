@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: upload projects to google drive
+# Desc: upload projects to google drive
 
 /usr/local/bin/rclone copy \
   --update \
