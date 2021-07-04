@@ -265,7 +265,7 @@
     [hoards.lf.mappings]
         "macos|lf" = "/Users/lucasburns/.config/lf/mappings"
     [hoards.lf.icons]
-        "macos|lf" = "/Users/lucasburns/.config/zsh/lficons"
+        "macos|lf" = "/Users/lucasburns/.config/zsh/zsh.d/lficons.zsh"
 
 [hoards.mozilla]
     [hoards.mozilla.chrome]
@@ -301,6 +301,8 @@
         "macos" = "/Users/lucasburns/.config/notmuch"
     [hoards.mutt.msmtp]
         "macos" = "/Users/lucasburns/.config/msmtp/config"
+    [hoards.mutt.mail_dir]
+        "macos" = "/Users/lucasburns/.local/share/mail"
 
 [hoards.mycli]
     "macos" = "/Users/lucasburns/.myclirc"
@@ -511,10 +513,12 @@
     "macos" = "/Users/lucasburns/Library/Application Support/xbar/plugins"
 
 [hoards.xplr]
+    [hoards.xplr.plugins]
+        "macos|xplr" = "/Users/lucasburns/.config/xplr/plugins"
     [hoards.xplr.conf]
-        "macos" = "/Users/lucasburns/.config/xplr/init.lua"
+        "macos|xplr" = "/Users/lucasburns/.config/xplr/init.lua"
     [hoards.xplr.theme]
-        "macos" = "/Users/lucasburns/.config/xplr/theme/init.lua"
+        "macos|xplr" = "/Users/lucasburns/.config/xplr/theme.yml"
 
 [hoards.yabai]
     [hoards.yabai.limelight]
@@ -546,8 +550,12 @@
         "zsh|macos" = "/Users/lucasburns/.config/zsh/patches"
     [hoards.zsh.themes]
         "zsh|macos" = "/Users/lucasburns/.config/zsh/themes"
+    [hoards.zsh.git_token]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/zsh.d/git-token.zsh"
+    [hoards.zsh.bindings]
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/zsh.d/keybindings.zsh"
     [hoards.zsh.aliases]
-        "zsh|macos" = "/Users/lucasburns/.config/zsh/zsh-aliases"
+        "zsh|macos" = "/Users/lucasburns/.config/zsh/zsh.d/aliases.zsh"
     [hoards.zsh.env]
         "zsh|macos" = "/Users/lucasburns/.zshenv"
     [hoards.zsh.csnippets]

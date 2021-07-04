@@ -40,7 +40,7 @@ alias.d=done
 alias.a=add
 alias.m=modify
 alias.cal=calendar
-active.indicator=>
+active.indicator=
 uda.priority.values=H,M,L,
 
 # Color controls.

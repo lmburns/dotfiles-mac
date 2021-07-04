@@ -3,21 +3,9 @@
 # Desc: taskwarrior fzf
 # Forked From: gitlab.com/doronbehar/taskwarrior-fzf
 
-# -----------------------------
-# aliases / helpers / variables
-# -----------------------------
+td() { date -d "+${*}" "+%FT%R"; }
 
-# The following alias is meant for rc options we'll always set unconditionally
-# so the UI will work
-tw='task rc.defaultwidth=0 rc.defaultheight=0 rc.verbose=nothing rc._forcecolor=on'
-
-maximum_unsupported_fzf_version=0.18.0
-fzf_version="$(fzf --version)"
-if printf "${maximum_unsupported_fzf_version}\n%s" $fzf_version | sort -V | tail -1 | grep -q ${maximum_unsupported_fzf_version}; then
-  echo taskfzf: Your fzf version "($fzf_version)" is not supported >&2
-  echo taskfzf: Please install 0.19.0 or higher from https://github.com/junegunn/fzf/releases >&2
-  exit 1
-fi
+twr='task rc.defaultwidth=0 rc.defaultheight=0 rc.verbose=nothing rc._forcecolor=on'
 
 # Make all less invocations interpret ANSI colors
 export LESS="-r"
@@ -85,6 +73,9 @@ if [ -n "$_TASKFZF_TASK_ACT" ]; then
   # checks if the arguments given to the task are numbers only
   if [ "$_TASKFZF_REPORT" = "all" ]; then
     tasks_args=$(grep -o '[0-9a-f]\{8\}' $@ | tr '\n' ' ')
+  # elif [ "$_TASKFZF_TASK_ACT" = "stop" ]; then
+  #   task_args=$(grep -Eo '([0-9]+)' $@ | head -1)
+    # terminal-notifier -title "x" -message "$task_args"
   else
     tasks_args=$(awk '{printf $1" "} END {printf "\n"}' $@)
   fi
@@ -123,9 +114,10 @@ if [ -n "$_TASKFZF_TASK_ACT" ]; then
       # Needs no arguments but does need a prompt
       echo "Add task:"
       echo ---------
-      read -p "set tags or project? " attribute_args
-      read -p "Task description: " description_args
-      task "$attribute_args" add "$description_args"
+      read -p "Project? " project_name
+      read -p "Description: " description_args
+      read -p "Due? " due_date
+      task add "$description_args" pro:"${project_name}" due:"$(td "${due_date}")"
       ;;
     add-with-context)
       context="$(sed 's/rc.context=\([^ ]\+\).*/\1/' "${current_filter}")"
@@ -153,6 +145,7 @@ if [ -n "$_TASKFZF_TASK_ACT" ]; then
       ;;
     *)
       task $tasks_args "$_TASKFZF_TASK_ACT"
+      # terminal-notifier -title "$tasks_args" -message "$_TASKFZF_TASK_ACT"
       ;;
   esac
   # Prints a banner for after action view - it's a dirty and dumb version of
@@ -168,12 +161,12 @@ if [ -n "$_TASKFZF_LIST_CHANGE" ]; then
   # the case we are changing the report or the context
   case $_TASKFZF_LIST_CHANGE in
     report)
-      report_str="$($tw reports | sed '$d' | fzf --ansi --no-multi \
+      report_str="$($twr reports | sed '$d' | fzf --ansi --no-multi \
         --bind='enter:execute@echo {1}@+abort' \
       )"
       ;;
     context)
-      context_str='rc.context='"$($tw context | fzf --ansi --no-multi \
+      context_str='rc.context='"$($twr context | fzf --ansi --no-multi \
         --bind='enter:execute@echo {1}@+abort' \
       )"
       ;;
@@ -186,7 +179,7 @@ fi
 
 if [ -n "$_TASKFZF_RELOAD" ]; then
   filter="$(cat "$current_filter")"
-  output=$($tw $filter)
+  output="$($twr $filter)"
   # If there's no output at all, fzf be unusable saying something like:
   # [Command failed: env _TASKFZF_RELOAD=true ./taskfzf]
   # Hence, we check it first and print a more gracefull message instead
@@ -241,7 +234,7 @@ while [ $? != 130 ]; do
   # current_filter to load the current arguments in $tw_args, and we use it
   # here
   if [ "${_TASKFZF_INTERNAL}" = "reload" ]; then
-    $tw $tw_args
+    $twr "$tw_args"
     exit $?
   fi
   # A few things to notice:
@@ -257,7 +250,7 @@ while [ $? != 130 ]; do
   # - We use {+f} instead of {+} because it's easier to parse a file
   # containing the lines chosen instead of one line containing all lines
   # chosen given as a CLI argument
-  $tw $tw_args | fzf --ansi \
+  $twr $tw_args | fzf --ansi \
     --multi \
     --bind="D:execute(env _TASKFZF_TASK_ACT=do $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \
     --bind="X:execute(env _TASKFZF_TASK_ACT=delete $0 {+f} < /dev/tty > /dev/tty 2>&1 )+print-query" \

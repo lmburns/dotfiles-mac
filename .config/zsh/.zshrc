@@ -12,6 +12,11 @@ typeset -fuz zkbd
 
 umask 022
 
+typeset -ga mylogs
+typeset -F4 SECONDS=0
+zflai-msg() { mylogs+=( "$1" ); }
+zflai-assert() { mylogs+=( "$4"${${${1:#$2}:+FAIL}:-OK}": $3" ); }
+
 typeset -g HISTSIZE=10000000
 typeset -g HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history"
 typeset -g SAVEHIST=8000000
@@ -20,17 +25,16 @@ typeset -g HISTORY_FILTER_EXCLUDE=("jrnl", "youtube-dl", "you-get")
 typeset -g HISTORY_IGNORE="(jrnl|youtube-dl|you-get)"
 typeset -g TIMEFMT=$'\n================\nCPU\t%P\nuser\t%*U\nsystem\t%*S\ntotal\t%*E'
 typeset -g PROMPT_EOL_MARK=''
-
 # typeset -g ZSH_DISABLE_COMPFIX=true
 
 setopt hist_ignore_space    append_history      hist_ignore_all_dups
 setopt share_history        inc_append_history  extended_history
-setopt auto_menu            complete_in_word    always_to_end
-setopt autocd               auto_pushd          pushd_ignore_dups
-setopt pushdminus           long_list_jobs      interactive_comments
-setopt glob_dots            extended_glob       menu_complete
-setopt no_flow_control      case_glob           notify
-setopt pushd_silent         no_beep             multios
+setopt auto_menu            complete_in_word    always_to_end         no_mail_warning
+setopt autocd               auto_pushd          pushd_ignore_dups     rc_quotes
+setopt pushdminus           pushd_silent        interactive_comments  hash_cmds
+setopt glob_dots            extended_glob       menu_complete         hash_list_all
+setopt no_flow_control      no_case_glob        notify                hist_fcntl_lock
+setopt long_list_jobs       no_beep             multios               numeric_glob_sort
 
 typeset -gx ZINIT_HOME="${0:h}/zinit"
 typeset -gx GENCOMP_DIR="${0:h}/completions"
@@ -55,8 +59,10 @@ module_path+=( "$ZINIT[BIN_DIR]/zmodules/Src" ); zmodload zdharma/zplugin &>/dev
 # ${(u)^${(f@Q)"$( < $XDG_DATA_HOME/zsh/chpwd-recent-dirs )"}[@]:#($PWD|${TMPDIR:A}/*)}(N-/)
 if ! [[ $MYPROMPT = dolphin ]]; then
   zmodload -F zsh/parameter p:dirstack
-  autoload -Uz chpwd_recent_dirs add-zsh-hook
+  autoload -Uz chpwd_recent_dirs add-zsh-hook cdr
   add-zsh-hook chpwd chpwd_recent_dirs
+  zstyle ':chpwd:*' recent-dirs-default true
+  zstyle ':chpwd:*' recent-dirs-insert true
   zstyle ':chpwd:*' recent-dirs-file "${TMPDIR}/chpwd-recent-dirs"
   dirstack=($(awk -F"'" '{print $2}' ${$(zstyle -L ':chpwd:*' recent-dirs-file)[4]} 2>/dev/null))
   [[ ${PWD} = ${HOME} || ${PWD} = "." ]] && (){
@@ -69,7 +75,7 @@ fi
 # ]]]
 
 # === zinit === [[[
-# zt(){ zinit lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
+zt(){ zinit lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
 zt(){ zinit depth'3' lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
 grman() {
   local graw="https://raw.githubusercontent.com"; local -A opts
@@ -127,16 +133,22 @@ zt 0a light-mode for \
     NICHOLAS85/updatelocal \
   trigger-load'!zhooks' \
     agkozak/zhooks \
+  trigger-load'!ugit' \
+    Bhupesh-V/ugit \
+  trigger-load'!ga;!grh;!grb;!glo;!gd;!gcf;!gco;!gclean;!gss;!gcp;!gcb' \
+    wfxr/forgit \
   trigger-load'!gcomp' blockf \
   atclone'command rm -rf lib/*;git ls-files -z lib/ |xargs -0 git update-index --skip-worktree' \
   submods'RobSis/zsh-completion-generator -> lib/zsh-completion-generator;
   nevesnunes/sh-manpage-completions -> lib/sh-manpage-completions' \
   atload'gcomp(){gencomp "${@}" && zinit creinstall -q "${GENCOMP_DIR}" 1>/dev/null}' \
     Aloxaf/gencomp \
-  reset nocompile'!' trigger-load'!ftag' blockf compile'ftag~*.zwc' \
-    lmburns/ftag
+  trigger-load'!hist' blockf nocompletions compile'f*/*~*.zwc' \
+    marlonrichert/zsh-hist
 
-  # trigger-load'!ga;!grh;!grb;!glo;!gd;!gcf;!gclean;!gss;!gcp;!gcb' \
+  # reset nocompile'!' trigger-load'!ftag' blockf compile'ftag~*.zwc' \
+  #   lmburns/ftag
+
 # ]]] === trigger-load block ===
 
 # OMZP::sudo/sudo.plugin.zsh
@@ -163,13 +175,10 @@ zt 0a light-mode for \
     anatolykopyl/doas-zsh-plugin \
   pick'timewarrior.plugin.zsh' \
     svenXY/timewarrior \
-  pick"forgit.plugin.zsh" \
-    wfxr/forgit
+    zdharma/zflai \
+  pick'async.zsh' \
+    mafredri/zsh-async
 
-# lbin'!hist' blockf nocompletions compile'functions/*~*.zwc' \
-#     marlonrichert/zsh-hist \
-
-# zdharma/zflai
 # ]]] === wait'0a' block ===
 
 #  === wait'0b' - patched === [[[
@@ -178,6 +187,8 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
     hlissner/zsh-autopair \
   trackbinds bindmap'^G -> ^N' \
     andrewferrier/fzf-z \
+  blockf nocompletions compile'functions/*~*.zwc' \
+    marlonrichert/zsh-edit \
   trackbinds bindmap'\e[1\;6D -> ^[[1\;6D; \e[1\;6C -> ^[[1\;6C' \
     michaelxmcbride/zsh-dircycle \
   atload'add-zsh-hook chpwd @chwpd_dir-history-var;
@@ -189,10 +200,6 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
     zdharma/fast-syntax-highlighting \
   atload'vbindkey "Up" history-substring-search-up; vbindkey "Down" history-substring-search-down' \
     zsh-users/zsh-history-substring-search
-
-zt 0b light-mode reset nocompile'!' for \
-    blockf nocompletions compile'functions/*~*.zwc' \
-    marlonrichert/zsh-edit \
 #  ]]] === wait'0b' - patched ===
 
 #  === wait'0b' === [[[
@@ -203,7 +210,7 @@ zt 0b light-mode for \
     knu/zsh-manydots-magic \
   pick'formarks.plugin.zsh' \
   atload'export PATHMARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
-  atinit'export FZF_MARKS_JUMP="^k"' \
+  atinit'export FZF_MARKS_JUMP="^[."' \
     wfxr/formarks \
   compile'h*' trackbinds bindmap'^R -> ^F' \
   atload'
@@ -220,8 +227,9 @@ zt 0b light-mode for \
     Tarrasch/zsh-autoenv \
   lbin'!bin/*' \
     bigH/git-fuzzy \
-  lbin \
-    Bhupesh-V/ugit
+    RobSis/zsh-reentry-hook \
+    zdharma/zui \
+    zdharma/zbrowse
 #  ]]] === wait'0b' ===
 
 #  === wait'0c' - programs - sourced === [[[
@@ -290,8 +298,17 @@ zt 0c light-mode binary for \
   atinit'export NAVI_FZF_OVERRIDES="--height=70%"' \
     denisidoro/navi \
   lbin \
-    fidian/ansi
+    fidian/ansi \
+  lbin mv'*.*completion -> _revolver' atpull'%atclone' \
+    psprint/revolver \
+  lbin atclone"./build.zsh" mv"*.*completion -> _zunit" atpull"%atclone" \
+    molovo/zunit
 
+# lbin"cmds/*" atload"
+# zstyle ':plugin:zconvey' greeting 'none'
+# zstyle ':notify:*' command-complete-timeout 3
+# zstyle ':notify:*' notifier plg-zsh-notify" \
+#   zdharma/zconvey
 # TODO: add specific ostype
 
 #  ]]] === wait'0c' - programs - sourced ===
@@ -394,9 +411,11 @@ zt 0c light-mode null for \
   atpull'%atclone' \
     mikefarah/yq \
   lbin'ff* -> ffsend' from'gh-r' \
-    timvisee/ffsend
+    timvisee/ffsend \
+  lbin'b**/r**/crex' atclone'./build.sh -r' \
+    octobanana/crex
 
-# Can't get to wor
+# Can't get to work
 # zt 0c light-mode null for \
 #   extract'regex-opt-1.2.4.tar.gz' \
 #   atclone'cd r*/r*/; make all' \
@@ -408,7 +427,8 @@ zt 0c light-mode null for \
     muesli/duf \
   lbin from'gh-r' \
     pemistahl/grex \
-  lbin from'gh-r' \
+  lbin'**/**/tokei' patch"${pchf}/%PLUGIN%.patch" reset \
+  atclone'cargo build --release --all-features' \
     XAMPPRocky/tokei \
   lbin'**/**/viu' atclone'cargo install --path .' \
   atpull'%atclone' has'cargo' \
@@ -482,6 +502,8 @@ zt 0c light-mode null for \
     x-motemen/ghq \
   lbin from'gh-r' bpick'*darwin*' \
     Songmu/ghg \
+  lbin from'gh-r' \
+    human37/gee \
   lbin'* -> git-xargs' from'gh-r' bpick'*n_amd64*' \
     gruntwork-io/git-xargs \
   lbin atclone'./autogen.sh; ./configure --prefix="$ZPFX"; mv -f **/**.zsh _tig' \
@@ -502,7 +524,7 @@ zt light-mode is-snippet for \
   atload'zle -N RG; bindkey "^P" RG' \
     $ZDOTDIR/csnippets/*.zsh \
     OMZ::plugins/iterm2 \
-  atload"unalias ofd; alias ofd='open $PWD'" \
+  atload"unalias ofd" \
   mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
     OMZ::plugins/osx
 #  ]]] === snippet block ===
@@ -523,12 +545,18 @@ stty discard undef <$TTY >$TTY
 zmodload zsh/zprof  # ztodo
 autoload -Uz zmv zcalc zargs zed
 alias zmv='noglob zmv -v' zcp='noglob zmv -Cv' zln='noglob zmv -Lv' zmvn='noglob zmv -W'
-unalias run-help && autoload run-help && alias help=run-help
+alias run-help > /dev/null && unalias run-help
+autoload +X -Uz run-help
+zmodload -F zsh/parameter p:functions_source
+autoload -Uz $functions_source[run-help]-*~*.zwc
+
 typeset -g HELPDIR='/usr/local/share/zsh/help'
 # ]]]
 
 
 # === completion === [[[
+zstyle ':fzf-tab:complete:figlet:option-f-1' fzf-preview 'figlet -f $word Hello world'
+zstyle ':fzf-tab:complete:figlet:option-f-1' fzf-flags '--preview-window=nohidden,right:65%:wrap'
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
   '[[ $group == "[process ID]" ]] && ps -p $word -o comm="" -w -w'
@@ -548,7 +576,7 @@ zstyle ':fzf-tab:*' print-query ctrl-c        # use input as result when ctrl-c
 zstyle ':fzf-tab:*' accept-line space         # accept selected entry on space
 zstyle ':fzf-tab:*' prefix ''                 # no dot prefix
 zstyle ':fzf-tab:*' switch-group ',' '.'      # switch between header groups
-# zstyle ':fzf-tab:*' single-group color header # single header is shown
+zstyle ':fzf-tab:*' single-group color header # single header is shown
 zstyle ':fzf-tab:*' fzf-pad 4                 # increased because of fzf border
 # zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' use-cache on
@@ -627,7 +655,11 @@ jpeg() { jpegoptim -S "${2:-1000}" "$1"; jhead -purejpg "$1" && du -sh "$1"; }
 pngo() { optipng -o"${2:-3}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
 png() { pngquant --speed "${2:-4}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
 osxnotify() { osascript -e 'display notification "'"$*"'"'; }
+askpass() { osascript -e 'do shell script "'"$*"'" with administrator privileges' }
 td() { date -d "+${*}" "+%FT%R"; }
+ofd() { open $PWD; }
+double-accept() { deploy-code "BUFFER[-1]=''"; }
+zle -N double-accept
 
 xd() {
   pth="$(xplr)"
@@ -645,35 +677,32 @@ xd() {
 # prevent failed commands from being added to history
 zshaddhistory() {
   emulate -L zsh
-  whence ${${(z)1}[1]} >| /dev/null || return 1
+  # whence ${${(z)1}[1]} >| /dev/null || return 1 # doesn't add setting arrays
   [[ ${1%%$'\n'} != ${~HISTORY_IGNORE} ]]
 }
 
 _zsh_autosuggest_strategy_dir_history(){ # avoid zinit picking this up as a completion
-    emulate -L zsh
-    if $_per_directory_history_is_global && [[ -r "$_per_directory_history_path" ]]; then
-        setopt EXTENDED_GLOB
-        local prefix="${1//(#m)[\\*?[\]<>()|^~#]/\\$MATCH}"
-        local pattern="$prefix*"
-        if [[ -n $ZSH_AUTOSUGGEST_HISTORY_IGNORE ]]; then
-          pattern="($pattern)~($ZSH_AUTOSUGGEST_HISTORY_IGNORE)"
-        fi
-        [[ "${dir_history[(r)$pattern]}" != "$prefix" ]] && \
-        typeset -g suggestion="${dir_history[(r)$pattern]}"
+  emulate -L zsh -o extended_glob
+  if $_per_directory_history_is_global && [[ -r "$_per_directory_history_path" ]]; then
+    local prefix="${1//(#m)[\\*?[\]<>()|^~#]/\\$MATCH}"
+    local pattern="$prefix*"
+    if [[ -n $ZSH_AUTOSUGGEST_HISTORY_IGNORE ]]; then
+      pattern="($pattern)~($ZSH_AUTOSUGGEST_HISTORY_IGNORE)"
     fi
+    [[ "${dir_history[(r)$pattern]}" != "$prefix" ]] && \
+      typeset -g suggestion="${dir_history[(r)$pattern]}"
+  fi
 }
 
 _zsh_autosuggest_strategy_custom_history () {
-        emulate -L zsh
-        setopt EXTENDED_GLOB
-        local prefix="${1//(#m)[\\*?[\]<>()|^~#]/\\$MATCH}"
-        local pattern="$prefix*"
-        if [[ -n $ZSH_AUTOSUGGEST_HISTORY_IGNORE ]]
-        then
-          pattern="($pattern)~($ZSH_AUTOSUGGEST_HISTORY_IGNORE)"
-        fi
-        [[ "${history[(r)$pattern]}" != "$prefix" ]] && \
-        typeset -g suggestion="${history[(r)$pattern]}"
+  emulate -L zsh -o extended_glob
+  local prefix="${1//(#m)[\\*?[\]<>()|^~#]/\\$MATCH}"
+  local pattern="$prefix*"
+  if [[ -n $ZSH_AUTOSUGGEST_HISTORY_IGNORE ]]; then
+    pattern="($pattern)~($ZSH_AUTOSUGGEST_HISTORY_IGNORE)"
+  fi
+  [[ "${history[(r)$pattern]}" != "$prefix" ]] && \
+    typeset -g suggestion="${history[(r)$pattern]}"
 }
 # ]]]
 
@@ -696,6 +725,7 @@ zt 0c light-mode run-atpull for \
   id-as'brew_setup' has'brew' nocd eval'brew shellenv' \
     zdharma/null \
   id-as'pipx_comp' has'pipx' nocd nocompile eval"register-python-argcomplete pipx" \
+  atload'zicdreplay -q' \
     zdharma/null \
   id-as'antidot_conf' has'antidot' nocd eval'antidot init' \
     zdharma/null \
@@ -721,14 +751,15 @@ zt 0c light-mode run-atpull for \
   id-as'Cleanup' nocd atinit'unset -f zt grman; _zsh_autosuggest_bind_widgets' \
     zdharma/null
 
+# FIX: only one zicdreplay
 # id-as'pip_comp' has'pip' nocd eval'pip completion --zsh' zdharma/null
 # eval "$(/usr/local/mybin/rakubrew init Zsh)"
 # eval "$(fakedata --completion zsh)"
 
-typeset -gx PDFVIEWER='zathura' # texdoc pdfviewer
-typeset -gx XML_CATALOG_FILES="/usr/local/etc/xml/catalog"  # xdg-utils
-typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"  # vimtex
-
+typeset -gx PDFVIEWER='zathura'                                                   # texdoc pdfviewer
+typeset -gx XML_CATALOG_FILES="/usr/local/etc/xml/catalog"                        # xdg-utils
+typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET" # vimtex
+#
 # typeset -gx _ZO_ECHO=1
 typeset -gx FZFZ_RECENT_DIRS_TOOL='autojump'
 typeset -gx ZSH_AUTOSUGGEST_USE_ASYNC=set
@@ -737,6 +768,8 @@ typeset -gx ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 typeset -gx ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c100,)" # no 100+ char
 typeset -gx ZSH_AUTOSUGGEST_COMPLETION_IGNORE="[[:space:]]*" # no lead space
 typeset -gx ZSH_AUTOSUGGEST_STRATEGY=(dir_history custom_history completion)
+# typeset -gx WORDCHARS=' *?_-.~\'
+typeset -g WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 typeset -gx HISTORY_SUBSTRING_SEARCH_FUZZY=set
 typeset -gx HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=set
 typeset -gx AUTOPAIR_CTRL_BKSPC_WIDGET=".backward-kill-word"
@@ -848,62 +881,29 @@ $FZF_DEFAULT_OPTS
 
 # === paths (GNU) === [[[
 [[ -z ${path[(re)$HOME/.local/bin]} ]] && path=( "$HOME/.local/bin" "${path[@]}" )
-[[ -z ${path[(re)/usr/local/bin]} ]] && path=( "/usr/local/bin" "${path[@]}" )
-[[ -z ${path[(re)/usr/local/sbin]} ]] && path=( "/usr/local/sbin" "${path[@]}" )
+[[ -z ${path[(re)/usr/local/bin]} ]]   && path=( "/usr/local/bin"   "${path[@]}" )
+[[ -z ${path[(re)/usr/local/sbin]} ]]  && path=( "/usr/local/sbin"  "${path[@]}" )
 
 # HOMEBREW_PREFIX is not reliable when sourced (brew shellenv)
-# path=(
-#   ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
-#   ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
-#   ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
-#   ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
-#   ${BREW_PREFIX}/opt/openvpn/sbin
-#   ${BREW_PREFIX}/texlive/2021/bin
-#   "${path[@]}"
-# )
-
 path=(
-  /usr/local/opt/coreutils/libexec/gnubin(N-/)
-  /usr/local/opt/gnu-sed/libexec/gnubin(N-/)
-  /usr/local/opt/gnu-getopt/bin(N-/)
-  /usr/local/opt/grep/libexec/gnubin(N-/)
-  /usr/local/opt/gnu-tar/libexec/gnubin(N-/)
-  /usr/local/opt/gawk/libexec/gnubin(N-/)
-  /usr/local/opt/findutils/libexec/gnubin(N-/)
-  /usr/local/opt/ed/libexec/gnubin(N-/)
-  /usr/local/opt/file-formula/bin(N-/)
-  /usr/local/opt/util-linux/bin(N-/)
-  /usr/local/opt/flex/bin(N-/)
-  /usr/local/opt/libressl/bin(N-/)
-  /usr/local/opt/unzip/bin(N-/)
-  /usr/local/opt/openvpn/sbin(N-/)
+  ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
+  ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
+  ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
+  ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
+  ${BREW_PREFIX}/opt/openvpn/sbin
+  ${BREW_PREFIX}/texlive/2021/bin
+  ${HOME}/.ghg/bin
   "${path[@]}"
 )
 
-
-# manpath=(
-#   ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
-#   ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
-#   ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
-#   "${manpath[@]}"
-# )
-
-# $HOME/opt/anaconda3/man
 manpath=(
-  /usr/local/opt/gnu-sed/share/man(N-/)
-  /usr/local/opt/grep/share/man(N-/)
-  /usr/local/opt/gnu-getopt/share/man(N-/)
-  /usr/local/opt/gnu-tar/share/man(N-/)
-  /usr/local/opt/gawk/share/man(N-/)
-  /usr/local/opt/findutils/share/man(N-/)
-  /usr/local/opt/gnu-which/share/man(N-/)
-  /usr/local/opt/file-formula/share/man(N-/)
-  /usr/local/opt/util-linux/share/man(N-/)
-  /usr/local/opt/gnu-getopt/share/man(N-/)
-  ${XDG_DATA_HOME}/man
+  ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
+  ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
+  ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
   "${manpath[@]}"
 )
 
+#
 typeset -gxU infopath INFOPATH
 infopath=( ${BREW_PREFIX}/{share,}/info "${infopath[@]}" )
 
@@ -946,8 +946,8 @@ export PKG_CONFIG_PATH="/usr/local/opt/libressl/lib/pkgconfig"
 # == sourcing === [[[
 # atload'x="$XDG_CONFIG_HOME/broot/launcher/bash/br"; [ -f "$x" ] && source "$x"'
 
-zt light-mode null id-as for \
-  multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lficons}.zsh" \
+zt 0b light-mode null id-as for \
+  multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lficons,git-token}.zsh" \
     zdharma/null \
   atload'local x="$HOME/.iterm2_shell_integration.zsh"; [ -f "$x" ] && source "$x"' \
     zdharma/null \
@@ -960,29 +960,73 @@ zt light-mode null id-as for \
   atload'export FAST_WORK_DIR=XDG;
   fast-theme XDG:mod-default.ini &>/dev/null' \
     zdharma/null \
-  nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || TS_SOCKET=/tmp/ts1 ts limelight >/dev/null" \
+  atload'
+  ( [[ -S $XDG_DATA_HOME/pueue/pueue_lucasburns.socket ]] || \
+    pueued -dc "$XDG_CONFIG_HOME/pueue/pueue.yml" ) && {
+    ( chronic pueue clean && pueue status | rg -Fq limelight ) || chronic pueue add limelight
+  }' \
     zdharma/null \
   atload'local x="$XDG_CONFIG_HOME/cdhist/cdhist.rc"; [ -f "$x" ] && source "$x"' \
     zdharma/null
 
+# nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || TS_SOCKET=/tmp/ts1 ts limelight >/dev/null" \
+# nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight"
 # atload'local x="${XDG_DATA_HOME}/cargo/env"; [ -f "$x" ] && source "$x"'\
 # atload"source $XDG_DATA_HOME/fonts/i_all.sh" zdharma/null
-# atload'chronic pueue clean && pueue status | rg -Fq limelight || chronic pueue add limelight' \
-# nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight"
 
+# pl ${(kv)userdirs}
 # recache keychain if older than GPG cache time or first login
-# FIX: || $(tty) =~ ttys00
-[[ -f "$ZINIT[PLUGINS_DIR]/keychain_init"/eval*~*.zwc(#qN.ms+45000) ]] && {
+local first=${${${(M)${(%):-%l}:#*01}:+1}:-0}
+[[ -f "$ZINIT[PLUGINS_DIR]/keychain_init"/eval*~*.zwc(#qN.ms+45000) || $first = 1 ]] && {
   zinit recache keychain_init
   print -P "%F{12}===> Keychain recached <===%f"
 }
 # ]]]
-
+#
 local fdir="${HOMEBREW_PREFIX}/share/zsh/site-functions"
 [[ -z ${fpath[(re)$fdir]} && -d "$fdir" ]] && fpath=( "${fpath[@]}" "${fdir}" )
 [[ -z ${path[(re)$XDG_BIN_HOME]} && -d "$XDG_BIN_HOME" ]] && path=( "$XDG_BIN_HOME" "${path[@]}")
 
 path=( "${ZPFX}/bin" "${path[@]}" )                # add back to be beginning
 path=( "${path[@]:#}" )                            # remove empties
+
+ZINIT+=(
+  col-pname   $'\e[1;4m\e[38;5;004m' col-uname   $'\e[1;4m\e[38;5;013m' col-keyword $'\e[14m'
+  col-note    $'\e[38;5;007m'        col-error   $'\e[1m\e[38;5;001m'   col-p       $'\e[38;5;81m'
+  col-info    $'\e[38;5;82m'         col-info2   $'\e[38;5;011m'      col-profile $'\e[38;5;007m'
+  col-uninst  $'\e[38;5;010m'        col-info3   $'\e[1m\e[38;5;011m' col-slight  $'\e[38;5;230m'
+  col-failure $'\e[38;5;001m'        col-happy   $'\e[1m\e[38;5;82m'  col-annex   $'\e[38;5;002m'
+  col-id-as   $'\e[4;38;5;011m'      col-version $'\e[3;38;5;87m'
+  col-pre     $'\e[38;5;135m'        col-msg   $'\e[0m'        col-msg2  $'\e[38;5;009m'
+  col-obj     $'\e[38;5;012m'        col-obj2  $'\e[38;5;010m' col-file  $'\e[3;38;5;117m'
+  col-dir     $'\e[3;38;5;002m'      col-func $'\e[38;5;219m'
+  col-url     $'\e[38;5;75m'         col-meta  $'\e[38;5;57m'  col-meta2 $'\e[38;5;147m'
+  col-data    $'\e[38;5;010m'         col-data2 $'\e[38;5;010m' col-hi    $'\e[1m\e[38;5;010m'
+  col-var     $'\e[38;5;81m'         col-glob  $'\e[38;5;011m' col-ehi   $'\e[1m\e[38;5;210m'
+  col-cmd     $'\e[38;5;002m'         col-ice   $'\e[38;5;39m'  col-nl    $'\n'
+  col-txt     $'\e[38;5;010m'        col-num  $'\e[3;38;5;155m' col-term  $'\e[38;5;185m'
+  col-warn    $'\e[38;5;009m'        col-apo $'\e[1;38;5;220m' col-ok    $'\e[38;5;220m'
+  col-faint   $'\e[38;5;238m'        col-opt   $'\e[38;5;219m' col-lhi   $'\e[38;5;81m'
+  col-tab     $' \t '                col-msg3  $'\e[38;5;238m' col-b-lhi $'\e[1m\e[38;5;75m'
+  col-bar     $'\e[38;5;82m'         col-th-bar $'\e[38;5;82m'
+  col-rst     $'\e[0m'               col-b     $'\e[1m'        col-nb     $'\e[22m'
+  col-u       $'\e[4m'               col-it    $'\e[3m'        col-st     $'\e[9m'
+  col-nu      $'\e[24m'              col-nit   $'\e[23m'       col-nst    $'\e[29m'
+  col-bspc    $'\b'                  col-b-warn $'\e[1;38;5;009m' col-u-warn $'\e[4;38;5;009m'
+  col-mdsh    $'\e[1;38;5;220m'"${${${(M)LANG:#*UTF-8*}:+–}:--}"$'\e[0m'
+  col-mmdsh   $'\e[1;38;5;220m'"${${${(M)LANG:#*UTF-8*}:+――}:--}"$'\e[0m'
+  col-↔       ${${${(M)LANG:#*UTF-8*}:+$'\e[38;5;82m↔\e[0m'}:-$'\e[38;5;82m«-»\e[0m'}
+  col-…       "${${${(M)LANG:#*UTF-8*}:+…}:-...}"  col-ndsh  "${${${(M)LANG:#*UTF-8*}:+–}:-}"
+  col--…      "${${${(M)LANG:#*UTF-8*}:+⋯⋯}:-···}" col-lr    "${${${(M)LANG:#*UTF-8*}:+↔}:-"«-»"}"
+)
+
+zinit-palette() {
+  for k ( "${(@kon)ZINIT[(I)col-*]}" ); do
+    local i=$ZINIT[$k]
+    print "$reset_color${(r:14:: :):-$k:} $i###########"
+  done
+}
+
+zflai-msg "[zshrc] File took ${(M)$(( SECONDS * 1000 ))#*.?} ms"
 
 # vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr=[[[,]]]:

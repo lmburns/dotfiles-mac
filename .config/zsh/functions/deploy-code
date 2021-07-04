@@ -26,4 +26,4 @@ exec {THEFD} < <(
 zle -N deploy-code # idempotent
 zle -w -F "$THEFD" deploy-code
 
-# vim;ft=zsh:sts=4:sw=4:et
+# vim:ft=zsh:sts=4:sw=4:et

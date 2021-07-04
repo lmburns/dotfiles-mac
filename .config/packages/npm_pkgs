@@ -17,6 +17,7 @@
 ├── is-up-cli@3.0.0
 ├── livedown@2.1.1
 ├── mklicense@0.1.5
+├── node-cron-cli@1.0.1
 ├── npm@7.15.1
 ├── osx-wifi-cli@2.1.0
 ├── pageres-cli@6.0.0

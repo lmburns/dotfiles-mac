@@ -1,4 +1,4 @@
-version = "0.14.0"
+version = "0.14.3"
 
 -- == HELP == {{{
 -- BashExec: {command: bash, args: ["-c", "${command}"], silent: false}
@@ -28,8 +28,15 @@ version = "0.14.0"
 -- }}} == HELP ==
 
 local xplr = xplr
-package.path = os.getenv("XDG_CONFIG_HOME") .. '/xplr/?/init.lua'
+-- package.path = os.getenv("XDG_CONFIG_HOME") .. '/xplr/?/init.lua'
+package.path = os.getenv("XDG_CONFIG_HOME") .. '/xplr/plugins/?/src/init.lua'
+
+xplr.config.general.enable_mouse = true
+-- xplr.config.general.disable_recover_mode = false
+-- xplr.config.general.show_hidden = true
+
 require("theme").setup{}
+require("scroll").setup{}
 
 require("nnn_preview").setup{
   plugin_path = os.getenv("HOME") .. "/.config/nnn/plugins/preview-tui",
@@ -38,7 +45,16 @@ require("nnn_preview").setup{
   key = "p",
 }
 
-xplr.config.general.enable_mouse = true
+-- require("fzf").setup{
+--   mode = "default",
+--   key = "F",
+--   args = "--preview 'pistol {}'"
+-- }
+
+require("zoxide").setup{
+  mode = "default",
+  key = "n"
+}
 
 -- == functions == {{{
 -------- Function equivalent to basename in POSIX systems
@@ -183,19 +199,6 @@ key.R = {
   }
 }
 
--- Jump: zoxide
-key.n = {
-  help = "zoxide jump",
-  messages = {
-    { BashExec = [===[
-      PTH=$(zoxide query -i)
-      if [ "$PTH" ]; then
-        echo ChangeDirectory: "'"${PTH:?}"'" >> "${XPLR_PIPE_MSG_IN:?}"
-      fi
-    ]===] }
-  }
-}
-
 -- Copy: binding
 key.y = {
   help = "copy",
@@ -274,6 +277,13 @@ actkey.l = {
     { BashExec = [[ cat -- "${XPLR_PIPE_LOGS_OUT}" | less -+F ]] },
     "PopMode",
   },
+}
+
+actkey.C = {
+  help = "edit config",
+  messages = {
+    { BashExec = "${EDITOR} $XDG_CONFIG_HOME/xplr/init.lua" },
+  }
 }
 -- }}} === action mode ===
 

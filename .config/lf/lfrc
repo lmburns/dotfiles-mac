@@ -60,6 +60,7 @@ cmd q! ${{
     lf -remote "send $id quit"
 }}
 cmd Q! :q!
+map <esc> quit
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Commands / Functions                                                      │
@@ -82,7 +83,8 @@ cmd open ${{
       video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
       application/x-bittorrent) open -a Transmission.app ;;
       application/zlib) open ;;
-      *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>/dev/null & done;;
+      *) $EDITOR $fx ;;
+      # *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>/dev/null & done;;
     esac
 }}
 
@@ -105,7 +107,7 @@ cmd trash ${{
 }}
 
 # -- Move: autojump
-cmd movetojump ${{
+cmd movetojump !{{
   clear; prompt="Move to: "
   dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")"
   mv -iv -- $fx "$dest"
@@ -113,7 +115,7 @@ cmd movetojump ${{
 }}
 
 # -- Move: path
-cmd movetopath ${{
+cmd movetopath !{{
   # clear; read -p "Move to: " dest
   clear; vared -cp "Move to: " dest
   mv -iv -- $fx "${~dest}"
@@ -122,7 +124,7 @@ cmd movetopath ${{
 
 
 # -- Copy: autojump
-cmd copytojump ${{
+cmd copytojump !{{
   clear
   prompt="Copy to: "
   dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")"
@@ -131,7 +133,7 @@ cmd copytojump ${{
 }}
 
 # -- Copy: path
-cmd copytopath ${{
+cmd copytopath !{{
   clear; vared -cp "Copy to: " dest
   cp -pivr -- $fx ${~dest}
   terminal-notifier -title "🚚 File(s) copied." -message "copied to $dest."

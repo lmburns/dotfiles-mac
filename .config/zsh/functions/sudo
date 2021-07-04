@@ -14,7 +14,9 @@ function _do_sudo() {
     [1-9]) args+=( $1 ); shift ;;
     *)
       $first && { first=false; cmd_alias="$(command -v 2>/dev/null -- "$1")" }
-      if [[ "$?" -eq 0 ]] && [[ "$cmd_alias" == 'alias'* ]] && [[ -z "$__do_sudo_expanded["$1"]" ]]; then
+      if [[ "$?" -eq 0 && "$cmd_alias" == 'alias'* && \
+            -z "$__do_sudo_expanded["$1"]"
+      ]]; then
         __do_sudo_expanded["$1"]=1
           IFS=' ' read -A cmd_alias_arr <<< "$(sed -e "s/[^=]*=//" -e "s/^'//" -e "s/'$//" <<< "$cmd_alias")"
         args+=( "${cmd_alias_arr[@]}" )
@@ -49,13 +51,13 @@ for arg in "$@"; do
     ((++pos))
     first=("${first[@]}" "$arg")
   else
-    noglob _do_sudo ${first[@]} ${@:$pos}
+    PATH="$PATH" noglob _do_sudo ${first[@]} ${@:$pos}
     ret=$?
     unset -f _do_sudo
     return $ret
   fi
 done
-command sudo "${@}"
+PATH="$PATH" command sudo "${@}"
 unset -f _do_sudo
 
 # vim: ft=zsh:et:sw=0:sts=2:

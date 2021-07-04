@@ -12,6 +12,10 @@ hash -d TMPDIR=${TMPDIR:A}
 
 # alias \$= %=
 
+alias toiletd='toilet -d /usr/local/figlet/2.2.5/share/figlet/fonts'
+
+[[ $OSTYPE == darwin* ]] && alias -s {log,out}='open -a Console'
+
 alias dlpaste='aria2c "$(pbpaste)"'
 alias :q='exit'
 alias dl='aria2c -x 4 --dir="${HOME}/Downloads/Aria"'
@@ -37,7 +41,8 @@ alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 
 (( ${+commands[just]} )) && {
   alias jj='just'
-  alias .j='jj --justfile $XDG_DATA_HOME/just/justfile --working-directory .'
+  # For whatever reason, has to be in homedir to have correct completions
+  alias .j='just --justfile $HOME/justfile --working-directory $PWD'
   alias .jc='.j --choose'
   alias .je='.j --edit'
   alias .jl='.j --list'
@@ -66,6 +71,7 @@ alias _='sudo'
 alias __='doas'
 alias cp='/bin/cp -ivp'
 alias pl='print -rl --'
+alias pp='print -r --'
 alias mv='mv -iv'
 # alias mkd='mkdir -pv'
 
@@ -79,8 +85,10 @@ alias mv='mv -iv'
   alias lsm='exa -Flh --git --sort=modified --icons'
   alias lsz='exa -Flh --git --sort=size --icons'
   alias lss='exa -Flh --git --group-directories-first --icons'
-  alias lsd='exa -D --icons'
-  alias tree='exa --icons -TL'
+  alias lsd='exa -D --icons --git'
+  alias tree='exa --icons --git -TL'
+  alias lm='tree 1 -@'
+  # alias lm='exa -l  --no-user --no-permissions --no-time -@'
 }
 
 (( ${+commands[fd]} )) && {
@@ -109,7 +117,6 @@ alias wh="whence -f"
 alias wa="whence -va"
 alias wm="whence -m"
 
-alias cdr='cd "$(git rev-parse --show-toplevel)"'
 alias pvim='vim -u NONE'
 
 # alias f='pushd'
@@ -229,9 +236,11 @@ alias vwl='$EDITOR $HOME/vimwiki/languages/index.md'
 alias conf='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles-private --work-tree=$HOME'
 alias xav='/usr/bin/git --git-dir=$XDG_DATA_HOME/dottest --work-tree=$HOME'
 
+alias cdg='cd "$(git rev-parse --show-toplevel)"'
 alias gua='git remote | xargs -L1 git push --all'
 alias grmssh='ssh git@burnsac.xyz -- grm'
 alias g='git'
+alias h='hub'
 alias gtrr='git ls-tree -r master --name-only | as-tree'
 alias glog='git log --oneline --decorate --graph'
 alias gloga='git log --oneline --decorate --graph --all'

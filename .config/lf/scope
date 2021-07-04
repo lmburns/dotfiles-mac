@@ -74,7 +74,8 @@ handle_other() {
     *.odt|*.ods|*.odp|*.sxw) odt2txt "${FILE_PATH}";;
     *.doc) catdoc "${FILE_PATH}" ;;
     *.docx) docx2txt "${FILE_PATH}" - ;;
-    *.csv) bat "${FILE_PATH}" | sed s/,/\\n/g ;;
+    *.csv) bat --paging=always -f -l csv ;;
+    # *.csv) bat "${FILE_PATH}" | sed s/,/\\n/g ;;
     *.json) jq --color-output . "${FILE_PATH}";;
     *.asc) bat -Pf --theme KimbieDark --style auto "${FILE_PATH}";;
     *.sha1|*.sha256|*.sha512|*.md5) rhash -c "${FILE_PATH}" ;;

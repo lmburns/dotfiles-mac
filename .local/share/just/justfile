@@ -1,43 +1,54 @@
 # editor := env_var(EDITOR)
 # confd := env_var(XDG_CONFIG_HOME)
 
+# view example justfile
 help:
   @$EDITOR $XDG_DATA_HOME/just/overall.just
 
+# get weather
 weather:
   @wttr '65202?format=3'
 
+# get weather table
 weather_full:
   @curl v2d.wttr.in/65202
 
+# git-batch opt
 batch-all:
-  gitbatch -r 2 -d $HOME/opt
+  @gitbatch -r 2 -d $HOME/opt
 
+# git-batch zinit
 batch-zinit:
-  gitbatch -r 2 -d $ZINIT_HOME/plugins
+  @gitbatch -r 2 -d $ZINIT_HOME/plugins
 
+# git-batch ghq
 batch-ghq:
-  gitbatch -r 3 -d $HOME/ghq
+  @gitbatch -r 3 -d $HOME/ghq
 
+# git-batch dotfiles
 batch-dot:
-  gitbatch -r 3 -d $HOME/opt/dotfiles
+  @gitbatch -r 3 -d $HOME/opt/dotfiles
 
+# start dns
 sdns:
   sudo networksetup -setdnsservers "Wi-Fi" 127.0.0.1 ::1
   sudo networksetup -setwebproxy "Wi-Fi" 127.0.0.1 8118
   sudo networksetup -setsecurewebproxy "Wi-Fi" 127.0.0.1 8118
   ALL_PROXY=127.0.0.1:8118 curl -I http://p.p/
 
+# get dns
 gdns:
   @sudo networksetup -getdnsservers "Wi-Fi"
   @sudo networksetup -getwebproxy "Wi-Fi"
   @sudo networksetup -getsecurewebproxy "Wi-Fi"
 
+# reverse dns (stop)
 rdns:
   sudo networksetup -setdnsservers "Wi-Fi" Empty
   sudo networksetup -setwebproxy "Wi-Fi" off
   sudo networksetup -setsecurewebproxy "Wi-Fi" off
 
+# start privoxy
 privoxy +ACTION:
   sudo brew services {{ACTION}} privoxy
   @if [[ {{ACTION}} == 'start' ]]; then \
@@ -58,14 +69,17 @@ privoxy +ACTION:
 # --log-level INFO \
 # --rc \
 
+# start tor
 start-tor:
   @sudo networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 9050 off
   @sudo networksetup -setsocksfirewallproxystate Wi-Fi on
   @curl --socks5 localhost:9050 --socks5-hostname localhost:9050 -s https://check.torproject.org/
 
+# stop tor
 stop-tor:
   @sudo networksetup -setsocksfirewallproxystate Wi-Fi off
 
+# rclone mount
 rclone-mount:
   $ZPFX/bin/rclone mount \
     --transfers 8 \
@@ -81,6 +95,7 @@ rclone-mount:
     --umask 002 \
     google-drive:/ /Users/lucasburns/.mount/google-drive
 
+# rclone to drive
 rclg SRC DEST:
   $ZPFX/bin/rclone copy \
     --update \
@@ -99,6 +114,7 @@ rclg SRC DEST:
     --progress \
     {{SRC}} "google-drive:{{DEST}}/"
 
+# mount ssh filesystem
 ssh-mount DEST:
   sshfs -o allow_other,default_permissions,IdentityFile=~/.ssh/burnsac root@lmburns.com:/ {{DEST}}
 
@@ -107,60 +123,84 @@ ssh-mount DEST:
 # dscl
 # dseditgroup
 
+# list users full
 users-list-full:
   dscacheutil -q user
 
+# list users short
 users-list:
   dscl . -ls /Users
 
+# dscl . -read /Users/{{USER}}
 user-info-full USER:
   dscl . -read /Users/{{USER}}
 
+# dscacheutil -q user -a name {{USER}}
 user-info USER:
   dscacheutil -q user -a name {{USER}}
 
+# get group info
 group-info GROUP:
   dscacheutil -q group -a name {{GROUP}}
 
+# add a user
 group-adduser USER GROUP:
   sudo dseditgroup -o edit -a {{USER}} -t user {{GROUP}}
 
+# delete a user
 group-deluser USER GROUP:
   sudo dseditgroup -o edit -d {{USER}} -t user {{GROUP}}
 
 # dseditgroup -o checkmember -m {{USER}} {{GROUP}}
+
+# check users's group memebership
 group-checkmember USER GROUP:
   dsmemberutil checkmembership -U {{USER}} -G {{GROUP}}
 
+# load at to scheudle commands
 load-at:
   sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.atrun.plist
 
+# clear xcode junk
 clear-xcode:
   rm -rf ~/Library/Developer/Xcode/DerivedData
 
+# connect to cellphone hotspot
 connect-lucas:
   m wifi connect lucas_iphone $(pass wifi-lucas_iphone)
 
+# zsh modifiers
 zsh-modif:
   w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers'
 
+# zsh parameter expansion
 zsh-param:
   w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion'
 
+# zsh parameter expansion flags
 zhs-param-flags:
   w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags'
 
+# zsh history expansion
 zsh-hist-exp:
   w3m 'http://zsh.sourceforge.io/Doc/Release/Expansion.html#History-Expansion'
 
+# zsh glob flags
 zsh-glob-flags:
   w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Globbing-Flags'
 
+# zsh glob qualifiers
 zsh-glob-qual:
   w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Glob-Qualifiers'
 
+# zsh subscript flags
 zsh-subflags:
   w3m 'http://zsh.sourceforge.net/Doc/Release/Parameters.html#Subscript-Flags'
 
+# remove big dir with progress
 rm-bigdir DIR:
-  sudo rm -rv {{DIR}} | pv -l -s $(sudo du -a {{DIR}} | wc -l) > /dev/null
+  sudo -A rm -rv {{DIR}} | pv -l -s $(sudo du -a {{DIR}} | wc -l) > /dev/null
+
+# rsync home dir
+rsync-home:
+  pu add -- sudo -A rsync -azurh --info=name0 --progress=progress2 ~ /Volumes/SSD/macos-full

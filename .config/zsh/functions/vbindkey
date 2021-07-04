@@ -32,7 +32,9 @@ setopt extendedglob nolistbeep noshortloops warncreateglobal
 
 local -a opts remove array mode
 
-zparseopts -D -A opts - U u c r=remove A:=array M:=mode
+zparseopts -D -A opts - U u c b r=remove A:=array M:=mode
+
+(( ${+opts[-b]} )) && typeset -gi DEBUG=1
 
 function escape-single-key() {
   local -A name=(
@@ -120,7 +122,6 @@ function unused() {
   done
   (( $#val )) &&
     print -cr - ${(q-)val}
-  print -- "args -- ${args[@]}"
 }
 
 function duplicates() {
@@ -137,19 +138,22 @@ function duplicates() {
 function bind() {
   local escaped ret
   local -a sequence=(${(s: :)1})
-  local -a modes=(emacs viins vicmd viopp visual isearch)
+  # local -a modes=( ${(f)"$(builtin bindkey -l)"} )
   local i
 
   if [[ ${(M)sequence:#mode*} ]]; then
     local qmode=${${(ws:=:)${(M)sequence:#mode*}}[-1]}
-    if [[ $qmode = ${(~j:|:)modes} ]]; then
+    if [[ $qmode = ${(~j:|:)keymaps} ]]; then
       mode=( -M $qmode )
     elif [[ $qmode == "str" ]]; then
       mode=( -s )
-    elif [[ $qmode = [+@-]* ]]; then
-      mode=( ${${(s::)qmode}[1]} )
+    elif [[ $qmode = (#m)[@+-](#c1,2) ]]; then
+      # mode=( ${${(s::)qmode}[1]} )
+      # mode=( ${(@j::)${(M)${(s::)qmode}:#(-|@|+)}} )
+      mode=( $MATCH )
+      (( DEBUG )) && print -P -- "bind edit: %F{2}$mode%f"
     else
-      print -Pu2 "%F{1}%BERROR: $1%b%F"
+      print -Pu2 "%F{1}%BERROR:%f%F{7} $1%b%f"
     fi
     sequence=( ${sequence:#mode*} )
   else
@@ -157,7 +161,8 @@ function bind() {
   fi
 
   for i ($sequence) {
-    if [[ $i == *-* ]] {
+    # allow mode=-@
+    if [[ $i == [^-]*-* ]] && (( $#i > 2 )) {
       escape-mod-key $i
     } else {
       escape-single-key $i
@@ -168,15 +173,17 @@ function bind() {
   if (( ${+mode[(r)-s]} )); then
     # allow: bindkey -s '^o' 'lc\n'
     builtin bindkey $remove $mode $escaped "${2}$'\n'"
-  elif (( ${+mode[(r)(+|@|-)]} )); then
+    (( DEBUG )) && print -P -- "%F{2}Mode:string%f -- bindkey $remove $mode $escaped "${2}$'\n'"
+"
+  elif (( ${(@s::)+mode[(r)(+|@|-)(#c1,2)]} )); then
+    (( DEBUG )) && print -P -- "%F{2}Mode:@-+:%f -- bindkey "$escaped" ".${mode[1]}${2}""
     zle -N ".${mode[1]}${2}" _ex_cmd
     builtin bindkey "$escaped" ".${mode[1]}${2}"
-    # echo "builtin bindkey "$escaped" ".${mode[1]}${2}""
   else
     builtin bindkey $remove $mode $escaped $2
+    (( DEBUG )) && print -P -- "%F{2}Mode:norm/nonef -- bindkey $remove $mode $escaped $2
+"
   fi
-
-  # echo "bindkey $remove $mode $escaped $2"
 }
 
 if [[ $array ]]; then

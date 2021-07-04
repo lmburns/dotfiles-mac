@@ -1,7 +1,20 @@
 # zshexpn -- zsh -o SOURCE_TRACE -lic ''
 # sed -n l -- infocmp -L1 -- zle -L
 
+if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )) {
+    function zle-line-init() {
+        echoti smkx
+    }
+    function zle-line-finish() {
+        echoti rmkx
+    }
+    zle -N zle-line-init
+    zle -N zle-line-finish
+}
+
 builtin bindkey -v
+builtin bindkey -r '^[,'
+builtin bindkey -r '^[/'
 
 # bindkey -M vicmd 'ys' add-surround
 # bindkey '^I' expand-or-complete-prefix
@@ -25,9 +38,9 @@ per-dir-fzf() {
 
 zle -N per-dir-fzf       # fzf history
 zle -N fcq
+zle -N pw
 # zle -N fcd-zle
 # zle -N bow2
-zle -N pw
 
 if [[ $TMUX ]]; then
   zle -N t
@@ -47,13 +60,15 @@ typeset -gA keybindings; keybindings=(
   'Esc-e'         wfxr::fzf-file-edit-widget
   'M-r'           per-dir-fzf
   'M-p'           pw                    # fzf pueue
+  'M-q'           push-line-or-edit
+  'M-x'           cd-fzf-ghqlist-widget # cd ghq fzf
   'C-a'           autosuggest-execute
   'C-z'           fancy-ctrl-z
+  'C-y'           yank
   'C-x r'         fz-history-widget
   'C-x C-f'       fz-find
   'C-x C-e'       edit-command-line-as-zsh
   'C-x C-x'       execute-command
-  'C-x C-q'       cd-fzf-ghqlist-widget # cd ghq fzf
   'C-x C-b'       fcq                   # copyq fzf
   'mode=vicmd u'  undo
   'mode=vicmd U'  redo
@@ -61,21 +76,45 @@ typeset -gA keybindings; keybindings=(
   'mode=vicmd L'  end-of-line
   'mode=vicmd H'  beginning-of-line
   'mode=vicmd ?'  which-command
+  'mode=vicmd ge' edit-command-line-as-zsh
   'mode=vicmd c.' vi-change-whole-line
   'mode=vicmd ds' delete-surround
   'mode=vicmd cs' change-surround
+  'mode=vicmd K'  run-help
   'mode=viins jk' vi-cmd-mode
   'mode=viins kj' vi-cmd-mode
   'mode=visual S' add-surround
-  'mode=str M-u'  frd                   # cd interactively recent dir
   'mode=str M-t'  t                     # tmux wfxr
   'mode=@ C-o'    lc                    # lf change dir
   'mode=@ C-b'    bow2                  # surfraw open w3m
+  'mode=@ M-/'    frd                   # cd interactively recent dir
   'mode=@ M-;'    fcd                   # cd interactively
-  'mode=@ M-,'    'zoxide query -i'
+  'mode=@ M-,'    __zoxide_zi
+  'mode=@ M-['   fstat
+  'mode=@ M-]'   fadd
 )
+
+# 'mode=vicmd M-a' yank-pop
+# 'mode=vicmd M-s' reverse-yank-pop
+
+# M-/ = cd interactively recent dir
+# M-; = cd interactively
+# M-. = formarks
+# M-, = zoxide
 
 # 'M-c'     _call_navi
 # 'M-n'     _navi_next_pos
 
 vbindkey -A keybindings
+
+# View keybindings
+keyb() {
+  local -A keyb=(); for k v in ${(kv)keybindings}; do
+    k="%F{1}%B$k%f%b" v="%F{3}$v%f" keyb[${(%)k}]=${(%)v}
+  done
+  print -raC 2 -- ${(Oakv)keyb[@]}
+  # print -rC 2 -- ${(nkv)keyb}
+  # print -ac -- ${(Oa)${(kv)keyb[@]}}
+}
+
+ZLS_COLORS=$LS_COLORS

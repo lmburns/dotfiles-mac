@@ -2,6 +2,8 @@
 
 # setopt xtrace
 
+# recently -> colorify -> user -> pid -> shands
+
 typeset -gAH ZINIT ZINIT_SNIPPETS ZINIT_REPORTS ZINIT_ICES ZINIT_SICE ZINIT_CUR_BIND_MAP ZINIT_EXTS ZINIT_EXTS2
 
 if [[ -z ${ZINIT[HOME_DIR]} ]]; then
@@ -56,49 +58,6 @@ fi
     )
 
 
-# FUNCTION: util-shands-path. [[[
-# Replaces parts of path with %HOME, etc.
-util-shands-path() {
-    builtin setopt extendedglob typesetsilent noshortloops rcquotes \
-         ${${${+REPLY}:#0}:+warncreateglobal}
-
-    local -A map
-    map=( \~ %HOME $HOME %HOME $ZINIT[SNIPPETS_DIR] %SNIPPETS $ZINIT[PLUGINS_DIR] %PLUGINS
-        "$ZPFX" %ZPFX HOME %HOME SNIPPETS %SNIPPETS PLUGINS %PLUGINS "" "" )
-    REPLY=${${1/(#b)(#s)(%|)(${(~j:|:)${(@k)map:#$HOME}}|$HOME|)/$map[$match[2]]}}
-    return 0
-} # ]]]
-
-any-to-pid() { # [[[
-    builtin setopt extendedglob typesetsilent noshortloops rcquotes \
-         ${${${+REPLY}:#0}:+warncreateglobal}
-
-    1=${~1} 2=${~2}
-
-    # Two components given?
-    if [[ -n $2 ]] {
-        if [[ $1 == (%|/)* || ( -z $1 && $2 == /* ) ]] {
-            util-shands-path $1${${(M)1#(%/?|%[^/]|/?)}:+/}$2
-            REPLY=${${REPLY:#%*}:+%}$REPLY
-        } else {
-            REPLY=$1${1:+/}$2
-        }
-        return 0
-    }
-
-    # Is it absolute path?
-    if [[ $1 = (%|/|\~)* ]] {
-        util-shands-path $1
-        REPLY=${${REPLY:#%*}:+%}$REPLY
-        return 0
-    }
-
-    # Single component given.
-    REPLY=${1//---//}
-
-    return 0
-} # ]]]
-
 any-colorify() { # [[[
     any-to-user "$1" "$2"
     local user="${reply[-2]}" plugin="${reply[-1]}"
@@ -128,7 +87,6 @@ any-colorify() { # [[[
 # Shows plugins that obtained commits in specified past time.
 #
 # User-action entry point.
-#
 # $1 - time spec, e.g. "1 week"
 zin-recently() {
     builtin setopt nullglob extendedglob warncreateglobal \
@@ -201,6 +159,49 @@ any-to-user() { # [[[
     fi
 
     reply=( "" "${1:-_unknown}" )
+
+    return 0
+} # ]]]
+
+# FUNCTION: util-shands-path. [[[
+# Replaces parts of path with %HOME, etc.
+util-shands-path() {
+    builtin setopt extendedglob typesetsilent noshortloops rcquotes \
+         ${${${+REPLY}:#0}:+warncreateglobal}
+
+    local -A map
+    map=( \~ %HOME $HOME %HOME $ZINIT[SNIPPETS_DIR] %SNIPPETS $ZINIT[PLUGINS_DIR] %PLUGINS
+        "$ZPFX" %ZPFX HOME %HOME SNIPPETS %SNIPPETS PLUGINS %PLUGINS "" "" )
+    REPLY=${${1/(#b)(#s)(%|)(${(~j:|:)${(@k)map:#$HOME}}|$HOME|)/$map[$match[2]]}}
+    return 0
+} # ]]]
+
+any-to-pid() { # [[[
+    builtin setopt extendedglob typesetsilent noshortloops rcquotes \
+         ${${${+REPLY}:#0}:+warncreateglobal}
+
+    1=${~1} 2=${~2}
+
+    # Two components given?
+    if [[ -n $2 ]] {
+        if [[ $1 == (%|/)* || ( -z $1 && $2 == /* ) ]] {
+            util-shands-path $1${${(M)1#(%/?|%[^/]|/?)}:+/}$2
+            REPLY=${${REPLY:#%*}:+%}$REPLY
+        } else {
+            REPLY=$1${1:+/}$2
+        }
+        return 0
+    }
+
+    # Is it absolute path?
+    if [[ $1 = (%|/|\~)* ]] {
+        util-shands-path $1
+        REPLY=${${REPLY:#%*}:+%}$REPLY
+        return 0
+    }
+
+    # Single component given.
+    REPLY=${1//---//}
 
     return 0
 } # ]]]

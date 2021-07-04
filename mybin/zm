@@ -49,17 +49,18 @@ usage() {
   print -Pr -- "%F{2}-z, --zparse%f"
   print -Pr -- "%F{4}--ru, --rules%f"
   print -Pr -- "%F{2}--vared, --bindkey%f"
-  print -Pr -- "%F{4}-b, --built -- echoti%f"
-  print -Pr -- "%F{2}-p, --param -- $ {var:h}, $ {(f)foo}%f"
-  print -Pr -- "%F{4}-s, --subscript -- $ {foo[(re)bar]}%f"
-  print -Pr -- "%F{2}-m, --module -- ZSH/ZUTIL%f"
+  print -Pr -- "%F{4}-u, --used%f -- Parameters set by shell"
+  print -Pr -- "%F{2}-b, --built -- echoti%f"
+  print -Pr -- "%F{4}-p, --param -- $ {var:h}, $ {(f)foo}%f"
+  print -Pr -- "%F{2}-s, --subscript -- $ {foo[(re)bar]}%f"
+  print -Pr -- "%F{4}-m, --module -- ZSH/ZUTIL%f"
 }
 
 lopts=(test example pf pexpf pexp paramexp he histexp hf histflags arrparam arrsubscript help)
 lopts+=(arsf arrflag complex glob shopts sopts 1opts prompt promptchars redir wid widget zparse)
-lopts+=(ars ru rules bindkey vared opts)
+lopts+=(ars ru rules bindkey vared opts used)
 
-zparseopts -D -E -a opts ${(s::):-teacgrzh} \
+zparseopts -D -E -a opts ${(s::):-teacgrzhu} \
   ${lopts//(#m)*/\-${MATCH}} \
   ${${(@)${(s::):-bpsmo}//(#m)*/${MATCH}\:\=opts}}
 
@@ -97,6 +98,7 @@ case ${opts[1]} in
   --bindkey|--vared) zlm "ZLE BUILTINS$" ;;
   -z|--zparse) zmo "       zparseopts$" ;;
   --ru|--rules) zmp "   Rules$" ;;
+  -u|--used) zmp "PARAMETERS USED BY THE SHELL$" ;;
   -m) zd "${(U)opts[2]}" ;;
   -b) zb "${opts[2]}" ;;
   -o) zo "${opts[2]}" ;;

@@ -19,6 +19,7 @@ export XDG_RUNTIME_DIR="/tmp"
 export XDG_BIN_HOME="$HOME/bin"
 export XDG_MBIN_HOME="$HOME/mybin"
 export LOCAL_OPT="$HOME/opt"
+export SUDO_ASKPASS="$XDG_MBIN_HOME/zenity_passphrase"
 
 export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
 export BROWSERCLI="w3m"
@@ -29,16 +30,13 @@ export EDITOR='nvim'
 export GIT_EDITOR="${EDITOR}"
 export RGV_EDITOR="${EDITOR} $file +$line"
 
-export LESS="-r -f -F -X -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]"
+export LESS="-r -M -f -F -X -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]"
 # export PAGER="${commands[less]:-$PAGER}"
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # export MANPAGER="nvim -c 'set ft=man' -"
 # export MANPAGER="sh -c 'sed -e s/.\\\\x08//g | bat -l man -p'"
 export PERLDOC_PAGER="sh -c 'col -bx | bat -l man -p --theme='kimbie''" \
 export PERLDOC_SRC_PAGER="sh -c 'col -bx | bat -l man -p --theme='kimbie''" \
-
-typeset -g WORDCHARS=' *?_-.~\'
-# typeset -g WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 

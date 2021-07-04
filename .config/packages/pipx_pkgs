@@ -1,0 +1,35 @@
+venvs are in /Users/lucasburns/.local/pipx/venvs
+apps are exposed on your $PATH at /Users/lucasburns/.local/bin
+   package aria2p 0.10.4, Python 3.9.5
+    - aria2p
+   package buku 4.6, Python 3.9.5
+    - buku
+    - bukuserver
+   package cdhist 2.5, Python 3.9.5
+    - cdhist
+   package fmdpy 0.2.3, Python 3.9.5
+    - fmdpy
+   package glances 3.1.7, Python 3.9.5
+    - glances
+   package jrnl 2.8.1, Python 3.9.5
+    - jrnl
+   package organize-tool 1.10.1, Python 3.9.5
+    - organize
+   package pipdeptree 2.0.0, Python 3.9.5
+    - pipdeptree
+   package pxpx 1.4.1, Python 3.9.5
+    - ptop
+    - px
+   package surfraw-tools 0.1.0, Python 3.9.5
+    - mkelvis
+   package trash-cli 0.21.6.10.1, Python 3.9.5
+    - trash
+    - trash-empty
+    - trash-list
+    - trash-put
+    - trash-restore
+    - trash-rm
+   package youtube-dl 2021.6.6, Python 3.9.5
+    - youtube-dl
+   package ytmdl 2021.5.26.post1, Python 3.9.5
+    - ytmdl

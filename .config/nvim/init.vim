@@ -240,7 +240,7 @@
       \,sm:block-blinkwait175-blinkoff150-blinkon175
 
   syntax enable
-  " colorscheme kimbox
+  colorscheme kimbox
   " colorscheme spaceduck
   " colorscheme bogster
   " colorscheme material
@@ -248,7 +248,7 @@
   " colorscheme miramare
   " colorscheme sonokai
   " colorscheme oceanic_material
-  colorscheme gruvbox-material
+  " colorscheme gruvbox-material
   " colorscheme night-owl
   " colorscheme jellybeans
   " colorscheme gruvbit
@@ -377,7 +377,6 @@
   nnoremap ;q :q<CR>
   nnoremap q; :q<CR>
   " replace command history with quit
-  " FIX: minimap error
   " map q: :MinimapToggle<CR> :q<CR>
   " map q: :q<CR>
   map Q: :q
@@ -461,10 +460,15 @@
   map <C-h> <C-W>h
   map <C-l> <C-W>l
 
-  " Using <SPACE> to fold or unfold
+  " Using <ff> to fold or unfold
   nnoremap <silent> ff @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
   " nnoremap <silent> <SPACE><CR> zi
   nnoremap <silent><expr> fl &foldlevel ? 'zM' :'zR'
+
+  " Remap mark jumping
+  noremap ' `
+  noremap ` '
+  " g'" = last known position
 
   " buffer switching
   nnoremap gt :bnext<CR>
@@ -775,7 +779,6 @@
     \ 'coc-pairs',
     \ 'coc-yank',
     \ 'coc-explorer',
-    \ 'coc-prettier',
     \ 'coc-marketplace',
     \ 'coc-tabnine',
     \ 'coc-tag',
@@ -1241,6 +1244,10 @@ command! -nargs=? -complete=dir AF
   nnoremap <silent> <Leader>mm :Maps<CR>
   nnoremap <silent> <Leader>T  :Tags<CR>
   nnoremap <silent> <Leader>Tb :BTags<CR>
+  nnoremap <silent> <Leader>mk :Marks<CR>
+  nnoremap <Leader>mlm :marks<CR>
+  nnoremap <Leader>mfd :delm! | delm A-Z0-9<CR>
+  nnoremap <Leader>mld :delmarks a-z<CR>
 
   nmap <C-l>m <plug>(fzf-maps-n)
   xmap <C-l>m <plug>(fzf-maps-x)
@@ -1382,7 +1389,7 @@ nnoremap <Leader>gp :Git push<CR>
 "}}} === UndoTree ===
 
 " === Vimagit === {{{
-  noremap  <Leader>ma :MagitO<Cr>
+  nnoremap  <Leader>ma :MagitO<Cr>
 " }}} === Vimagit ===
 
 " === signify === {{{
@@ -1905,8 +1912,8 @@ xmap <Leader>gs :EasyAlign//ig['String']<Left><Left><Left><Left><Left><Left><Lef
 " === minimap === {{{
 nnoremap <Leader>mi :MinimapToggle<CR>
 let g:minimap_width = 10
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
+let g:minimap_auto_start = 0
+let g:minimap_auto_start_win_enter = 0
 let g:minimap_highlight_range = 1
 let g:minimap_block_filetypes =
   \ ['fugitive', 'nerdtree', 'help', 'coc-explorer', 'vista']
@@ -2097,10 +2104,10 @@ autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 
 set showtabline=2
 let g:lightline = {}
-" let g:lightline.colorscheme = 'kimbox'
+let g:lightline.colorscheme = 'kimbox'
 " let g:lightline.colorscheme = 'gruvbox_material'
 " let g:lightline.colorscheme = 'miramare'
-let g:lightline.colorscheme = 'everforest'
+" let g:lightline.colorscheme = 'everforest'
 " let g:lightline.colorscheme = 'nightowl'
 " let g:lightline.colorscheme = 'spaceduck'
 " let g:lightline.colorscheme = 'sonokai'
@@ -2345,3 +2352,7 @@ source ~/.config/nvim/indentline.vim
 " let g:rust_fold = 1
 
 " vim: ft=vim:et:sw=0:ts=2:sts=2:tw=78:fdm=marker:fmr={{{,}}}:
+
+" autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window " . expand("%:t"))
+autocmd BufEnter * let &titlestring = '' . expand("%:t")
+set title

@@ -11,6 +11,7 @@ grcov
 hackernews_tui
 history_report
 huniq
+lax
 mates
 mdbook
 organize-rt
@@ -19,4 +20,5 @@ pipe-renamer
 rls
 shellharden
 smcurser
+viu
 xcp

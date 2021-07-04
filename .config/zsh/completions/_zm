@@ -29,6 +29,7 @@ arguments=(
   '--wid[Example: vi-backward-kill]'
   '--widget[Example: vi-backward-kill]'
   {-z,--zparse}'[zparseopts examples]'
+  {-u,--used}'[Parameters set by the shell]'
   '--ru[Substitution rules]'
   '--rules[Substitution rules]'
   '--vared[Vared explained]'
