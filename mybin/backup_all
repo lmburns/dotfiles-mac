@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Calcurse
+FILE="/calcurse-bkp-$(date +'%Y%m%d').tar.gz"
+DIR="$HOME/backup/calcurse"
+TAR="$HOME/.local/share/calcurse"
+
+mkdir -p "$DIR"
+tar czfP "$DIR/$FILE" "$TAR"
+echo "Calcurse backed up $TAR"
+
+# Crontab
+FILE="crontab_$(date +'%Y%m%d')"
+DIR="$HOME/backup/crontab"
+
+mkdir -p "$DIR"
+crontab -l > "$DIR/$FILE"
+echo "Crontab backed up ${DIR}/${FILE}"
+
+# Task
+FILE="/task-bkp-$(date +'%Y%m%d').tar.gz"
+DIR="$HOME/backup/task"
+TAR="$HOME/.config/task"
+
+mkdir -p "$DIR"
+tar czfP "$DIR/$FILE" "$TAR"
+echo "Task backed up $TAR"
+
+# Buku
+buku -e ~/backup/bookmarks/bookmarks_$(date +%m%d%y).html

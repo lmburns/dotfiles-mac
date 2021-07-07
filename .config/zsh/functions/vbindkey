@@ -136,10 +136,9 @@ function duplicates() {
 }
 
 function bind() {
-  local escaped ret
+  local escaped ret i MATCH
   local -a sequence=(${(s: :)1})
   # local -a modes=( ${(f)"$(builtin bindkey -l)"} )
-  local i
 
   if [[ ${(M)sequence:#mode*} ]]; then
     local qmode=${${(ws:=:)${(M)sequence:#mode*}}[-1]}
@@ -172,7 +171,7 @@ function bind() {
 
   if (( ${+mode[(r)-s]} )); then
     # allow: bindkey -s '^o' 'lc\n'
-    builtin bindkey $remove $mode $escaped "${2}$'\n'"
+    builtin bindkey $remove $mode $escaped "${2}\n"
     (( DEBUG )) && print -P -- "%F{2}Mode:string%f -- bindkey $remove $mode $escaped "${2}$'\n'"
 "
   elif (( ${(@s::)+mode[(r)(+|@|-)(#c1,2)]} )); then

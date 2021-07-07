@@ -59,7 +59,7 @@ set mail_check=60              # to avoid lags using IMAP with some email provid
 set timeout=10
 
 # == Mail composition ==
-set edit_headers
+set edit_headers               # include headers in composition
 set include                    # include message in replies
 
 # forward things with mime, i don't care about crappy clients

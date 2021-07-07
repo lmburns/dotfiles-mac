@@ -297,12 +297,16 @@
         "macos" = "/Users/lucasburns/.config/mutt/accounts/3-chi@linuxmail.org.muttrc"
     [hoards.mutt.lmburns]
         "macos" = "/Users/lucasburns/.config/mutt/accounts/4-lmb@lmburns.com.muttrc"
-    [hoards.mutt.notmuch]
-        "macos" = "/Users/lucasburns/.config/notmuch"
     [hoards.mutt.msmtp]
         "macos" = "/Users/lucasburns/.config/msmtp/config"
     [hoards.mutt.mail_dir]
         "macos" = "/Users/lucasburns/.local/share/mail"
+
+[hoards.notmuch]
+    [hoards.notmuch.conf]
+        "macos" = "/Users/lucasburns/.config/notmuch"
+    [hoards.notmuch.hooks]
+        "macos" = "/Users/lucasburns/.local/share/mail/.notmuch/hooks"
 
 [hoards.mycli]
     "macos" = "/Users/lucasburns/.myclirc"

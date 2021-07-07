@@ -3,7 +3,6 @@
 set -e
 
 echo -n Filtering new messages
-## All messages
 
 ## Poor man's progress bar. adjust for number of steps
 STEPS=30
@@ -17,26 +16,20 @@ for n in `seq $STEPS`; do
         echo -ne '\b'
 done
 
-## notmuch post-processing script
-
 ## Folder-based sorting (ignoring tag:new)
 echo -n j
-notmuch tag -new -inbox +junk "folder:/burnsac@me.com/*Junk.*/"
-notmuch tag -new -inbox +junk "folder:/burnsppl@gmail.com/*Junk.*/"
-notmuch tag -new -inbox +junk "folder:/lmb@lmburns.com/*Junk.*/"
+notmuch tag -new -inbox +junk 'folder:"/.*Junk.*/"'
+notmuch tag -new -inbox +junk 'folder:"/.*Spam.*/"'
+
 # already archived - no longer unread or inbox
 echo -n a
-notmuch tag -new -unread -inbox "folder:/burnsac@me.com/Archive/"
-notmuch tag -new -unread -inbox "folder:/burnsppl@gmail.com/Archive/"
-notmuch tag -new -unread -inbox "folder:/lmb@lmburns.com/Archive/"
-##
+notmuch tag +archived -new -unread -inbox 'folder:"/.*Archive.*/"'
+# notmuch tag -new -unread -inbox "folder:/burnsac@me.com/Archive/"
+# notmuch tag -new -unread -inbox "folder:/burnsppl@gmail.com/Archive/"
+# notmuch tag -new -unread -inbox "folder:/lmb@lmburns.com/Archive/"
+# notmuch tag -new -unread -inbox "folder:/lucas@lmburns.com/Archive/"
 
-# The below rule all focus on (not yet filtered) messages
-
-## First we'll deal with services that send straight to us
-
-# **Github** processing is two-stage as we need to filter
-# Github notifications can be quite noisy, hopefully we'll
+# == Services ============================================================= [[[
 echo -n 'g('
 notmuch tag +github tag:new '(from:notifications@github.com)'
 # Mentions us, better have a look
@@ -55,29 +48,33 @@ notmuch tag -new tag:new '(tag:github)'
 ## end GitHub
 echo -n ')'
 
+# mailling lists
+notmuch tag  -new +inbox +zsh +maillist tag:new 'to:@zsh.org'
+notmuch tag  -new +inbox +notmuch +maillist tag:new and to:notmuch@notmuchmail.org
+
 # we should look at right away
 echo -n e
-notmuch tag -new +inbox +flagged +eu tag:new from:Accredo@orders.accredo.com from:postmaster@mac.com from:burnsac@me.com from:expiry@letsencrypt.org from:root@lmburns.com
-notmuch tag +rss from:lmburns@lmburns.com and not tag:rss
+notmuch tag -new +inbox +flagged +eu tag:new folder:/INBOX/ from:Accredo@orders.accredo.com from:postmaster@mac.com from:expiry@letsencrypt.org from:root@lmburns.com from:burnsac@me.com from:lmb@lmburns.com from:@sharefoodbringhope.org
 
-## individual emails
+# notmuch tag +rss from:lmb@lmburns.com and not tag:zsh
+
+# individual emails
 echo -n 0
 notmuch tag +apple to:burnsac at me.com and not tag:apple
 notmuch tag +xyz to:lucas at lmburns.com and not tag:xyz
+notmuch tag +xyz to:lmb at lmburns.com and not tag:xyz
 notmuch tag +gmail to:burnsppl at gmail.com and not tag:gmail
 echo -n X
 
 # Notification from project1's issue tracker and chat systems
 # not really personal even though they are sent to:me@example.com
-
 # echo -n b
 # notmuch tag -new +inbox +project1 tag:new from:notifications@tasks.example.com from:noreply@example.com from:chat.example.org
-
-## End of services
+# ]]]
 
 # To/Cc one of my addresses
 echo -n p
-notmuch tag -new +inbox +personal tag:new '(to:Burns OR to:burnsac@me.com OR to:lucas@lmburns.com OR to:Lucas)'
+notmuch tag -new +inbox +personal tag:new '(to:Burns OR to:burnsac@me.com OR to:lucas@lmburns.com OR to:Lucas OR to:lmb@lmburns.com)'
 
 # Might not be personal, but it mentions our uniquish name inside.
 # Flag, but continue processing
@@ -95,11 +92,13 @@ echo -n 1
 
 echo -n t
 
-## Sent
+# == All mail sent from me =================================================
 echo -n x
 notmuch tag +sent from:burnsac@me.com and not tag:sent
 echo -n x
 notmuch tag +sent from:lucas@lmburns.com and not tag:sent
+echo -n x
+notmuch tag +sent from:lmb@lmburns.com and not tag:sent
 echo -n x
 notmuch tag +sent from:burnsppl@gmail.com and not tag:sent
 echo -n 0
@@ -119,18 +118,22 @@ notmuch search --output=threads tag:watch OR tag:replied OR tag:flagged  | xargs
 ##
 
 
+notmuch tag +receipts 'folder:/.*eceipts.*/'
+notmuch tag +convo 'folder:/.*onversation.*/'
+
 ## Undo potential false INBOX positives from ourself
 # (keep the other tags like watch)
 echo -n -
-notmuch tag -inbox -new tag:inbox from:lucas@lmburns.com from:burnsac@me.com
-##
+notmuch tag -inbox -new tag:inbox from:lucas@lmburns.com from:burnsac@me.com from:lmb@lmburns.com
+notmuch tag -flagged tag:flagged from:burnsac@me.com
 
-# Anything else sent to @company is still in inbox, but
-# marked as unsorted
+# Anything else is still in inbox, but marked as unsorted
 echo -n i
-notmuch tag +inbox +unsorted -new tag:new "folder:burnsac@me.com/INBOX"
-notmuch tag +inbox +unsorted -new tag:new "folder:burnsppl@gmail.com/INBOX"
-notmuch tag +inbox +unsorted -new tag:new "folder:lucas@lmburns.com/INBOX"
+notmuch tag +inbox +unsorted -new tag:new folder:/INBOX/ folder:/Archive/
+# notmuch tag +inbox +unsorted -new tag:new "folder:burnsac@me.com/INBOX"
+# notmuch tag +inbox +unsorted -new tag:new "folder:burnsppl@gmail.com/INBOX"
+# notmuch tag +inbox +unsorted -new tag:new "folder:lucas@lmburns.com/INBOX"
+# notmuch tag +inbox +unsorted -new tag:new "folder:lmb@lmburns.com/INBOX"
 
 # the rest (other accounts and folders) are just unsorted
 echo -n u

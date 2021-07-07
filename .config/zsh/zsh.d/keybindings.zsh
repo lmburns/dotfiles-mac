@@ -60,7 +60,7 @@ typeset -gA keybindings; keybindings=(
   'Esc-e'         wfxr::fzf-file-edit-widget
   'M-r'           per-dir-fzf
   'M-p'           pw                    # fzf pueue
-  'M-q'           push-line-or-edit
+  'M-q'           push-line-or-edit     # zsh-edit
   'M-x'           cd-fzf-ghqlist-widget # cd ghq fzf
   'C-a'           autosuggest-execute
   'C-z'           fancy-ctrl-z
@@ -85,7 +85,7 @@ typeset -gA keybindings; keybindings=(
   'mode=viins kj' vi-cmd-mode
   'mode=visual S' add-surround
   'mode=str M-t'  t                     # tmux wfxr
-  'mode=@ C-o'    lc                    # lf change dir
+  'mode=str C-o'  lc                    # lf change dir
   'mode=@ C-b'    bow2                  # surfraw open w3m
   'mode=@ M-/'    frd                   # cd interactively recent dir
   'mode=@ M-;'    fcd                   # cd interactively
@@ -93,6 +93,8 @@ typeset -gA keybindings; keybindings=(
   'mode=@ M-['   fstat
   'mode=@ M-]'   fadd
 )
+
+  # 'mode=@ C-o'    lc                    # lf change dir
 
 # 'mode=vicmd M-a' yank-pop
 # 'mode=vicmd M-s' reverse-yank-pop
@@ -106,6 +108,24 @@ typeset -gA keybindings; keybindings=(
 # 'M-n'     _navi_next_pos
 
 vbindkey -A keybindings
+
+# # ci", ci', ci`, di", etc
+# autoload -U select-quoted
+# zle -N select-quoted
+# for m in visual viopp; do
+#   for c in {a,i}{\',\",\`}; do
+#     bindkey -M $m $c select-quoted
+#   done
+# done
+#
+# # ci{, ci(, ci<, di{, etc
+# autoload -U select-bracketed
+# zle -N select-bracketed
+# for m in visual viopp; do
+#   for c in {a,i}${(s..)^:-'()[]{}<>bB'}; do
+#     bindkey -M $m $c select-bracketed
+#   done
+# done
 
 # View keybindings
 keyb() {

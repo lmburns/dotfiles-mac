@@ -19,7 +19,7 @@ man() {
 
 # zp() { man -P "less -p'^       "$1" '" zshexpn; }
 # zs() { man -P "less -p'^       "$1" '" zshparam; }
-
+zmc() { man -P "less -p'^${@}'" zshcompsys; }
 zmp() { man -P "less -p'^${@}'" zshall; }
 zmo() { man -P "less -p'^${@}'" zshmodules; }
 zlm() { man -P "less -p'^${@}'" zshzle; }
@@ -58,7 +58,7 @@ usage() {
 
 lopts=(test example pf pexpf pexp paramexp he histexp hf histflags arrparam arrsubscript help)
 lopts+=(arsf arrflag complex glob shopts sopts 1opts prompt promptchars redir wid widget zparse)
-lopts+=(ars ru rules bindkey vared opts used)
+lopts+=(ars ru rules bindkey vared opts used zst zstyle cf ctrlfunc)
 
 zparseopts -D -E -a opts ${(s::):-teacgrzhu} \
   ${lopts//(#m)*/\-${MATCH}} \
@@ -99,6 +99,8 @@ case ${opts[1]} in
   -z|--zparse) zmo "       zparseopts$" ;;
   --ru|--rules) zmp "   Rules$" ;;
   -u|--used) zmp "PARAMETERS USED BY THE SHELL$" ;;
+  --zst|--zstyle) zmo "THE ZSH/ZUTIL MODULE$" ;;
+  --cf|--ctrlfunc) zmc "CONTROL FUNCTIONS$" ;;
   -m) zd "${(U)opts[2]}" ;;
   -b) zb "${opts[2]}" ;;
   -o) zo "${opts[2]}" ;;

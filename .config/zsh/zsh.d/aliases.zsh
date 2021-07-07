@@ -4,21 +4,7 @@
 #      Home: https://github.com/lmburns                                    #
 ############################################################################
 
-hash -d git=$HOME/projects/github
-hash -d pro=$HOME/projects
-hash -d opt=$HOME/opt
-hash -d ghq=$HOME/ghq
-hash -d TMPDIR=${TMPDIR:A}
-
 # alias \$= %=
-
-alias toiletd='toilet -d /usr/local/figlet/2.2.5/share/figlet/fonts'
-
-[[ $OSTYPE == darwin* ]] && alias -s {log,out}='open -a Console'
-
-alias dlpaste='aria2c "$(pbpaste)"'
-alias :q='exit'
-alias dl='aria2c -x 4 --dir="${HOME}/Downloads/Aria"'
 
 alias -g G='| rg '
 alias -g H='| head'
@@ -26,18 +12,8 @@ alias -g T='| tail'
 
 alias xx="xplr"
 
-alias gpg-tui='gpg-tui --style colored'
-alias tn='terminal-notifier'
-alias googler='googler --colors bjdxxy'
-alias b='buku --suggest --colors gMclo'
-alias downl='xh --download'
-
-alias xattr='/usr/bin/xattr'
-alias id="/usr/bin/id"
-alias idh="man /usr/share/man/man1/id.1"
-
-alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/librewolf'
-alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
+alias :q='exit'
+alias ng="noglob"
 
 (( ${+commands[just]} )) && {
   alias jj='just'
@@ -159,6 +135,8 @@ alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
 }
 
 alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lmb@lmburns.com'
+alias nm="notmuch"
+alias nmls="nm search --output=tags '*'"
 
 # ===locations ==================================================================
 alias prd='cd $HOME/projects'
@@ -183,6 +161,13 @@ alias vwdir='cd $HOME/vimwiki'
 alias nvimd='cd /usr/local/share/nvim/runtime'
 
 # === internet / vpn / etc ======================================================
+alias b='buku --suggest --colors gMclo'
+alias dl='aria2c -x 4 --dir="${HOME}/Downloads/Aria"'
+alias dlpaste='aria2c "$(pbpaste)"'
+alias toilet='toilet -d /usr/local/figlet/2.2.5/share/figlet/fonts'
+alias downl='xh --download'
+alias googler='googler --colors bjdxxy'
+
 alias wget='wget --hsts-file $XDG_CONFIG_HOME/wget/.wget-hsts'
 alias tsm='transmission-remote'
 alias tsmd='transmission-daemon'
@@ -199,6 +184,11 @@ alias spt='speedtest | rg "(Download:|Upload:)"'
 alias essh='eval $(ssh-add)'
 alias kc='keychain'
 alias kck='keychain -k all'
+
+# === fixes ===================================================================
+alias xattr='/usr/bin/xattr'
+alias id="/usr/bin/id"
+alias idh="man /usr/share/man/man1/id.1"
 
 # === mac specific =============================================================
 (( ${${(M)OSTYPE:#*darwin*}:+1} )) && {
@@ -221,6 +211,9 @@ alias kck='keychain -k all'
   alias bundleident='mdls -name kMDItemCFBundleIdentifier -r'
   alias uti='mdls -name kMDItemContentType -name kMDItemContentTypeTree -name kMDItemKind'
   alias etch='sudo /Applications/balenaEtcher.app/Contents/MacOS/balenaEtcher'
+  alias -s {log,out}='open -a Console'
+  alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/librewolf'
+  alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
 }
 # alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
 # bundlei() { osascript -e 'id of app "$1"' }
@@ -256,6 +249,9 @@ alias nbconvert='jupyter nbconvert --to python'
 }
 
 # === other =====================================================================
+alias gpg-tui='gpg-tui --style colored'
+alias tn='terminal-notifier'
+
 alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
 
 alias nerdfont='source $XDG_DATA_HOME/fonts/i_all.sh'

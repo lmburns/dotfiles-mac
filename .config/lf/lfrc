@@ -103,40 +103,46 @@ cmd delete ${{
 # -- Trash: no confirmation (trash-put)
 cmd trash ${{
   trash-put -- $fx
-  terminal-notifier -title "🗑️  File(s) deleted" -message "File(s) moved to trash" && echo "$fx deleted"
+  terminal-notifier -title "🗑️  File(s) deleted" -message "File(s) moved to trash" &&
+    print -R "$fx deleted"
 }}
 
 # -- Move: autojump
-cmd movetojump !{{
-  clear; prompt="Move to: "
-  dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")"
-  mv -iv -- $fx "$dest"
-  terminal-notifier -title "🚚 File(s) copied." -message "$dest"
+# dest="$(print -rl -- ${(Oa)${${(@f)"$(autojump -s)"}//(#m)*/${${(s: :)${MATCH}//[[:space:]]##/ }[2]}}[0,-6]} | fzf --prompt ' Jump Move> ' --no-height)"
+cmd movetojump ${{
+  clear
+  dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="Move to> ")"
+  for x ($fx) { mv -iv $x $dest } && {
+    terminal-notifier -title "🚚 File(s) copied." -message "${fx:t} moved to $dest"
+  }
 }}
 
 # -- Move: path
-cmd movetopath !{{
-  # clear; read -p "Move to: " dest
+cmd movetopath ${{
   clear; vared -cp "Move to: " dest
-  mv -iv -- $fx "${~dest}"
-  terminal-notifier -title "🚚 File(s) moved." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
+  for x ($fx) { mv -iv $x $~dest } && {
+    terminal-notifier -title "🚚 File(s) moved." -message "${fx:t} moved to $dest."
+  }
+  # mv -iv -- $fx "${~dest}"
 }}
 
 
 # -- Copy: autojump
-cmd copytojump !{{
+cmd copytojump ${{
   clear
-  prompt="Copy to: "
-  dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="$prompt")"
-  cp -pivr -- $fx "$dest"
-  terminal-notifier -title "🚚 File(s) copied." -message "$(echo $fx | xargs -r basename -a) copied to $dest."
+  dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="Copy to> ")"
+  for x ($fx) { cp -pivr $x $dest } && {
+    terminal-notifier -title "🚚 File(s) copied." -message "${fx:t} copied to $dest."
+  }
+  # cp -pivr -- $fx "$dest"
 }}
 
 # -- Copy: path
-cmd copytopath !{{
+cmd copytopath ${{
   clear; vared -cp "Copy to: " dest
-  cp -pivr -- $fx ${~dest}
-  terminal-notifier -title "🚚 File(s) copied." -message "copied to $dest."
+  for x ($fx) { cp -pivr $x $~dest } && {
+    terminal-notifier -title "🚚 File(s) copied." -message "${fx:t} copied to $dest."
+  }
 }}
 
 
@@ -148,7 +154,7 @@ cmd ppaste &{{
     shift
     case "$mode" in
         copy)
-            rsync -av --ignore-existing --progress -- "$@" . |
+            rsync -avX --ignore-existing --progress -- "$@" . |
             stdbuf -i0 -o0 -e0 tr '\r' '\n' |
             while IFS= read -r line; do
                 lf -remote "send $id echo $line"
@@ -222,7 +228,8 @@ cmd git_branch ${{
 # y (select for copy) and P to paste soft-link
 # d (select for cut) and P to paste hard-link
 cmd link %{{
-    set $(lf -remote load)
+    zmodload -Fa zsh/files b:zf_rm
+    set ${(@f)"$(<$XDG_DATA_HOME/lf/files)"}
     mode="$1"
     shift
     if (( $# < 1 )); then
@@ -233,8 +240,9 @@ cmd link %{{
       copy) gln -sr -t . "$@";;
       move) gln -t . "$@";;
     esac
+    zf_rm "${XDG_DATA_HOME}/lf/files"
+    lf -remote "send clear"
 }}
-
 
 # -- Preview: quicklook
 cmd ql_preview &{{
@@ -420,6 +428,12 @@ cmd cd-followlink &{{
 }}
 
 # === TAGS === [[[
+# --Tag: list
+cmd tag-list !{{
+  clear
+  tag -l | bat -f -l bash
+}}
+
 # -- Tag: set tag(s)
 cmd tag-set ${{
   clear
@@ -504,12 +518,13 @@ cmd wutag-remove ${{
   vared -cp "Set tag: " tag
   for x in $fx; do
     fname="${x:t}"; fdir="${x:h}"
-    wutag -d "${fdir}/" clear $fname
+    wutag -d "${fdir}/" rm $fname
   done
 }}
 
 cmd wutag-list !{{
-  wutag list '*'
+  clear
+  noglob wutag list '*' | bat -f -l bash
 }}
 # ]]] === TAGS ===
 
@@ -519,6 +534,7 @@ cmd tar %tar cvf "$f.tar" "$f"
 cmd targz %tar cvzf "$f.tar.gz" "$f"
 cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
 
+# -- Miscellaneous:
 cmd rsyncto ${{ rsync -uvrP $fx root@burnsac.xyz:"$1" }}
 cmd rsyncfrom ${{ rsync -uvrP root@burnsac.xyz:"$1" "$2" }}
 cmd fzf_cd $lf -remote "send $id cd '$(fd . --exact-depth=1 -td -HiL | fzf)'"
@@ -545,13 +561,12 @@ cmd newfold ${{
   mkdir -p -- "$fold" && mv -- $fx "$fold"
 }}
 
-# TODO: Create dragondrop scripts
 cmd dragon %dragon-drag-and-drop -a -x $fx
 cmd dragon-stay %dragon-drag-and-drop -a $fx
 cmd dragon-individual %dragon-drag-and-drop $fx
 cmd cpdragon %cpdragon
 cmd mvdragon %mvdragon
-# cmd dlfile %dlfile
+cmd dlfile %dlfile
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Mappings                                                                  │
@@ -570,64 +585,68 @@ map f
 map gh
 map .
 
-# File Openers
+# == File Openers == [[[
 map ee $$EDITOR "$f"                            # open file in editor
-map et $$EDITOR ~/.config/tmux/tmux.conf        # edit & source lfrc
 map ec edit_config                              # edit & source lfrc
-map ev $nvim ~/.config/nvim/init.vim            # open nvim config
-map ew $nvim ~/vimwiki/index.md                 # open vimwiki
 map es edit_scope                               # edit lfrc scope
-map ez $nvim $ZDOTDIR/.zshrc                    # edit zshrc
-map ea $nvim $ZDOTDIR/zsh-aliases               # edit zsh aliases
-map bk $gcp --force --suffix=.bak "$f" "$f"      # backup file
+map ev $$EDITOR $XDG_CONFIG_HOME/nvim/init.vim  # open nvim config
+map ew $$EDITOR ~/vimwiki/index.md              # open vimwiki
+map ez $$EDITOR $ZDOTDIR/.zshrc                 # edit zshrc
+map ea $$EDITOR $ZDOTDIR/zsh.d/aliases.zsh      # edit zsh aliases
+map eb $$EDITOR $ZDOTDIR/zsh.d/keybindings.zsh  # edit zsh bindings
+map ei $$EDITOR $ZDOTDIR/zsh.d/lficons.zsh      # edit lf colors/icons
+map et $$EDITOR $XDG_CONFIG_HOME/tmux/tmux.conf # edit & source lfrc
+map bk $gcp --force --suffix=.bak "$f" "$f"     # backup file
 map r $rmcrap                                   # delete .DS_Store etc
 map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
-map V push :!nvim<space>
-# map ? $lf -doc | bat -f                         # open lfrc docs
-map ? $batman lf
-map gH $bat -l bash -f ~/.config/lf/mappings            # open these mappings
-map Ow push :open-with<space>                   # open w/ specified program
-map Op $open $PWD
+map V push :!nvim<space>                     # enter filename for nvim
+map ? $batman lf                             # open lfrc docs
+map gH $bat -l bash -f ~/.config/lf/mappings # open these mappings
+map Ow push :open-with<space>                # open w/ specified program
+map Op $open $PWD                            # open curr directory in finder
 
-map as !du -hsx * | sort -rh | bat --paging=always  # directory info
-map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file --mime -b -p $f
+map Ql ql_preview                             # open in quicklook (macOS)
+map Qm !clear; mdcat -p $fx                   # preview in mdcat
+map Qg !clear; glow -p $fx                    # preview in glow
+map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$f" # attempt to preview all imgs
 
-map sf select-files
-map sd select-dirs
-map sx select-exec
-map sr :{{ set nopreview; set ratios 1:3; }}
-map sp :{{ set preview;   set ratios 1:2:3; }}
-map sP :{{ set preview;   set ratios 1:2; }}
-map sR :{{ set reverse!; }}
-map sN :{{ set sortby natural; set info size; }}
+map as !du -hsx * | sort -rh | bat --paging=always                          # directory info
+map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file --mime -b -p $f # info
 
-# Archive Mappings
+map <c-f> push :rg<space>                           # search with rg
+map <c-z> push :rgu<space>                          # search interactively with fzf
+# ]]]
+
+# == Archive Mappings == [[[
 map az zip
 map at tar
 map ag targz
 map ab targz
 map au unarchive
+# ]]]
 
-# Trash Mappings
-map dd trash
-map Dd delete                            # confirmation with whiptail
-map te %trash-empty
-map tl $trash-list | fzf
-map tm $frm                            # fzf trash delete script
-map tr $ftr                            # fzf trash restore script
+# == Trash Mappings == [[[
+map dd trash             # trash-put
+map Dd delete            # confirmation with whiptail
+map te %trash-empty      # empty trash
+map tl $trash-list | fzf # list in fzf
+map tm $frm              # fzf trash delete script
+map tr $ftr              # fzf trash restore script
 
-map Dp $dump -p -s                     # dump - interactive delete
-map Dr $dump -u -s                     # dump - restore interactive
+map Dp $dump -p -s       # dump - interactive delete
+map Dr $dump -u -s       # dump - restore interactive
+# ]]]
 
-# Dragon Mapping [CONFIGURE]
-# map dr dragon
-# map ds dragon-stay
-# map di dragon-individual
-# map dm mvdragon
-# map dc cpdragon
-# map dl dlfile
+# == Dragon Mapping [CONFIGURE] == [[[
+map dr dragon
+map ds dragon-stay
+map di dragon-individual
+map dm mvdragon
+map dc cpdragon
+map dl dlfile
+# ]]]
 
-# Renaming
+# == Renaming == [[[
 map A rename                            # at the very end
 map cn push A<c-u>                      # new rename
 map I push A<c-a>                       # at the beginning
@@ -635,11 +654,12 @@ map i push A<a-b><a-b><a-f>             # before extention
 map aa push A<a-b>                      # after extention
 map Bm massren                          # bulk rename with massren
 map Bv mmv                              # bulk rename only with selected
-map Bf push :f2<space>
+map Bf push :f2<space>                  # use f2 to rename
 map ch chmod                            # change file permissions
 map cH chown                            # change file owner
+# ]]]
 
-# File movement
+# == File movement == [[[
 map fo push :fzf<space>   # fzf search and open
 map fd push :fd<space>    # use fd to find file
 map fa ajfzf              # use fzf with autojump
@@ -652,26 +672,32 @@ map cD ndel-bookmark      # lf specifc - del bookmark
 map zi zoxide_i           # zoxide interactive
 map zz push :z<space>     # very similar to autojump
 map <c-j> push :aj<space> # auto jump
-map w fzf_cd
+map w fzf_cd              # fzf cd
+# ]]]
 
-# General
+# == General == [[[
 map . set hidden!
-map L cd-followlink             # follow symlink on cd
-map p paste                     # regular
-map Pl :{{ link; unselect; }}   # paste a symlink
-map Pp ppaste                   # paste and preview progress
-map x cut
-map y copy
-map Ya yank-path                # yank file path
-map <enter> shell-wait
+map L cd-followlink           # follow symlink on cd
+
+map x cut                     # general cut
+map p paste                   # regular
+map Pl :{{ link; unselect; }} # paste a symlink
+map Pp ppaste "copy"          # paste and preview progress
+map y copy                    # general copy
+map Ya yank-path              # yank file path
+map Yj copytojump             # copy to directory with autojump
+map Yp copytopath             # copy to directory with path entered
+map Mj movetojump             # move to directory with autojump
+map Mp movetopath             # move to directory with path
+
+map Mt push :rsyncto<space>   # move things to the server
+map Mf push :rsyncfrom<space> # move things from the server
+
 map mf push :mkfile<space>      # create file
 map md push :mkdir<space>       # create dir
 map mt push :take<space>        # create dir and cd into it
 map mD newfold                  # create dir and move selected files into it
 map ms $mksc                    # make script
-map Ql ql_preview               # open in quicklook (macOS)
-map Qm !clear; mdcat -p $fx
-map Qg !clear; glow -p $fx
 
 map gg top -- []
 map G bottom -- []
@@ -681,6 +707,21 @@ map R reload
 map C clear
 map U unselect
 
+map sf select-files                              # select all files
+map sd select-dirs                               # select all dirs
+map sx select-exec                               # select all executables
+
+map sr :{{ set nopreview; set ratios 1:3; }}     # set display (preview)
+map sp :{{ set preview;   set ratios 1:2:3; }}   # set display (preview)
+map sP :{{ set preview;   set ratios 1:2; }}     # set display (no preview)
+map sR :{{ set reverse!; }}                      # reverse file order
+map sN :{{ set sortby natural; set info size; }} # revert back to normal
+
+map <c-u> usage                                  # get help
+# ]]]
+
+# == Shell == [[[
+map <enter> shell-wait                              # enter shell cmd
 map <c-x>x $$f                                      # execute file
 map <c-x>X !$f                                      # execute file and $PAGER output
 map <c-x>l $$f | bat --paging=always -f             # execute file and bat output
@@ -690,33 +731,25 @@ map <c-x>w push :wim<space>                         # open script source code
 map <c-v> $jupview -P "$f"                          # view ipynb file
 map <c-x>p $cat $fx | up                            # cat file to up (unix piper)
 map <c-s> shell                                     # enter shell command
-map <c-u> usage
-map <c-f> push :rg<space>                           # search with rg
-map <c-z> push :rgu<space>                          # search interactively with fzf
+# ]]]
 
-map Yj copytojump       # copy to directory with autojump
-map Yp copytopath       # copy to directory with path entered
-map Mj movetojump       # move to directory with autojump
-map Mp movetopath       # move to directory with path
-
-map Mt push :rsyncto<space>                     # move things to the server
-map Mf push :rsyncfrom<space>                   # move things from the server
-
-map Sa $$XDG_CONFIG_HOME/lf/sxiv-preview "$f"   # attempt to preview all imgs
-
-# gpg
+# == GPG == [[[
 map te gpg_encrypt_recipient
 map tp gpg_encrypt_pass
 map td gpg_decrypt
 map ts. gpg_sign
 map tsc gpg_sign_clear
 map tsd gpg_sign_detach
-map tT $gpg-tui
+map tT $gpg-tui # gpg-tui
+# ]]]
 
-map toa $transmission-remote --add $fx
-map toT %tide
+# == Torrent == [[[
+map toa $transmission-remote --add $fx # add torrent
+map toT %tide                          # transmisison TUI
+# ]]]
 
-# tagging
+# == Tagging (jdberry/tag) == [[[
+map Tl tag-list
 map Ts tag-set
 map Ta tag-add
 map Tr tag-remove
@@ -724,8 +757,9 @@ map Tws wutag-set
 map Twa wutag-add
 map Twr wutag-remove
 map Twl wutag-list
+# ]]]
 
-# git
+# == Git == [[[
 map gtb :git_branch
 map gtp ${{clear; git pull --rebase || true; echo "press ENTER"; read ENTER}}
 map gtz ${{clear; git status; echo "press ENTER"; read ENTER}}
@@ -747,37 +781,40 @@ map gfu ${{clear; dotbare funtrack}}
 map gftr ${{clear; dotbare ls-tree -r master --name-only | bat}}
 map gftt ${{clear; dotbare ls-tree -r master --name-only | as-tree --color always | bat -p}}
 map gftu ${{clear; dotbare ls-files --other | bat}}
+# ]]]
 
-# TUI's
+# == TUI's == [[[
 map gTt $tig show # tig
 map gTu $gitui    # git
-map gTl $lazygit    # git
+map gTl $lazygit  # git
 map bo $bow       # buku bookmarks
+# ]]]
 
-# Movement
+# == Directory Movement == [[[
 map gd cd ~/Documents
-map gD cd ~/Downloads
-map gP cd ~/Pictures
-map ge cd ~/Desktop
 map gW cd ~/vimwiki
 map gG cd ~/projects/github
 map gp cd ~/projects
 map go cd ~/opt
-
 map gc cd ~/.config
-map gv cd ~/.config/nvim
-map glf cd ~/.config/lf
-
-map gC cd ~/.local/share
-map glo cd ~/.local
-
-map gE cd /etc
-map gU. cd /usr/local
-map gUs cd /usr/local/share
-
 map gh cd ~
+
+# map ge cd ~/Desktop
+# map gD cd ~/Downloads
+# map gP cd ~/Pictures
+# map gv cd ~/.config/nvim
+# map glf cd ~/.config/lf
+#
+# map gC cd ~/.local/share
+# map glo cd ~/.local
+#
+# map gE cd /etc
+# map gU. cd /usr/local
+# map gUs cd /usr/local/share
+
+# ]]]
 
 # map o &mimeopen $f
 # map O $mimeopen --ask $f
 
-# vim: ft=conf:et:sw=0:ts=2:sts=2:fdm=marker:fmr=[[[,]]]:
+# vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr=[[[,]]]:

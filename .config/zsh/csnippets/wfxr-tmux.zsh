@@ -1,7 +1,7 @@
 # remove broken symbolics
 function wfxr::rm-broken-links() {
     local ls links
-    [[ $+commands[exa] ]] && ls=exa || ls=ls
+    (( $+commands[exa] )) && ls=exa || ls=ls
     IFS=$'\n' links=(`eval "find $1 -xtype l"`)
     [[ -z $links ]] && return
     $ls -l --color=always ${links[@]}

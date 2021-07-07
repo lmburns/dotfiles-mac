@@ -1,2 +1,3 @@
 #!/bin/sh
+
 notmuch tag +watch -inbox -new tag:new 'folder:/.*Sent.*/'
