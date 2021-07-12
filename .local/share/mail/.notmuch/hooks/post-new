@@ -56,6 +56,8 @@ notmuch tag  -new +inbox +notmuch +maillist tag:new and to:notmuch@notmuchmail.o
 echo -n e
 notmuch tag -new +inbox +flagged +eu tag:new folder:/INBOX/ from:Accredo@orders.accredo.com from:postmaster@mac.com from:expiry@letsencrypt.org from:root@lmburns.com from:burnsac@me.com from:lmb@lmburns.com from:@sharefoodbringhope.org
 
+notmuch tag -new +inbox +eu +burrell tag:new '(from:@burrellcenter.com *burrell*)'
+
 # notmuch tag +rss from:lmb@lmburns.com and not tag:zsh
 
 # individual emails

@@ -2,7 +2,7 @@
 
 fmas() {
   app_id="$(\
-    mas search contacts \
+    mas search "$@" \
     | column -ts $'\t' | fzf | awk '{print $1}'
   )"
   [[ -n "$app_id" ]] && mas install "$app_id"

@@ -4,12 +4,20 @@
 
 setopt extendedglob
 
-man() {
+# LESS_TERMCAP_md=$(tput setaf 9) \
+# LESS_TERMCAP_me=$(tput sgr0) \
+# LESS_TERMCAP_mb=$(tput blink) \
+# LESS_TERMCAP_us=$(tput setaf 10) \
+# LESS_TERMCAP_ue=$(tput sgr0) \
+# LESS_TERMCAP_so=$(tput smso) \
+# LESS_TERMCAP_se=$(tput rmso) \
+
+function man() {
   env \
-    LESS_TERMCAP_md=$(tput setaf 13) \
+    LESS_TERMCAP_md=$(tput bold; tput setaf 4) \
     LESS_TERMCAP_me=$(tput sgr0) \
     LESS_TERMCAP_mb=$(tput blink) \
-    LESS_TERMCAP_us=$(tput setaf 124) \
+    LESS_TERMCAP_us=$(tput setaf 2) \
     LESS_TERMCAP_ue=$(tput sgr0) \
     LESS_TERMCAP_so=$(tput smso) \
     LESS_TERMCAP_se=$(tput rmso) \
@@ -23,11 +31,13 @@ zmc() { man -P "less -p'^${@}'" zshcompsys; }
 zmp() { man -P "less -p'^${@}'" zshall; }
 zmo() { man -P "less -p'^${@}'" zshmodules; }
 zlm() { man -P "less -p'^${@}'" zshzle; }
-zd() { man -P "less -p'^THE ZSH/$1 MODULE$'" zshmodules; }
-zb() { man -P "less -p'^       "$1" '" zshbuiltins; }
-zo() { man -P "less -p'^       "$1"'" zshoptions; }
-zp() { man -P "less -p'^       ${1/#[ewspfrRiInbkK]/"${1}"} '" zshexpn; }
-zs() { man -P "less -p'^       ${1/#[AacCefFikLnoOPqQtuUvVwWXzpjslrSIBEMNR]/"${1}"} '" zshparam; }
+zd()  { man -P "less -p'^THE ZSH/$1 MODULE$'" zshmodules; }
+
+zbuiltins() { man -P "less -p'^       "$1" '" zshbuiltins; }
+zoptions()  { man -P "less -p'^       "$1"'" zshoptions; }
+zzle()   { man -P "less -p'^       "$1"'" zshzle; }
+zexpn()  { man -P "less -p'^       ${1/#[ewspfrRiInbkK]/"${1}"} '" zshexpn; }
+zparam() { man -P "less -p'^       ${1/#[AacCefFikLnoOPqQtuUvVwWXzpjslrSIBEMNR]/"${1}"} '" zshparam; }
 
 usage() {
   print -Pr -- "%F{2}-t, --test -- [[ -e ]]%f"
@@ -58,11 +68,11 @@ usage() {
 
 lopts=(test example pf pexpf pexp paramexp he histexp hf histflags arrparam arrsubscript help)
 lopts+=(arsf arrflag complex glob shopts sopts 1opts prompt promptchars redir wid widget zparse)
-lopts+=(ars ru rules bindkey vared opts used zst zstyle cf ctrlfunc)
+lopts+=(ars ru rules bindkey vared opts used zst zstyle cf ctrlfunc ss stdstyles)
 
 zparseopts -D -E -a opts ${(s::):-teacgrzhu} \
   ${lopts//(#m)*/\-${MATCH}} \
-  ${${(@)${(s::):-bpsmo}//(#m)*/${MATCH}\:\=opts}}
+  ${${(@)${(s::):-bpsmow}//(#m)*/${MATCH}\:\=opts}}
 
   # b:=opts p:=opts s:=opts
   # ${(j.:=opts .)${(s::):-bps}}:=opts
@@ -72,6 +82,7 @@ zparseopts -D -E -a opts ${(s::):-teacgrzhu} \
   # 'p' 'param' \
   # 's' 'subscript' \
   # 'm' 'module' \
+  # 'w' 'widget'
   # 'h' 'help'
 
 [[ -z "${opts[1]}" && -z "${1}" ]] && { usage; exit 1 }
@@ -94,18 +105,20 @@ case ${opts[1]} in
   --sopts|--1opts) zmp "SINGLE LETTER OPTIONS$" ;;
   --prompt|--promptchars) zmp "SIMPLE PROMPT ESCAPES$" ;;
   -r|--redir) zmp "REDIRECTION$" ;;
-  --wid|--widgets) zmp "STANDARD WIDGETS$" ;;
+  --wid|--widget) zmp "STANDARD WIDGETS$" ;;
   --bindkey|--vared) zlm "ZLE BUILTINS$" ;;
   -z|--zparse) zmo "       zparseopts$" ;;
   --ru|--rules) zmp "   Rules$" ;;
   -u|--used) zmp "PARAMETERS USED BY THE SHELL$" ;;
   --zst|--zstyle) zmo "THE ZSH/ZUTIL MODULE$" ;;
   --cf|--ctrlfunc) zmc "CONTROL FUNCTIONS$" ;;
+  --ss|--stdstyles) zmc "   Standard Styles$" ;;
   -m) zd "${(U)opts[2]}" ;;
-  -b) zb "${opts[2]}" ;;
-  -o) zo "${opts[2]}" ;;
-  -p) zp "${opts[2]}" ;;
-  -s) zs "${opts[2]}" ;;
+  -b) zbuiltins "${(qq)opts[2]}" ;;
+  -o) zoptions "${(qq)opts[2]}" ;;
+  -p) zexpn "${(qq)opts[2]}" ;;
+  -s) zparam "${(qq)opts[2]}" ;;
+  -w) zzle "${(qq)opts[2]}" ;;
   -h|--help) usage ;;
   *) man -P "less -p'^ *$@ '" zshall ;;
 esac

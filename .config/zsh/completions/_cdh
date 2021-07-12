@@ -2,17 +2,17 @@
 
 # for cdhist, cd alterative similar to autojump, z.lua, zoxide, etc.
 
-_cd_ () {
-  _arguments : \
+_cdh_options () {
+  _arguments -s \
     '-l[list current directory stack]' \
     '-n[change to dir stack "n"]' \
     '--string[show list]' \
     '-h[show help]'
 }
 
-_cd_ "$@"
+# _cd_ "$@"
 
-setopt localoptions nonomatch
+setopt localoptions nonomatch extendedglob
 
 local expl ret=1 curarg
 integer argstart=2 noopts match mbegin mend
@@ -58,11 +58,13 @@ else
 
   if [[ $PREFIX != (\~|/|./|../)* && $IPREFIX != ../* ]]; then
     local tmpcdpath alt
+    local -a tmpdstack
 
     alt=()
-
+    tmpdstack=( ${${(@f)"$(<$HOME/.cd_history)"}##<-> ##} )
     tmpcdpath=(${${(@)cdpath:#.}:#$PWD})
 
+    _wanted -V recent-dirs expl 'recent directory' compadd -S '' -Q -a tmpdstack
     (( $#tmpcdpath )) &&
       alt=( 'path-directories:directory in cdpath:_path_files -W tmpcdpath -/' )
 
@@ -96,6 +98,9 @@ else
         alt=( "${cdpath+local-}directories:${cdpath+local }directory:_path_files ${(j: :)${(@q)tmpWpath}} -/" "$alt[@]" )
 
     if [[ CURRENT -eq argstart && noopts -eq 0 && $PREFIX = -* ]] &&
+      # values=(${${(f)"$(cdhist -l)"}/ ##/:})
+      # keys=(${values%%:*})
+      # _describe -t dir-index 'recent directory index' values keys -V unsorted
       zstyle -t ":completion:${curcontext}:options" complete-options; then
       alt=("$service-options:$service option:_cdh_options" "$alt[@]")
     fi

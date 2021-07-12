@@ -95,4 +95,9 @@ export MATES_DIR="${XDG_DATA_HOME}/mates"
 
 source "${XDG_DATA_HOME}/cargo/env"
 
+[[ -x /usr/libexec/path_helper ]] && {
+  PATH=""
+  eval `/usr/libexec/path_helper -s`
+}
+
 # vim:ft=zsh:et:sw=0:ts=2:sts=2:

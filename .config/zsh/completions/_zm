@@ -34,6 +34,8 @@ arguments=(
   '--zstyle[Zstyle]'
   '--cf[Control Functions for zstyle]'
   '--ctrlfunc[Control Functions for zstyle]'
+  '--ss[Standard styles for zstyle completion]'
+  '--stdstyles[Standard styles for zstyle completion]'
   '--ru[Substitution rules]'
   '--rules[Substitution rules]'
   '--vared[Vared explained]'

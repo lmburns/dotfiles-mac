@@ -47,7 +47,7 @@ alias _='sudo'
 alias __='doas'
 alias cp='/bin/cp -ivp'
 alias pl='print -rl --'
-alias pp='print -r --'
+alias pp='print -Pr --'
 alias mv='mv -iv'
 # alias mkd='mkdir -pv'
 
@@ -71,11 +71,6 @@ alias mv='mv -iv'
   alias fdr='fd --changed-within=30m'
   alias fdrd='fd --changed-within=30m -d1'
   alias fdrr='fd --changed-within=1m'
-}
-
-(( $+commands[rsync] )) && {
-  alias rcp='rsync -av --ignore-existing --progress'
-  alias rsync='rsync -rz --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS'
 }
 
 alias chx='chmod ug+x'
@@ -124,6 +119,7 @@ alias nnews='$EDITOR $XDG_CONFIG_HOME/newsboat/config'
 alias nw3m='$EDITOR $HOME/.w3m/keymap'
 alias ntig='$EDITOR $TIGRC_USER'
 alias nmutt='$EDITOR $XDG_CONFIG_HOME/mutt/muttrc'
+alias nmuch='$EDITOR $XDG_DATA_HOME/mail/.notmuch/hooks/post-new'
 
 alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
 
@@ -214,6 +210,10 @@ alias idh="man /usr/share/man/man1/id.1"
   alias -s {log,out}='open -a Console'
   alias librewolf='/Applications/LibreWolf.app/Contents/MacOS/librewolf'
   alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox-bin'
+  alias x1email_screen="screencapture -C -M screen-`date +%d.%m.%Y-%H`.png"
+  alias x1email_screen10s="screencapture -T 10 -C -M screen-`date +%d.%m.%Y-%H`.png"
+  alias x1email_window="screencapture -W -M screen-`date +%d.%m.%Y-%H`.png"
+  alias x1email_snippet="screencapture -s -M screen-`date +%d.%m.%Y-%H`.png"
 }
 # alias maclogout="osascript -e 'tell application \"System Events\" to log out'"
 # bundlei() { osascript -e 'id of app "$1"' }
@@ -332,16 +332,32 @@ alias nb='BROWSER=w3m nb'
 alias ume='um edit'
 
 # === rsync =====================================================================
-alias rsynca='rsync -Pyuazv --info=progress2 --name=name0 --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
-alias rsyncpr='rsync -Prultcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" $HOME/projects /Volumes/SSD/manual'
-alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "MYHOME" --exclude "unix" $HOME/Desktop /Volumes/SSD/manual'
-alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" $HOME/Desktop/unix /Volumes/SSD/manual'
-alias rsyncho='rsync -Prultcv --exclude ".DS_Store" $HOME/Desktop/MYHOME /Volumes/SSD/manual'
+(( $+commands[rsync] )) && {
+  alias rcp='rsync -av --ignore-existing --progress'
+  alias rsync='rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS'
 
-alias rsyncsrv='rsync -Prugoptczl --info=progress2 --info=name0 --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" --exclude "lost+found" root@burnsac.xyz:/ /Volumes/SSD/server-full'
-alias wwwpull='rsync -rugoptczl --info=progress2 --info=name0 --delete-after root@burnsac.xyz:/var/www $HOME/server'
-alias wwwpush='rsync -rugoptczl --info=progress2 --info=name0 --delete-after --exclude ".DS_Store" $HOME/server /Volumes/SSD'
-alias sudorsync='sudo rsync -azurh --delete-after --include ".*" --exclude ".DS_Store" --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" --exclude "/cores/*" / /Volumes/SSD/void'
+  alias rsynca='rsync -Pyuazv --info=progress2 --name=name0 --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
+  alias rsyncpr='rsync -Prultcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" \
+    $HOME/projects /Volumes/SSD/manual'
+  alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "MYHOME" --exclude "unix" \
+    $HOME/Desktop /Volumes/SSD/manual'
+  alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" $HOME/Desktop/unix /Volumes/SSD/manual'
+  alias rsyncho='rsync -Prultcv --exclude ".DS_Store" $HOME/Desktop/MYHOME /Volumes/SSD/manual'
+
+  # Prugoptczl
+  alias rsyncsrv='rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS \
+    --delete-after --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" \
+    --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" \
+    --exclude "lost+found" root@lmburns.com:/ /Volumes/SSD/server-full'
+
+  # rugoptczl --info=progress2 --info=name0
+  alias wwwpull='rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS \
+    --delete-after root@lmburns.com:/var/www $HOME/server'
+  alias wwwpush='rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS \
+    --delete-after --exclude ".DS_Store" $HOME/server /Volumes/SSD'
+  alias sudorsync='sudo rsync -azurh --delete-after --include ".*" --exclude ".DS_Store" \
+    --exclude ".ipynb_checkpoints" --exclude "/Volumes/*" --exclude "/cores/*" / /Volumes/SSD/void'
+}
 
 # === homebrew =====================================================================
 (( ${${(M)OSTYPE:#*darwin*}:+1} )) && {

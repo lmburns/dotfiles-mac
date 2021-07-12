@@ -726,7 +726,7 @@ keymap  XT      EXTERN        ~/.sripts/shellscripts/torrentportal
 # keymap  XS      SHELL         'clear && TS_SOCKET=/tmp/w3m ts -c'
 # keymap  xc      SHELL         'clear && TS_SOCKET=/tmp/w3m ts -C'
 
-# keymap  xc      SHELL         'aria2c $W3M_URL'
+keymap  xc      SHELL         'aria2c $W3M_URL'
 # keymap  xc      SHELL         'aria2c $W3M_CURRENT_LINK'
 # keymap  xc      SHELL         'aria2c $W3M_CURRENT_IMG'
 keymap  xv      SHELL         'nvim $W3M_CURRENT_FORM'

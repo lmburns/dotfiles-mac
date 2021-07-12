@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+# Desc: push files to SSD with rsync
+
+function pushfiles() {
+  zparseopts -D -A opthash -- d -dryrun
+  local -a excluded; local dry=
+  exclude=( .DS_Store .ipynb_checkpoints )
+
+  (( $+opthash[-d] || $+opthash[--dryrun] )) && {
+    dry="-n"
+    builtin print -Pr "%F{2}DRY RUN...%f"
+    LANG=C command sleep 0.2
+  }
+
+  builtin print -rl "$exclude[@]" \
+    | rsync -rzau "${dry}" --progress --delete-after --exclude-from=- \
+    --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS \
+    "${~1}" "/Volumes/SSD/${2}"
+}
+
+pushfiles "$@"

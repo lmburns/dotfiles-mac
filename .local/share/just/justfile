@@ -123,6 +123,10 @@ ssh-mount DEST:
 # dscl
 # dseditgroup
 
+# change shell
+change-shell USER SHELL:
+  sudo dscl . -create /Users/{{USER}} UserShell {{SHELL}}
+
 # list users full
 users-list-full:
   dscacheutil -q user
@@ -169,6 +173,7 @@ clear-xcode:
 connect-lucas:
   m wifi connect lucas_iphone $(pass wifi-lucas_iphone)
 
+
 # zsh modifiers
 zsh-modif:
   w3m 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers'
@@ -201,6 +206,34 @@ zsh-subflags:
 rm-bigdir DIR:
   sudo -A rm -rv {{DIR}} | pv -l -s $(sudo du -a {{DIR}} | wc -l) > /dev/null
 
+# pu add -- sudo -A rsync -azurh --delete-after --info=name0 --progress=progress2 ~ /Volumes/SSD/macos-full
+
+# rsync general
+rsync SRC DEST:
+  rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS --delete-after \
+     --exclude ".DS_Store" --exclude ".ipynb_checkpoints" \
+    {{SRC}} {{DEST}}
+
 # rsync home dir
 rsync-home:
-  pu add -- sudo -A rsync -azurh --info=name0 --progress=progress2 ~ /Volumes/SSD/macos-full
+  sudo rsync -rzau --delete-after --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS \
+  ~ /Volumes/SSD/macos-full
+
+# rsync -Prugoptczl --info=progress2 --info=name0 --delete-after
+
+# rsync server
+rsync-server:
+  rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS --delete-after \
+    --exclude "/dev/*" --exclude "/proc/*" --exclude "/sys/*" --exclude "/tmp/*" \
+    --exclude "/run/*" --exclude "/mnt/*" --exclude "/media/*" --exclude "swapfile" \
+    --exclude "lost+found" root@lmburns.com:/ /Volumes/SSD/server-full
+
+# pull www folder server
+www-pull:
+  rsync -rugoptczl --info=progress2 --info=name0 --delete-after \
+    root@lmburns.com:/var/www $HOME/server
+
+# push www folder server
+www-push:
+  rsync -rugoptczl --info=progress2 --info=name0 --delete-after --exclude ".DS_Store" \
+    $HOME/server /Volumes/SSD'

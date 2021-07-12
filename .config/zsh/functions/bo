@@ -5,7 +5,7 @@
 url=$(
   buku -p -f4 \
     | fzf -m --reverse --preview "buku -p {1}" --preview-window=wrap \
-    | cut -f2
+    | ${commands[hck]:-cut} -f2
 )
 
 [[ -n "$url" ]] && echo "$url" | xargs ${aliases[librewolf]}

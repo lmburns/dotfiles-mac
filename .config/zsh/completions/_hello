@@ -1,4 +1,4 @@
-#compdef ftag
+#compdef hello
 
 setopt localoptions warncreateglobal typesetsilent extendedglob
 
@@ -11,9 +11,6 @@ else
     _arg_opts=(-s -C)
 fi
 
-local -a gtags=(${${(@f)"$(tag --usage)"}//(#m)*/${${(s: :)${MATCH}//[[:space:]]##/ }[2]}})
-local -a ltags=( ${(@u)${(@s:,:)${(@f)"$(tag -Nl)"}}} )
-
 # local state
 integer ret=1
 local context curcontext="$curcontext" state line
@@ -24,34 +21,20 @@ typeset -a arguments
 arguments=(
   '*--wutag[Also tag files with wutag]'
   '*-w[Also tag files with wutag]'
-  '*--verbose[Display verbose messages when using ftag as a tag wrapper]'
-  '*-v[Display verbose messages when using ftag as a tag wrapper]'
   '--font[Choose figlet font]:choose a figlet font:->figlet_fonts'
   '-f[Choose figlet font]:choose a figlet font:->figlet_fonts'
-  '--wrapper[Use ftag as a wrapper to color output of tag]:wrapper commands:->tag'
-  '-W[Use ftag as a wrapper to color output of tag]:wrapper commands:->tag'
-  # ':*:message:action'
-  '--color[Specify no more than 3 colors for the output]:choose colors:->_colors'
-  '-C[Specify no more than 3 colors for the output]:choose colors:->_colors'
-  '--config[Specify location of configuration file]:config file:_files'
-  '-c[Specify location of configuration file]:config file:_files'
   {-q,--query}'[Start fzf with a query]: :->query'
   {-h,--help}'[Display a help message]'
   {-b,--boxes}'[Add a box aroud header with boxes]'
-  {-T,--lolcat}'[Color to header with lolcat]'
+  {-c,--lolcat}'[Color to header with lolcat]'
   {-t,--toilet}'[Color and format header with toilet]'
   {-p,--path}'[Open in a directory]:Paths:_files'
   {-l,--local}'[Use tags in local directory]: :->local_tags'
   {-z,--zoxide}'[Start zoxide to select directory to use tags]'
   {-j,--jump}'[Start autojump to select directory to use tags]'
   {-n,--nocolor}'[Do not use color when displaying tags]'
-  {-N,--nofzf}'[Do not use fzf. This has limited functionality; pretty much for pretty-printing]'
-  {-s,--sort}'[Sort tags ascending or descending]:Sorting:((d\:descending desc\:descending ++\:descending a\:ascending asc\:ascending +\:ascending))'
-  {-W,--wrapper}'[Use ftag as a wrapper to tag to have colored output]'
-  {-d,--dump}'[Dump configuration variables]'
+  {-s,--sort}'[Sort tags ascending or descending]:Sorting:((d\:descending desc\:descending ++\:descending a\:ascending asc\:ascending ++\:ascending))'
 )
-
-
 
 _arguments "${_arg_opts[@]}" $arguments \
     && ret=0
@@ -60,13 +43,16 @@ _arguments "${_arg_opts[@]}" $arguments \
 
 case $state in
   query)
+    local -a tags=( ${(@u)${(@s:,:)${(@f)"$(tag -Nl)"}}} )
+    local -a gtags=(${${(@f)"$(tag --usage)"}//(#m)*/${${(s: :)${MATCH}//[[:space:]]##/ }[2]}})
     _alternative \
-      'ltags:-- Local Tags --:compadd -a - ltags' \
-      'gtags:-- Global Tags --:compadd -a - gtags' && \
+      'tags:== Local Tags ==:compadd -a - tags' \
+      'gtags:== Global Tags ==:compadd -a - gtags' && \
           ret=0
   ;;
   local_tags)
-    _describe -t ltags '== Local Tags ==' ltags && \
+    local tags=( ${(@u)${(@s:,:)${(@f)"$(tag -Nl)"}}} )
+    _describe -t tags '== Local Tags ==' tags && \
         ret=0
   ;;
   figlet_fonts)
@@ -75,24 +61,12 @@ case $state in
         ${(@f)"$(_call_program figlet_fonts figlist)"} && \
           ret=0
   ;;
-  _colors)
-    local -a colors=(
-      red bred brred        green bgreen brgreen
-      yell byell bryell     blue bblue brblue
-      magen bmagen brmagen  cyan bcyan brcyan
-    )
-    _describe -t colors '== Colors ==' colors && \
-      ret=0
-  ;;
-  tag)
-    # _wanted -V recent-dirs expl 'recent directory' compadd -S '' -Q -a values
-    $_comps[tag] "$@" && \
-      ret=0
-  ;;
   *)
+    typeset -a tags=( ${(@u)${(@s:,:)${(@f)"$(tag -Nl)"}}} )
+    typeset -a gtags=(${${(@f)"$(tag --usage)"}//(#m)*/${${(s: :)${MATCH}//[[:space:]]##/ }[2]}})
     _alternative \
-      'ltags:-- Local Tags --:compadd -a - ltags' \
-      'gtags:-- Global Tags --:compadd -a - gtags' && \
+      'tags:== Local Tags ==:compadd -a - tags' \
+      'gtags:== Global Tags ==:compadd -a - gtags' && \
           ret=0
   ;;
 esac

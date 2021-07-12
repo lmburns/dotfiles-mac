@@ -45,6 +45,9 @@ yabai -m rule --add app="KnockKnock" sticky=on layer=above manage=off
 yabai -m rule --add app="Contacts" sticky=on layer=above manage=off
 yabai -m rule --add app="^Canary Mail" sticky=on layer=above manage=off
 yabai -m rule --add app="^Flux$" manage=off
+yabai -m rule --add app="^PDF Expert$" manage=off
+yabai -m rule --add app="^Skim$" manage=off
+yabai -m rule --add app="^Preview$" manage=off
 
 # === global settings ========================================================
 # yabai -m config focus_follows_mouse         autoraise

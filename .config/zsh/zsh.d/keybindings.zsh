@@ -15,6 +15,7 @@ if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )) {
 builtin bindkey -v
 builtin bindkey -r '^[,'
 builtin bindkey -r '^[/'
+builtin bindkey -M vicmd -r 'R'
 
 # bindkey -M vicmd 'ys' add-surround
 # bindkey '^I' expand-or-complete-prefix
@@ -22,6 +23,10 @@ builtin bindkey -r '^[/'
 
 autoload -Uz edit-command-line
 zle -N edit-command-line
+
+autoload -Uz replace-string
+# zle -N replace-pattern replace-string
+zle -N replace-regex replace-string
 
 autoload -Uz surround
 zle -N delete-surround surround
@@ -37,6 +42,18 @@ per-dir-fzf() {
 }
 
 zle -N per-dir-fzf       # fzf history
+
+# Results aren't shown immediately
+RG_buff() {
+  zmodload -Fa zsh/parameter p:functions
+  eval "() {
+    $functions[RG]
+  }" "$BUFFER"
+  zle reset-prompt
+}
+
+zle -N RG_buff
+
 zle -N fcq
 zle -N pw
 # zle -N fcd-zle
@@ -70,7 +87,10 @@ typeset -gA keybindings; keybindings=(
   'C-x C-e'       edit-command-line-as-zsh
   'C-x C-x'       execute-command
   'C-x C-b'       fcq                   # copyq fzf
+  'C-x C-u'       RG_buff
   'mode=vicmd u'  undo
+  # 'mode=vicmd R' replace-pattern
+  'mode=vicmd R' replace-regex
   'mode=vicmd U'  redo
   'mode=vicmd E'  backward-kill-line
   'mode=vicmd L'  end-of-line
@@ -94,8 +114,8 @@ typeset -gA keybindings; keybindings=(
   'mode=@ M-]'   fadd
 )
 
-  # 'mode=@ C-o'    lc                    # lf change dir
-
+# 'mode=@ C-o'    lc                    # lf change dir
+# 'mod=vicmd ZZ'  accept-line
 # 'mode=vicmd M-a' yank-pop
 # 'mode=vicmd M-s' reverse-yank-pop
 

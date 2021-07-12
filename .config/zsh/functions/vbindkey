@@ -105,7 +105,7 @@ function escape-mod-key() {
   }
 }
 
-function unused() {
+function ___unused() {
   local -a args=( $@ $mode )
   local -a control=( {$'\0'..$'\C-B'} {$'\C-D'..$'\C-_'} $'\C-?' )
   local -a printable=( {' '..'~'} )
@@ -124,7 +124,7 @@ function unused() {
     print -cr - ${(q-)val}
 }
 
-function duplicates() {
+function ___duplicates() {
   local -a bindings dup_bindings=() all_bindings=( ${(f)"$(bindkey ${@:-$mode})"} )
   local w
   for w in "${(@ko)widgets}"; do
@@ -135,7 +135,7 @@ function duplicates() {
   print -aC2 $dup_bindings[@]
 }
 
-function bind() {
+function ___bind() {
   local escaped ret i MATCH
   local -a sequence=(${(s: :)1})
   # local -a modes=( ${(f)"$(builtin bindkey -l)"} )
@@ -188,17 +188,17 @@ function bind() {
 if [[ $array ]]; then
   local k v
   for k v in ${(Pkv)${array[2]}}; do
-    bind $k $v
+    ___bind $k $v
   done
 elif (( ${+opts[-u]} )); then
-  unused "$@"
+  ___unused "$@"
 elif (( ${+opts[-U]} )); then
-  duplicates "$@"
+  ___duplicates "$@"
 elif (( ${+opts[-c]} )); then
   zle -N ".$@[-1]" _ex_cmd
   builtin bindkey "$@[1,-2]" ".$@[-1]"
 else
-  bind $1 $2
+  ___bind $1 $2
 fi
 
 # vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr=[[[,]]]:
