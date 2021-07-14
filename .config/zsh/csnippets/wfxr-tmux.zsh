@@ -1,3 +1,7 @@
+##################################################################################
+# OTHER
+##################################################################################
+
 # remove broken symbolics
 function wfxr::rm-broken-links() {
     local ls links
@@ -11,7 +15,69 @@ function wfxr::rm-broken-links() {
 function rm-broken-links-all() { wfxr::rm-broken-links               }
 function rm-broken-links()     { wfxr::rm-broken-links '-maxdepth 1' }
 
-#########################################
+function lsdelete() { lsof -n | rg -i --color=always deleted }
+
+# Perl rename
+function backup-t()  { ~/bin/rename -n 's/^(.*)$/$1.bak/g' $@ }
+function backup()    { ~/bin/rename    's/^(.*)$/$1.bak/g' $@ }
+function restore-t() { ~/bin/rename -n 's/^(.*).bak$/$1/g' $@ }
+function restore()   { ~/bin/rename    's/^(.*).bak$/$1/g' $@ }
+
+# function bak()  { renamer '$=.bak' "$@"; }
+# function rbak() { renamer '.bak$=' "$@"; }
+
+function vcurl() {
+    local TMPFILE="$(mktemp -t --suffix=.json)"
+    trap "\\rm -f '$TMPFILE'" EXIT INT TERM HUP
+    vim "$TMPFILE" >/dev/tty
+    curl "$@" < "$TMPFILE"
+}
+
+function kcurl() {
+    local BUFFER="/tmp/curl-body-buffer.json"
+    touch "$BUFFER" && vim "$BUFFER" >/dev/tty
+    curl "$@" < "$BUFFER"
+}
+
+# Open git repo in browser
+function grepo() {
+    [[ "$#" -ne 0 ]] && return $(open "https://github.com/${(j:/:)@}")
+    local url
+    url=$(git remote get-url origin) || return $?
+    [[ "$url" =~ '^git@' ]] && url=$(echo "$url" | sed -e 's#:#/#' -e 's#git@#https://#')
+    command open "$url"
+}
+
+# Dump zsh hash
+function dump_map() {
+    local cmd="
+        for k in \"\${(@k)$1}\"; do
+            echo $2 \"\$k => \$$1[\$k]\"
+        done
+    "
+    eval "$cmd"
+}
+
+##################################################################################
+# UNICODE
+##################################################################################
+
+function __unicode_translate() {
+    local CODE=$BUFFER[-4,-1]
+    [[ ! ${(U)CODE} =~ [0-9A-F]{4} ]] && return
+    CHAR=`echo -e "\\u$CODE"`
+    BUFFER=$BUFFER[1,-5]$CHAR
+    CURSOR=$#BUFFER
+    zle redisplay
+}
+
+function unicode-map() {
+    ruby -e '0x100.upto(0xFFFF) do |i| puts "%04X%8d%6s" % [i, i, i.chr("UTF-8")] rescue true end' | fzf -m
+}
+
+##################################################################################
+# FZF
+##################################################################################
 
 FZF_ALT_E_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_E_COMMAND
@@ -40,7 +106,9 @@ function wfxr::fzf-file-edit-widget() {
 zle     -N    wfxr::fzf-file-edit-widget
 # bindkey '\ee' wfxr::fzf-file-edit-widget
 
-#########################################
+##################################################################################
+# TMUX
+##################################################################################
 
 # Tmux switch session
 function wfxr::tmux-switch() {

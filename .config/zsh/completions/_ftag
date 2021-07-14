@@ -31,8 +31,8 @@ arguments=(
   '--wrapper[Use ftag as a wrapper to color output of tag]:wrapper commands:->tag'
   '-W[Use ftag as a wrapper to color output of tag]:wrapper commands:->tag'
   # ':*:message:action'
-  '--color[Specify no more than 3 colors for the output]:choose colors:->_colors'
-  '-C[Specify no more than 3 colors for the output]:choose colors:->_colors'
+  '--color[Specify no more than 3 colors for the output]:-- Choose colors --:->_colors'
+  '-C[Specify no more than 3 colors for the output]:== Choose colors ==:->_colors'
   '--config[Specify location of configuration file]:config file:_files'
   '-c[Specify location of configuration file]:config file:_files'
   {-q,--query}'[Start fzf with a query]: :->query'
@@ -46,12 +46,10 @@ arguments=(
   {-j,--jump}'[Start autojump to select directory to use tags]'
   {-n,--nocolor}'[Do not use color when displaying tags]'
   {-N,--nofzf}'[Do not use fzf. This has limited functionality; pretty much for pretty-printing]'
-  {-s,--sort}'[Sort tags ascending or descending]:Sorting:((d\:descending desc\:descending ++\:descending a\:ascending asc\:ascending +\:ascending))'
+  {-s,--sort}'[Sort tags ascending or descending]:== Sort output ==:((d\:descending desc\:descending ++\:descending a\:ascending asc\:ascending +\:ascending))'
   {-W,--wrapper}'[Use ftag as a wrapper to tag to have colored output]'
-  {-d,--dump}'[Dump configuration variables]'
+    {-d,--dump}'[Dump configuration variables]:== Dump config ==:((p\:"pipe to pager" pager\:"pipe to pager"))'
 )
-
-
 
 _arguments "${_arg_opts[@]}" $arguments \
     && ret=0
@@ -91,8 +89,8 @@ case $state in
   ;;
   *)
     _alternative \
-      'ltags:-- Local Tags --:compadd -a - ltags' \
-      'gtags:-- Global Tags --:compadd -a - gtags' && \
+      'ltags:== Local Tags ==:compadd -a - ltags' \
+      'gtags:== Global Tags ==:compadd -a - gtags' && \
           ret=0
   ;;
 esac

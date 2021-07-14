@@ -34,8 +34,6 @@ alias ng="noglob"
   alias nhdocs='$EDITOR $XDG_CONFIG_HOME/hoard/docs-config'
 }
 
-(( ${+commands[tldr]} )) && alias tldru='tldr --update'
-
 # === zsh-help ==============================================================
 alias lynx="lynx -vikeys -accept-all-cookies"
 
@@ -52,6 +50,7 @@ alias mv='mv -iv'
 # alias mkd='mkdir -pv'
 
 (( ${+commands[exa]} )) && {
+  # --ignore-glob=".DS_Store|__*
   alias l='exa -FH --git --icons'
   alias l.='exa -FH --git --icons -d .*'
   alias lp='exa -1F'
@@ -68,8 +67,8 @@ alias mv='mv -iv'
 }
 
 (( ${+commands[fd]} )) && {
-  alias fdr='fd --changed-within=30m'
-  alias fdrd='fd --changed-within=30m -d1'
+  alias fdr='fd --changed-within=20m -d1'
+  alias fdrd='fd --changed-within=30m'
   alias fdrr='fd --changed-within=1m'
 }
 
@@ -88,7 +87,7 @@ alias wh="whence -f"
 alias wa="whence -va"
 alias wm="whence -m"
 
-alias pvim='vim -u NONE'
+alias pvim='nvim -u NONE'
 
 # alias f='pushd'
 # alias b='popd'
@@ -126,11 +125,9 @@ alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
 # === mail ======================================================================
 (( ${+commands[mw]} )) && {
   alias mwme='mw -y burnsac@me.com'
-  alias mwgm='mw -y burnsppl@gmail.com'
-  alias mwmail='mw -Y'
+  alias mwa='mw -Y'
 }
 
-alias smail='mbsync burnsac@me.com && mbsync burnsppl@gmail.com && mbsync lmb@lmburns.com'
 alias nm="notmuch"
 alias nmls="nm search --output=tags '*'"
 
@@ -139,7 +136,7 @@ alias prd='cd $HOME/projects'
 alias unx='cd $HOME/Desktop/unix/mac'
 alias zfd='cd $ZDOTDIR/functions'
 alias zcs='cd $ZDOTDIR/csnippets'
-alias zdotd='cd "$ZDOTDIR"'
+alias zd='cd "$ZDOTDIR"'
 alias gitd='cd $HOME/projects/github'
 alias perld='cd $HOME/projects/perl'
 alias perlb='cd $HOME/mybin/perl'
@@ -232,8 +229,8 @@ alias xav='/usr/bin/git --git-dir=$XDG_DATA_HOME/dottest --work-tree=$HOME'
 alias cdg='cd "$(git rev-parse --show-toplevel)"'
 alias gua='git remote | xargs -L1 git push --all'
 alias grmssh='ssh git@burnsac.xyz -- grm'
-alias g='git'
-alias h='hub'
+alias h='git'
+alias g='hub'
 alias gtrr='git ls-tree -r master --name-only | as-tree'
 alias glog='git log --oneline --decorate --graph'
 alias gloga='git log --oneline --decorate --graph --all'
@@ -250,7 +247,7 @@ alias nbconvert='jupyter nbconvert --to python'
 
 # === other =====================================================================
 alias gpg-tui='gpg-tui --style colored'
-alias tn='terminal-notifier'
+alias tno='terminal-notifier'
 
 alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
 
@@ -264,6 +261,9 @@ alias ticker='ticker --config $XDG_CONFIG_HOME/ticker/ticker.yaml'
 alias abook='abook --config "$XDG_CONFIG_HOME"/abook/abookrc --datafile "$XDG_DATA_HOME"/abook/addressbook'
 alias taske='task edit'
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
+
+(( ${+commands[tldr]} )) && alias tldru='tldr --update'
+(( ${+commands[assh]} )) && alias ssh="assh wrapper ssh"
 
 (( ${+commands[pueue]} )) && {
   alias pu='pueue'
@@ -314,7 +314,7 @@ alias checkvirus="clamscan --recursive=yes --infected $HOME/"
 # alias rm='rm -iv'
 # alias rr='rm -rf'
 (( ${+commands[trash-put]} )) && {
-  alias rr='trash-put'
+  alias rrr='trash-put'
   alias tre='trash-empty'
   alias trl='trash-list'
   alias trr='trash-restore'

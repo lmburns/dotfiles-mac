@@ -9,7 +9,6 @@
 #   dmenu-uni emoji          All emojis.
 #   dmenu-uni emoji-common   Common emojis
 
-
 dmenu="fzf"                                       # Use fzf instead
 
 # Command to copy to clipboard:

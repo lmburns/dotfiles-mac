@@ -669,8 +669,7 @@
   command -bang -bar -nargs=? -complete=file EE :call s:MKDir(<f-args>) | e<bang> <args>
   command! -nargs=* T botright sp | resize 20 | term <args>
   command! -nargs=* VT vsp | term <args>
-  " alt-1
-  noremap  ¡ :T<cr>A
+  noremap <A-i> :T<cr>A
 
   " automatically reload buffer if changed outside current buffer
   augroup auto_read
@@ -769,8 +768,7 @@
   command! -nargs=0 CocMarket :CocList marketplace
   command! -nargs=0 Prettier :CocCommand prettier.formatFile
   nnoremap <C-x><C-l> :CocFzfList<CR>
-  " alt-s
-  nnoremap ß :CocFzfList symbols<CR>
+  nnoremap <A-s> :CocFzfList symbols<CR>
   nnoremap <silent> <Leader>y  :<C-u>CocList yank<CR>
   let g:coc_fzf_opts = ['--no-border', '--layout=reverse-list']
   let g:coc_global_extensions = [
@@ -1243,7 +1241,7 @@ command! -nargs=? -complete=dir AF
   nnoremap <silent> <Leader>cm :Commands<CR>
   nnoremap <silent> <Leader>mm :Maps<CR>
   nnoremap <silent> <Leader>T  :Tags<CR>
-  nnoremap <silent> <Leader>Tb :BTags<CR>
+  nnoremap <silent> <a-t> :BTags<CR>
   nnoremap <silent> <Leader>mk :Marks<CR>
   nnoremap <Leader>mlm :marks<CR>
   nnoremap <Leader>mfd :delm! | delm A-Z0-9<CR>
@@ -2243,15 +2241,11 @@ let g:lightline.mode_map = {
 " }}} === treesitter ===
 
 " === telescope === {{{
-" alt-f
-map ƒ :Telescope find_files<CR>
-" alt-g
-map © :Telescope git_files<CR>
-" alt-b
-map ∫ :Telescope buffers<CR>
+map <A-f> :Telescope find_files<CR>
+map <A-g> :Telescope git_files<CR>
+map <A-b> :Telescope buffers<CR>
 map <Leader>tc :Telescope commands<CR>
-" alt-r
-map ® :Telescope live_grep<CR>
+map <A-r> :Telescope live_grep<CR>
 " }}} === telescope ===
 
 " === gutentag === {{{ "
@@ -2272,7 +2266,7 @@ map ® :Telescope live_grep<CR>
   let g:vista#renderer#enable_icon = 1
 
   " nmap <C-x><C-v> :Vista finder coc<CR>
-  nmap <Leader>ff :Vista finder coc<CR>
+  nmap <a-\> :Vista finder coc<CR>
   let g:vista_fzf_preview = ['down:50%']
   let g:vista_fzf_opt = ['--no-border']
   let g:vista_default_executive = 'coc'

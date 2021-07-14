@@ -59,6 +59,8 @@ zle -N pw
 # zle -N fcd-zle
 # zle -N bow2
 
+zle -N __unicode_translate # translate unicode to symbol
+
 if [[ $TMUX ]]; then
   zle -N t
   vbindkey 'M-t' t                       # alt-t
@@ -78,6 +80,7 @@ typeset -gA keybindings; keybindings=(
   'M-r'           per-dir-fzf
   'M-p'           pw                    # fzf pueue
   'M-q'           push-line-or-edit     # zsh-edit
+  'M-u'           __unicode_translate   # translate unicode
   'M-x'           cd-fzf-ghqlist-widget # cd ghq fzf
   'C-a'           autosuggest-execute
   'C-z'           fancy-ctrl-z

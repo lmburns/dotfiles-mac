@@ -3,7 +3,7 @@
 
 emulate -L zsh
 
-fe() {
+e() {
   local -a files sel
   files=$(command fd -Hi -tf -d2)
   sel=("$(
@@ -21,6 +21,6 @@ fe() {
   [[ -n "$sel" ]] && ${EDITOR:-vim} "${sel[@]}"
 }
 
-fe "$@"
+e "$@"
 
 # vim:ft=zsh:

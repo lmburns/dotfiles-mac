@@ -77,7 +77,7 @@ if ! [[ $MYPROMPT = dolphin ]]; then
     }
   } 2>/dev/null
 fi
-alias cr=cdr
+alias c=cdr
 # ]]]
 
 # === zinit === [[[
@@ -242,8 +242,9 @@ zt 0b light-mode for \
 #  === wait'0c' - programs - sourced === [[[
 zt 0c light-mode binary for \
   lbin patch"${pchf}/%PLUGIN%.patch" reset \
+  atload'alias rmi="dump -p -s" rr="dump -p" dd="dump"' \
     kazhala/dump-cli \
-  lbin'!**/*grep;**/*man;**/*diff' has'bat' \
+  lbin'!**/*grep;**/*man;**/*diff' has'bat' atpull'%atclone' \
   atclone'(){local f;builtin cd -q src;for f (*.sh){mv ${f} ${f:r}};}' \
   atload'alias bdiff="batdiff" bm="batman" bgrep="env -u RIPGREP_CONFIG_PATH batgrep"' \
     eth-p/bat-extras \
@@ -301,7 +302,7 @@ zt 0c light-mode binary for \
   lbin from'gh-r' bpick'*64-apple*' \
   atinit'export NAVI_FZF_OVERRIDES="--height=70%"' \
     denisidoro/navi \
-  lbin \
+  lbin atload'alias palette::full="ansi --color-codes" palette::codes="ansi --color-table"' \
     fidian/ansi \
   lbin atclone"./build.zsh" mv"*.*completion -> _zunit" atpull"%atclone" \
     molovo/zunit
@@ -341,6 +342,8 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     wojciechkepka/wutag \
   lbin'**/gh' atclone'./**/gh completion --shell zsh > _gh' atpull'%atclone' \
     cli/cli \
+  lbin'**/hub' extract'!' atclone'mv -f **/**.zsh* _hub' atpull'%atclone' \
+    @github/hub \
   lbin'rclone/rclone' bpick'*osx-amd64*' mv'rclone* -> rclone' \
   atclone'./rclone/rclone genautocomplete zsh _rclone' \
   atpull'%atclone' \
@@ -372,7 +375,7 @@ zt 0c light-mode null for \
   lbin'a*.pl -> arranger' \
   atclone'mkdir -p $XDG_CONFIG_HOME/arranger; cp *.conf $XDG_CONFIG_HOME/arranger' \
     anhsirk0/file-arranger \
-  lbin'*/*/lax' atclone'cargo install --path .' \
+  lbin'*/*/lax' atclone'cargo install --path .' atpull'%atclone'  \
     Property404/lax \
   lbin'*/*/desed' atclone'cargo install --path .' dl"$(grman)" lman \
     SoptikHa2/desed \
@@ -450,7 +453,7 @@ zt 0c light-mode null for \
     itchyny/mmv \
   lbin'* -> sd' from'gh-r' bpick'*darwin' \
     chmln/sd \
-  lbin'**/**/hoard' atclone'cargo build --release' \
+  lbin'**/**/hoard' atclone'cargo build --release' atpull'%atclone' \
   atpull'%atclone' \
     Shadow53/hoard \
   lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
@@ -469,9 +472,9 @@ zt 0c light-mode null for \
     Nukesor/pueue \
   lbin from'gh-r' bpick'*mac*' \
     @dalance/procs \
-  lbin'tar*/rel*/bandwhich' atclone"cargo install --path ." \
+  lbin'tar*/rel*/bandwhich' atclone"cargo install --path ." atpull'%atclone' \
     imsnif/bandwhich \
-  lbin'tar*/rel*/choose' atclone"cargo build --release" \
+  lbin'tar*/rel*/choose' atclone"cargo build --release" atpull'%atclone' \
     theryangeary/choose \
   lbin'* -> hck' from'gh-r' bpick'*os-*64' \
     sstadick/hck \
@@ -599,18 +602,23 @@ zstyle ':fzf-tab:*' fzf-bindings \
   'alt-e:execute-silent({_FTB_INIT_}nvim "$realpath" < /dev/tty > /dev/tty)' # c-j, c-k in tmux not working
 
 # zstyle ':completion:*' completer _complete _expand _match _oldlist _list _ignored _correct _approximate
-zstyle ':completion:*' completer _complete _match _list _prefix _ignored _correct _approximate _oldlist
 zstyle ':fzf-tab:*' print-query ctrl-c        # use input as result when ctrl-c
 zstyle ':fzf-tab:*' accept-line space         # accept selected entry on space
 zstyle ':fzf-tab:*' prefix ''                 # no dot prefix
 zstyle ':fzf-tab:*' switch-group ',' '.'      # switch between header groups
 zstyle ':fzf-tab:*' single-group color header # single header is shown
 zstyle ':fzf-tab:*' fzf-pad 4                 # increased because of fzf border
+
+zstyle ':completion:*' completer _complete _match _list _prefix _ignored _correct _approximate _oldlist
+zstyle '*' single-ignored show # ??
+zstyle ':completion:*' squeeze-slashes true # treat // as a single slash
 # zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}      # activate color-completion(!)
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' muttrc "$XDG_CONFIG_HOME/mutt/muttrc"
 zstyle ':completion:*' use-cache on
+# zstyle ':completion::complete:*' cache-path "${ZDOTDIR}/.cache/.zcompcache"
 zstyle ':completion:*' verbose yes                            # provide verbose completion information
+zstyle ':completion:*' rehash true
 zstyle ':completion:*' accept-exact '*(N)'
 # 'm:{a-z\-}={A-Z\_}' 'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' 'r:|?=** m:{a-z\-}={A-Z\_}'
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
@@ -620,14 +628,21 @@ zstyle ':completion:*' group-name ''                          # group results by
 zstyle ':completion:*:manuals'   separate-sections true
 zstyle ':completion:*:matches'   group 'yes'                            # separate matches into groups
 zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
 zstyle ':completion:*:match:*'   original only
 zstyle ':completion:*:messages'  format ' %F{purple} -- %d --%f'
 zstyle ':completion:*:warnings'  format ' %F{1}-- no matches found --%f'  # set format for warnings
 zstyle ':completion:*:default'   list-prompt '%S%M matches%s'
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*:options'   description yes                   # describe options in full
-zstyle ':completion:*:cd:*'      tag-order local-directories path-directories
+zstyle ':completion:*:-tilde-:*' group-order named-directories path-directories users expand
+# zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
+
+zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
 zstyle ':completion:*:cd:*'      group-order local-directories path-directories
+# DOEST WORK:
+zstyle ':completion:*:*:cdh:*'     group-order local-directories recent-dirs path-directories
+zstyle ':completion:*:*:cdh:*'     tag-order local-directories recent-dirs path-directories
 zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:exa'       file-sort modification
 zstyle ':completion:*:exa'       sort false
@@ -635,20 +650,27 @@ zstyle ':completion:*:sudo:*'    command-path /usr/local/sbin /usr/local/bin /us
 zstyle ':completion:*:sudo::'    environ PATH="$PATH"  # use same path as sudo
 zstyle ':completion::complete:*' gain-privileges 1     # enabling autocompletion of privileged envs
 zstyle ':completion:*:*:*:*:corrections'   format '%F{5}!- %d (errors: %e) -!%f'
+zstyle ':completion::*:(-command-|export):*'        fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-} # env vars
 zstyle ':completion::(^approximate*):*:functions'   ignored-patterns '_*' # ignore for cmds not in path
 zstyle ':completion:*:*:zcompile:*'                 ignored-patterns '(*~|*.zwc)'
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # no backup files
 zstyle ':completion:*:*:-subscript-:*'              tag-order indexes parameters # index before parameters in subscripts
-zstyle ':completion:*:*:-redirect-,2>,*:*'          file-patterns '*.log'               # offer log files as completion for error redireciton
+zstyle ':completion:*:*:-redirect-,2>,*:*'          file-patterns '*.log' # offer log files as completion for error redireciton
 zstyle -e ':completion:*:approximate:*'             max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
-# zstyle ':completion:*' rehash true
-zstyle ':completion:*:(ssh|scp|rsync):*'            tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
-zstyle ':completion:*:(scp|rsync):*'                group-order users files all-files hosts-domain hosts-host hosts-ipaddr
-zstyle ':completion:*:ssh:*'                        group-order users hosts-domain hosts-host users hosts-ipaddr
+zstyle ':completion:*:(rm|kill|diff):*'             ignore-line other # ignore duplicates
+zstyle ':completion:*:rm:*'                         file-patterns '*:all-files'
 
+zstyle ':completion:*:(ssh|scp|rsync):*'  tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
+zstyle ':completion:*:(scp|rsync):*'      group-order users files all-files hosts-domain hosts-host hosts-ipaddr
+zstyle ':completion:*:ssh:*'              group-order users hosts-domain hosts-host users hosts-ipaddr
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host'   ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+zstyle -e ':completion:*:hosts' hosts 'reply=(
+      ${=${=${=${${(f)"$(cat {/etc/ssh/ssh_,~/.ssh/}known_hosts(|2)(N) 2> /dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
+      ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2> /dev/null))"}%%(\#${_etc_host_ignores:+|${(j:|:)~_etc_host_ignores}})*}
+      ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2> /dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
+    )'
 
 # zstyle -e ':completion:*:(ssh|scp|sftp|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
@@ -661,7 +683,7 @@ zstyle ':completion:*:hosts' hosts $hosts
 
 # ADD: completion patterns for others
 # zstyle ':completion:*:*:ogg123:*'  file-patterns '*.(ogg|OGG|flac):ogg\ files *(-/):directories'
-# zstyle ':completion:*:*:mocp:*'    file-patterns '*.(wav|asdf):ogg\ files *(-/):directories'
+# zstyle ':completion:*:*:mocp:*'    file-patterns '*.(wav|df):ogg\ files *(-/):directories'
 # ]]]
 
 # === functions === [[[
@@ -669,63 +691,68 @@ zstyle ':completion:*:hosts' hosts $hosts
 # h() { howdoi $@ -c -n 5; }
 # hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
 # rsync from local pc to server
-rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
-rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
+function rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
+function rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
 # shred and delete file
-sshred() { shred -v -n 1 -z -u  $1;  }
+function sshred() { shred -v -n 1 -z -u  $1;  }
 # create py file to sync with ipynb
-jupyt() { jupytext --set-formats ipynb,py $1; }
+function jupyt() { jupytext --set-formats ipynb,py $1; }
 # use up pipe with any file
-upp() { cat $1 | up; }
+function upp() { cat $1 | up; }
 # crypto
-ratesx() { curl rate.sx/$1; }
+function ratesx() { curl rate.sx/$1; }
 # copy directory
-pbcpd() { builtin pwd | tr -d "\r\n" | pbcopy; }
+function pbcpd() { builtin pwd | tr -d "\r\n" | pbcopy; }
 # create file from clipboard
-pbpf() { pbpaste > "$1"; }
-pbcf() { pbcopy < "${1:-/dev/stdin}"; }
+function pbpf() { pbpaste > "$1"; }
+function pbcf() { pbcopy < "${1:-/dev/stdin}"; }
 # backup files
-bak() { /usr/local/bin/gcp -r --force --suffix=.bak $1 $1.bak }
-rbak() { /usr/local/bin/gcp -r --force $1.bak $1 }
+function dbak() { /usr/local/bin/gcp -r --force --suffix=.bak $1 $1.bak }
+function drbak() { /usr/local/bin/gcp -r --force $1.bak $1 }
+# only renames
+function bak-t()  { f2 -f "${1}$" -r "${1}.bak" -F; }
+function bak()    { f2 -f "${1}$" -r "${1}.bak" -Fx; }
+function rbak-t() { f2 -f "${1}.bak$" -r "${1}" -F; }
+function rbak()   { f2 -f "${1}.bak$" -r "${1}" -Fx; }
 # link unlink file from mybin to $PATH
-lnbin() { ln -siv $HOME/mybin/$1 $XDG_BIN_HOME; }
-unlbin() { rm -v /$XDG_BIN_HOME/$1; }
+function lnbin() { ln -siv $HOME/mybin/$1 $XDG_BIN_HOME; }
+function unlbin() { rm -v /$XDG_BIN_HOME/$1; }
 # latex documentation serch (as best I can)
-latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
+function latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
 # cd into directory
-take() { mkdir -p $@ && cd ${@:$#} }
+function take() { mkdir -p $@ && cd ${@:$#} }
 # html to markdown
-w2md() { wget -qO - "$1" | iconv -t utf-8 | html2text -b 0; }
+function w2md() { wget -qO - "$1" | iconv -t utf-8 | html2text -b 0; }
 # sha of a directory
-sha256dir() { fd . -tf -x sha256sum {} | cut -d' ' -f1 | sort | sha256sum | cut -d' ' -f1; }
-allcmds() { print -l ${commands[@]} | awk -F'/' '{print $NF}' | fzf; }
+function sha256dir() { fd . -tf -x sha256sum {} | cut -d' ' -f1 | sort | sha256sum | cut -d' ' -f1; }
+function allcmds() { print -l ${commands[@]} | awk -F'/' '{print $NF}' | fzf; }
 # remove broken symlinks
-rmsym() { command rm -- *(-@D); }
-rmsymr() { command rm -- **/*(-@D); }
+function rmsym() { command rm -- *(-@D); }
+function rmsymr() { command rm -- **/*(-@D); }
 # add -x to apply changes -- f2 -f ' '
-rmspace() { f2 -f '\s' -r '_' -RF $@ }
-rmdouble() { f2 -f '(\w+) \((\d+)\).(\w+)' -r '$2-$1.$3' $@ }
+function rmspace() { f2 -f '\s' -r '_' -RF $@ }
+function rmdouble() { f2 -f '(\w+) \((\d+)\).(\w+)' -r '$2-$1.$3' $@ }
 # monitor core dumps
-moncore() { fswatch --event-flags /cores/ | xargs -I{} terminal-notifier -message {} -title 'coredump'; }
+function moncore() { fswatch --event-flags /cores/ | xargs -I{} terminal-notifier -message {} -title 'coredump'; }
 
-e() { lax -f nvim "@${1}"; }
-macfeh() { open -b "drabweb.macfeh" "$@"; }
-time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
-profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof | bat; }
-pj() { perl -MCpanel::JSON::XS -0777 -E '$ip=decode_json <>;'"$@" ; }
-jqy() { yq r -j "$1" | jq "$2" | yq - r; }
-whic() { (alias; declare -f) | /usr/local/bin/gwhich --tty-only --read-alias --read-functions --show-tilde --show-dot $@; }
-jpeg() { jpegoptim -S "${2:-1000}" "$1"; jhead -purejpg "$1" && du -sh "$1"; }
-pngo() { optipng -o"${2:-3}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
-png() { pngquant --speed "${2:-4}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
-osxnotify() { osascript -e 'display notification "'"$*"'"'; }
-askpass() { osascript -e 'do shell script "'"$*"'" with administrator privileges' }
-td() { date -d "+${*}" "+%FT%R"; }
-ofd() { open $PWD; }
-double-accept() { deploy-code "BUFFER[-1]=''"; }
+function ee() { lax -f nvim "@${1}"; }
+function macfeh() { open -b "drabweb.macfeh" "$@"; }
+function time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
+function profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof | bat; }
+function pj() { perl -MCpanel::JSON::XS -0777 -E '$ip=decode_json <>;'"$@" ; }
+function jqy() { yq r -j "$1" | jq "$2" | yq - r; }
+function ww() { (alias; declare -f) | /usr/local/bin/gwhich --tty-only --read-alias --read-functions --show-tilde --show-dot $@; }
+function jpeg() { jpegoptim -S "${2:-1000}" "$1"; jhead -purejpg "$1" && du -sh "$1"; }
+function pngo() { optipng -o"${2:-3}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
+function png() { pngquant --speed "${2:-4}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
+function osxnotify() { osascript -e 'display notification "'"$*"'"'; }
+function askpass() { osascript -e 'do shell script "'"$*"'" with administrator privileges' }
+function td() { date -d "+${*}" "+%FT%R"; }
+function ofd() { open $PWD; }
+function double-accept() { deploy-code "BUFFER[-1]=''"; }
 zle -N double-accept
 
-xd() {
+function xd() {
   pth="$(xplr)"
   if [[ "$pth" != "$PWD" ]]; then
     if [[ -d "$pth" ]]; then
@@ -736,7 +763,7 @@ xd() {
   fi
 }
 
-zinit-palette() {
+function zinit-palette() {
   for k ( "${(@kon)ZINIT[(I)col-*]}" ); do
     local i=$ZINIT[$k]
     print "$reset_color${(r:14:: :):-$k:} $i###########"
@@ -792,16 +819,16 @@ _zsh_autosuggest_strategy_custom_history () {
       zdharma/null
 # ]]] ===== completions =====
 
+# id-as'brew_setup' has'brew' nocd eval'brew shellenv' \
+
 #===== variables ===== [[[
 zt 0c light-mode run-atpull for \
-  id-as'brew_setup' has'brew' nocd eval'brew shellenv' \
-    zdharma/null \
   id-as'pipx_comp' has'pipx' nocd nocompile eval"register-python-argcomplete pipx" \
   atload'zicdreplay -q' \
     zdharma/null \
   id-as'antidot_conf' has'antidot' nocd eval'antidot init' \
     zdharma/null \
-  id-as'pyenv_init' has'pyenv' nocd eval'${${:-=pyenv}:A} init - zsh' \
+  id-as'pyenv_init' has'pyenv' nocd eval'${${:-pyenv}:c:A} init - zsh' \
     zdharma/null \
   id-as'pipenv_comp' has'pipenv' nocd eval'pipenv --completion' \
     zdharma/null \
@@ -850,8 +877,8 @@ typeset -g PER_DIRECTORY_HISTORY_BASE="${ZPFX}/share/per-directory-history"
 typeset -gx UPDATELOCAL_GITDIR="${HOME}/opt"
 typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
 typeset -g DUMP_LOG="${ZPFX}/share/dump/log"
-typeset -gx CDHISTSIZE=25 CDHISTTILDE=TRUE CDHISTCOMMAND=jd
-alias c=jd
+typeset -gx CDHISTSIZE=20 CDHISTTILDE=TRUE CDHISTCOMMAND=cd
+# alias c=jd
 typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 typeset -gx FZFGIT_DEFAULT_OPTS="--preview-window=':nohidden,right:65%:wrap'"
 typeset -gx NQDIR="$TMPDIR/nq"
@@ -1060,38 +1087,6 @@ local fdir="${HOMEBREW_PREFIX}/share/zsh/site-functions"
 path=( "${ZPFX}/bin" "${path[@]}" )                # add back to be beginning
 path=( "${path[@]:#}" )                            # remove empties
 
-ZINIT+=(
-  col-pname   $'\e[1;4m\e[38;5;004m' col-uname   $'\e[1;4m\e[38;5;013m' col-keyword $'\e[14m'
-  col-note    $'\e[38;5;007m'        col-error   $'\e[1m\e[38;5;001m'   col-p       $'\e[38;5;81m'
-  col-info    $'\e[38;5;82m'         col-info2   $'\e[38;5;011m'      col-profile $'\e[38;5;007m'
-  col-uninst  $'\e[38;5;010m'        col-info3   $'\e[1m\e[38;5;011m' col-slight  $'\e[38;5;230m'
-  col-failure $'\e[38;5;001m'        col-happy   $'\e[1m\e[38;5;82m'  col-annex   $'\e[38;5;002m'
-  col-id-as   $'\e[4;38;5;011m'      col-version $'\e[3;38;5;87m'
-  col-pre     $'\e[38;5;135m'        col-msg   $'\e[0m'        col-msg2  $'\e[38;5;009m'
-  col-obj     $'\e[38;5;012m'        col-obj2  $'\e[38;5;010m' col-file  $'\e[3;38;5;117m'
-  col-dir     $'\e[3;38;5;002m'      col-func $'\e[38;5;219m'
-  col-url     $'\e[38;5;75m'         col-meta  $'\e[38;5;57m'  col-meta2 $'\e[38;5;147m'
-  col-data    $'\e[38;5;010m'         col-data2 $'\e[38;5;010m' col-hi    $'\e[1m\e[38;5;010m'
-  col-var     $'\e[38;5;81m'         col-glob  $'\e[38;5;011m' col-ehi   $'\e[1m\e[38;5;210m'
-  col-cmd     $'\e[38;5;002m'         col-ice   $'\e[38;5;39m'  col-nl    $'\n'
-  col-txt     $'\e[38;5;010m'        col-num  $'\e[3;38;5;155m' col-term  $'\e[38;5;185m'
-  col-warn    $'\e[38;5;009m'        col-apo $'\e[1;38;5;220m' col-ok    $'\e[38;5;220m'
-  col-faint   $'\e[38;5;238m'        col-opt   $'\e[38;5;219m' col-lhi   $'\e[38;5;81m'
-  col-tab     $' \t '                col-msg3  $'\e[38;5;238m' col-b-lhi $'\e[1m\e[38;5;75m'
-  col-bar     $'\e[38;5;82m'         col-th-bar $'\e[38;5;82m'
-  col-rst     $'\e[0m'               col-b     $'\e[1m'        col-nb     $'\e[22m'
-  col-u       $'\e[4m'               col-it    $'\e[3m'        col-st     $'\e[9m'
-  col-nu      $'\e[24m'              col-nit   $'\e[23m'       col-nst    $'\e[29m'
-  col-bspc    $'\b'                  col-b-warn $'\e[1;38;5;009m' col-u-warn $'\e[4;38;5;009m'
-  col-mdsh    $'\e[1;38;5;220m'"${${${(M)LANG:#*UTF-8*}:+–}:--}"$'\e[0m'
-  col-mmdsh   $'\e[1;38;5;220m'"${${${(M)LANG:#*UTF-8*}:+――}:--}"$'\e[0m'
-  col-↔       ${${${(M)LANG:#*UTF-8*}:+$'\e[38;5;82m↔\e[0m'}:-$'\e[38;5;82m«-»\e[0m'}
-  col-…       "${${${(M)LANG:#*UTF-8*}:+…}:-...}"  col-ndsh  "${${${(M)LANG:#*UTF-8*}:+–}:-}"
-  col--…      "${${${(M)LANG:#*UTF-8*}:+⋯⋯}:-···}" col-lr    "${${${(M)LANG:#*UTF-8*}:+↔}:-"«-»"}"
-)
-
 zflai-msg "[zshrc] File took ${(M)$(( SECONDS * 1000 ))#*.?} ms"
-
-typeset -aU path
 
 # vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr=[[[,]]]:
