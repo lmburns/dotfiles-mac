@@ -1,9 +1,12 @@
 # Desc: install app with mas and fzf
+# @depends: hck|choose, fzf, mas
 
 fmas() {
   app_id="$(\
     mas search "$@" \
-    | column -ts $'\t' | fzf | awk '{print $1}'
+    | column -ts $'\t' \
+    | fzf \
+    | ${(z)${commands[hck]:+hck -f}:-${commands[choose]:+choose --one-indexed}} 1
   )"
   [[ -n "$app_id" ]] && mas install "$app_id"
 }

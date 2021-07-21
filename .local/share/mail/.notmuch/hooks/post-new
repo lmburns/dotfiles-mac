@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+# command afew --tag --new --verbose
+
 setopt extendedglob
 
 set -e
@@ -145,3 +147,5 @@ notmuch tag +unsorted -new tag:new
 #    notmuch tag -github +new tag:github
 
 print ']'
+
+command afew --move-mails --new

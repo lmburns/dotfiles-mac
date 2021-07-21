@@ -1,0 +1,7 @@
+# Desc: fzf rip undo
+
+undo=$(rip -s | fzf --delimiter / --with-nth 7..)
+
+[[ -n $undo ]] && rip -u "$undo"
+
+# vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr={{{,}}}:

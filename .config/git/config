@@ -232,7 +232,7 @@
   # Generate changelog
   chg = !git changelog -x > CHANGELOG.md
   # Fzfgit
-  fst = !fstat
+  fs = !fstat
   fad = !fadd
   fun = !funtrack
   # Grab a pull request
@@ -281,3 +281,5 @@
   root = ~/ghq
 
 # vim:ft=gitconfig:et
+[global]
+  ignore = .cargo,.zinit.ipynb_checkpoints,Library,Applications,Downloads,Music,Movies,myMusic

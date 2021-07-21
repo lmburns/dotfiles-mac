@@ -1,0 +1,69 @@
+priority 100
+
+snippet pn "println!(...)"
+println!(${1:"$2\{\}", $3});
+endsnippet
+
+snippet main "fu main() ..." b
+fn main() {
+	$0
+}
+endsnippet
+
+snippet fn "fn foo() ..." b
+fn ${1:foo}($2)$3 {
+	$4
+}
+endsnippet
+
+snippet aeq "assert_eq!(...)" b
+assert_eq!(${1:expected}, ${2:actual});
+endsnippet
+
+snippet pln "println!" b
+println!("$1");
+endsnippet
+
+snippet clippy "clippy ignore rule" b
+#[allow(clippy::$1)]
+endsnippet
+
+snippet rustfmt "rustfmt skip" b
+#[rustfmt::skip]
+endsnippet
+
+snippet ui "unimplemented!"
+unimplemented!()
+endsnippet
+
+snippet ur "unimplemented!"
+unreachable!()
+endsnippet
+
+snippet res "Result<...>"
+Result<${VISUAL:1}$2>
+endsnippet
+
+snippet impl "impl ... { ... }" b
+impl $1 {
+	$2
+}
+endsnippet
+
+snippet mtests "mod tests..." b
+#[cfg(test)]
+mod tests {
+	use super::*;
+	#[test]
+	fn ${1:it_works}() {
+		$2
+	}
+}
+endsnippet
+
+snippet test "#[test] fn ..." b
+#[test]
+fn ${1:it_works}() {
+	$2
+}
+endsnippet

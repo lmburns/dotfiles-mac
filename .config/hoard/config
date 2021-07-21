@@ -47,6 +47,10 @@
 [envs.limelight]
     exe_exists = ["limelight"]
 
+[envs.lolcate]
+    exe_exists = ["lolcate"]
+    path_exists = ["/Users/lucasburns/Library/Application Support/lolcate/config"]
+
 [envs.mozilla]
     path_exists = [
        "/Applications/LibreWolf.app",
@@ -266,6 +270,9 @@
         "macos|lf" = "/Users/lucasburns/.config/lf/mappings"
     [hoards.lf.icons]
         "macos|lf" = "/Users/lucasburns/.config/zsh/zsh.d/lficons.zsh"
+
+[hoards.lolcate]
+    "macos|lolcate" = "/Users/lucasburns/Library/Application Support/lolcate"
 
 [hoards.mozilla]
     [hoards.mozilla.chrome]

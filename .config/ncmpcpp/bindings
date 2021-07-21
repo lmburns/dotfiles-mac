@@ -1,4 +1,12 @@
-def_key "9"
+def_key "h"
+ jump_to_parent_directory
+def_key "l"
+  enter_directory
+def_key "/"
+  find
+def_key "/"
+  find_item_forward
+def_key "ctrl-h"
   show_help
 def_key "k"
   scroll_up
@@ -28,10 +36,22 @@ def_key "8"
   show_clock
 def_key "E"
   edit_lyrics
-def_key "L"
+def_key "."
   show_lyrics
 def_key "ctrl-l"
   toggle_lyrics_fetcher
+def_key "n"
+    next_found_item
+def_key "N"
+    previous_found_item
+def_key "+"
+    show_clock
+def_key "="
+    volume_up
+def_key "t"
+    find
+def_key "t"
+    find_item_forward
 
 ##############################################################
 ## This is the example bindings file. Copy it to            ##

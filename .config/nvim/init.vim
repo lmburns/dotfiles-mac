@@ -588,10 +588,10 @@
   augroup ccommtitle
     autocmd!
     autocmd Syntax * syn match
-      \ cmTitle /\v(#|--|\%)\s*\u\w*(\s+\u\w*)*:/
+      \ cmTitle /\v(#|--|\/\/|\%)\s*\u\w*(\s+\u\w*)*:/
       \ contained containedin=.*Comment,vimCommentTitle
     autocmd Syntax * syn match myTodo
-      \ /\v(#|--|")\s(FIXME|FIX|DISCOVER|NOTE|NOTES|INFO|OPTIMIZE|XXX|EXPLAIN|TODO|CHECK|HACK|BUG|BUGS):/
+      \ /\v(#|--|\/\/|")\s(FIXME|FIX|DISCOVER|NOTE|NOTES|INFO|OPTIMIZE|XXX|EXPLAIN|TODO|CHECK|HACK|BUG|BUGS):/
       \ contained containedin=.*Comment.*,vimCommentTitle
     " perlLabel
     autocmd Syntax * syn keyword cmTitle contained=Comment
@@ -698,6 +698,12 @@
   endfunction
   command! DS call s:DiffSaved()
   " }}} DiffSaved
+
+  " FIX: make work get args
+  " function s:TagFile()
+  "   let fname=resolve(expand('%:p'))
+  "   call system('tag --set "$arg"'.resolve(expand('%:p')))
+  " endfunction
 
   " ExecuteBuffer: execute current buffer === {{{ "
   function! s:execute_buffer()
@@ -1032,10 +1038,11 @@ augroup rust_env
     autocmd!
     autocmd FileType rust
       \ nmap     <silent> <c-]>         <Plug>(coc-definition)|
-      \ nmap     <buffer> <Leader>r<CR> :VT cargo run   -q<CR>|
+      \ nmap     <buffer> <Leader>n<CR> :VT cargo run   -q<CR>|
       \ nmap     <buffer> <Leader>t<CR> :RustTest<CR>|
       \ nmap     <buffer> <Leader>b<CR> :VT cargo build -q<CR>|
       \ nmap     <buffer> <Leader>r<CR> :VT cargo play  %<CR>|
+      \ nmap     <buffer> <Leader>e<CR> :VT cargo eval  %<CR>|
       \ nnoremap <buffer> ;ff           :RustFmt<cr>
 augroup END
 " }}} vim-rust

@@ -242,7 +242,7 @@ zt 0b light-mode for \
 #  === wait'0c' - programs - sourced === [[[
 zt 0c light-mode binary for \
   lbin patch"${pchf}/%PLUGIN%.patch" reset \
-  atload'alias rmi="dump -p -s" rr="dump -p" dd="dump"' \
+  atload'alias drmi="dump -p -s" drm="dump -p" dd="dump"' \
     kazhala/dump-cli \
   lbin'!**/*grep;**/*man;**/*diff' has'bat' atpull'%atclone' \
   atclone'(){local f;builtin cd -q src;for f (*.sh){mv ${f} ${f:r}};}' \
@@ -385,9 +385,6 @@ zt 0c light-mode null for \
     crockeo/taskn \
   lbin"!**/nvim" from'gh-r' lman bpick'*macos*' \
     neovim/neovim \
-  lbin from'gh-r' bpick'*darwin_amd64*' \
-  atload"source $ZPFX/share/pet/pet_atload.zsh " \
-    knqyf263/pet \
   lbin atclone'make build' \
     @motemen/gore \
   lbin from'gh-r' bpick'*darwin_amd64*' \
@@ -414,9 +411,13 @@ zt 0c light-mode null for \
     orf/gping \
   lbin'jq-* -> jq' from'gh-r' dl"$(grman -e '1.prebuilt')" lman \
     stedolan/jq \
-  lbin'yq_* -> yq' from'gh-r' atclone'yq shell-completion zsh > _yq' \
+  lbin from'gh-r' mv'yq_* -> yq' atclone'./yq shell-completion zsh > _yq' \
   atpull'%atclone' \
     mikefarah/yq \
+  lbin'das* -> dasel' from'gh-r' \
+    TomWright/dasel \
+  lbin'yj* -> yj' from'gh-r' \
+    sclevine/yj \
   lbin'ff* -> ffsend' from'gh-r' \
     timvisee/ffsend \
   lbin'b**/r**/crex' atclone'./build.sh -r' \
@@ -426,6 +427,8 @@ zt 0c light-mode null for \
   lbin patch"${pchf}/%PLUGIN%.patch" make"PREFIX=$ZPFX install" reset \
   atpull'%atclone' atdelete"PREFIX=$ZPFX make uninstall"  \
     zdharma/zshelldoc
+
+# yq isn't picking up copletions
 
 # Can't get to work
 # zt 0c light-mode null for \
@@ -481,8 +484,49 @@ zt 0c light-mode null for \
   lbin from'gh-r' \
     BurntSushi/xsv \
   lbin from'gh-r' \
-    Byron/dua-cli
+    Byron/dua-cli \
+  lbin'**/lolcate' from'gh-r' atload'alias le=lolcate' \
+    ngirard/lolcate-rs \
+  lbin'tar*/rel*/fw' atclone'cargo build --release' atpull'%atclone' \
+  atload'export FW_CONFIG_DIR="$XDG_CONFIG_HOME/fw"' \
+    brocode/fw \
+  lbin from'gh-r' \
+    WindSoilder/hors \
+  lbin from'gh-r' \
+    samtay/so \
+  lbin'* -> podcast' from'gh-r' bpick'*-osx' \
+    njaremko/podcast \
+  lbin'tar*/rel*/rust-script' atclone'cargo build --release' atpull'%atclone' \
+    fornwall/rust-script \
+  lbin'tar*/rel*/cargo-eval' atclone'cargo build --release' atpull'%atclone' \
+    reitermarkus/cargo-eval \
+  lbin'tar*/rel*/cargo-play' atclone'cargo build --release' atpull'%atclone' \
+    fanzeyi/cargo-play \
+  lbin'tar*/rel*/cargo-{rm,add,upgrade}' atclone'cargo build --release' atpull'%atclone' \
+    killercup/cargo-edit \
+  lbin'tar*/rel*/cargo-cache' atclone'cargo build --release' atpull'%atclone' \
+    matthiaskrgr/cargo-cache \
+  lbin'tar*/rel*/bacon' atclone'cargo build --release --all-features' atpull'%atclone' \
+    Canop/bacon \
+  lbin from'gh-r' \
+    rcoh/angle-grinder \
+  lbin'tar*/rel*/hm' atclone'cargo build --release' atpull'%atclone' \
+    hlmtre/homemaker \
+  lbin'tar*/rel*/inventorize' atclone'cargo build --release' atpull'%atclone' \
+    rdmitr/inventorize \
+  lbin'tar*/rel*/xcompress' atclone'cargo build --release' atpull'%atclone' \
+    magiclen/xcompress \
+  lbin'tar*/rel*/loop' atclone'cargo build --release' atpull'%atclone' \
+    miserlou/loop \
+  lbin'tar*/rel*/rip' atclone'cargo build --release' atpull'%atclone' \
+    nivekuil/rip \
+  lbin'tar*/rel*/rusty-man' atclone'command git clone https://git.sr.ht/~ireas/rusty-man' atclone'command rsync -vua --delete-after rusty-man/ .' \
+  atclone'cargo build --release && cargo doc' atpull'%atclone' id-as'sr-ht/rusty-man' \
+  atinit'alias rman="rusty-man" rmand="open https://git.sr.ht/~ireas/rusty-man"' \
+    zdharma/null
 # ]]] == rust
+
+# google/evcxr (rust repl)
 
 # === tui specifi block === [[[
 zt 0c light-mode null for \
@@ -521,12 +565,18 @@ zt 0c light-mode null for \
   lbin from'gh-r' \
     human37/gee \
   lbin atclone'./autogen.sh; ./configure --prefix="$ZPFX"; mv -f **/**.zsh _tig' \
-  make'install' atpull'%atclone' \
+  make'install' atpull'%atclone' mv"_tig -> $ZINIT[COMPLETIONS_DIR]" \
     jonas/tig \
   lbin'*/delta;git-dsf' from'gh-r' patch"${pchf}/%PLUGIN%.patch" \
     dandavison/delta \
   lbin from'gh-r' \
-    extrawurst/gitui
+    extrawurst/gitui \
+  lbin from'gh-r' lman \
+    rhysd/git-brws \
+  lbin'tar*/rel*/mgit' atclone'cargo build --release' atpull'%atclone' \
+    koozz/mgit \
+  lbin'tar*/rel*/mrh' atclone'cargo build --release' atpull'%atclone' \
+    tshepang/mrh
 # ]]] === git specific block ===
 
 # cosmos72/gomacro == gruntwork-io/git-xargs
@@ -572,6 +622,8 @@ typeset -g HELPDIR='/usr/local/share/zsh/help'
 # === completion === [[[
 
 # $desc, $word, $group, $realpath
+zstyle ':fzf-tab:complete:ssh:*'             fzf-preview 'dig $desc'
+zstyle ':fzf-tab:complete:ssh:*'             fzf-flags '--preview-window=nohidden,right:65%:wrap'
 zstyle ':fzf-tab:complete:figlet:option-f-1' fzf-preview 'figlet -f $word Hello world'
 zstyle ':fzf-tab:complete:figlet:option-f-1' fzf-flags '--preview-window=nohidden,right:65%:wrap'
 zstyle ':fzf-tab:complete:kill:*'                  popup-pad 0 3
@@ -693,6 +745,8 @@ zstyle ':completion:*:hosts' hosts $hosts
 # rsync from local pc to server
 function rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
 function rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
+function mvout-clean() { command rsync -vua --delete-after $1/ . ; }
+function mvout() { command rsync -vua $1/ . ; }
 # shred and delete file
 function sshred() { shred -v -n 1 -z -u  $1;  }
 # create py file to sync with ipynb
@@ -707,13 +761,13 @@ function pbcpd() { builtin pwd | tr -d "\r\n" | pbcopy; }
 function pbpf() { pbpaste > "$1"; }
 function pbcf() { pbcopy < "${1:-/dev/stdin}"; }
 # backup files
-function dbak() { /usr/local/bin/gcp -r --force --suffix=.bak $1 $1.bak }
-function drbak() { /usr/local/bin/gcp -r --force $1.bak $1 }
+function bak() { /usr/local/bin/gcp -r --force --suffix=.bak $1 $1.bak }
+function rbak() { /usr/local/bin/gcp -r --force $1.bak $1 }
 # only renames
-function bak-t()  { f2 -f "${1}$" -r "${1}.bak" -F; }
-function bak()    { f2 -f "${1}$" -r "${1}.bak" -Fx; }
-function rbak-t() { f2 -f "${1}.bak$" -r "${1}" -F; }
-function rbak()   { f2 -f "${1}.bak$" -r "${1}" -Fx; }
+function dbak-t()  { f2 -f "${1}$" -r "${1}.bak" -F; }
+function dbak()    { f2 -f "${1}$" -r "${1}.bak" -Fx; }
+function drbak-t() { f2 -f "${1}.bak$" -r "${1}" -F; }
+function drbak()   { f2 -f "${1}.bak$" -r "${1}" -Fx; }
 # link unlink file from mybin to $PATH
 function lnbin() { ln -siv $HOME/mybin/$1 $XDG_BIN_HOME; }
 function unlbin() { rm -v /$XDG_BIN_HOME/$1; }
@@ -740,7 +794,7 @@ function macfeh() { open -b "drabweb.macfeh" "$@"; }
 function time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
 function profile-zsh() { ZSHRC_PROFILE=1 zsh -i -c zprof | bat; }
 function pj() { perl -MCpanel::JSON::XS -0777 -E '$ip=decode_json <>;'"$@" ; }
-function jqy() { yq r -j "$1" | jq "$2" | yq - r; }
+function jqy() { yq e -j "$1" | jq "$2" | yq - e; }
 function ww() { (alias; declare -f) | /usr/local/bin/gwhich --tty-only --read-alias --read-functions --show-tilde --show-dot $@; }
 function jpeg() { jpegoptim -S "${2:-1000}" "$1"; jhead -purejpg "$1" && du -sh "$1"; }
 function pngo() { optipng -o"${2:-3}" "$1"; exiftool -all= "$1" && du -sh "$1"; }
@@ -841,6 +895,8 @@ zt 0c light-mode run-atpull for \
   id-as'zoxide_init' has'zoxide' nocd eval'zoxide init --no-aliases zsh' \
   atload'alias o=__zoxide_z z=__zoxide_zi' \
     zdharma/null \
+  id-as'fw-init' has'fw' nocd eval'fw print-zsh-setup -f' \
+    zdharma/null \
   id-as'keychain_init' has'keychain' nocd \
   eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac \
   && keychain --agents gpg -q --eval 0xC011CBEF6628B679' \
@@ -877,7 +933,7 @@ typeset -g PER_DIRECTORY_HISTORY_BASE="${ZPFX}/share/per-directory-history"
 typeset -gx UPDATELOCAL_GITDIR="${HOME}/opt"
 typeset -g DUMP_DIR="${ZPFX}/share/dump/trash"
 typeset -g DUMP_LOG="${ZPFX}/share/dump/log"
-typeset -gx CDHISTSIZE=20 CDHISTTILDE=TRUE CDHISTCOMMAND=cd
+typeset -gx CDHISTSIZE=20 CDHISTTILDE=TRUE CDHISTCOMMAND=cdh
 # alias c=jd
 typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 typeset -gx FZFGIT_DEFAULT_OPTS="--preview-window=':nohidden,right:65%:wrap'"
@@ -895,6 +951,17 @@ typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${HOMEBREW_PREFIX}/lib/password-store
 (( ${+commands[fd]} )) && {
   _fzf_compgen_path() { fd --hidden --follow --exclude ".git" . "$1"; }
   _fzf_compgen_dir() { fd --exclude ".git" --follow --hidden --type d . "$1"; }
+  _fzf_comprun() {
+    local command=$1
+    shift
+
+    case "$command" in
+      cd)           fzf "$@" --preview 'exa -TL 3 --color=always {} | head -200' ;;
+      export|unset) fzf "$@" --preview "eval 'echo \$'{}" ;;
+      ssh)          fzf "$@" --preview 'dig {}' ;;
+      *)            fzf "$@" ;;
+    esac
+  }
 }
 
 # FZF_COLORS="
@@ -959,7 +1026,9 @@ export SKIM_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
 # export FZF_DEFAULT_COMMAND='fd --no-ignore --hidden --follow --exclude ".git"'
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
 export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
+# export FZF_ALT_C_COMMAND="print -rl $dirstack"
 # export FZF_ALT_C_COMMAND="fd -t d ."
 export FORGIT_FZF_DEFAULT_OPTS="--preview-window='right:60%:nohidden' --bind='ctrl-e:execute(echo {2} | xargs -o nvim)'"
 
@@ -1064,6 +1133,8 @@ zt 0b light-mode null id-as for \
   }' \
     zdharma/null \
   atload'local x="$XDG_CONFIG_HOME/cdhist/cdhist.rc"; [ -f "$x" ] && source "$x"' \
+    zdharma/null \
+  nocd null atload'source "${XDG_DATA_HOME}/cargo/env"' \
     zdharma/null
 
 # nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || TS_SOCKET=/tmp/ts1 ts limelight >/dev/null" \

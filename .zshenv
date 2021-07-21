@@ -48,7 +48,7 @@ export TASKDATA="${XDG_CONFIG_HOME}/task"
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/ripgreprc"
 export WGETRC="${XDG_CONFIG_HOME}/wget/wgetrc"
 export TIGRC_USER="${XDG_CONFIG_HOME}/tig/tigrc"
-export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+export CARGO_HOME="${HOME}/.cargo"
 export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
 export GOPATH="${HOME}/go"
 export GEM_HOME="${XDG_DATA_HOME}/ruby/gems"
@@ -93,11 +93,11 @@ export NNN_FIFO='/tmp/nnn.fifo'
 export URLPORTAL="$XDG_MBIN_HOME/urlportal"
 export MATES_DIR="${XDG_DATA_HOME}/mates"
 
-source "${XDG_DATA_HOME}/cargo/env"
+# source "${XDG_DATA_HOME}/cargo/env"
 
-[[ -x /usr/libexec/path_helper ]] && {
-  PATH=""
-  eval `/usr/libexec/path_helper -s`
-}
+# [[ -x /usr/libexec/path_helper ]] && {
+#   PATH=""
+#   eval `/usr/libexec/path_helper -s`
+# }
 
 # vim:ft=zsh:et:sw=0:ts=2:sts=2:

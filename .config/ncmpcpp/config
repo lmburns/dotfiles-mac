@@ -103,7 +103,7 @@ execute_on_song_change = ""
 # Directories
 ncmpcpp_directory = ~/.config/ncmpcpp
 lyrics_directory = ~/Music/Lyrics
-mpd_music_dir = "~/Music/myMusic"
+mpd_music_dir = ~/Music
 
 # Connection settings
 mpd_host = "localhost"

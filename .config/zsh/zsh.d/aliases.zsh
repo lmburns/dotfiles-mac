@@ -10,7 +10,8 @@ alias -g G='| rg '
 alias -g H='| head'
 alias -g T='| tail'
 
-alias xx="xplr"
+alias xp="xplr"
+alias xx="xcompress"
 
 alias :q='exit'
 alias ng="noglob"
@@ -117,6 +118,8 @@ alias nurls='$EDITOR $XDG_CONFIG_HOME/newsboat/urls'
 alias nnews='$EDITOR $XDG_CONFIG_HOME/newsboat/config'
 alias nw3m='$EDITOR $HOME/.w3m/keymap'
 alias ntig='$EDITOR $TIGRC_USER'
+alias nmpc='$EDITOR $XDG_CONFIG_HOME/mpd/mpd.conf'
+alias nncm='$EDITOR $XDG_CONFIG_HOME/ncmpcpp/bindings'
 alias nmutt='$EDITOR $XDG_CONFIG_HOME/mutt/muttrc'
 alias nmuch='$EDITOR $XDG_DATA_HOME/mail/.notmuch/hooks/post-new'
 
@@ -193,8 +196,8 @@ alias idh="man /usr/share/man/man1/id.1"
   alias wifi='osx-wifi-cli'
   alias nset='networksetup'
   alias snset='sudo networksetup'
-  alias mute="osascript -e 'set volume output muted true'"
-  alias lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+  alias x1mute="osascript -e 'set volume output muted true'"
+  alias x1lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
   alias loginscreen='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
   # alias battemp="bc <<< \"scale=3; $(ioreg -r -n AppleSmartBattery | grep Temperature | cut -c23-)/100*1.8+32\""
   alias pbplain='pbpaste | textutil -convert txt -stdin -stdout -encoding 30 | pbcopy'
@@ -263,7 +266,7 @@ alias taske='task edit'
 alias pass='PASSWORD_STORE_ENABLE_EXTENSIONS=true pass'
 
 (( ${+commands[tldr]} )) && alias tldru='tldr --update'
-(( ${+commands[assh]} )) && alias ssh="assh wrapper ssh"
+(( ${+commands[assh]} )) && alias hssh="assh wrapper ssh"
 
 (( ${+commands[pueue]} )) && {
   alias pu='pueue'
@@ -311,8 +314,8 @@ alias checkrootkits="sudo rkhunter --update; sudo rkhunter --propupd; sudo rkhun
 alias checkvirus="clamscan --recursive=yes --infected $HOME/"
 
 # === trash =====================================================================
-# alias rm='rm -iv'
-# alias rr='rm -rf'
+(( ${+commands[rip]} )) && alias rr="rip"
+
 (( ${+commands[trash-put]} )) && {
   alias rrr='trash-put'
   alias tre='trash-empty'

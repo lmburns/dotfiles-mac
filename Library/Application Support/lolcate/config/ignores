@@ -1,0 +1,7 @@
+.git
+.zinit
+._backup
+coc/
+vim-persisted-undo/
+.ipynb_checkpoints
+.pycache

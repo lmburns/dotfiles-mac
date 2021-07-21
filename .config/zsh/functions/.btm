@@ -1,4 +1,4 @@
-# desc: buku - remove tags
+# Desc: buku - remove tags
 
 buku -u ${1} --tag - ${(j.,.)@:2}
 

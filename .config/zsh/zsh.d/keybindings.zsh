@@ -83,14 +83,15 @@ typeset -gA keybindings; keybindings=(
   'M-u'           __unicode_translate   # translate unicode
   'M-x'           cd-fzf-ghqlist-widget # cd ghq fzf
   'C-a'           autosuggest-execute
-  'C-z'           fancy-ctrl-z
   'C-y'           yank
+  'C-z'           fancy-ctrl-z
   'C-x r'         fz-history-widget
-  'C-x C-f'       fz-find
-  'C-x C-e'       edit-command-line-as-zsh
-  'C-x C-x'       execute-command
+  'C-x t'         pick_torrent          # fzf torrent
   'C-x C-b'       fcq                   # copyq fzf
+  'C-x C-e'       edit-command-line-as-zsh
+  'C-x C-f'       fz-find
   'C-x C-u'       RG_buff
+  'C-x C-x'       execute-command
   'mode=vicmd u'  undo
   # 'mode=vicmd R' replace-pattern
   'mode=vicmd R' replace-regex
@@ -109,6 +110,7 @@ typeset -gA keybindings; keybindings=(
   'mode=visual S' add-surround
   'mode=str M-t'  t                     # tmux wfxr
   'mode=str C-o'  lc                    # lf change dir
+  'mode=str C-_'  lf
   'mode=@ C-b'    bow2                  # surfraw open w3m
   'mode=@ M-/'    frd                   # cd interactively recent dir
   'mode=@ M-;'    fcd                   # cd interactively

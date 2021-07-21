@@ -1,4 +1,4 @@
-# desc: buku - change title
+# Desc: buku - change title
 
 buku -u "${1}" --title "${(qq)@:2}"
 

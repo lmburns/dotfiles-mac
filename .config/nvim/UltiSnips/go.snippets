@@ -1,0 +1,77 @@
+priority 100
+
+snippet Imp "import ..." b
+import "${1:fmt}"
+endsnippet
+
+snippet pk "package ..." b
+package ${1:`!p snip.rv += os.path.basename(os.path.dirname(path))`}
+
+
+endsnippet
+
+snippet pm "package main" b
+package main
+
+
+endsnippet
+
+snippet imp "import (...)" b
+import (
+	"${1:fmt}"$2
+)
+
+
+endsnippet
+
+snippet sout "fmt.Println(...)" b
+fmt.Println(${1:"${2:message}"}$3)
+endsnippet
+
+snippet af "func(...){...}"
+func($1) $2{
+	$3
+}
+endsnippet
+
+snippet forr "for item := range itmes..." b
+for ${1:it} := range ${2:ch} {
+	$4
+}
+endsnippet
+
+snippet init "init function" b
+func init() {
+	$1
+}
+endsnippet
+
+snippet gof "go func() { ... }()" b,m
+go func() {
+	${1:${VISUAL}}
+}()
+endsnippet
+
+snippet ife "if err != nil {...}" b,m
+if err != nil {
+	${1:${VISUAL}}
+}
+endsnippet
+
+snippet usage "show usage..." b
+fmt.Fprintf(os.Stderr, "Usage: %s <${1:argument}>\n", filepath.Base(os.Args[0]))
+endsnippet
+
+snippet f "func() {...}()"
+func() {
+	${1:${VISUAL}}
+}()
+endsnippet
+
+snippet ui "unimplemented..." b
+panic("unimplemented")
+endsnippet
+
+snippet interface "interface {}"
+interface {}
+endsnippet

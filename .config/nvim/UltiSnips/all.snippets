@@ -3,6 +3,45 @@ MIT (c) ${1:`git config user.name`}
 ${2}
 endsnippet
 
+snippet stit "Short title" b
+`!p
+beg, end = vim.eval("&commentstring").split('%s')
+snip.rv += beg.strip() + ' '
+`=== ${1:`!v printf('%s', 'title')`}`!p
+snip.rv += (' ===')
+`
+endsnippet
+
+snippet mtit "Medium title" b
+`!p
+beg, end = vim.eval("&commentstring").split('%s')
+eq = '=' * 26
+snip.rv += beg.strip() + ' ' + eq
+` ${1:`!v printf('%s', 'title')`}`!p
+snip.rv += (' ' + eq)
+`
+endsnippet
+
+snippet ltit "Long title" b
+`!p
+beg, end = vim.eval("&commentstring").split('%s')
+eq = '=' * 30
+snip.rv += beg.strip() + ' ' + eq
+` ${1:`!v printf('%s', 'title')`}`!p
+snip.rv += (' ' + eq + "\n" + beg.strip() + ' ' + (eq * 2) + ('=' * 8))
+`
+endsnippet
+
+snippet lstit "Long shorter title" b
+`!p
+beg, end = vim.eval("&commentstring").split('%s')
+eq = '=' * 20
+snip.rv += beg.strip() + ' ' + eq
+` ${1:`!v printf('%s', 'title')`}`!p
+snip.rv += (' ' + eq + "\n" + beg.strip() + ' ' + (eq * 2) + ('=' * 8))
+`
+endsnippet
+
 global !p
 from vimsnippets import get_comment_format
 from subprocess import check_output
@@ -103,7 +142,7 @@ snip += box[3]`
 $0
 endsnippet
 
-snippet fbox "A header box" b
+snippet fbox "A header box only with created" b
 `!p
 from datetime import datetime
 if snip.ft in ['cpp', 'c', 'rust', 'go', 'cs']:
@@ -169,4 +208,57 @@ Mauris quis fermentum felis, lobortis placerat nibh. Sed pulvinar, quam auctor t
 commodo, turpis felis dictum neque, et gravida nunc diam eget turpis. Vestibulum et
 purus eget erat facilisis porta quis ut felis. Donec facilisis orci vel lectus consectetur,
 eget bibendum nisi suscipit.
+endsnippet
+
+snippet mypy "all the env vars"
+`!p import os
+if not snip.c:
+	str = ""
+	for k,v in os.environ.items():
+		str+="{} {}\n".format(k,v)
+	snip.rv = str`
+endsnippet
+
+snippet _z "comp starter"
+#compdef z
+
+local arguments
+
+__display(){
+        _alternative \
+        'aliases:command:(('"$(_z |& awk -v q=\' '{printf "%s\\:\"%s\" ", $2,$1}')"'))' \
+        'files:directory:_path_files -g ".*(/) *(/)"'
+}
+
+arguments=(
+       '-c[restrict matches to subdirectories of the current directory]'
+       '-e[echo the best match, do not cd]'
+       '-c[show a brief help message]'
+       '-l[list only]'
+       '-r[match by rank only]'
+       '-t[match by recent access only]'
+       '-x[remove the current directory from the datafile]'
+        '1:command:->command'
+        '*::options:->options'
+)
+
+local curcontext="$curcontext" state state_descr line expl
+local tmp ret=1
+
+_arguments -s -C : $arguments && return 0
+
+  case "$state" in
+    command)
+      __display && return 0
+      ;;
+    options)
+      _message "no more options for $words[1]"
+      return 1
+    ;;
+  esac
+
+endsnippet
+
+snippet uuid "Random UUID" w
+`!p if not snip.c: import uuid; snip.rv = str(uuid.uuid4())`
 endsnippet

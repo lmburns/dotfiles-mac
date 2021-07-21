@@ -83,9 +83,15 @@ cmd open ${{
       video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
       application/x-bittorrent) open -a Transmission.app ;;
       application/zlib) open ;;
-      *) $EDITOR $fx ;;
-      # *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>/dev/null & done;;
+      *)
+        case ${f:e} in
+          dmg) hdiutil attach "$fx" ;;
+          *) $EDITOR $fx ;;
+        esac
+        ;;
     esac
+
+    # *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>/dev/null & done;;
 }}
 
 
@@ -93,7 +99,7 @@ cmd open ${{
 cmd delete ${{
   clear
   if (whiptail --title "$(echo $fx | xargs -r basename -a)" --yesno "Delete?[y/N]" --defaultno 8 40); then
-    trash-put $fx && echo "$fx deleted" &&  terminal-notifier -title "🗑️  Fle deleted" -message "$(echo $fx | xargs -r basename -a) moved to trash"
+    rip $fx && echo "$fx deleted" &&  terminal-notifier -title "🗑️  Fle deleted" -message "$(echo $fx | xargs -r basename -a) moved to trash"
 
   else
     echo "$fx not deleted"
@@ -102,7 +108,7 @@ cmd delete ${{
 
 # -- Trash: no confirmation (trash-put)
 cmd trash ${{
-  trash-put -- $fx
+  rip -- $fx
   terminal-notifier -title "🗑️  File(s) deleted" -message "File(s) moved to trash" &&
     print -R "$fx deleted"
 }}
@@ -627,7 +633,7 @@ map au unarchive
 # ]]]
 
 # == Trash Mappings == [[[
-map dd trash             # trash-put
+map dd trash             # rip
 map Dd delete            # confirmation with whiptail
 map te %trash-empty      # empty trash
 map tl $trash-list | fzf # list in fzf
