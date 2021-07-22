@@ -122,6 +122,7 @@ alias nmpc='$EDITOR $XDG_CONFIG_HOME/mpd/mpd.conf'
 alias nncm='$EDITOR $XDG_CONFIG_HOME/ncmpcpp/bindings'
 alias nmutt='$EDITOR $XDG_CONFIG_HOME/mutt/muttrc'
 alias nmuch='$EDITOR $XDG_DATA_HOME/mail/.notmuch/hooks/post-new'
+alias nsnip='$EDITOR $XDG_CONFIG_HOME/nvim/UltiSnips/all.snippets'
 
 alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
 

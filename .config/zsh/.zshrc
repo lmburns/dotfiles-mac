@@ -15,8 +15,8 @@ typeset -fuz zkbd
 
 typeset -ga mylogs
 typeset -F4 SECONDS=0
-zflai-msg() { mylogs+=( "$1" ); }
-zflai-assert() { mylogs+=( "$4"${${${1:#$2}:+FAIL}:-OK}": $3" ); }
+function zflai-msg()    { mylogs+=( "$1" ); }
+function zflai-assert() { mylogs+=( "$4"${${${1:#$2}:+FAIL}:-OK}": $3" ); }
 
 zflai-msg "[path] $path"
 
@@ -207,7 +207,11 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   compile'.*fast*~*.zwc' nocompletions atpull'%atclone' \
     zdharma/fast-syntax-highlighting \
   atload'vbindkey "Up" history-substring-search-up; vbindkey "Down" history-substring-search-down' \
-    zsh-users/zsh-history-substring-search
+    zsh-users/zsh-history-substring-search \
+  pick'formarks.plugin.zsh' \
+  atload'export PATHMARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
+  atinit'export FZF_MARKS_JUMP="^[."' \
+    wfxr/formarks
 #  ]]] === wait'0b' - patched ===
 
 #  === wait'0b' === [[[
@@ -216,10 +220,6 @@ zt 0b light-mode for \
     Aloxaf/fzf-tab \
   autoload'#manydots-magic' \
     knu/zsh-manydots-magic \
-  pick'formarks.plugin.zsh' \
-  atload'export PATHMARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
-  atinit'export FZF_MARKS_JUMP="^[."' \
-    wfxr/formarks \
   compile'h*' trackbinds bindmap'^R -> ^F' \
   atload'
   zstyle ":history-search-multi-word" highlight-color "fg=cyan,bold";
@@ -426,15 +426,12 @@ zt 0c light-mode null for \
     rami3l/pacaptr \
   lbin patch"${pchf}/%PLUGIN%.patch" make"PREFIX=$ZPFX install" reset \
   atpull'%atclone' atdelete"PREFIX=$ZPFX make uninstall"  \
-    zdharma/zshelldoc
+    zdharma/zshelldoc \
+  id-as'bisqwit/regex-opt' lbin atclone'xh --download https://bisqwit.iki.fi/src/arch/regex-opt-1.2.4.tar.gz' \
+  atclone'ziextract --move --auto regex-*.tar.gz' make'all' \
+    zdharma/null
 
 # yq isn't picking up copletions
-
-# Can't get to work
-# zt 0c light-mode null for \
-#   extract'regex-opt-1.2.4.tar.gz' \
-#   atclone'cd r*/r*/; make all' \
-#     https://bisqwit.iki.fi/src/arch/regex-opt-1.2.4.tar.gz
 
 # == rust [[[
 zt 0c light-mode null for \
@@ -496,18 +493,6 @@ zt 0c light-mode null for \
     samtay/so \
   lbin'* -> podcast' from'gh-r' bpick'*-osx' \
     njaremko/podcast \
-  lbin'tar*/rel*/rust-script' atclone'cargo build --release' atpull'%atclone' \
-    fornwall/rust-script \
-  lbin'tar*/rel*/cargo-eval' atclone'cargo build --release' atpull'%atclone' \
-    reitermarkus/cargo-eval \
-  lbin'tar*/rel*/cargo-play' atclone'cargo build --release' atpull'%atclone' \
-    fanzeyi/cargo-play \
-  lbin'tar*/rel*/cargo-{rm,add,upgrade}' atclone'cargo build --release' atpull'%atclone' \
-    killercup/cargo-edit \
-  lbin'tar*/rel*/cargo-cache' atclone'cargo build --release' atpull'%atclone' \
-    matthiaskrgr/cargo-cache \
-  lbin'tar*/rel*/bacon' atclone'cargo build --release --all-features' atpull'%atclone' \
-    Canop/bacon \
   lbin from'gh-r' \
     rcoh/angle-grinder \
   lbin'tar*/rel*/hm' atclone'cargo build --release' atpull'%atclone' \
@@ -519,11 +504,31 @@ zt 0c light-mode null for \
   lbin'tar*/rel*/loop' atclone'cargo build --release' atpull'%atclone' \
     miserlou/loop \
   lbin'tar*/rel*/rip' atclone'cargo build --release' atpull'%atclone' \
-    nivekuil/rip \
+    nivekuil/rip
+
+# === rust extensions === [[[
+zt 0c light-mode null for \
+  lbin'tar*/rel*/rust-script' atclone'cargo build --release' atpull'%atclone' \
+    fornwall/rust-script \
+  lbin'tar*/rel*/cargo-eval' atclone'cargo build --release' atpull'%atclone' \
+    reitermarkus/cargo-eval \
+  lbin'tar*/rel*/cargo-play' atclone'cargo build --release' atpull'%atclone' \
+    fanzeyi/cargo-play \
+  lbin'tar*/rel*/cargo-{rm,add,upgrade}' atclone'cargo build --release' atpull'%atclone' \
+    killercup/cargo-edit \
+  lbin'tar*/rel*/cargo-cache' atclone'cargo build --release' atpull'%atclone' \
+    matthiaskrgr/cargo-cache \
+  lbin from'gh-r' \
+    sagiegurari/cargo-make \
+  lbin'tar*/rel*/evcxr' atclone'cargo build --release' atpull'%atclone' \
+    google/evcxr \
+  lbin'tar*/rel*/bacon' atclone'cargo build --release --all-features' atpull'%atclone' \
+    Canop/bacon \
   lbin'tar*/rel*/rusty-man' atclone'command git clone https://git.sr.ht/~ireas/rusty-man' atclone'command rsync -vua --delete-after rusty-man/ .' \
   atclone'cargo build --release && cargo doc' atpull'%atclone' id-as'sr-ht/rusty-man' \
   atinit'alias rman="rusty-man" rmand="open https://git.sr.ht/~ireas/rusty-man"' \
     zdharma/null
+# ]]] == rust extensions
 # ]]] == rust
 
 # google/evcxr (rust repl)
@@ -593,7 +598,6 @@ zt light-mode is-snippet for \
     OMZ::plugins/osx
 #  ]]] === snippet block ===
 # ]]] == zinit closing ===
-
 
 # === powerlevel10k === [[[
 if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -738,10 +742,9 @@ zstyle ':completion:*:hosts' hosts $hosts
 # zstyle ':completion:*:*:mocp:*'    file-patterns '*.(wav|df):ogg\ files *(-/):directories'
 # ]]]
 
-# === functions === [[[
-# howdoi
-# h() { howdoi $@ -c -n 5; }
-# hless() { howdoi $@ -c | less --raw-control-chars --quit-if-one-screen --no-init; }
+# === one line functions === [[[
+# find functions that follow this pattern: func()
+function ffunc() { eval "() { $functions[RG] } ${@}\\\\\("; }
 # rsync from local pc to server
 function rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
 function rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
@@ -827,7 +830,6 @@ function zinit-palette() {
 # ]]]
 
 # === helper functions === [[[
-# prevent failed commands from being added to history
 zshaddhistory() {
   emulate -L zsh
   # whence ${${(z)1}[1]} >| /dev/null || return 1 # doesn't add setting arrays

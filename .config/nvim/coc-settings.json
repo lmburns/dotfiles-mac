@@ -18,17 +18,22 @@
   //   "sh": "shfmt",
   //   "zsh": "shfmt"
   // },
+  "codeLens.enable": true,
+  "codeLens.separator": "‣",
+  "codeLens.subseparator": " | ",
+  "list.indicator": "➤",
   "coc.preferences.formatOnSaveFiletypes": ["go"],
   "coc.preferences.formatOnType": true,
   "signature.enable": true,
   "sh.enable": true,
   "python.formatting.provider": "black",
-  "python.formatting.blackPath": "~/opt/anaconda3/bin/black",
+  "python.formatting.blackPath": "~/.local/share/pyenv/shims/black",
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
   "python.linting.flake8Enabled": true,
-  "python.jediEnabled": false,
-  "python.condaPath": "~/opt/anaconda3/bin/conda",
+  "python.jediEnabled": true,
+  "python.pythonPath": "~/.local/share/pyenv/shims/python",
+  // "python.condaPath": "~/opt/anaconda3/bin/conda",
   "suggest.disableMenu": false,
   "suggest.snippetIndicator": "",
   "suggest.noselect": false,
@@ -57,7 +62,8 @@
 
   // coc-explorer
   "explorer.icon.enableNerdfont": true,
-  "explorer.icon.enableVimDevicons": false,
+  "explorer.icon.source": "vim-devicons",
+  // "explorer.icon.enableVimDevicons": false,
   "explorer.git.enable": true,
   "explorer.quitOnOpen": true,
   "explorer.position": "left",
@@ -70,6 +76,7 @@
       "terminal"
     ],
     "filetypes": [
+      "vista_kind",
       "qf",
       "minimap"
     ],
@@ -185,8 +192,8 @@
   "rust-analyzer.checkOnSave.allFeatures": true,
   "rust-analyzer.procMacro.enable": true,
   "rust-analyzer.updates.prompt": true,
+  "rust-analyzer.trace.server": "verbose",
   "yank.highlight.duration": 100,
-  "coc.preferences.formatOnType": true,
   "clangd.path": "/Users/lucasburns/.config/coc/extensions/coc-clangd-data/install/12.0.0/clangd_12.0.0/bin/clangd",
   "solargraph.useBundler": true
 }
