@@ -17,6 +17,10 @@ function rm-broken-links()     { wfxr::rm-broken-links '-maxdepth 1' }
 
 function lsdelete() { lsof -n | rg -i --color=always deleted }
 
+# function ansi_strip() { sed -e 's/\x1b\[[0-9;]*[a-zA-Z]//g' }
+function ansi_strip() { sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" "$@"; }
+
+
 # Perl rename
 function backup-t()  { ~/bin/rename -n 's/^(.*)$/$1.bak/g' $@ }
 function backup()    { ~/bin/rename    's/^(.*)$/$1.bak/g' $@ }

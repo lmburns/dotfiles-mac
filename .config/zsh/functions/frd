@@ -1,7 +1,10 @@
 # Desc: fzf recent directories
 
+zmodload -F zsh/parameter p:dirstack
+
 frd() {
-  dir=$(dirs -lp | fzf)
+  # dir=$(print -rl -- "$dirstack[@]" | fzf)
+  dir=$(builtin dirs -pl | fzf)
   [[ -d "$dir" ]] && cd "$dir"
 }
 

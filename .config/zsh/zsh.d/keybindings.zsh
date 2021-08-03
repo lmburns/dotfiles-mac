@@ -1,3 +1,11 @@
+#===========================================================================
+#       Author: Lucas Burns
+#        Email: burnsac@me.com
+#      Created: 2021-06-27 21:50
+#  Description: Bindkeys for zsh using custom 'vbindkey'
+#===========================================================================
+
+
 # zshexpn -- zsh -o SOURCE_TRACE -lic ''
 # sed -n l -- infocmp -L1 -- zle -L
 
@@ -54,8 +62,14 @@ RG_buff() {
 
 zle -N RG_buff
 
+__ftag_local() { ftag -l ; }
+zle -N __ftag_local
+
 zle -N fcq
 zle -N pw
+
+# zle -N __rualdi_fzf
+
 # zle -N fcd-zle
 # zle -N bow2
 
@@ -94,7 +108,7 @@ typeset -gA keybindings; keybindings=(
   'C-x C-x'       execute-command
   'mode=vicmd u'  undo
   # 'mode=vicmd R' replace-pattern
-  'mode=vicmd R' replace-regex
+  'mode=vicmd R'  replace-regex
   'mode=vicmd U'  redo
   'mode=vicmd E'  backward-kill-line
   'mode=vicmd L'  end-of-line
@@ -111,12 +125,14 @@ typeset -gA keybindings; keybindings=(
   'mode=str M-t'  t                     # tmux wfxr
   'mode=str C-o'  lc                    # lf change dir
   'mode=str C-_'  lf
+  'mode=str M-.'  kf
   'mode=@ C-b'    bow2                  # surfraw open w3m
   'mode=@ M-/'    frd                   # cd interactively recent dir
   'mode=@ M-;'    fcd                   # cd interactively
   'mode=@ M-,'    __zoxide_zi
   'mode=@ M-['   fstat
   'mode=@ M-]'   fadd
+  'mode=@ M-f'   __ftag_local
 )
 
 # 'mode=@ C-o'    lc                    # lf change dir

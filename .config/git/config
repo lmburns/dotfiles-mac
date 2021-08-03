@@ -51,7 +51,7 @@
 [color "status"]
   untracked = red
   changed = green
-  updated = cyan
+  updated = blue
   added = yellow
 
 [diff]

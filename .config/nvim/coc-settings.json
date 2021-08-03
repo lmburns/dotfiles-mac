@@ -14,10 +14,10 @@
     "sh": "shellcheck"
     // "zsh": "shellcheck"
   },
-  // "diagnostic-languageserver.formatFiletypes": {
-  //   "sh": "shfmt",
+  "diagnostic-languageserver.formatFiletypes": {
+    "sh": "shfmt"
   //   "zsh": "shfmt"
-  // },
+  },
   "codeLens.enable": true,
   "codeLens.separator": "‣",
   "codeLens.subseparator": " | ",
@@ -87,6 +87,7 @@
       }
     }
   },
+  "explorer.keyMappingMode": "none",
   "explorer.keyMappings.global": {
     "i": false,
     "gk": "expandablePrev",
@@ -106,6 +107,10 @@
     ],
     "o": ["expanded?", "collapse", "expand"],
     "<cr>": ["expandable?", "cd", "open"],
+    // "o": ["expandable?", ["expanded?", "collapse", "expand"], "open"],
+    // "<cr>": "open",
+    // "l": "indentNext",
+    // "h": "indentPrev",
     "H": ["gotoParent"],
     "s": "open:split",
     "S": "open:split:plain",
@@ -120,8 +125,8 @@
     "p": "pasteFile",
     "dd": "delete",
 
-    "a": "addFile",
-    "D": "addDirectory",
+    "mf": "addFile",
+    "md": "addDirectory",
     "r": "rename",
 
     ".": "toggleHidden",
@@ -132,6 +137,7 @@
     "<esc>": "esc",
     "!": "systemExecute",
     "gd": "listDrive",
+    "<C-p>": "preview",
 
     "f": "search",
     "F": "searchRecursive",
@@ -187,12 +193,36 @@
     "default": "\uf29c"
   },
   "snippets.shortcut": "\uf672",
+  "clangd.enabled": true,
+  "clangd.arguments": ["--clang-tidy", "--completion-style=detailed", "--fallback-style=google", "--header-insertion=iwyu", "--suggest-missing-includes"],
+  "rust-analyzer.server.path": "rust-analyzer",
   "rust-analyzer.updates.channel":"nightly",
   "rust-analyzer.cargo.allFeatures": true,
   "rust-analyzer.checkOnSave.allFeatures": true,
   "rust-analyzer.procMacro.enable": true,
   "rust-analyzer.updates.prompt": true,
   "rust-analyzer.trace.server": "verbose",
+  "rust-analyzer.notifications.cargoTomlNotFound": true,
+  "rust-analyzer.lens.implementations": true,
+  "rust-analyzer.completion.postfix.enable": true,
+  "rust-analyzer.completion.addCallArgumentSnippets": true,
+  "rust-analyzer.completion.addCallParenthesis": true,
+  "rust-analyzer.inlayHints.chainingHints": true,
+  "rust-analyzer.inlayHints.typeHints": true,
+  "rust-analyzer.inlayHints.enable": true,
+  "rust-analyzer.diagnostics.enable": true,
+  "rust-analyzer.diagnostics.enableExperimental": true,
+  "rust-analyzer.lens.enable": true,
+
+  "rust.show_warnings": false,
+
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+      "filetypes": ["go"]
+    }
+  },
   "yank.highlight.duration": 100,
   "clangd.path": "/Users/lucasburns/.config/coc/extensions/coc-clangd-data/install/12.0.0/clangd_12.0.0/bin/clangd",
   "solargraph.useBundler": true

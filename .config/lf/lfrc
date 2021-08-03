@@ -113,11 +113,11 @@ cmd trash ${{
     print -R "$fx deleted"
 }}
 
-# -- Move: autojump
+# -- Move: zoxide
 # dest="$(print -rl -- ${(Oa)${${(@f)"$(autojump -s)"}//(#m)*/${${(s: :)${MATCH}//[[:space:]]##/ }[2]}}[0,-6]} | fzf --prompt ' Jump Move> ' --no-height)"
 cmd movetojump ${{
   clear
-  dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="Move to> ")"
+  dest=$(_ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --prompt ' Move to> ' --no-height +m" zoxide query -i)
   for x ($fx) { mv -iv $x $dest } && {
     terminal-notifier -title "🚚 File(s) copied." -message "${fx:t} moved to $dest"
   }
@@ -136,7 +136,7 @@ cmd movetopath ${{
 # -- Copy: autojump
 cmd copytojump ${{
   clear
-  dest="$(autojump -s | tac | awk 'NR>7{print $2}' | fzf --prompt="Copy to> ")"
+  dest=$(_ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --prompt ' Copy to> ' --no-height +m" zoxide query -i)
   for x ($fx) { cp -pivr $x $dest } && {
     terminal-notifier -title "🚚 File(s) copied." -message "${fx:t} copied to $dest."
   }
@@ -543,11 +543,14 @@ cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
 # -- Miscellaneous:
 cmd rsyncto ${{ rsync -uvrP $fx root@burnsac.xyz:"$1" }}
 cmd rsyncfrom ${{ rsync -uvrP root@burnsac.xyz:"$1" "$2" }}
-cmd fzf_cd $lf -remote "send $id cd '$(fd . --exact-depth=1 -td -HiL | fzf)'"
+cmd fzf_cd ${{
+  clear
+  lf -remote "send $id cd '$(fd . --exact-depth=1 -td -HiL | fzf --no-height --pointer="cd")'"
+}}
 
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
 cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' | fzf)'"
-cmd fzf $clear; nvim $(fd -Hi -tf "$1" . |  fzf)
+cmd fzf $clear; nvim $(fd -Hi -tf "$1" . |  fzf --no-height)
 cmd fd !clear; fd -Hi "$1"
 cmd rg !clear; rg "$1"
 cmd rgu !clear; rgu "$1"
@@ -665,7 +668,7 @@ map Bf push :f2<space>                  # use f2 to rename
 map ch chmod                            # change file permissions
 map cH chown                            # change file owner
 
-map bk $gcp --force --suffix=.bak "$f" "$f"     # backup file
+map bk $/usr/local/bin/gcp -r --force --suffix=.bak "$f" "$f".bak     # backup file
 map rd $rmcrap                                  # delete .DS_Store etc
 map rs rmspace
 # ]]]

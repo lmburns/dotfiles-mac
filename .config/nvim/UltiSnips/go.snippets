@@ -75,3 +75,65 @@ endsnippet
 snippet interface "interface {}"
 interface {}
 endsnippet
+
+snippet err "Basic error handling" b
+if err != nil {
+	${1}
+}
+endsnippet
+
+snippet errr "Basic error handling return err" b
+if err != nil {
+	return err
+}
+${1}
+endsnippet
+
+snippet errr, "Basic error handling return err with another return" b
+if err != nil {
+	return ${1:nil}, err
+}
+endsnippet
+
+snippet errw "Return wrapped error" b
+if err != nil {
+	return errors.Wrap(err, "${1}")
+}
+endsnippet
+
+snippet errwf "Basic error handling with wrapping format" b
+if err != nil {
+	return errors.Wrapf(err, "${1}", ${2})
+}
+endsnippet
+
+snippet errab "Basic abort with error from Gin Context" b
+if err != nil {
+	_ = c.AbortWithError(http.StatusInternalServerError, err)
+	return
+}
+endsnippet
+
+snippet errabwf "Basic abort with error from Gin Context" b
+if err != nil {
+	err =  errors.Wrapf(err, "${1}", ${2})
+	c.AbortWithError(http.StatusInternalServerError, err)
+	return
+}
+endsnippet
+
+snippet /^package/ "Package declaration" b
+// Package $1 provides ...
+package ${1:main}
+$2
+endsnippet
+
+snippet switcht "Switch type statement" b
+switch ${1:expression}${1/(.+)/ /} := ${2:var}.(Type) {
+case ${0:int}
+}
+endsnippet
+
+snippet e: "Variable declaration := with error" b
+${1:name}, err:= ${0:value}
+endsnippet

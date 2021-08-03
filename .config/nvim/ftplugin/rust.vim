@@ -1,1 +1,1 @@
-" set keyworkprg=rusty-man
+set keywordprg=rusty-man\ --viewer\ tui

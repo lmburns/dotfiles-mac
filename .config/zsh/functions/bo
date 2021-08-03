@@ -11,7 +11,11 @@ sql="SELECT id,URL,metadata,tags FROM bookmarks"
 url=$(
   sqlite3 -separator $'\t' "$db" "$sql" \
     | perl -F'\t' -lne 'BEGIN{$,="\t"} $F[3] =~ s/(^,|,$)//g; print @F' \
-    | fzf -m --reverse --preview "buku -p {1}" --preview-window=wrap \
+    | fzf -m \
+          --reverse \
+          --preview "buku -p {1}" \
+          --preview-window=wrap \
+          --query "${*:-}" \
     | ${commands[hck]:-cut} -f2
 )
 

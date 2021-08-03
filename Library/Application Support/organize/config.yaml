@@ -1,0 +1,145 @@
+rules:
+  # sort my invoices and receipts
+  - folders: ~/Downloads
+    subfolders: true
+    filters:
+        - extension: pdf
+        - filename:
+              contains:
+                  - Invoice
+                  - Order
+                  - Purchase
+              case_sensitive: false
+    actions:
+        - move: ~/Documents/Shopping/
+
+  # move file types
+  - folders: ~/Downloads
+    subfolders: true
+    filters:
+        - extension:
+          - jpg
+          - png
+          - jpeg
+          - svg
+          - webp
+    actions:
+        - move: ~/Downloads/Org/Images/
+
+  - folders: ~/Downloads
+    subfolders: true
+    filters:
+        - extension:
+          - mp3
+          - m3u
+          - ogg
+          - wav
+    actions:
+        - move: ~/Downloads/Org/Music/
+
+  - folders: ~/Downloads
+    subfolders: true
+    filters:
+        - extension:
+          - mp4
+          - mkv
+          - avi
+          - flv
+    actions:
+        - move: ~/Downloads/Org/Videos/
+
+  - folders: ~/Downloads
+    subfolders: true
+    filters:
+        - extension:
+          - pdf
+          - txt
+          - doc
+          - docx
+          - md
+          - rtf
+          - epub
+    actions:
+        - move: ~/Downloads/Org/Documents/
+
+  - folders: ~/Downloads
+    subfolders: true
+    filters:
+        - extension:
+          - gz
+          - xz
+          - zip
+          - rar
+          - 7z
+          - tar
+    actions:
+        - move: ~/Downloads/Org/Compressed/
+
+  - folders: ~/Downloads
+    subfolders: true
+    filters:
+        - extension: dmg
+    actions:
+        - move: ~/Downloads/Org/DMGs/
+
+  - folders: ~/Downloads
+    subfolders: true
+    filters:
+        - extension: torrent
+    actions:
+        - move: ~/Downloads/Org/Torrents/
+
+
+  # move incomplete downloads older > 30 days into the trash
+  - folders: ~/Downloads
+    filters:
+        - extension:
+              - download
+              - crdownload
+              - part
+        - lastmodified:
+              days: 30
+              mode: older
+    actions:
+        - trash
+
+  # delete empty files from downloads and desktop
+  - folders:
+        - ~/Downloads
+        - ~/Desktop
+    filters:
+        - filesize: 0
+    actions:
+        - trash
+
+  # move screenshots into "Screenshots" folder
+  - folders: ~/Desktop
+    filters:
+        - filename:
+              startswith: "Screen Shot"
+    actions:
+        - move: ~/Desktop/Screenshots/
+
+  # organize your font files but keep the folder structure:
+  #   "~/Downloads/favourites/helvetica/helvetica-bold.ttf"
+  #     is moved to
+  #   "~/Documents/FONTS/favourites/helvetica/helvetica-bold.ttf"
+
+  # - folders: ~/Downloads/**/*.ttf
+  #   actions:
+  #       - Move: "~/Documents/FONTS/{relative_path}"
+  # # advanced usage
+  # - folders: ~/Documents/**/*
+  #   filters:
+  #       - extension:
+  #             - pdf
+  #             - docx
+  #       - created
+  #   actions:
+  #       - move: "~/Documents/{extension.upper}/{created.year}{created.month:02}/"
+  #       - shell: 'open "{path}"'
+
+  # optional settings:
+  # enabled: true
+  # subfolders: true
+  # system_files: false

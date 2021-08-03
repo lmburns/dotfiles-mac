@@ -1,6 +1,8 @@
 # editor := env_var(EDITOR)
 # confd := env_var(XDG_CONFIG_HOME)
 
+set shell := ["zsh", "-uc"]
+
 # view example justfile
 help:
   @$EDITOR $XDG_DATA_HOME/just/overall.just
@@ -219,6 +221,10 @@ rsync-home:
   sudo rsync -rzau --delete-after --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS \
   ~ /Volumes/SSD/macos-full
 
+# rsync projects directory
+rsync-proj:
+  pueue add 'sudo -A rsync -azurh --info=name0 ~/projects /Volumes/SSD/manual-bkp/'
+
 # rsync -Prugoptczl --info=progress2 --info=name0 --delete-after
 
 # rsync server
@@ -237,3 +243,9 @@ www-pull:
 www-push:
   rsync -rugoptczl --info=progress2 --info=name0 --delete-after --exclude ".DS_Store" \
     $HOME/server /Volumes/SSD'
+
+# list users and groupmembership to track if any new are created
+backup-membership:
+  @dscl . -list /Groups RealName > $BACKUP_DIR/ds_cache/realname_$(date -Iminutes)
+  @dscl . -list /Groups GroupMembership > $BACKUP_DIR/ds_cache/membership_$(date -Iminutes)
+  @[[ $? == 0 ]] && builtin print -Pr "%F{13}GroupMembership%f and %F{13}RealName%f are %F{10}%Bbacked up%b%f"

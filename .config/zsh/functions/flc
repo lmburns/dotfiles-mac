@@ -11,7 +11,8 @@ sel=$(\
   lolcate --db config "$@" \
   | fzf \
     --delimiter / \
-    --with-nth 5..
+    --with-nth 5.. \
+    --query "${*:-}"
 )
 
 [[ -n "$sel" ]] && ${EDITOR:-vim} "$sel"

@@ -1,7 +1,10 @@
 tsm-clearcompleted() {
-  transmission-remote -l | grep 100% | grep Done | \
-  awk '{print $1}' | xargs -n 1 -I % transmission-remote -t % -r
+  local -a done
+  done=( $(transmission-remote -l | rg '100%' | rg 'Done' | hck -f2) )
+  for f (${done%\*}) { transmission-remote -t $f -r }
 }
+
+tsm-clearall() { for f ( $(transmission-remote -l | hck -f2) ) { transmission-remote -t $f -r }; }
 
 # display numbers of ip being blocked by the blocklist (credit: smw from irc #transmission)
 tsm-count() {

@@ -7,6 +7,9 @@
 [envs.amfora]
     exe_exists = ["amfora"]
 
+[envs.aria2p]
+    exe_exists = ["aria2p"]
+
 [envs.bat]
     exe_exists = ["bat"]
 
@@ -20,6 +23,9 @@
     exe_exists = ["calcurse"]
     path_exists = ["/Users/lucasburns/.config/calcurse/caldav"]
 
+[envs.fw]
+    exe_exists = ["fw"]
+
 [envs.git]
     exe_exists = ["git"]
 
@@ -31,6 +37,9 @@
 
 [envs.gpg]
     exe_exists = ["gpg"]
+
+[envs.jrnl]
+    exe_exists = ["jrnl"]
 
 [envs.just]
     exe_exists = ["just"]
@@ -51,6 +60,9 @@
     exe_exists = ["lolcate"]
     path_exists = ["/Users/lucasburns/Library/Application Support/lolcate/config"]
 
+[envs.makers]
+    exe_exists = ["makers"]
+
 [envs.mozilla]
     path_exists = [
        "/Applications/LibreWolf.app",
@@ -63,6 +75,9 @@
 [envs.pueue]
     exe_exists = ["pueue"]
 
+[envs.sauce]
+    exe_exists = ["sauce"]
+
 [envs.skhd]
     exe_exists = ["skhd"]
 
@@ -71,6 +86,9 @@
 
 [envs.task]
     exe_exists = ["task"]
+
+[envs.timew]
+    exe_exists = ["timew"]
 
 [envs.um]
     exe_exists = ["um"]
@@ -92,8 +110,12 @@
 [envs.yabai]
   exe_exists = ["yabai"]
 
+[envs.zoxide]
+  exe_exists = ["zoxide"]
+
 [envs.zsh]
     exe_exists = ["zsh"]
+
 
 [envs.macos]
     os = ["macos"]
@@ -111,6 +133,12 @@
 
 [hoards.amfora]
     "macos|amfora" = "/Users/lucasburns/.config/amfora/config.toml"
+
+[hoards.aria]
+    [hoards.aria.aria2p]
+        "macos|aria2p" = "/Users/lucasburns/Library/Application Support/aria2p/config.toml"
+    [hoards.aria.aria2]
+        "macos|aria2p" = "/Users/lucasburns/.config/aria2/aria2.conf"
 
 [hoards.arranger]
     "macos" = "/Users/lucasburns/.config/arranger/arranger.conf"
@@ -177,6 +205,9 @@
     [hoards.fastsyntaxhighlighting.theme3]
         "macos|zsh" = "/Users/lucasburns/.config/fsh/mod-backup.ini"
 
+[hoards.fw]
+    "macos|fw" = "/Users/lucasburns/.config/fw"
+
 # FIX: 'git' won't work
 [hoards.gitp]
     [hoards.gitp.conf]
@@ -223,7 +254,10 @@
     "macos" = "/Users/lucasburns/.config/iterm-colors"
 
 [hoards.jrnl]
-    "macos" = "/Users/lucasburns/.config/jrnl/jrnl.yaml"
+    [hoards.jrnl.conf]
+        "macos|jrnl" = "/Users/lucasburns/.config/jrnl/jrnl.yaml"
+    [hoards.jrnl.data]
+        "macos|jrnl" = "/Users/lucasburns/.local/share/jrnl"
 
 [hoards.just]
     [hoards.just.justfile]
@@ -273,6 +307,12 @@
 
 [hoards.lolcate]
     "macos|lolcate" = "/Users/lucasburns/Library/Application Support/lolcate"
+
+[hoards.makers]
+    [hoards.makers.conf]
+        "macos|makers" = "/Users/lucasburns/.config/cargo-make/config.toml"
+    [hoards.makers.makefile]
+        "macos|makers" = "/Users/lucasburns/.config/cargo-make/Makefile.toml"
 
 [hoards.mozilla]
     [hoards.mozilla.chrome]
@@ -402,6 +442,9 @@
 [hoards.rtv]
     "macos" = "/Users/lucasburns/.config/rtv/rtv.cfg"
 
+[hoards.sauce]
+    "macos|sauce" = "/Users/lucasburns/.local/share/sauce"
+
 [hoards.sc_im]
     "macos" = "/Users/lucasburns/.config/sc-im/scimrc"
 
@@ -461,6 +504,9 @@
 
 [hoards.tig]
     "macos" = "/Users/lucasburns/.config/tig/tigrc"
+
+[hoards.timew]
+    "macos|timew" = "/Users/lucasburns/.local/share/timewarrior"
 
 [hoards.thefuck]
     "macos" = "/Users/lucasburns/.config/thefuck/settings.py"
@@ -553,6 +599,9 @@
 
 [hoards.zathura]
     "macos" = "/Users/lucasburns/.config/zathura"
+
+[hoards.zoxide]
+    "macos|zoxide" = "/Users/lucasburns/.local/share/zoxide/db.zo"
 
 [hoards.zsh]
     [hoards.zsh.functions]

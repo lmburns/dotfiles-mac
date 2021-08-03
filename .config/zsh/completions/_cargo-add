@@ -24,7 +24,7 @@ _cargo-add() {
 
 _cargo-edit_cached_crates() {
   local -Ua crates
-  crates=(~/.cargo/registry/cache/**/*.crate(:r:t))
-  crates=(${crates%%-[0-9].[0-9]*})
+  crates=( ${CARGO_HOME:-$HOME/.cargo}/registry/cache/**/*.crate(:r:t) )
+  crates=( ${crates%%-[0-9].[0-9]*} )
   _describe -t crates 'local cached crates' crates
 }

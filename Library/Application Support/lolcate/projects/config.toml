@@ -1,4 +1,4 @@
-description = ""
+description = "Projects folder (including git)"
 
 # Directories to index.
 dirs = [

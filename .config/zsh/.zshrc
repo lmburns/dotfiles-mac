@@ -85,9 +85,13 @@ alias c=cdr
 zt(){ zinit depth'3' lucid ${1/#[0-9][a-c]/wait"${1}"} "${@:2}"; }
 grman() {
   local graw="https://raw.githubusercontent.com"; local -A opts
+  # FIX: is zinit substitute needed?
   zparseopts -D -E -A opts -- r: e: ; @zinit-substitute
   print -r "${graw}/%USER%/%PLUGIN%/master/${@:1}${opts[-r]:-%PLUGIN%}.${opts[-e]:-1}";
 }
+
+# FIX:
+cclean() { command mv -f "tar*/rel*/%PLUGIN%" . && cargo clean; }
 
 [[ ! -f $ZINIT[BIN_DIR]/zinit.zsh ]] && {
   command mkdir -p "$ZINIT_HOME" && command chmod g-rwX "$ZINIT_HOME"
@@ -207,11 +211,7 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   compile'.*fast*~*.zwc' nocompletions atpull'%atclone' \
     zdharma/fast-syntax-highlighting \
   atload'vbindkey "Up" history-substring-search-up; vbindkey "Down" history-substring-search-down' \
-    zsh-users/zsh-history-substring-search \
-  pick'formarks.plugin.zsh' \
-  atload'export PATHMARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
-  atinit'export FZF_MARKS_JUMP="^[."' \
-    wfxr/formarks
+    zsh-users/zsh-history-substring-search
 #  ]]] === wait'0b' - patched ===
 
 #  === wait'0b' === [[[
@@ -233,10 +233,15 @@ zt 0b light-mode for \
   pick'autoenv.zsh' nocompletions \
   atload'AUTOENV_AUTH_FILE="${ZPFX}/share/autoenv/autoenv_auth"' \
     Tarrasch/zsh-autoenv \
+  pick'formarks.plugin.zsh' \
+  atload'export PATHMARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
+  atinit'export FZF_MARKS_JUMP="^[<"' \
+    lmburns/formarks \
   lbin'!bin/*' \
     bigH/git-fuzzy \
     zdharma/zui \
     zdharma/zbrowse
+# TODO: Delete git fuzzy after done using it for testing
 #  ]]] === wait'0b' ===
 
 #  === wait'0c' - programs - sourced === [[[
@@ -290,12 +295,12 @@ zt 0c light-mode binary for \
     sdushantha/tmpmail \
   lbin'!nb;!*/bookmark;!*/notes' \
     xwmx/nb \
-  lbin'*/tag' make'tag' lman \
+  lbin'*/tag' make'tag' lman wait'[[ $OSTYPE = darwin* ]]' \
     jdberry/tag \
-  lbin \
+  lbin wait'[[ $OSTYPE = darwin* ]]' \
     ttscoff/vitag \
   lbin bpick'*.tar.gz' atclone'autoconf; ./configure --prefix="$ZPFX"; make' \
-  make'install' lman \
+  make'install' lman wait'[[ $OSTYPE = darwin* ]]' \
     moretension/duti \
   lbin'**/rga;**/rga-*' from'gh-r' mv'rip* -> rga' bpick'*64-apple*' \
     phiresky/ripgrep-all \
@@ -338,8 +343,6 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     ogham/dog \
   atclone'./just --completions zsh > _just' atpull'%atclone' \
     casey/just \
-  atclone'./wutag/wutag print-completions zsh > _wutag' atpull'%atclone' \
-    wojciechkepka/wutag \
   lbin'**/gh' atclone'./**/gh completion --shell zsh > _gh' atpull'%atclone' \
     cli/cli \
   lbin'**/hub' extract'!' atclone'mv -f **/**.zsh* _hub' atpull'%atclone' \
@@ -439,10 +442,11 @@ zt 0c light-mode null for \
     muesli/duf \
   lbin from'gh-r' \
     pemistahl/grex \
-  lbin'**/**/tokei' patch"${pchf}/%PLUGIN%.patch" reset \
-  atclone'cargo build --release --all-features' \
+  lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo build --release' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     XAMPPRocky/tokei \
-  lbin'**/**/viu' atclone'cargo install --path .' \
+  lbin atclone'cargo build --release' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
   atpull'%atclone' has'cargo' \
     atanunq/viu \
   lbin from'gh-r' bpick'*darwin*' \
@@ -453,7 +457,8 @@ zt 0c light-mode null for \
     itchyny/mmv \
   lbin'* -> sd' from'gh-r' bpick'*darwin' \
     chmln/sd \
-  lbin'**/**/hoard' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
   atpull'%atclone' \
     Shadow53/hoard \
   lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
@@ -461,10 +466,11 @@ zt 0c light-mode null for \
     dmerejkowsky/ruplacer \
   lbin'* -> renamer' from'gh-r' bpick'*macos*' \
     adriangoransson/renamer \
-  lbin'**/**/fclones' atclone'cargo build --release'  \
-  atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     pkolaczk/fclones \
-  lbin'target/release/tldr' atclone'cargo build --release' \
+  lbin atclone'cargo build --release' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
   atclone"mv -f zsh_* _tldr" \
     dbrgn/tealdeer \
   lbin'pueued-* -> pueued' lbin'pueue-* -> pueue' from'gh-r' \
@@ -472,9 +478,11 @@ zt 0c light-mode null for \
     Nukesor/pueue \
   lbin from'gh-r' bpick'*mac*' \
     @dalance/procs \
-  lbin'tar*/rel*/bandwhich' atclone"cargo install --path ." atpull'%atclone' \
+  lbin atclone"cargo install --path ." atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     imsnif/bandwhich \
-  lbin'tar*/rel*/choose' atclone"cargo build --release" atpull'%atclone' \
+  lbin atclone"cargo build --release" atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     theryangeary/choose \
   lbin'* -> hck' from'gh-r' bpick'*os-*64' \
     sstadick/hck \
@@ -484,7 +492,8 @@ zt 0c light-mode null for \
     Byron/dua-cli \
   lbin'**/lolcate' from'gh-r' atload'alias le=lolcate' \
     ngirard/lolcate-rs \
-  lbin'tar*/rel*/fw' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
   atload'export FW_CONFIG_DIR="$XDG_CONFIG_HOME/fw"' \
     brocode/fw \
   lbin from'gh-r' \
@@ -495,45 +504,95 @@ zt 0c light-mode null for \
     njaremko/podcast \
   lbin from'gh-r' \
     rcoh/angle-grinder \
-  lbin'tar*/rel*/hm' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     hlmtre/homemaker \
-  lbin'tar*/rel*/inventorize' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     rdmitr/inventorize \
-  lbin'tar*/rel*/xcompress' atclone'cargo build --release' atpull'%atclone' \
+  lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo build --release' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" atpull'%atclone' \
     magiclen/xcompress \
-  lbin'tar*/rel*/loop' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     miserlou/loop \
-  lbin'tar*/rel*/rip' atclone'cargo build --release' atpull'%atclone' \
-    nivekuil/rip
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    lmburns/rip \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  eval'sauce --shell zsh shell init' \
+    dancardin/sauce \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    allenap/rust-petname \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    neosmart/rewrite \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  atclone"./rualdi completions shell zsh > _rualdi" \
+  atload'alias ru="rualdi"' eval'rualdi init zsh --cmd k' \
+    lmburns/rualdi \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  atclone'./wutag print-completions zsh > _wutag' \
+    wojciechkepka/wutag
+
+# atclone"./rip completion --shell zsh > _rip && command ln -sfv _rip $ZINIT[COMPLETIONS_DIR]" \
+
+# eval'rualdi init zsh --cmd k' \
 
 # === rust extensions === [[[
 zt 0c light-mode null for \
-  lbin'tar*/rel*/rust-script' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     fornwall/rust-script \
-  lbin'tar*/rel*/cargo-eval' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     reitermarkus/cargo-eval \
-  lbin'tar*/rel*/cargo-play' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     fanzeyi/cargo-play \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    matthiaskrgr/cargo-cache \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    razrfalcon/cargo-bloat \
+  lbin atclone'cargo build --release --features=fix' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    rustsec/rustsec \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    andrewradev/cargo-local \
   lbin'tar*/rel*/cargo-{rm,add,upgrade}' atclone'cargo build --release' atpull'%atclone' \
     killercup/cargo-edit \
-  lbin'tar*/rel*/cargo-cache' atclone'cargo build --release' atpull'%atclone' \
-    matthiaskrgr/cargo-cache \
-  lbin from'gh-r' \
+  lbin'tar*/rel*/{cargo-make,makers}' atclone'cargo build --release' atpull'%atclone' \
+  atload'export CARGO_MAKE_HOME="$XDG_CONFIG_HOME/cargo-make"' \
+  atload'alias ncmake="$EDITOR $CARGO_MAKE_HOME/Makefile.toml" cm="makers --makefile $CARGO_MAKE_HOME/Makefile.toml"' \
     sagiegurari/cargo-make \
-  lbin'tar*/rel*/evcxr' atclone'cargo build --release' atpull'%atclone' \
+  lbin atclone'cargo build --release' \
+  atclone'command mv -f tar/*/rel*/evcxr . && cargo clean' atpull'%atclone' \
     google/evcxr \
-  lbin'tar*/rel*/bacon' atclone'cargo build --release --all-features' atpull'%atclone' \
+  lbin atclone'cargo build --release --all-features' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     Canop/bacon \
-  lbin'tar*/rel*/rusty-man' atclone'command git clone https://git.sr.ht/~ireas/rusty-man' atclone'command rsync -vua --delete-after rusty-man/ .' \
+  lbin'tar*/rel*/rusty-man' atclone'command git clone https://git.sr.ht/~ireas/rusty-man' \
+  atclone'command rsync -vua --delete-after rusty-man/ .' \
   atclone'cargo build --release && cargo doc' atpull'%atclone' id-as'sr-ht/rusty-man' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
   atinit'alias rman="rusty-man" rmand="open https://git.sr.ht/~ireas/rusty-man"' \
-    zdharma/null
+    zdharma/null \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    sminez/roc
 # ]]] == rust extensions
 # ]]] == rust
 
 # google/evcxr (rust repl)
 
-# === tui specifi block === [[[
+# === tui specific block === [[[
 zt 0c light-mode null for \
   lbin from'gh-r' bpick'*darwin*' \
     wagoodman/dive \
@@ -573,6 +632,7 @@ zt 0c light-mode null for \
   make'install' atpull'%atclone' mv"_tig -> $ZINIT[COMPLETIONS_DIR]" \
     jonas/tig \
   lbin'*/delta;git-dsf' from'gh-r' patch"${pchf}/%PLUGIN%.patch" \
+  atload'alias dsf="git-dsf"' \
     dandavison/delta \
   lbin from'gh-r' \
     extrawurst/gitui \
@@ -652,7 +712,7 @@ zstyle ':fzf-tab:complete:cdr:*'                fzf-preview 'exa -TL 3 --color=a
 zstyle ':fzf-tab:complete:(exa|cd):*'           popup-pad 30 0
 zstyle ':fzf-tab:complete:(exa|cd|cdr|cd_):*'   fzf-flags '--preview-window=nohidden,right:45%:wrap'
 zstyle ':fzf-tab:complete:(exa|cd|cd_):*'       fzf-preview '[[ -d $realpath ]] && exa -T --color=always $(readlink -f $realpath)'
-zstyle ':fzf-tab:complete:(cp|rm|mv|bat):argument-rest' fzf-preview 'r=$(readlink -f $realpath); bat --color=always -- $r || exa --color=always -- $r'
+zstyle ':fzf-tab:complete:(cp|rm|rip|mv|bat):argument-rest' fzf-preview 'r=$(readlink -f $realpath); bat --color=always -- $r || exa --color=always -- $r'
 zstyle ':fzf-tab:*' fzf-bindings \
   'enter:accept,backward-eof:abort,ctrl-a:toggle-all,alt-shift-down:preview-down,alt-shift-up:preview-up' \
   'alt-e:execute-silent({_FTB_INIT_}nvim "$realpath" < /dev/tty > /dev/tty)' # c-j, c-k in tmux not working
@@ -713,8 +773,8 @@ zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # no 
 zstyle ':completion:*:*:-subscript-:*'              tag-order indexes parameters # index before parameters in subscripts
 zstyle ':completion:*:*:-redirect-,2>,*:*'          file-patterns '*.log' # offer log files as completion for error redireciton
 zstyle -e ':completion:*:approximate:*'             max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
-zstyle ':completion:*:(rm|kill|diff):*'             ignore-line other # ignore duplicates
-zstyle ':completion:*:rm:*'                         file-patterns '*:all-files'
+zstyle ':completion:*:(rm|rip|kill|diff|git-dsf):*'         ignore-line other # ignore duplicates
+zstyle ':completion:*:(rm|rip|git-dsf):*'                   file-patterns '*:all-files'
 
 zstyle ':completion:*:(ssh|scp|rsync):*'  tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
 zstyle ':completion:*:(scp|rsync):*'      group-order users files all-files hosts-domain hosts-host hosts-ipaddr
@@ -743,6 +803,16 @@ zstyle ':completion:*:hosts' hosts $hosts
 # ]]]
 
 # === one line functions === [[[
+# lsof open fd
+zmodload -F zsh/system p:sysparams
+function lsfd() { lsof -p $sysparams[ppid] | hck -f1,4,5- ; }
+# cargo new and cd
+# function cargo-take() { cargo new "$@" && builtin cd "$@"; }
+# wrapper for rusty-man for tui
+function rmant() { rusty-man "$1" --theme 'Solarized (dark)' --viewer tui "${@:2}"; }
+function cdc() { builtin cd ${$(cargo locate-project | jq -r '.root'):h}; }
+function cme() { $EDITOR ${$(cargo locate-project | jq -r '.root'):h}/src/main.rs; }
+function cml() { $EDITOR ${$(cargo locate-project | jq -r '.root'):h}/src/lib.rs; }
 # find functions that follow this pattern: func()
 function ffunc() { eval "() { $functions[RG] } ${@}\\\\\("; }
 # rsync from local pc to server
@@ -777,7 +847,7 @@ function unlbin() { rm -v /$XDG_BIN_HOME/$1; }
 # latex documentation serch (as best I can)
 function latexh() { zathura -f "$@" "$HOME/projects/latex/docs/latex2e.pdf" }
 # cd into directory
-function take() { mkdir -p $@ && cd ${@:$#} }
+# function take() { mkdir -p $@ && cd ${@:$#} }
 # html to markdown
 function w2md() { wget -qO - "$1" | iconv -t utf-8 | html2text -b 0; }
 # sha of a directory
@@ -945,7 +1015,7 @@ typeset -gx BREW_PREFIX="$(/usr/local/bin/brew --prefix)"
 typeset -g KEYTIMEOUT=15
 
 typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
-typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${HOMEBREW_PREFIX}/lib/password-store/extensions"
+typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${BREW_PREFIX}/lib/password-store/extensions"
 # ]]]
 
 # === fzf === [[[
@@ -976,11 +1046,17 @@ FZF_COLORS="
 --color=pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
 --color=header:#fb4934,prompt:#b16286
 "
-SKIM_COLORS="
---color=fg:#b16286,fg+:#d3869b,hl:#458588,hl+:#689d6a
---color=pointer:#fabd2f,marker:#fe8019,spinner:#b8bb26
---color=header:#cc241d,prompt:#fb4934
-"
+
+typeset -a SKIM_COLORS=(
+  "fg:-1" "fg+:-1" "hl:#458588" "hl+:#689d6a" "bg+:-1" "marker:#fe8019"
+  "spinner:#b8bb26" "header:#cc241d" "prompt:#fb4934"
+)
+
+# matched_bg        Background of highlighted substrings
+# current_match_bg  Background of highlighted substrings (current line)
+# query             Text of Query (the texts after the prompt)
+# query_bg          Background of Query
+
 FZF_FILE_PREVIEW="([[ -f {} ]] && (bat --style=numbers --color=always {}))"
 FZF_DIR_PREVIEW="([[ -d {} ]] && (exa -T {} | less))"
 FZF_BIN_PREVIEW="([[ \$(file --mime-type -b {}) =~ binary ]] && (echo {} is a binary file))"
@@ -1008,7 +1084,9 @@ $FZF_COLORS
 --bind='ctrl-u:half-page-up,ctrl-d:half-page-down'
 --bind=change:top
 "
-export SKIM_DEFAULT_OPTIONS=${(F)${(M)${(@f)FZF_DEFAULT_OPTS}/(#m)*info*/${${(@s. .)MATCH}:#--info*}}:#--(bind change:top|pointer*|marker*)}
+SKIM_DEFAULT_OPTIONS=${(F)${(M)${(@f)FZF_DEFAULT_OPTS}/(#m)*info*/${${(@s. .)MATCH}:#--info*}}:#--(bind=change:top|pointer*|marker*|color*)}
+SKIM_DEFAULT_OPTIONS+=$'\n'"--color=${(j:,:)SKIM_COLORS}"
+export SKIM_DEFAULT_OPTIONS
 
 export FZF_ALT_E_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_E_OPTS="
@@ -1058,6 +1136,7 @@ $FZF_DEFAULT_OPTS
 
 # HOMEBREW_PREFIX is not reliable when sourced (brew shellenv)
 path=(
+  ${BREW_PREFIX}/bin
   ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
   ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
   ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
@@ -1149,7 +1228,10 @@ zt 0b light-mode null id-as for \
 # local first=${${${(M)${(%):-%l}:#*01}:+1}:-0}
 [[ -f "$ZINIT[PLUGINS_DIR]/keychain_init"/eval*~*.zwc(#qN.ms+45000) ]] && {
   zinit recache keychain_init
-  print -P "%F{12}===> Keychain recached <===%f"
+  print -Pr "%F{13}===========================%f"
+  print -Pr "%F{12}===> %BKeychain recached%b <===%f"
+  print -Pr "%F{13}===========================%f"
+  zle && zle reset-prompt
 }
 # ]]]
 

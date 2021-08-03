@@ -12,6 +12,9 @@ alias -g T='| tail'
 
 alias xp="xplr"
 alias xx="xcompress"
+# alias ca='cargo'
+
+alias rg='rg -.'
 
 alias :q='exit'
 alias ng="noglob"
@@ -76,12 +79,14 @@ alias mv='mv -iv'
 alias chx='chmod ug+x'
 alias chmx='chmod -x'
 alias lns='ln -siv'
-alias ka='killall'
+alias kall='killall'
 alias kid='kill -KILL'
 alias yt='youtube-dl --add-metadata -i'
 alias grep="command grep --color=auto --binary-files=without-match --directories=skip"
+alias rg="rg --hidden"
 alias prg="rg --pcre2"
 alias frg="rg -F"
+alias irg="rg --no-ignore"
 alias diff='diff --color=auto'
 alias sha='shasum -a 256'
 alias wh="whence -f"
@@ -101,6 +106,7 @@ alias pvim='nvim -u NONE'
 alias nzsh='$EDITOR $ZDOTDIR/.zshrc'
 alias azsh='$EDITOR $ZDOTDIR/zsh.d/aliases.zsh'
 alias bzsh='$EDITOR $ZDOTDIR/zsh.d/keybindings.zsh'
+alias ndir='$EDITOR $ZDOTDIR/gruv.dircolors'
 alias ezsh='$EDITOR $HOME/.zshenv'
 alias ninit='$EDITOR $XDG_CONFIG_HOME/nvim/init.vim'
 alias ncoc='$EDITOR $XDG_CONFIG_HOME/nvim/coc-settings.json'
@@ -198,6 +204,7 @@ alias idh="man /usr/share/man/man1/id.1"
   alias nset='networksetup'
   alias snset='sudo networksetup'
   alias x1mute="osascript -e 'set volume output muted true'"
+  alias x1emptytrash="osascript -e 'tell application \"Finder\" to empty trash'"
   alias x1lock="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
   alias loginscreen='sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText'
   # alias battemp="bc <<< \"scale=3; $(ioreg -r -n AppleSmartBattery | grep Temperature | cut -c23-)/100*1.8+32\""
@@ -253,7 +260,7 @@ alias nbconvert='jupyter nbconvert --to python'
 alias gpg-tui='gpg-tui --style colored'
 alias tno='terminal-notifier'
 
-alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/burnsac'
+alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/lmburns'
 
 alias nerdfont='source $XDG_DATA_HOME/fonts/i_all.sh'
 

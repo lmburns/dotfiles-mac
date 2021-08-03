@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+# Desc: create a new project and cd into it
+# cargo-take works; however, cargo take won't cd
+
+zmodload -F zsh/system p:sysparams
+
+command cargo new "${@:$#}" && cd ${@:$#}
+exa -Fh --git --icons --group-directories-first
+
+# Needed to actually change directories
+$SHELL
+
+# print "pid: $sysparams[pid]"
+# print "ppid: $sysparams[ppid]"

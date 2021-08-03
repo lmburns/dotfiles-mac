@@ -42,8 +42,10 @@
   set incsearch                             " incremential search highligh
   set encoding=utf-8
   set pumheight=10                          " number of items in popup menu
-  set pumblend=8                           " transparent popup_menu
-  set winblend=8                           " transparent floating window
+  " Kind of hard to read with any transparency at all, especially when using show_documentation
+  " highlight PmenuSel blend=0
+  " set pumblend=3                           " transparent popup_menu
+  " set winblend=3                           " transparent floating window
   set hidden
   set nobackup
   set nowritebackup
@@ -518,11 +520,24 @@ Plug 'mhinz/vim-startify'
   " Don't change to directory when selecting a file
   let g:webdevicons_enable_startify = 1
   let g:startify_files_number = 5
-  let g:startify_change_to_dir = 0
+  let g:startify_change_to_dir = 1
   let g:startify_custom_header = [ ]
   let g:startify_relative_path = 1
   let g:startify_use_env = 1
   let g:startify_update_oldfiles = 1
+  let g:startify_session_sort = 1
+  let g:startify_session_delete_buffers = 1
+  let g:startify_fortune_use_unicode = 1
+  let g:startify_padding_left = 3
+  let g:startify_session_remove_lines = ['setlocal', 'winheight']
+  let g:startify_session_dir = fnamemodify(stdpath('data'), ':p') . 'sessions'
+
+  if has('nvim')
+    let g:startify_commands = [
+          \ {'1': 'CocList'},
+          \ {'2': 'terminal'},
+          \ ]
+  endif
 
   function! s:gitModified()
     let files = systemlist('git ls-files -m 2>/dev/null')
@@ -548,11 +563,11 @@ Plug 'mhinz/vim-startify'
 
   " Custom startup list, only show MRU from current directory/project
   let g:startify_lists = [
-  \  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
-  \  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
-  \  { 'type': 'commands',  'header': [ 'Commands' ]       },
-  \  { 'type': 'files',     'header': ['MRU'] },
-  \  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
+  \  { 'type': 'sessions',  'header': [ " \ue62e Sessions" ]       },
+  \  { 'type': 'bookmarks', 'header': [ " \uf5c2 Bookmarks" ]      },
+  \  { 'type': 'commands',  'header': [ " \ufb32 Commands" ]       },
+  \  { 'type': 'files',     'header': [ " \ufa1eMRU"] },
+  \  { 'type': 'dir',       'header': [ " \ufa1eFiles ". getcwd() ] },
   \  { 'type':  function('s:gitModified'),  'header': ['git modified']},
   \  { 'type':  function('s:gitTracked'), 'header': ['git untracked']}
   \ ]
@@ -603,31 +618,39 @@ Plug 'easymotion/vim-easymotion'
 "}}} === EasyMotion ===
 
 " ============== gutentag | vista ============== {{{ "
-if executable('ctags')
-  Plug 'ludovicchabant/vim-gutentags'
-    " set tags=./.tags;,.tags
-    set tags=tags
-    let $GTAGSLABEL = 'native-pygments'
-    let $GTAGSCONF = '~/.gtags.conf'
+Plug 'ludovicchabant/vim-gutentags'
+  " set tags=./.tags;,.tags
+  set tags=tags
+  let $GTAGSLABEL = 'native-pygments'
+  let $GTAGSCONF = '~/.gtags.conf'
 
-    let g:gutentags_modules = ['ctags']
-    let g:gutentags_project_root = ['.git']
-    let g:gutentags_ctags_tagfile = '.tags'
-    let g:gutentags_cache_dir = expand('~/.cache/tags')
-    let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
-    let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
-    let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+  let g:gutentags_modules = ['ctags']
+  let g:gutentags_project_root = ['.git']
+  let g:gutentags_ctags_tagfile = '.tags'
+  let g:gutentags_cache_dir = expand('~/.cache/tags')
+  let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+  let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+  let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+  let g:gutentags_exclude_filetypes = ['rust']
+  " g:gutentags_exclude_project_root
 
-  Plug 'liuchengxu/vista.vim'
-    let g:vista_sidebar_position = 'topleft vertical'
-    let g:vista#renderer#enable_icon = 1
+  function! GutentagsDisable(path) abort
+    return fnamemodify(a:path, ':e') != 'rs'
+  endfunction
 
-    " nmap <C-x><C-v> :Vista finder coc<CR>
-    nmap <a-\> :Vista finder coc<CR>
-    let g:vista_fzf_preview = ['down:50%']
-    let g:vista_fzf_opt = ['--no-border']
-    let g:vista_default_executive = 'coc'
-endif
+  let g:gutentags_enabled_user_func = 'GutentagsDisable'
+
+
+Plug 'liuchengxu/vista.vim'
+  let g:vista_sidebar_position = 'topleft vertical'
+  let g:vista#renderer#enable_icon = 1
+
+  " nmap <C-x><C-v> :Vista finder coc<CR>
+  nmap <a-\> :Vista finder coc<CR>
+  let g:vista_fzf_preview = ['down:50%']
+  let g:vista_fzf_opt = ['--no-border']
+  " 'markdown': 'toc',"
+  let g:vista_default_executive = 'coc'
 " }}} === gutentag | vista === "
 
 if has('nvim')
@@ -676,7 +699,7 @@ Plug 'scrooloose/nerdtree'
   map <Leader>nf :NERDTreeFind<CR>
 " }}}  === nerdtree ===
 
-Plug 'sayanarijit/xplr.vim'
+" Plug 'sayanarijit/xplr.vim'
 
 " ============== Neoterm ============== {{{
 Plug 'kassio/neoterm'
@@ -730,10 +753,22 @@ Plug 'voldikss/fzf-floaterm'
       \ 'height': 0.9,
       \ 'width': 0.9,
       \ 'cmd': 'gpg-tui'},
+    \ '+tokei' : {
+      \ 'title': 'tokei',
+      \ 'height': 0.9,
+      \ 'width': 0.9,
+      \ 'cmd': 'tokei'},
+    \ '+dust' : {
+      \ 'title': 'dust',
+      \ 'height': 0.9,
+      \ 'width': 0.9,
+      \ 'cmd': 'dust'},
         \}
   let g:floaterm_wintype = 'float'
   let g:floaterm_height=0.8
   let g:floaterm_width=0.8
+  nmap <Leader>so : FloatermNew --autoclose=0 so<space>
+
   let g:lf_map_keys = 0
   let g:lf_replace_netrw = 1
   nnoremap <Leader>lf :Lf<CR>
@@ -839,6 +874,7 @@ Plug 'antoinemadec/coc-fzf'
     \ 'coc-html',
     \ 'coc-css',
     \ 'coc-json',
+    \ 'coc-yaml',
     \ 'coc-pyright',
     \ 'coc-python',
     \ 'coc-vimtex',
@@ -853,13 +889,15 @@ Plug 'antoinemadec/coc-fzf'
     \ 'coc-git',
     \ 'coc-go',
     \ 'coc-rust-analyzer',
+    \ 'coc-rls',
     \ 'coc-clangd',
     \ 'coc-lua',
     \ ]
 
-  " FIX: Rust Analyzer does not provide hover
-
+  " FIX: Rust Analyzer does not provide hover or code completion
+" \ 'coc-rls',
 " \ 'coc-solargraph', # can't get it to work
+" \ 'coc-toml',
 
   let g:coc_explorer_global_presets = {
       \ 'config': {
@@ -922,8 +960,8 @@ Plug 'antoinemadec/coc-fzf'
   omap if <Plug>(coc-funcobj-i)
   omap af <Plug>(coc-funcobj-a)
 
-  nmap [g <Plug>(coc-git-prevchunk)
-  nmap ]g <Plug>(coc-git-nextchunk)
+  nmap {g <Plug>(coc-git-prevchunk)
+  nmap }g <Plug>(coc-git-nextchunk)
   " navigate conflicts of current buffer
   nmap [c <Plug>(coc-git-prevconflict)
   nmap ]c <Plug>(coc-git-nextconflict)
@@ -931,7 +969,29 @@ Plug 'antoinemadec/coc-fzf'
   nmap gs <Plug>(coc-git-chunkinfo)
   " show commit contains current position
   nmap gC <Plug>(coc-git-commit)
-  nnoremap <silent> ,g  :<C-u>CocList --normal gstatus<CR>
+  nnoremap <silent> ,gs  :<C-u>CocList --normal gstatus<CR>
+
+  nmap <silent> <Leader>gD :CocCommand git.diffCached<CR>
+  nmap <silent> <Leader>gu :<C-u>CocCommand git.chunkUndo<CR>
+  nmap <silent> ,ga :<C-u>CocCommand git.chunkStage<CR>
+  nmap <silent> <Leader>gF :<C-u>CocCommand git.foldUnchanged<CR>
+  nmap <silent> <Leader>go :<C-u>CocCommand git.browserOpen<CR>
+  nmap <silent> <Leader>gla :<C-u>CocList commits<cr>
+  nmap <silent> <Leader>glc :<C-u>CocList bcommits<cr>
+  nmap <silent> <Leader>gll <Plug>(coc-git-commit)
+
+  nmap <silent> <Leader><Leader>o <Plug>(coc-openlink)
+  nmap <silent> <Leader>se :<C-u>CocCommand snippets.editSnippets<cr>
+  " nmap <silent> <leader><space><space>so :<C-u>CocCommand snippets.openSnippetFiles<cr>
+  " nmap <silent> <leader><space><space>l <Plug>(coc-codelens-action)
+
+  " inoremap <silent><expr> <C-j>
+  "       \ coc#jumpable() ? "\<C-R>=coc#rpc#request('snippetNext', [])\<cr>" :
+  "       \ pumvisible() ? coc#_select_confirm() :
+  "       \ "\<Down>"
+  " inoremap <silent><expr> <C-k>
+  "       \ coc#jumpable() ? "\<C-R>=coc#rpc#request('snippetPrev', [])\<cr>" :
+  "       \ "\<Up>"
 
   augroup cocgroup
       au!
@@ -970,6 +1030,10 @@ Plug 'antoinemadec/coc-fzf'
       execute '!' . &keywordprg . " " . expand('<cword>')
     endif
   endfunction
+
+    " elseif (index(['rust'], &filetype) >= 0)
+    "   execute 'set winblend=0 | FloatermNew --autoclose=0 rusty-man --viewer tui' . " " . expand('<cword>')
+
   nnoremap <silent> K :call <SID>show_documentation()<CR>
 
   " inoremap <silent><expr> <TAB>
@@ -1088,7 +1152,6 @@ Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins',  'for': 'python'}
   let g:slime_target = "neovim"
   let g:semshi#error_sign = v:false
   let g:syntastic_python_pylint_post_args="--max-line-length=120"
-  set pyxversion=3 "?? unsure what for
   if !empty(glob('$XDG_DATA_HOME/pyenv/shims/python3'))
     let g:python3_host_prog = glob('$XDG_DATA_HOME/pyenv/shims/python')
   endif
@@ -1119,17 +1182,28 @@ Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins',  'for': 'python'}
 " ============== vim-rust ============== {{{
 Plug 'nastevens/vim-cargo-make'
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+" FIX: visual selection
+" \ nmap     <buffer> <Leader>d<CR> :VT cargo play $(pwd)/**.rs<CR>|
+" Trying to decide which one is the best (play, eval, rust-script)
 augroup rust_env
-    autocmd!
-    autocmd FileType rust
-      \ nmap     <silent> <c-]>         <Plug>(coc-definition)|
-      \ nmap     <buffer> <Leader>n<CR> :VT cargo run   -q<CR>|
-      \ nmap     <buffer> <Leader>t<CR> :RustTest<CR>|
-      \ nmap     <buffer> <Leader>b<CR> :VT cargo build -q<CR>|
-      \ nmap     <buffer> <Leader>r<CR> :VT cargo play  %<CR>|
-      \ nmap     <buffer> <Leader>e<CR> :VT cargo eval  %<CR>|
-      \ vnoremap <a-f> <esc>`<O<esc>Sfn main() {<esc>`>o<esc>S}<esc>k$|
-      \ nnoremap <buffer> ;ff           :RustFmt<cr>
+  autocmd!
+  autocmd FileType rust
+    \ nmap     <silent> <c-]>         <Plug>(coc-definition)|
+    \ nmap     <buffer> <Leader>h<CR> :VT cargo clippy<CR>|
+    \ nmap     <buffer> <Leader>n<CR> :VT cargo run   -q<CR>|
+    \ nmap     <buffer> <Leader><Leader>n :VT cargo run -q<space>|
+    \ nmap     <buffer> <Leader>t<CR> :RustTest<CR>|
+    \ nmap     <buffer> <Leader>b<CR> :VT cargo build -q<CR>|
+    \ nmap     <buffer> <Leader>r<CR> :VT cargo play  %<CR>|
+    \ nmap     <buffer> <Leader><Leader>r :VT cargo play % -- |
+    \ nmap     <buffer> <Leader>v<CR> :VT rust-script %<CR>|
+    \ nmap     <buffer> <Leader><Leader>v :VT rust-script % -- |
+    \ nmap     <buffer> <Leader>e<CR> :VT cargo eval  %<CR>|
+    \ vnoremap <a-f> <esc>`<O<esc>Sfn main() {<esc>`>o<esc>S}<esc>k$|
+    \ nnoremap <Leader>K : set winblend=0 \| FloatermNew --autoclose=0 rusty-man --viewer tui<space>|
+    \ nnoremap <Leader>k : set winblend=0 \| FloatermNew --autoclose=0 rusty-man <C-r><C-w> --viewer tui<CR>|
+    \ nnoremap ;k : set winblend=0 \| FloatermNew --autoclose=0 rusty-man <C-R>0<CR>|
+    \ nnoremap <buffer> ;ff           :RustFmt<cr>
 augroup END
 " }}} === vim-rust ===
 
@@ -1336,9 +1410,10 @@ Plug 'SidOfc/mkdx'
 
   nnoremap <Leader>mcs :vs ~/vimwiki/dotfiles/mkdx.md<CR>
   nnoremap <Leader>mdm :menu Plugin.mkdx<CR>
-  nnoremap <Leader>ev :e $VIMRC<CR>
   nnoremap <Leader>ec :e ~/.config/nvim/coc-settings.json<CR>
+  nnoremap <Leader>ev :e $VIMRC<CR>
   nnoremap <Leader>sv :so $VIMRC<CR>
+  nnoremap <Leader>ez :e $ZDOTDIR/.zshrc<CR>
 " }}} === mkdx ===
 
 " ============== UltiSnips ============== {{{
@@ -1358,31 +1433,6 @@ Plug 'vimwiki/vimwiki'
   let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
   let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
   let g:vimwiki_table_mappings = 0
-
-  " hi VimwikiHeader1 guifg=#cc241d gui=bold
-  " hi VimwikiHeader2 guifg=#fe8019 gui=bold
-  " hi VimwikiHeader3 guifg=#689d6a gui=bold
-  " hi VimwikiHeader4 guifg=#b8ba25 gui=bold
-  " hi VimwikiHeader5 guifg=#b16286 gui=bold
-  " hi VimwikiHeader6 guifg=#458588 gui=bold
-
-  hi VimwikiBold    guifg=#a25bc4 gui=bold
-  " hi VimwikiBold    guifg=#e9b143 gui=bold
-  hi VimwikiCode    guifg=#d3869b
-  hi VimwikiItalic  guifg=#83a598 gui=italic
-
-  hi VimwikiHeader1 guifg=#F14A68 gui=bold
-  hi VimwikiHeader2 guifg=#F06431 gui=bold
-  hi VimwikiHeader3 guifg=#689d6a gui=bold
-  hi VimwikiHeader4 guifg=#819C3B gui=bold
-  hi VimwikiHeader5 guifg=#98676A gui=bold
-  hi VimwikiHeader6 guifg=#458588 gui=bold
-
-  " hi MatchParen guifg=#088649
-  " hi vimOperParen guifg=#088649
-  " hi vimSep guifg=#088649
-  " hi Delimiter guifg=#088649
-  " hi Operator guifg=#088649
 
   map <Leader>vw :VimwikiIndex<CR>
 "}}} === Vim Wiki ===
@@ -1451,8 +1501,8 @@ command! -nargs=? -complete=dir AF
         \ {'options':  '--delimiter : --nth 4..'},
         \ 0)
 
-    " TODO: add option for trans -d
-
+  " TODO: add option for trans -d
+  " TODO: add option for uni-fzf
   " FIX: open line in current buffer only
     command! -bang -nargs=* Rgf call RGF()
     function! RGF()
@@ -1571,7 +1621,7 @@ command! -nargs=? -complete=dir AF
   nmap <silent> <Leader>a  :Buffers<CR>
   nmap <silent> <Leader>A  :Windows<CR>
   nmap <silent> <Leader>;  :BLines<CR>
-  nmap <silent> <Leader>F  :Files<CR>
+  nmap <silent> ,f  :Files<CR>
   nmap <silent> <Leader>gf :GFiles<CR>
   nmap <silent> <Leader>hc :History:<CR>
   nmap <silent> <Leader>hf :History<CR>
@@ -2050,12 +2100,13 @@ command! -nargs=? -complete=dir AF
   nnoremap <Leader>slo :verbose hi
 
   " === custom syntax groups ===
-  " FIX: add // comments
+  " \ cmTitle /\v(#|--|\/\/|\%)\s*\u\w*(\s+\u\w*)*:/
+  " FIX: allow punctuation
   augroup ccommtitle
     autocmd!
     autocmd Syntax * syn match
-      \ cmTitle /\v(#|--|\/\/|\%)\s*\u\w*(\s+\u\w*)*:/
-      \ contained containedin=.*Comment,vimCommentTitle
+      \ cmTitle /\v(#|--|\/\/|\%)\s*(\u\w*|\=+)(\s+\u\w*)*(:|\s*\w*\s*\=+)/
+      \ contained containedin=.*Comment,vimCommentTitle,rustCommentLine
     autocmd Syntax * syn match myTodo
       \ /\v(#|--|\/\/|")\s(FIXME|FIX|DISCOVER|NOTE|NOTES|INFO|OPTIMIZE|XXX|EXPLAIN|TODO|CHECK|HACK|BUG|BUGS):/
       \ contained containedin=.*Comment.*,vimCommentTitle
@@ -2063,7 +2114,7 @@ command! -nargs=? -complete=dir AF
     autocmd Syntax * syn keyword cmTitle contained=Comment
     autocmd Syntax * syn keyword myTodo contained=Comment
   augroup END
-  hi def link cmLineComment Comment
+  " hi def link cmLineComment Comment
   hi def link cmTitle vimCommentTitle
   hi def link myTodo Todo
 " }}} === Syntax ===
@@ -2293,7 +2344,7 @@ vnoremap <silent> <Leader>hi :<c-u>HSHighlight<space>
 vnoremap <silent> <Leader>hr :<c-u>HSRmHighlight<CR>
 " }}} === highlight line ===
 
-" ============== background transparent ============== {{{
+" ============== background transparent / colors ============== {{{
   highlight DiffAdd      ctermfg=65 ctermbg=NONE guifg=#5F875F guibg=NONE
   highlight DiffChange   ctermfg=60 ctermbg=NONE guifg=#5F5F87 guibg=NONE
   highlight DiffDelete   ctermfg=9  ctermbg=NONE guifg=#cc6666 guibg=NONE
@@ -2303,6 +2354,31 @@ vnoremap <silent> <Leader>hr :<c-u>HSRmHighlight<CR>
   exec 'hi! SignifySignChange ctermfg=Yellow guifg=#FFB86C ' . (has('termguicolors')? 'guibg=none':'ctermbg=') . synIDattr(hlID('SignColumn'),'bg')
   hi HighlightedyankRegion ctermbg=Red   guibg=#fb4934
   hi GitBlameVirtualText   cterm=italic  ctermfg=245   gui=italic guifg=#665c54
+
+  " hi VimwikiHeader1 guifg=#cc241d gui=bold
+  " hi VimwikiHeader2 guifg=#fe8019 gui=bold
+  " hi VimwikiHeader3 guifg=#689d6a gui=bold
+  " hi VimwikiHeader4 guifg=#b8ba25 gui=bold
+  " hi VimwikiHeader5 guifg=#b16286 gui=bold
+  " hi VimwikiHeader6 guifg=#458588 gui=bold
+
+  hi VimwikiBold    guifg=#a25bc4 gui=bold
+  " hi VimwikiBold    guifg=#e9b143 gui=bold
+  hi VimwikiCode    guifg=#d3869b
+  hi VimwikiItalic  guifg=#83a598 gui=italic
+
+  hi VimwikiHeader1 guifg=#F14A68 gui=bold
+  hi VimwikiHeader2 guifg=#F06431 gui=bold
+  hi VimwikiHeader3 guifg=#689d6a gui=bold
+  hi VimwikiHeader4 guifg=#819C3B gui=bold
+  hi VimwikiHeader5 guifg=#98676A gui=bold
+  hi VimwikiHeader6 guifg=#458588 gui=bold
+
+  " hi MatchParen guifg=#088649
+  " hi vimOperParen guifg=#088649
+  " hi vimSep guifg=#088649
+  " hi Delimiter guifg=#088649
+  " hi Operator guifg=#088649
 " }}} === transparent ===
 
 " ============== tmux ============== {{{
@@ -2316,20 +2392,20 @@ function! s:tmux_copy_mode_toggle()
 endfunction
 command! TmuxCopyModeToggle call s:tmux_copy_mode_toggle()
 
-" autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window " . expand("%:t"))
-
 " autocmd BufEnter * let &titlestring = '' . expand("%:t")
 " set title
+
+" au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
 
 if exists('$TMUX') && !exists('$NORENAME')
   augroup rename_tmux
     au!
-    au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
+    au BufEnter * if empty(&buftype) | let &titlestring = '' . expand('%:t') | endif
     au VimLeave * call system('tmux set-window automatic-rename on')
   augroup END
 endif
 
-nnoremap <silent> <tab> :call system('tmux select-pane -t :.+')<cr>
+nnoremap <silent> <Leader>. :call system('tmux select-pane -t :.+')<cr>
 " }}} === tmux ===
 
 " vim: ft=vim:et:sw=0:ts=2:sts=2:tw=78:fdm=marker:fmr={{{,}}}:
