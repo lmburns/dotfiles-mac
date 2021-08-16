@@ -20,11 +20,11 @@ function zflai-assert() { mylogs+=( "$4"${${${1:#$2}:+FAIL}:-OK}": $3" ); }
 
 zflai-msg "[path] $path"
 
+typeset -g DIRSTACKSIZE=20
 typeset -g HISTSIZE=10000000
 typeset -g HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history"
 typeset -g SAVEHIST=8000000
 typeset -g HIST_STAMPS="yyyy-mm-dd"
-typeset -ga HISTORY_FILTER_EXCLUDE=("jrnl", "youtube-dl", "you-get")
 typeset -g HISTORY_IGNORE="(jrnl|youtube-dl|you-get)"
 typeset -g TIMEFMT=$'\n================\nCPU\t%P\nuser\t%*U\nsystem\t%*S\ntotal\t%*E'
 typeset -g PROMPT_EOL_MARK=''
@@ -46,7 +46,7 @@ typeset -gx GENCOMPL_FPATH="${0:h}/completions"
 local pchf="${0:h}/patches"
 local thmf="${0:h}/themes"
 
-typeset -A ZINIT=(
+typeset -gA ZINIT=(
     HOME_DIR        ${0:h}/zinit
     BIN_DIR         ${0:h}/zinit/bin
     PLUGINS_DIR     ${0:h}/zinit/plugins
@@ -91,7 +91,7 @@ grman() {
 }
 
 # FIX:
-cclean() { command mv -f "tar*/rel*/%PLUGIN%" . && cargo clean; }
+cclean() { command mv -f "tar*/rel*/%PLUGIN%" && cargo clean; }
 
 [[ ! -f $ZINIT[BIN_DIR]/zinit.zsh ]] && {
   command mkdir -p "$ZINIT_HOME" && command chmod g-rwX "$ZINIT_HOME"
@@ -268,7 +268,7 @@ zt 0c light-mode binary for \
   lbin'!src/pt*(*)' \
   atclone'(){local f;builtin cd -q src;for f (*.sh){mv ${f} ${f:r:l}};}' \
   atclone"command mv -f config $ZPFX/share/ptSh/config" \
-  atload'alias ppwd="ptpwd" mkd="ptmkdir -pv" touch="pttouch"' \
+  atload'alias ppwd="ptpwd" mkd="ptmkdir -pv"' \
     jszczerbinsky/ptSh \
   lbin atclone"mkdir -p $XDG_CONFIG_HOME/ytfzf; cp **/conf.sh $XDG_CONFIG_HOME/ytfzf" \
     pystardust/ytfzf \
@@ -312,20 +312,7 @@ zt 0c light-mode binary for \
   lbin atclone"./build.zsh" mv"*.*completion -> _zunit" atpull"%atclone" \
     molovo/zunit
 
-# lbin"cmds/*" atload"
-# zstyle ':plugin:zconvey' greeting 'none'
-# zstyle ':notify:*' command-complete-timeout 3
-# zstyle ':notify:*' notifier plg-zsh-notify" \
-#   zdharma/zconvey
-
-# lbin mv'*.*completion -> _revolver' atpull'%atclone' \
-#   psprint/revolver \
-
 #  ]]] === wait'0c' - programs - sourced ===
-
-# atclone'INSTALL_DIR="$ZPFX" ./install.sh' atpull'%atclone' \
-#   rgcr/m-cli
-# atdelete'm --uninstall' \
 
 #  === wait'0c' - programs + man === [[[
 zt 0c light-mode binary lbin lman from'gh-r' for \
@@ -434,8 +421,9 @@ zt 0c light-mode null for \
   atclone'ziextract --move --auto regex-*.tar.gz' make'all' \
     zdharma/null
 
-# yq isn't picking up copletions
+# yq isn't picking up completions
 
+# eval"atuin init zsh | sed 's/bindkey .*\^\[.*$//g'"
 # == rust [[[
 zt 0c light-mode null for \
   lbin from'gh-r' \
@@ -455,6 +443,8 @@ zt 0c light-mode null for \
     ducaale/xh \
   lbin from'gh-r' \
     itchyny/mmv \
+  lbin from'gh-r' eval"atuin init zsh | sed 's/bindkey .*\^\[.*$//g'" \
+    ellie/atuin \
   lbin'* -> sd' from'gh-r' bpick'*darwin' \
     chmln/sd \
   lbin atclone'cargo build --release' atpull'%atclone' \
@@ -464,6 +454,8 @@ zt 0c light-mode null for \
   lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
   atinit'alias rup="ruplacer"' \
     dmerejkowsky/ruplacer \
+  lbin'*/rgr' from'gh-r' lman \
+    acheronfail/repgrep \
   lbin'* -> renamer' from'gh-r' bpick'*macos*' \
     adriangoransson/renamer \
   lbin atclone'cargo build --release' atpull'%atclone' \
@@ -490,8 +482,10 @@ zt 0c light-mode null for \
     BurntSushi/xsv \
   lbin from'gh-r' \
     Byron/dua-cli \
-  lbin'**/lolcate' from'gh-r' atload'alias le=lolcate' \
-    ngirard/lolcate-rs \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/lolcate . && cargo clean" \
+  atload'alias le=lolcate' \
+    lmburns/lolcate-rs \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
   atload'export FW_CONFIG_DIR="$XDG_CONFIG_HOME/fw"' \
@@ -518,6 +512,7 @@ zt 0c light-mode null for \
     miserlou/loop \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  atclone"./rip completions --shel zsh > _rip" \
     lmburns/rip \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
@@ -534,14 +529,18 @@ zt 0c light-mode null for \
   atclone"./rualdi completions shell zsh > _rualdi" \
   atload'alias ru="rualdi"' eval'rualdi init zsh --cmd k' \
     lmburns/rualdi \
+  lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo build --release' \
+  atpull'%atclone' atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  atclone'./wutag print-completions --shell zsh > _wutag' \
+    wojciechkepka/wutag \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
-  atclone'./wutag print-completions zsh > _wutag' \
-    wojciechkepka/wutag
-
-# atclone"./rip completion --shell zsh > _rip && command ln -sfv _rip $ZINIT[COMPLETIONS_DIR]" \
-
-# eval'rualdi init zsh --cmd k' \
+  atload'alias orgr="organize-rt"' \
+    lmburns/organize-rt \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  atload'alias touch="feel"' \
+    lmburns/feel
 
 # === rust extensions === [[[
 zt 0c light-mode null for \
@@ -559,6 +558,9 @@ zt 0c light-mode null for \
     matthiaskrgr/cargo-cache \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    iamsauravsharma/cargo-trim \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     razrfalcon/cargo-bloat \
   lbin atclone'cargo build --release --features=fix' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
@@ -570,8 +572,20 @@ zt 0c light-mode null for \
     killercup/cargo-edit \
   lbin'tar*/rel*/{cargo-make,makers}' atclone'cargo build --release' atpull'%atclone' \
   atload'export CARGO_MAKE_HOME="$XDG_CONFIG_HOME/cargo-make"' \
-  atload'alias ncmake="$EDITOR $CARGO_MAKE_HOME/Makefile.toml" cm="makers --makefile $CARGO_MAKE_HOME/Makefile.toml"' \
+  atload'alias ncmake="$EDITOR $CARGO_MAKE_HOME/Makefile.toml"
+               cm="makers --makefile $CARGO_MAKE_HOME/Makefile.toml"' \
     sagiegurari/cargo-make \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    celeo/cargo-nav \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    g-k/cargo-show \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+    mre/cargo-inspect \
+  lbin from'gh-r' \
+    cargo-generate/cargo-generate \
   lbin atclone'cargo build --release' \
   atclone'command mv -f tar/*/rel*/evcxr . && cargo clean' atpull'%atclone' \
     google/evcxr \
@@ -589,8 +603,6 @@ zt 0c light-mode null for \
     sminez/roc
 # ]]] == rust extensions
 # ]]] == rust
-
-# google/evcxr (rust repl)
 
 # === tui specific block === [[[
 zt 0c light-mode null for \
@@ -639,11 +651,10 @@ zt 0c light-mode null for \
   lbin from'gh-r' lman \
     rhysd/git-brws \
   lbin'tar*/rel*/mgit' atclone'cargo build --release' atpull'%atclone' \
-    koozz/mgit \
-  lbin'tar*/rel*/mrh' atclone'cargo build --release' atpull'%atclone' \
-    tshepang/mrh
+    koozz/mgit
 # ]]] === git specific block ===
 
+# tshepang/mrh
 # cosmos72/gomacro == gruntwork-io/git-xargs
 
 #  ]]] === wait'0c' - programs ===
@@ -671,6 +682,7 @@ stty susp '^Z'
 stty stop undef
 stty discard undef <$TTY >$TTY
 zmodload zsh/zprof  # ztodo
+# autoload -Uz sticky-note
 autoload -Uz zmv zcalc zargs zed relative
 alias fned="zed -f"
 alias zmv='noglob zmv -v' zcp='noglob zmv -Cv' zln='noglob zmv -Lv' zmvn='noglob zmv -W'
@@ -686,102 +698,116 @@ typeset -g HELPDIR='/usr/local/share/zsh/help'
 # === completion === [[[
 
 # $desc, $word, $group, $realpath
-zstyle ':fzf-tab:complete:ssh:*'             fzf-preview 'dig $desc'
-zstyle ':fzf-tab:complete:ssh:*'             fzf-flags '--preview-window=nohidden,right:65%:wrap'
-zstyle ':fzf-tab:complete:figlet:option-f-1' fzf-preview 'figlet -f $word Hello world'
-zstyle ':fzf-tab:complete:figlet:option-f-1' fzf-flags '--preview-window=nohidden,right:65%:wrap'
-zstyle ':fzf-tab:complete:kill:*'                  popup-pad 0 3
-zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
-zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
-    '[[ $group == "[process ID]" ]] && ps -p $word -o comm="" -w -w'
+autoload -Uz zstyle+
+zstyle+ \
+  ':fzf-tab:complete' '' '' \
+    + ':nvim:argument-rest' \
+          fzf-flags '--preview-window=nohidden,right:65%:wrap' \
+    + ':nvim:argument-rest' \
+          fzf-bindings 'alt-e:execute-silent({_FTB_INIT_}nvim "$realpath" < /dev/tty > /dev/tty)' \
+    + ':nvim:*' \
+          fzf-preview 'r=$realpath; ([[ -f $r ]] && bat --style=numbers --color=always $r) \
+                      || ([[ -d $r ]] && tree -C $r | less) || (echo $r 2> /dev/null | head -200)' \
+    + ':updatelocal:argument-rest' \
+          fzf-flags '--preview-window=down:5:wrap' \
+    + ':updatelocal:argument-rest' \
+          fzf-preview "git --git-dir=$UPDATELOCAL_GITDIR/\${word}/.git log --color \
+                      --date=short --pretty=format:'%Cgreen%cd %h %Creset%s %Cred%d%Creset ||%b' ..FETCH_HEAD 2>/dev/null" \
+    + ':figlet:option-f-1'       fzf-preview 'figlet -f $word Hello world' \
+    + ':figlet:option-f-1'       fzf-flags '--preview-window=nohidden,right:65%:wrap' \
+    + ':complete:ssh:*'          fzf-preview 'dig $desc' \
+    + ':complete:ssh:*'          fzf-flags '--preview-window=nohidden,right:65%:wrap' \
+    + ':kill:*'                  popup-pad 0 3 \
+    + ':(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap' \
+    + ':(kill|ps):argument-rest' fzf-preview '[[ $group == "[process ID]" ]] && ps -p $word -o comm="" -w -w' \
+    + ':cdr:*'                   fzf-preview 'exa -TL 3 --color=always ${~desc}' \
+    + ':(exa|cd):*'              popup-pad 30 0 \
+    + ':(exa|cd|cdr|cd_):*'      fzf-flags '--preview-window=nohidden,right:45%:wrap' \
+    + ':(exa|cd|cd_):*' \
+          fzf-preview '[[ -d $realpath ]] && exa -T --color=always $(readlink -f $realpath)' \
+    + ':(cp|rm|rip|mv|bat):argument-rest' \
+          fzf-preview 'r=$(readlink -f $realpath); bat --color=always -- $r || exa --color=always -- $r' \
 
-zstyle ':fzf-tab:complete:nvim:argument-rest' fzf-flags '--preview-window=nohidden,right:65%:wrap'
-zstyle ':fzf-tab:complete:nvim:argument-rest' fzf-bindings \
-    'alt-e:execute-silent({_FTB_INIT_}nvim "$realpath" < /dev/tty > /dev/tty)'
-zstyle ':fzf-tab:complete:nvim:*' fzf-preview \
-    'r=$realpath; ([[ -f $r ]] && bat --style=numbers --color=always $r) \
-    || ([[ -d $r ]] && tree -C $r | less) || (echo $r 2> /dev/null | head -200)'
-
-zstyle ':fzf-tab:complete:updatelocal:argument-rest' fzf-flags '--preview-window=down:5:wrap'
-zstyle ':fzf-tab:complete:updatelocal:argument-rest' fzf-preview \
-    "git --git-dir=$UPDATELOCAL_GITDIR/\${word}/.git log --color \
-    --date=short --pretty=format:'%Cgreen%cd %h %Creset%s %Cred%d%Creset ||%b' ..FETCH_HEAD 2>/dev/null"
+zstyle+ ':fzf-tab:*' print-query ctrl-c \
+      + ''           accept-line space \
+      + ''           prefix '' \
+      + ''           switch-group ',' '.' \
+      + ''           single-group color header \
+      + ''           fzf-pad 4 \
+      + ''           fzf-bindings \
+                        'enter:accept,backward-eof:abort,ctrl-a:toggle-all' \
+                        'alt-shift-down:preview-down,alt-shift-up:preview-up' \
+                        'alt-e:execute-silent({_FTB_INIT_}nvim "$realpath" < /dev/tty > /dev/tty)'
 
 # zstyle ':fzf-tab:complete:cdr:*' fzf-preview 'exa -TL 3 --color=always ${${~${${(@s: → :)desc}[2]}}}'
-zstyle ':fzf-tab:complete:cdr:*'                fzf-preview 'exa -TL 3 --color=always ${~desc}'
-zstyle ':fzf-tab:complete:(exa|cd):*'           popup-pad 30 0
-zstyle ':fzf-tab:complete:(exa|cd|cdr|cd_):*'   fzf-flags '--preview-window=nohidden,right:45%:wrap'
-zstyle ':fzf-tab:complete:(exa|cd|cd_):*'       fzf-preview '[[ -d $realpath ]] && exa -T --color=always $(readlink -f $realpath)'
-zstyle ':fzf-tab:complete:(cp|rm|rip|mv|bat):argument-rest' fzf-preview 'r=$(readlink -f $realpath); bat --color=always -- $r || exa --color=always -- $r'
-zstyle ':fzf-tab:*' fzf-bindings \
-  'enter:accept,backward-eof:abort,ctrl-a:toggle-all,alt-shift-down:preview-down,alt-shift-up:preview-up' \
-  'alt-e:execute-silent({_FTB_INIT_}nvim "$realpath" < /dev/tty > /dev/tty)' # c-j, c-k in tmux not working
 
-# zstyle ':completion:*' completer _complete _expand _match _oldlist _list _ignored _correct _approximate
-zstyle ':fzf-tab:*' print-query ctrl-c        # use input as result when ctrl-c
-zstyle ':fzf-tab:*' accept-line space         # accept selected entry on space
-zstyle ':fzf-tab:*' prefix ''                 # no dot prefix
-zstyle ':fzf-tab:*' switch-group ',' '.'      # switch between header groups
-zstyle ':fzf-tab:*' single-group color header # single header is shown
-zstyle ':fzf-tab:*' fzf-pad 4                 # increased because of fzf border
-
-zstyle ':completion:*' completer _complete _match _list _prefix _ignored _correct _approximate _oldlist
 zstyle '*' single-ignored show # ??
-zstyle ':completion:*' squeeze-slashes true # treat // as a single slash
-# zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}      # activate color-completion(!)
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' muttrc "$XDG_CONFIG_HOME/mutt/muttrc"
-zstyle ':completion:*' use-cache on
+
+# zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 # zstyle ':completion::complete:*' cache-path "${ZDOTDIR}/.cache/.zcompcache"
-zstyle ':completion:*' verbose yes                            # provide verbose completion information
-zstyle ':completion:*' rehash true
-zstyle ':completion:*' accept-exact '*(N)'
-# 'm:{a-z\-}={A-Z\_}' 'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' 'r:|?=** m:{a-z\-}={A-Z\_}'
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-zstyle ':completion:*' ignore-parents parent pwd
-zstyle ':completion:*' list-separator '→'
-zstyle ':completion:*' group-name ''                          # group results by category
-zstyle ':completion:*:manuals'   separate-sections true
-zstyle ':completion:*:matches'   group 'yes'                            # separate matches into groups
-zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
-zstyle ':completion:*:match:*'   original only
-zstyle ':completion:*:messages'  format ' %F{purple} -- %d --%f'
-zstyle ':completion:*:warnings'  format ' %F{1}-- no matches found --%f'  # set format for warnings
-zstyle ':completion:*:default'   list-prompt '%S%M matches%s'
-zstyle ':completion:*:descriptions' format '[%d]'
-zstyle ':completion:*:options'   description yes                   # describe options in full
-zstyle ':completion:*:-tilde-:*' group-order named-directories path-directories users expand
 # zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
 
-zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
-zstyle ':completion:*:cd:*'      group-order local-directories path-directories
+# zstyle ':completion:*' completer _complete _expand _match _oldlist _list _ignored _correct _approximate
+# 'm:{a-z\-}={A-Z\_}' 'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' 'r:|?=** m:{a-z\-}={A-Z\_}'
+
+zstyle+ ':completion:*'   list-separator '→' \
+      + ''                completer _complete _match _list _prefix _ignored _correct _approximate _oldlist \
+      + ''                group-name '' \
+      + ''                use-cache on \
+      + ''                verbose yes \
+      + ''                rehash true \
+      + ''                squeeze-slashes true \
+      + ''                accept-exact '*(N)' \
+      + ''                ignore-parents parent pwd \
+      + ''                matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*' \
+      + ''                list-colors ${(s.:.)LS_COLORS} \
+      + ''                muttrc "$XDG_CONFIG_HOME/mutt/muttrc" \
+      + ':manuals'        separate-sections true \
+      + ':matches'        group 'yes' \
+      + ':functions'      ignored-patterns '(_*|pre(cmd|exec))' \
+      + ':approximate:*'  max-errors 1 numeric \
+      + ':match:*'        original only \
+      + ':messages'       format ' %F{purple} -- %d --%f' \
+      + ':warnings'       format ' %F{1}-- no matches found --%f' \
+      + ':corrections'    format '%F{5}!- %d (errors: %e) -!%f' \
+      + ':default'        list-prompt '%S%M matches%s' \
+      + ':descriptions'   format '[%d]' \
+      + ':options'        description yes \
+      + ':-tilde-:*'      group-order named-directories path-directories users expand \
+      + ':cd:*'           tag-order local-directories directory-stack path-directories \
+      + ':cd:*'           group-order local-directories path-directories \
+      + ':git-checkout:*' sort false \
+      + ':exa'            file-sort modification \
+      + ':exa'            sort false \
+      + ':sudo:*'         command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin \
+      + ':sudo::'         environ PATH="$PATH" \
+      + ':*:zcompile:*'   ignored-patterns '(*~|*.zwc)' \
+      + ':(rm|rip|kill|diff|git-dsf):*' ignore-line other \
+      + ':(rm|rip|git-dsf):*'           file-patterns '*:all-files' \
+      + ':complete:-command-::commands' ignored-patterns '*\~' \
+      + ':*:-subscript-:*'              tag-order indexes parameters \
+      + ':*:-redirect-,2>,*:*'          file-patterns '*.log'
+
+zstyle ':completion::complete:*' gain-privileges 1     # enabling autocompletion of privileged envs
+zstyle ':completion::*:(-command-|export):*'        fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-} # env vars
+zstyle ':completion::(^approximate*):*:functions'   ignored-patterns '_*' # ignore for cmds not in path
+zstyle -e ':completion:*:approximate:*'             max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
+
 # DOEST WORK:
 zstyle ':completion:*:*:cdh:*'     group-order local-directories recent-dirs path-directories
 zstyle ':completion:*:*:cdh:*'     tag-order local-directories recent-dirs path-directories
-zstyle ':completion:*:git-checkout:*' sort false
-zstyle ':completion:*:exa'       file-sort modification
-zstyle ':completion:*:exa'       sort false
-zstyle ':completion:*:sudo:*'    command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin # set sudo path
-zstyle ':completion:*:sudo::'    environ PATH="$PATH"  # use same path as sudo
-zstyle ':completion::complete:*' gain-privileges 1     # enabling autocompletion of privileged envs
-zstyle ':completion:*:*:*:*:corrections'   format '%F{5}!- %d (errors: %e) -!%f'
-zstyle ':completion::*:(-command-|export):*'        fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-} # env vars
-zstyle ':completion::(^approximate*):*:functions'   ignored-patterns '_*' # ignore for cmds not in path
-zstyle ':completion:*:*:zcompile:*'                 ignored-patterns '(*~|*.zwc)'
-zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # no backup files
-zstyle ':completion:*:*:-subscript-:*'              tag-order indexes parameters # index before parameters in subscripts
-zstyle ':completion:*:*:-redirect-,2>,*:*'          file-patterns '*.log' # offer log files as completion for error redireciton
-zstyle -e ':completion:*:approximate:*'             max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
-zstyle ':completion:*:(rm|rip|kill|diff|git-dsf):*'         ignore-line other # ignore duplicates
-zstyle ':completion:*:(rm|rip|git-dsf):*'                   file-patterns '*:all-files'
 
-zstyle ':completion:*:(ssh|scp|rsync):*'  tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
 zstyle ':completion:*:(scp|rsync):*'      group-order users files all-files hosts-domain hosts-host hosts-ipaddr
 zstyle ':completion:*:ssh:*'              group-order users hosts-domain hosts-host users hosts-ipaddr
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host'   ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+
+zstyle+ ':completion:*:(ssh|scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *' \
+      + ':hosts-host' \
+            ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost \
+      + ':hosts-domain' \
+            ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*' \
+      + ':hosts-ipaddr' \
+            ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+
 zstyle -e ':completion:*:hosts' hosts 'reply=(
       ${=${=${=${${(f)"$(cat {/etc/ssh/ssh_,~/.ssh/}known_hosts(|2)(N) 2> /dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
       ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2> /dev/null))"}%%(\#${_etc_host_ignores:+|${(j:|:)~_etc_host_ignores}})*}
@@ -803,10 +829,14 @@ zstyle ':completion:*:hosts' hosts $hosts
 # ]]]
 
 # === one line functions === [[[
+function linkrust() {
+  ln -v $XDG_DATA_HOME/just/rust_justfile $PWD/justfile
+  ln -v $HOME/projects/rust/rustfmt.toml $PWD/rustfmt.toml
+  command cp -v $HOME/projects/rust/.pre-commit-config.yaml $PWD/.pre-commit-config.yaml
+}
 # lsof open fd
 zmodload -F zsh/system p:sysparams
 function lsfd() { lsof -p $sysparams[ppid] | hck -f1,4,5- ; }
-# cargo new and cd
 # function cargo-take() { cargo new "$@" && builtin cd "$@"; }
 # wrapper for rusty-man for tui
 function rmant() { rusty-man "$1" --theme 'Solarized (dark)' --viewer tui "${@:2}"; }
@@ -816,8 +846,8 @@ function cml() { $EDITOR ${$(cargo locate-project | jq -r '.root'):h}/src/lib.rs
 # find functions that follow this pattern: func()
 function ffunc() { eval "() { $functions[RG] } ${@}\\\\\("; }
 # rsync from local pc to server
-function rst() { rsync -uvrP $1 root@burnsac.xyz:$2 ; }
-function rsf() { rsync -uvrP root@burnsac.xyz:$1 $2 ; }
+function rst() { rsync -uvrP $1 root@lmburns.com:$2 ; }
+function rsf() { rsync -uvrP root@lmburns.com:$1 $2 ; }
 function mvout-clean() { command rsync -vua --delete-after $1/ . ; }
 function mvout() { command rsync -vua $1/ . ; }
 # shred and delete file
@@ -861,7 +891,7 @@ function rmspace() { f2 -f '\s' -r '_' -RF $@ }
 function rmdouble() { f2 -f '(\w+) \((\d+)\).(\w+)' -r '$2-$1.$3' $@ }
 # monitor core dumps
 function moncore() { fswatch --event-flags /cores/ | xargs -I{} terminal-notifier -message {} -title 'coredump'; }
-
+function freload() { while (( $# )); do; unfunction $1; autoload -U $1; shift; done }
 function ee() { lax -f nvim "@${1}"; }
 function macfeh() { open -b "drabweb.macfeh" "$@"; }
 function time-zsh() { shell=${1-$SHELL}; for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done; }
@@ -1016,6 +1046,7 @@ typeset -g KEYTIMEOUT=15
 
 typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${BREW_PREFIX}/lib/password-store/extensions"
+typeset -gx ZLS_COLORS=$LS_COLORS
 # ]]]
 
 # === fzf === [[[
@@ -1142,6 +1173,7 @@ path=(
   ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
   ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
   ${BREW_PREFIX}/opt/openvpn/sbin
+  ${BREW_PREFIX}/opt/llvm/bin
   ${BREW_PREFIX}/texlive/2021/bin
   ${HOME}/.ghg/bin
   "${path[@]}"
@@ -1176,8 +1208,8 @@ path=(
 )
 
 # llvm
-# export LDFLAGS="-L/usr/local/opt/llvm/lib"
-# export CPPFLAGS="-I/usr/local/opt/llvm/include"
+export LDFLAGS="-L/usr/local/opt/llvm/lib"
+export CPPFLAGS="-I/usr/local/opt/llvm/include"
 # flex
 export LDFLAGS="-L/usr/local/opt/flex/lib"
 export CPPFLAGS="-I/usr/local/opt/flex/include"

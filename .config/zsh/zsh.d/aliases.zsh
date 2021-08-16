@@ -27,6 +27,8 @@ alias ng="noglob"
   alias .je='.j --edit'
   alias .jl='.j --list'
   alias .js='.j --show'
+
+  alias .jr='just --justfile $HOME/projects/rust/rust_justfile --working-directory $PWD'
 }
 
 (( ${+commands[hoard]} )) && {
@@ -83,7 +85,7 @@ alias kall='killall'
 alias kid='kill -KILL'
 alias yt='youtube-dl --add-metadata -i'
 alias grep="command grep --color=auto --binary-files=without-match --directories=skip"
-alias rg="rg --hidden"
+alias rg="rg --colors 'match:fg:magenta' --colors 'line:fg:red' --colors 'path:fg:magenta' --hidden"
 alias prg="rg --pcre2"
 alias frg="rg -F"
 alias irg="rg --no-ignore"
@@ -247,7 +249,7 @@ alias glog='git log --oneline --decorate --graph'
 alias gloga='git log --oneline --decorate --graph --all'
 
 alias magit='nvim -c MagitOnly'
-alias ngc='$EDITOR .git/config'
+alias ngc='$EDITOR $(git rev-parse --show-toplevel)/.git/config'
 alias nbconvert='jupyter nbconvert --to python'
 
 (( ${+commands[gitbatch]} )) && {
@@ -345,15 +347,9 @@ alias ume='um edit'
 # === rsync =====================================================================
 (( $+commands[rsync] )) && {
   alias rcp='rsync -av --ignore-existing --progress'
-  alias rsync='rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS'
+  alias rsyn='rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS'
 
   alias rsynca='rsync -Pyuazv --info=progress2 --name=name0 --delete-after --exclude ".DS_Store" --exclude ".ipynb_checkpoints"'
-  alias rsyncpr='rsync -Prultcv --exclude ".DS_Store" --exclude ".ipynb_checkpoints" \
-    $HOME/projects /Volumes/SSD/manual'
-  alias rsyncde='rsync -PruLtcv --exclude ".DS_Store" --exclude "MYHOME" --exclude "unix" \
-    $HOME/Desktop /Volumes/SSD/manual'
-  alias rsyncux='rsync -PrugoptczL --exclude ".DS_Store" $HOME/Desktop/unix /Volumes/SSD/manual'
-  alias rsyncho='rsync -Prultcv --exclude ".DS_Store" $HOME/Desktop/MYHOME /Volumes/SSD/manual'
 
   # Prugoptczl
   alias rsyncsrv='rsync -rzau --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS \

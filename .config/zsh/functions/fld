@@ -2,7 +2,7 @@
 
 # files=(${(f)"$(locate -Ai -0 $@ | grep -z -vE '~$' | fzf --read0 -0 -1 -m)"})
 
-zparseopts -D -A opts -- u -update
+zparseopts -D -A opts -- u -update c -cd
 
 (( $+opts[-u] + $+opts[--update] )) && lolcate --db default --update && return 0
 
@@ -15,6 +15,16 @@ sel=$(\
     --query "${*:-}"
 )
 
-[[ -n "$sel" ]] && ${EDITOR:-vim} "$sel"
+[[ -n "$sel" ]] && {
+    if (( $+opts[-c] + $+opts[--cd] )) {
+        if [[ -d "$sel" ]] {
+            builtin cd "$sel"
+        } else {
+            builtin cd "$sel:h"
+        }
+    } else {
+        ${EDITOR:-vim} "$sel"
+    }
+}
 
 # vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr={{{,}}}:

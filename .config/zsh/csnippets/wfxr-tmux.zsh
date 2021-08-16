@@ -17,7 +17,6 @@ function rm-broken-links()     { wfxr::rm-broken-links '-maxdepth 1' }
 
 function lsdelete() { lsof -n | rg -i --color=always deleted }
 
-# function ansi_strip() { sed -e 's/\x1b\[[0-9;]*[a-zA-Z]//g' }
 function ansi_strip() { sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" "$@"; }
 
 
@@ -109,6 +108,23 @@ function wfxr::fzf-file-edit-widget() {
 }
 zle     -N    wfxr::fzf-file-edit-widget
 # bindkey '\ee' wfxr::fzf-file-edit-widget
+
+function fe() {
+  local -a files sel
+  files=$(command fd -Hi -tf -d2)
+  sel=("$(
+    print -rl -- "$files[@]" | \
+    fzf --query="$1" \
+      --multi \
+      --select-1 \
+      --exit-0 \
+      --bind=ctrl-x:toggle-sort \
+      --preview-window=':nohidden,right:65%:wrap' \
+      --preview='([[ -f {} ]] && (bat --style=numbers --color=always {})) || ([[ -d {} ]] && (exa -TL 3 --color=always --icons {} | less)) || echo {} 2> /dev/null | head -200'
+    )"
+  )
+  [[ -n "$sel" ]] && ${EDITOR:-vim} "${sel[@]}" || zle redisplay
+}
 
 ##################################################################################
 # TMUX

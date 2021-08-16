@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
-set -C -f -u
-# #IFS=$'\n'
-IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
+# set -C -f -u
+setopt noclobber noglob nounset
+
+IFS="${$(printf '%b_' '\n')%_}"
 
 # Meanings of exit codes:
 # code | meaning    | action of ranger
@@ -20,16 +21,12 @@ HEIGHT="${3}"
 IMAGE_CACHE_PATH="${4}"  # Full path that should be used to cache image preview
 
 FILE_EXTENSION="${FILE_PATH##*.}"
-FILE_EXTENSION_LOWER="$(printf "%s" "${FILE_EXTENSION}" | tr '[:upper:]' '[:lower:]')"
-
-# mimetype=$(file --mime-type -Lb "$path")
-# extension=$(/bin/echo -E "${path##*.}" | tr "[:upper:]" "[:lower:]")
+FILE_EXTENSION_LOWER="${(L)FILE_EXTENSION}"
 
 # Settings:
 HIGHLIGHT_SIZE_MAX=262143  # 256KiB
 HIGHLIGHT_TABWIDTH=8
 MAXLN=200
-# HIGHLIGHT_STYLE='pablo'
 
 # Functions:
 try() { output=$(eval '"$@"'); }
@@ -42,46 +39,56 @@ trim() { head -n "$MAXLN"; }
 
 
 handle_mime() {
-    local mimetype="${1}"
-    case "${mimetype}" in
-	text/html) w3m -dump "${FILE_PATH}" && { dump | trim | fmt -s -w $WIDTH; exit 4; } ;;
-	text/troff) man ./ "${FILE_PATH}" | col -b ;;
-	text/* | */xml) bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme KimbieDark --style auto -- "${FILE_PATH}" ;;
-  application/pgp-encrypted) bat -Pf --theme KimbieDark --style auto "${FILE_PATH}" ;;
-	application/zip) atool --list -- "${FILE_PATH}" ;;
-  image/*) chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
-   video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
-  */pdf) pdftotext -l 10 -nopgbrk -q "${FILE_PATH}" - && \
-        { dump | trim | fmt -s -w $WIDTH; exit 0; } || exit 1;;
-  application/vnd.openxmlformats-officedocument.wordprocessingml.document) docx2txt "${FILE_PATH}" || exit 1;;
-    esac
+  local mimetype="${1}"
+  case "${mimetype}" in
+    (text/html)
+      w3m -dump "${FILE_PATH}" && { dump | trim | fmt -s -w $WIDTH; exit 4; } ;;
+    (text/troff)
+      man ./ "${FILE_PATH}" | col -b ;;
+    (text/* | */xml)
+      bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme KimbieDark --style auto -- "${FILE_PATH}" ;;
+    (application/pgp-encrypted)
+      bat -Pf --theme KimbieDark --style auto "${FILE_PATH}" ;;
+    (application/zip)
+      atool --list -- "${FILE_PATH}" ;;
+    (image/*)
+      chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
+    (video/* | audio/*|application/octet-stream)
+       mediainfo "${FILE_PATH}" || exit 1;;
+    (*/pdf)
+      pdftotext -l 10 -nopgbrk -q "${FILE_PATH}" - && \
+        { dump | trim | fmt -s -w $WIDTH; exit 0; } || exit 1 ;;
+    (application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+      docx2txt "${FILE_PATH}" || exit 1 ;;
+  esac
 }
 
 
 handle_other() {
   case "${FILE_PATH}" in
-    *.tgz|*.tar.gz) tar tzf "${FILE_PATH}";;
-    *.tar.bz2|*.tbz2) tar tjf "${FILE_PATH}";;
-    *.tar.txz|*.txz) xz --list "${FILE_PATH}";;
-    *.tar) tar tf "${FILE_PATH}";;
-    *.jar|*.war|*.ear|*.oxt) unzip -l "${FILE_PATH}";;
-    *.rar) unrar l "${FILE_PATH}";;
-    *.7z) 7z l "${FILE_PATH}";;
-    *.[1-8]) man "${FILE_PATH}" | col -b ;;
-    *.o) nm "${FILE_PATH}" | less ;;
-    *.torrent) transmission-show "${FILE_PATH}";;
-    *.iso) iso-info --no-header -l "${FILE_PATH}";;
-    *.odt|*.ods|*.odp|*.sxw) odt2txt "${FILE_PATH}";;
-    *.doc) catdoc "${FILE_PATH}" ;;
-    *.docx) docx2txt "${FILE_PATH}" - ;;
-    *.csv) bat --paging=always -f -l csv ;;
-    # *.csv) bat "${FILE_PATH}" | sed s/,/\\n/g ;;
-    *.json) jq --color-output . "${FILE_PATH}";;
-    *.asc) bat -Pf --theme KimbieDark --style auto "${FILE_PATH}";;
-    *.sha1|*.sha256|*.sha512|*.md5) rhash -c "${FILE_PATH}" ;;
-      *.ipynb) jupview -t KimbieDark "${FILE_PATH}";;
+    (*.tar)   tar tf "${FILE_PATH}";;
+    (*.rar)   unrar l "${FILE_PATH}";;
+    (*.7z) 7z l "${FILE_PATH}";;
+    (*.[1-8]) man "${FILE_PATH}" | col -b ;;
+    (*.o)     nm "${FILE_PATH}" | less ;;
+    (*.iso)   iso-info --no-header -l "${FILE_PATH}";;
+    (*.doc)   catdoc "${FILE_PATH}" ;;
+    (*.docx)  docx2txt "${FILE_PATH}" - ;;
+    (*.csv)   bat --paging=always -f -l csv ;;
+    (*.json)  jq --color-output . "${FILE_PATH}";;
+    (*.asc)   bat -Pf --theme KimbieDark --style auto "${FILE_PATH}";;
+    (*.ipynb) jupview -t KimbieDark "${FILE_PATH}" ;;
+    (*.torrent) transmission-show "${FILE_PATH}";;
+    (*.tgz|*.tar.gz)   tar tzf "${FILE_PATH}";;
+    (*.tar.bz2|*.tbz2) tar tjf "${FILE_PATH}";;
+    (*.tar.txz|*.txz)  xz --list "${FILE_PATH}";;
+    (*.jar|*.war|*.ear|*.oxt)        unzip -l "${FILE_PATH}";;
+    (*.odt|*.ods|*.odp|*.sxw)        odt2txt "${FILE_PATH}";;
+    (*.sha1|*.sha256|*.sha512|*.md5) rhash -c "${FILE_PATH}" ;;
   esac
 }
+
+# (*.dmg)   hdiutil imageinfo "${FILE_PATH}" | head -n 200 ;;
 
 # *.md) mdv "${FILE_PATH}" ;;
 
@@ -91,7 +98,7 @@ handle_fallback() {
     exit 1
 }
 
-MIMETYPE="$( file --dereference --brief --mime-type -- "${FILE_PATH}" )"
+MIMETYPE="$(file --dereference --brief --mime-type -- "${FILE_PATH}" )"
 handle_mime "${MIMETYPE}"
 handle_other
 handle_fallback

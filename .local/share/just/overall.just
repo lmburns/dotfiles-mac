@@ -79,6 +79,23 @@ just_executable()
 executable:
     @echo The executable is at: {{just_executable()}}
 
+# STRING MANIPULATION
+
+string:
+  @echo {{uppercase("hi")}}
+  @echo {{lowercase("hi")}}
+  @echo {{trim("hi")}}
+  @echo {{replace(s, from, to)}}
+
+path-manipulation:
+  @echo {{extension("/food/bar")}}
+  @echo {{file_name("/food/bar")}}
+  @echo {{file_stem("/food/bar")}}
+  @echo {{parent_directory("/food/bar")}}
+  @echo {{without_extension("/food/bar")}}
+  @echo {{join("/food/bar", "baz")}}
+  @echo {{clean("/food//bar/")}}
+
 # DOT ENV (hi.env)
 
 DATABASE_ADDRESS=localhost:6379
@@ -215,6 +232,34 @@ conditional:
   if true; then
       echo 'True!'
   fi
+
+for:
+    for file in `ls .`; do echo $file; done
+
+for:
+    for file in `ls .`; do \
+        echo $file; \
+    done
+
+for:
+    #!/usr/bin/env sh
+    for file in `ls .`; do
+        echo $file
+    done
+
+while:
+    while `server-is-dead`; do ping -c 1 server; done
+
+while:
+    while `server-is-dead`; do \
+        ping -c 1 server; \
+    done
+
+while:
+    #!/usr/bin/env sh
+    while `server-is-dead`; do
+        do ping -c 1 server
+    done
 
 # PRIVATE RECIPES ================================================
 # START WITH _ are omitted from just --list

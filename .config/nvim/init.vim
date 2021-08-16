@@ -389,9 +389,9 @@ autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 set showtabline=2
 let g:lightline = {}
 let g:lightline.colorscheme = 'kimbox'
+" let g:lightline.colorscheme = 'everforest'
 " let g:lightline.colorscheme = 'gruvbox_material'
 " let g:lightline.colorscheme = 'miramare'
-" let g:lightline.colorscheme = 'everforest'
 " let g:lightline.colorscheme = 'nightowl'
 " let g:lightline.colorscheme = 'spaceduck'
 " let g:lightline.colorscheme = 'sonokai'
@@ -631,7 +631,7 @@ Plug 'ludovicchabant/vim-gutentags'
   let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
   let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
   let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
-  let g:gutentags_exclude_filetypes = ['rust']
+  " let g:gutentags_exclude_filetypes = ['rust']
   " g:gutentags_exclude_project_root
 
   function! GutentagsDisable(path) abort
@@ -645,8 +645,10 @@ Plug 'liuchengxu/vista.vim'
   let g:vista_sidebar_position = 'topleft vertical'
   let g:vista#renderer#enable_icon = 1
 
-  " nmap <C-x><C-v> :Vista finder coc<CR>
-  nmap <a-\> :Vista finder coc<CR>
+  nmap <A-\> :Vista finder coc<CR>
+  nmap <A-]> :CocCommand fzf-preview.VistaBufferCtags<CR>
+  nmap <A-[> :CocCommand fzf-preview.VistaCtags<CR>
+  " nmap <C-S-\> :CocCommand fzf-preview.VistaCtags<CR>
   let g:vista_fzf_preview = ['down:50%']
   let g:vista_fzf_opt = ['--no-border']
   " 'markdown': 'toc',"
@@ -779,13 +781,18 @@ Plug 'voldikss/fzf-floaterm'
 
 " ============== fugitive ============== {{{
 Plug 'tpope/vim-fugitive'
-  nnoremap <Leader>gs :G<CR>3j
+  nnoremap <Leader>gu :G<CR>3j
   nnoremap <Leader>gq :G<CR>:q<CR>
   nnoremap <Leader>gw :Gwrite<CR>
   nnoremap <Leader>gr :Gread<CR>
   nnoremap <Leader>gh :diffget //2<CR>
   nnoremap <Leader>gl :diffget //3<CR>
   nnoremap <Leader>gp :Git push<CR>
+
+  nmap <silent> <LocalLeader>gg  :CocCommand fzf-preview.GitActions<CR>
+  nmap <silent> <LocalLeader>gs  :CocCommand fzf-preview.GitStatus<CR>
+  nmap <silent> <LocalLeader>gr  :CocCommand fzf-preview.GitLogs<CR>
+
   nmap [q :cprev<CR>
   nmap ]q :cnext<CR>
   nmap [Q :cfirst<CR>
@@ -833,15 +840,15 @@ Plug 'scrooloose/nerdcommenter'
   let g:NERDDefaultAlign = 'left'
   let g:NERDCustomDelimiters = { 'just': { 'left': '#'}}
   " vim registers <C-/> as <C-_>
-  nnoremap <C-_> :call NERDComment(0, "toggle")<CR>j
-  vnoremap <C-_> :call NERDComment(0, "toggle")<CR>'>j
+  nnoremap <C-_> :call nerdcommenter#Comment(0, "toggle")<CR>j
+  vnoremap <C-_> :call nerdcommenter#Comment(0, "toggle")<CR>'>j
   " copy & comment
   nnoremap <Leader>yc yyP<C-_>
   vnoremap <Leader>yc yPgp<C-_>
-  map gc :call NERDComment(0, "toggle")<CR>
-  " nmap gcc :call NERDComment(0, "toggle")<CR>
-  map gcy :call NERDComment(0, "yank")<CR>
-  nmap <Leader>gcy :call NERDComment(0, "yank")<CR>
+  map gc :call nerdcommenter#Comment(0, "toggle")<CR>
+  " nmap gcc :call nerdcommenter#Comment(0, "toggle")<CR>
+  map gcy :call nerdcommenter#Comment(0, "yank")<CR>
+  nmap <Leader>gcy :call nerdcommenter#Comment(0, "yank")<CR>
 " }}} === nerdcomment ===
 
 " Plug 'PeterRincker/vim-searchlight'
@@ -858,9 +865,17 @@ Plug 'antoinemadec/coc-fzf'
   " prettier command for coc
   command! -nargs=0 CocMarket :CocList marketplace
   command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
+  nnoremap <silent> <Leader>y  :<C-u>CocList yank<CR>
   nnoremap <C-x><C-l> :CocFzfList<CR>
   nnoremap <A-s> :CocFzfList symbols<CR>
-  nnoremap <silent> <Leader>y  :<C-u>CocList yank<CR>
+  nnoremap <A-c> :CocFzfList commands<CR>
+
+  nnoremap <C-x><C-r> :CocCommand fzf-preview.CocReferences<CR>
+  nnoremap <C-x><C-d> :CocCommand fzf-preview.CocTypeDefinitions<CR>
+  nnoremap <C-x><C-]> :CocCommand fzf-preview.CocImplementations<CR>
+  nnoremap <C-x><C-h> :CocCommand fzf-preview.CocDiagnostics<CR>
+
   let g:coc_fzf_opts = ['--no-border', '--layout=reverse-list']
   let g:coc_global_extensions = [
     \ 'coc-snippets',
@@ -875,7 +890,6 @@ Plug 'antoinemadec/coc-fzf'
     \ 'coc-css',
     \ 'coc-json',
     \ 'coc-yaml',
-    \ 'coc-pyright',
     \ 'coc-python',
     \ 'coc-vimtex',
     \ 'coc-r-lsp',
@@ -893,6 +907,8 @@ Plug 'antoinemadec/coc-fzf'
     \ 'coc-clangd',
     \ 'coc-lua',
     \ ]
+
+    " \ 'coc-pyright',
 
   " FIX: Rust Analyzer does not provide hover or code completion
 " \ 'coc-rls',
@@ -969,7 +985,7 @@ Plug 'antoinemadec/coc-fzf'
   nmap gs <Plug>(coc-git-chunkinfo)
   " show commit contains current position
   nmap gC <Plug>(coc-git-commit)
-  nnoremap <silent> ,gs  :<C-u>CocList --normal gstatus<CR>
+  nnoremap <silent> <LocalLeader>gp  :<C-u>CocList --normal gstatus<CR>
 
   nmap <silent> <Leader>gD :CocCommand git.diffCached<CR>
   nmap <silent> <Leader>gu :<C-u>CocCommand git.chunkUndo<CR>
@@ -1400,6 +1416,10 @@ Plug 'SidOfc/mkdx'
       \ vnoremap <Leader>si :s/`/*/g<CR>
   augroup END
 
+      " autocmd! FileType vimwiki
+      " autocmd FileType vimwiki :noremap <buffer> <Leader>z :! nohup zathura '%<.pdf' 2>&1 >/dev/null & disown<CR><CR>
+      " autocmd FileType vimwiki :noremap <buffer> <Leader>c :! pandoc --self-contained -t pdf '%' -o '%<.pdf'<CR>
+
   autocmd FileType python vnoremap scw <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
 
   if (!$VIM_DEV)
@@ -1446,9 +1466,24 @@ Plug 'NoahTheDuke/vim-just' | let g:polyglot_disabled += ['just']
 Plug 'nvim-telescope/telescope.nvim'
   map <A-f> :Telescope find_files<CR>
   map <A-g> :Telescope git_files<CR>
-  map <A-b> :Telescope buffers<CR>
+  map <A-b> :Telescope buffers theme=get_dropdown<CR>
   map <Leader>tc :Telescope commands<CR>
-  map <A-r> :Telescope live_grep<CR>
+  map <A-r> :Telescope live_grep theme=get_ivy<CR>
+
+  " nnoremap <space>o <cmd>Telescope find_files<cr>
+  " nnoremap <space>p <cmd>Telescope git_files<cr>
+  " nnoremap <space>f <cmd>Telescope live_grep<cr>
+  " nnoremap <space>l <cmd>Telescope buffers<cr>
+  " nnoremap <space>h <cmd>Telescope help_tags<cr>
+  " nnoremap <space>e <cmd>Telescope current_buffer_fuzzy_find<cr>
+  " nnoremap <C-e>    <cmd>Telescope current_buffer_fuzzy_find<cr>
+  " nnoremap <space>m <cmd>Telescope marks<cr>
+  " nnoremap <space>; <cmd>Telescope command_history<cr>
+  " nnoremap <space>/ <cmd>Telescope search_history<cr>
+  nnoremap ;b <cmd>Telescope builtin<cr>
+
+  nnoremap ;fd <cmd>Telescope fd<cr>
+
 " }}} === telescope ===
 
 " ============== minimap ============== {{{
@@ -1556,7 +1591,7 @@ command! -nargs=? -complete=dir AF
   " Line completion (same as :Bline)
   " imap <C-a> <C-x><C-l>
   imap <C-x><C-z> <Plug>(fzf-complete-line)
-  inoremap <expr> <C-x><c-d> fzf#vim#complete('cat /usr/share/dict/words')
+  " inoremap <expr> <C-x><c-d> fzf#vim#complete('cat /usr/share/dict/words')
 
     " word completion popup
   inoremap <expr> <C-x><C-w> fzf#vim#complete#word({
@@ -1618,15 +1653,34 @@ command! -nargs=? -complete=dir AF
   nmap <Leader>Lo :Locate .<CR>
   nmap <Leader>rg :RG<CR>
   nmap <C-f> :Rg<CR>
-  nmap <silent> <Leader>a  :Buffers<CR>
-  nmap <silent> <Leader>A  :Windows<CR>
-  nmap <silent> <Leader>;  :BLines<CR>
-  nmap <silent> ,f  :Files<CR>
+
+  " nmap <silent> <Leader>a  :Buffers<CR>
+  nmap <silent> <Leader>a  :CocCommand fzf-preview.AllBuffers<CR>
+  " nmap <silent> <Leader>a  :CocCommand fzf-preview.Buffers<CR>
+
+  nmap <silent> <Leader>C  :CocCommand fzf-preview.Changes<CR>
+
+    nmap <silent> <Leader>A  :Windows<CR>
+
+  " nmap <silent> <Leader>;  :BLines<CR>
+  nmap <silent> <Leader>;  :CocCommand fzf-preview.Lines<CR>
+  " nmap <silent> <Leader>;  :CocCommand fzf-preview.BufferLines<CR>
+
+  " nmap <silent> ,f  :Files<CR>
+  nmap <silent> <LocalLeader>f  :CocCommand fzf-preview.ProjectFiles<CR>
+  " nmap <silent> ,d  :CocCommand fzf-preview.DirectoryFiles<CR>
+  nmap <silent> <LocalLeader>r  :CocCommand fzf-preview.MruFiles<CR>
+  nmap <silent> <LocalLeader>g  :CocCommand fzf-preview.GitFiles<CR>
+
+  " nmap <silent> <LocalLeader>T  :CocCommand fzf-preview.TodoComments<CR>
+  nmap <silent> <LocalLeader>T  :TodoTelescope<CR>
+
   nmap <silent> <Leader>gf :GFiles<CR>
   nmap <silent> <Leader>hc :History:<CR>
   nmap <silent> <Leader>hf :History<CR>
   nmap <silent> <Leader>hs :History/<CR>
   nmap <silent> <Leader>cs :Colors<CR>
+  " nnoremap <A-s> :CocFzfList snippets<CR>
   nmap <silent> <Leader>si :Snippets<CR>
   nmap <silent> <Leader>ls :LS<CR>
   nmap <silent> <Leader>ht :Helptags<CR>
@@ -1634,7 +1688,10 @@ command! -nargs=? -complete=dir AF
   nmap <silent> <Leader>mm :Maps<CR>
   nmap <silent> <Leader>T  :Tags<CR>
   nmap <silent> <a-t> :BTags<CR>
-  nmap <silent> <Leader>mk :Marks<CR>
+  nmap <silent> <LocalLeader>t  :CocCommand fzf-preview.BufferTags<CR>
+
+  " nmap <silent> <Leader>mk :Marks<CR>
+  nmap <silent> <Leader>mk  :CocCommand fzf-preview.Marks<CR>
   nmap <Leader>mlm :marks<CR>
   nmap <Leader>mfd :delm! | delm A-Z0-9<CR>
   nmap <Leader>mld :delmarks a-z<CR>
@@ -1653,7 +1710,9 @@ command! -nargs=? -complete=dir AF
   " let g:rg_command = 'rg --vimgrep --hidden'
   let g:rg_highlight = 'true'
   let g:rg_format = '%f:%l:%c:%m,%f:%l:%m'
+
   " let g:fzf_preview_window = ''
+  let g:fzf_preview_quit_map = 1
   let g:fzf_history_dir = '~/.local/share/fzf-history'
   let g:fzf_layout = { 'window': 'call FloatingFZF()' }
   " let g:fzf_layout         = { 'down': '~40%' }
@@ -1664,6 +1723,16 @@ command! -nargs=? -complete=dir AF
     \ 'ctrl-x': 'split',
     \ 'ctrl-v': 'vsplit',
     \ 'ctrl-m': 'edit',
+    \}
+
+  let $FZF_PREVIEW_PREVIEW_BAT_THEME = 'kimbie'
+  let g:fzf_preview_use_dev_icons = 1
+  let g:fzf_preview_dev_icon_prefix_string_length = 3
+  let g:fzf_preview_dev_icons_limit = 2000
+  let g:fzf_preview_default_fzf_options = {
+    \ '--no-border': v:true,
+    \ '--reverse': v:true,
+    \ '--preview-window': 'wrap' ,
     \}
 " }}} === FZF & Ripgrep ===
 
@@ -1755,7 +1824,7 @@ command! -nargs=? -complete=dir AF
   let g:oceanic_material_allow_italic = 1
   let g:oceanic_material_allow_underline = 1
 
-  " let g:everforest_background = 'hard'
+  let g:everforest_background = 'hard'
   " let g:everforest_enable_italic = 1
   let g:everforest_sign_column_background = 'none'
   let g:everforest_better_performance = 1
@@ -1817,13 +1886,13 @@ command! -nargs=? -complete=dir AF
 
   syntax enable
   colorscheme kimbox
+  " colorscheme everforest
+  " colorscheme oceanic_material
   " colorscheme spaceduck
   " colorscheme bogster
   " colorscheme material
-  " colorscheme everforest
   " colorscheme miramare
   " colorscheme sonokai
-  " colorscheme oceanic_material
   " colorscheme gruvbox-material
   " colorscheme night-owl
   " colorscheme jellybeans
@@ -2294,6 +2363,97 @@ autocmd FileType c nnoremap <Leader>r<CR> :FloatermNew --autoclose=0 gcc % -o %<
   tnoremap :q! <C-\><C-n>:q!<CR>
 " }}} === Default Terminal ===
 
+
+" ================== Telescope ================== {{{
+" lua require 'telescope'.setup({
+"   \ defaults = {}
+"   \ })
+
+lua << EOF
+require("telescope").setup {
+  defaults = {
+    vimgrep_arguments = {
+          'rg',
+          '--color=never',
+          '--no-heading',
+          '--with-filename',
+          '--line-number',
+          '--column',
+          '--smart-case'
+        },
+    prompt_prefix = "❱ ",
+    selection_caret = "❱ ",
+    entry_prefix = "  ",
+    initial_mode = "insert",
+    selection_strategy = "reset",
+    sorting_strategy = "descending",
+    layout_strategy = "horizontal",
+    layout_config = {
+      horizontal = {
+        mirror = false,
+      },
+      vertical = {
+        mirror = false,
+      },
+    },
+    file_sorter =  require'telescope.sorters'.get_fuzzy_file,
+    file_ignore_patterns = {},
+    generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
+    winblend = 0,
+    border = {},
+    borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+    color_devicons = true,
+    use_less = true,
+    path_display = {},
+    set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
+    file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
+    grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
+    qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
+
+    -- Developer configurations: Not meant for general override
+    buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
+  },
+  pickers = {
+    -- Your special builtin config goes in here
+    buffers = {
+      sort_lastused = true,
+      theme = "dropdown",
+      previewer = true,
+      mappings = {
+        i = {
+          ["<c-d>"] = require("telescope.actions").delete_buffer,
+          -- Right hand side can also be the name of the action as a string
+          ["<c-d>"] = "delete_buffer",
+        },
+        n = {
+          ["<c-d>"] = require("telescope.actions").delete_buffer,
+        }
+      }
+    },
+    find_files = {
+      theme = "dropdown"
+      -- Theme: ivy, cursor, dropdown
+    }
+  },
+  extensions = {
+  }
+}
+EOF
+" Telescope find_files theme=get_dropdown
+" }}} === Telescope ===
+highlight TelescopeSelection      guifg=#FF9500 gui=bold
+highlight TelescopeSelectionCaret guifg=#819C3B
+highlight TelescopeMultiSelection guifg=#4C96A8
+highlight TelescopeNormal         guibg=#00000
+
+highlight TelescopeBorder         guifg=#A06469
+highlight TelescopePromptBorder   guifg=#A06469
+highlight TelescopeResultsBorder  guifg=#A06469
+highlight TelescopePreviewBorder  guifg=#A06469
+
+highlight TelescopeMatching       guifg=#FF5813
+
+highlight TelescopePromptPrefix   guifg=#EF1D55
 " ============== todo-comments-vim ============== {{{
 lua << EOF
   require("todo-comments").setup {

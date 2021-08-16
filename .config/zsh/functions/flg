@@ -1,11 +1,9 @@
 # Desc: lolcate fzf
 
 zmodload -F zsh/zutil b:zparseopts
-zparseopts -D -A opts -- u -update
+zparseopts -D -A opts -- u -update c -cd
 
 (( $+opts[-u] + $+opts[--update] )) && lolcate --db git --update && return 0
-
-# lolcate --db "$@" \
 
 local sel
 sel=$(\
@@ -16,6 +14,17 @@ sel=$(\
     --query "${*:-}"
 )
 
-[[ -n "$sel" ]] && ${EDITOR:-vim} "$sel"
+[[ -n "$sel" ]] && {
+    if (( $+opts[-c] + $+opts[--cd] )) {
+        if [[ -d "$sel" ]] {
+            builtin cd "$sel"
+        } else {
+            builtin cd "$sel:h"
+        }
+    } else {
+        ${EDITOR:-vim} "$sel"
+    }
+}
+
 
 # vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr={{{,}}}:

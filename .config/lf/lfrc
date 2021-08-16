@@ -68,25 +68,25 @@ map <esc> quit
 # -- Open: any file
 cmd open ${{
     case $(file --mime-type $f -b) in
-      application/pdf|application/vnd*|application/epub*) nohup zathura $fx >/dev/null 2>&1 ;;
-      application/csv) vd $fx ;;
-      application/msword\
+      (application/pdf|application/vnd*|application/epub*) nohup zathura $fx >/dev/null 2>&1 ;;
+      (application/csv) vd $fx ;;
+      (application/msword\
         |application/vnd.openxmlformats-officedocument.*\
         |application/vnd.oasis.opendocument.text\
         |application/vnd.ms-excel\
         |text/rtf) open -a LibreOffice.app ;;
-      text/*) $EDITOR $fx;;
-      image/x-xcf) nohup gimp $f >/dev/null 2>&1 ;;
-      image/svg+xml) display -- $f ;;
-      image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | sxiv -ai 2>/dev/null | lf-select ;;
-      audio/*) mpv --audio-display=no $f >/dev/null ;;
-      video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
-      application/x-bittorrent) open -a Transmission.app ;;
-      application/zlib) open ;;
-      *)
+      (text/*) $EDITOR $fx;;
+      (image/x-xcf) nohup gimp $f >/dev/null 2>&1 ;;
+      (image/svg+xml) display -- $f ;;
+      (image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | sxiv -ai 2>/dev/null | lf-select ;;
+      (audio/*) mpv --audio-display=no $f >/dev/null ;;
+      (video/*) nohup mpv $f -quiet >/dev/null 2>&1 ;;
+      (application/x-bittorrent) open -a Transmission.app ;;
+      (application/zlib) open ;;
+      (*)
         case ${f:e} in
-          dmg) hdiutil attach "$fx" ;;
-          *) $EDITOR $fx ;;
+          (dmg) hdiutil attach "$fx" ;;
+          (*) $EDITOR $fx ;;
         esac
         ;;
     esac
@@ -95,18 +95,7 @@ cmd open ${{
 }}
 
 
-# -- Delete: single file - whiptail
-cmd delete ${{
-  clear
-  if (whiptail --title "$(echo $fx | xargs -r basename -a)" --yesno "Delete?[y/N]" --defaultno 8 40); then
-    rip $fx && echo "$fx deleted" &&  terminal-notifier -title "🗑️  Fle deleted" -message "$(echo $fx | xargs -r basename -a) moved to trash"
-
-  else
-    echo "$fx not deleted"
-  fi
-}}
-
-# -- Trash: no confirmation (trash-put)
+# -- Trash: (rip)
 cmd trash ${{
   rip -- $fx
   terminal-notifier -title "🗑️  File(s) deleted" -message "File(s) moved to trash" &&
@@ -636,15 +625,14 @@ map au unarchive
 # ]]]
 
 # == Trash Mappings == [[[
-map dd trash             # rip
-map Dd delete            # confirmation with whiptail
-map te %trash-empty      # empty trash
-map tl $trash-list | fzf # list in fzf
-map tm $frm              # fzf trash delete script
-map tr $ftr              # fzf trash restore script
+map dd trash                  # rip
+map tE %rip -d                # empty trash
+map tl $clear; rip -as  | fzf # list in fzf
+map tm $frip                  # fzf trash delete script
+map tr $fripu                 # fzf trash restore script
 
-map Dp $dump -p -s       # dump - interactive delete
-map Dr $dump -u -s       # dump - restore interactive
+# map Dp $dump -p -s       # dump - interactive delete
+# map Dr $dump -u -s       # dump - restore interactive
 # ]]]
 
 # == Dragon Mapping [CONFIGURE] == [[[

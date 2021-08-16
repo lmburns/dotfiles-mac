@@ -18,7 +18,10 @@ zparseopts -D -A opts -- c -cd
 sel="$(wutag list files -t \
   | hck -d': ' -D $'\t' \
   | column -t \
-  | fzf +m --delimiter / --with-nth 4..)"
+  | fzf +m --delimiter / \
+           --with-nth 4.. \
+           --bind='F:execute(lf $(echo {} | hck -f1))'
+)"
 
 [[ -n "$sel" ]] && {
   if (( $+opts[-c] + $+opts[--cd] )) {

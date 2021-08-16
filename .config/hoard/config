@@ -10,6 +10,9 @@
 [envs.aria2p]
     exe_exists = ["aria2p"]
 
+[envs.atuin]
+    exe_exists = ["atuin"]
+
 [envs.bat]
     exe_exists = ["bat"]
 
@@ -74,6 +77,9 @@
 
 [envs.pueue]
     exe_exists = ["pueue"]
+
+[envs.rualdi]
+    exe_exists = ["rualdi"]
 
 [envs.sauce]
     exe_exists = ["sauce"]
@@ -142,6 +148,9 @@
 
 [hoards.arranger]
     "macos" = "/Users/lucasburns/.config/arranger/arranger.conf"
+
+[hoards.atuin]
+    "macos|atuin" = "/Users/lucasburns/.config/atuin"
 
 [hoards.bashtop]
     "macos" = "/Users/lucasburns/.config/bashtop/bashtop.cfg"
@@ -441,6 +450,9 @@
 
 [hoards.rtv]
     "macos" = "/Users/lucasburns/.config/rtv/rtv.cfg"
+
+[hoards.rualdi]
+    "macos|rualdi" = "/Users/lucasburns/Application Support/rualdi/rualdi.toml"
 
 [hoards.sauce]
     "macos|sauce" = "/Users/lucasburns/.local/share/sauce"

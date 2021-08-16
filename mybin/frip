@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # Desc: fzf rip remove
 
 local -a selection

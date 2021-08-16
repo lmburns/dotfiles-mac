@@ -1,8 +1,15 @@
-# editor := env_var(EDITOR)
-# confd := env_var(XDG_CONFIG_HOME)
-
 set shell := ["zsh", "-uc"]
 
+# default action with no parameters
+defaut:
+  @just --choose
+
+alias e := edit
+# edit this justfile
+edit:
+  @$EDITOR {{justfile()}}
+
+alias h := help
 # view example justfile
 help:
   @$EDITOR $XDG_DATA_HOME/just/overall.just
@@ -175,6 +182,11 @@ clear-xcode:
 connect-lucas:
   m wifi connect lucas_iphone $(pass wifi-lucas_iphone)
 
+# open files and limits
+@open-files:
+  print -Pr "%F{2}Max files%f: $(sysctl kern.maxfiles)"
+  print -Pr "%F{2}Max files per process%f: $(sysctl kern.maxfilesperproc)"
+  launchctl limit
 
 # zsh modifiers
 zsh-modif:

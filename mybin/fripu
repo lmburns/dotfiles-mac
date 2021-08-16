@@ -1,7 +1,9 @@
+#!/usr/bin/env zsh
+
 # Desc: fzf rip undo
 
 local -a undo
-undo=( $(rip -sp | fzf) )
+undo=( $(rip -sap | fzf) )
 
 [[ -n $undo ]] && {
   for f ("$undo[@]") { rip -u "$f" }

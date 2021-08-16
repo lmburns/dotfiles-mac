@@ -5,7 +5,6 @@
 #  Description: Bindkeys for zsh using custom 'vbindkey'
 #===========================================================================
 
-
 # zshexpn -- zsh -o SOURCE_TRACE -lic ''
 # sed -n l -- infocmp -L1 -- zle -L
 
@@ -67,6 +66,7 @@ zle -N __ftag_local
 
 zle -N fcq
 zle -N pw
+zle -N fe
 
 # zle -N __rualdi_fzf
 
@@ -91,6 +91,7 @@ typeset -gA keybindings; keybindings=(
   'F2'            db-faddf
   'F3'            _wbmux
   'Esc-e'         wfxr::fzf-file-edit-widget
+  'Esc-i'         fe
   'M-r'           per-dir-fzf
   'M-p'           pw                    # fzf pueue
   'M-q'           push-line-or-edit     # zsh-edit
@@ -125,8 +126,8 @@ typeset -gA keybindings; keybindings=(
   'mode=str M-t'  t                     # tmux wfxr
   'mode=str C-o'  lc                    # lf change dir
   'mode=str C-_'  lf
-  'mode=str M-.'  kf
   'mode=@ C-b'    bow2                  # surfraw open w3m
+  'mode=+ M-.'    kf                    # a formarks like thing in rust
   'mode=@ M-/'    frd                   # cd interactively recent dir
   'mode=@ M-;'    fcd                   # cd interactively
   'mode=@ M-,'    __zoxide_zi
@@ -177,5 +178,3 @@ keyb() {
   # print -rC 2 -- ${(nkv)keyb}
   # print -ac -- ${(Oa)${(kv)keyb[@]}}
 }
-
-ZLS_COLORS=$LS_COLORS
