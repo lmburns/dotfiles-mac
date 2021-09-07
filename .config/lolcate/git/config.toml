@@ -1,0 +1,12 @@
+description = "git directories"
+
+# Directories to index.
+dirs = [
+  "~/projects/github"
+]
+
+# skip = "Dirs"
+ignore_symlinks = false
+ignore_hidden = false
+gitignore = false
+# color = "FF5813"

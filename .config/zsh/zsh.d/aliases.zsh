@@ -14,8 +14,6 @@ alias xp="xplr"
 alias xx="xcompress"
 # alias ca='cargo'
 
-alias rg='rg -.'
-
 alias :q='exit'
 alias ng="noglob"
 
@@ -32,9 +30,9 @@ alias ng="noglob"
 }
 
 (( ${+commands[hoard]} )) && {
-  alias hd='hoard -c $XDG_CONFIG_HOME/hoard/config -h $XDG_CONFIG_HOME/hoard/root'
-  alias hde='hoard -c $XDG_CONFIG_HOME/hoard/config -h /Volumes/SSD/manual-bkp/hoard'
-  alias nhd='$EDITOR $XDG_CONFIG_HOME/hoard/config'
+  alias hd='hoard -c $XDG_CONFIG_HOME/hoard/hoard_config -h $XDG_CONFIG_HOME/hoard/root'
+  alias hde='hoard -c $XDG_CONFIG_HOME/hoard/hoard_config -h /Volumes/SSD/manual-bkp/hoard'
+  alias nhd='$EDITOR $XDG_CONFIG_HOME/hoard/hoard_config'
   alias hdocs='hoard -c $XDG_CONFIG_HOME/hoard/docs-config -h $XDG_CONFIG_HOME/hoard/docs'
   alias hdocse='hoard -c $XDG_CONFIG_HOME/hoard/docs-config -h /Volumes/SSD/manual-bkp/hoard-docs'
   alias nhdocs='$EDITOR $XDG_CONFIG_HOME/hoard/docs-config'
@@ -85,7 +83,6 @@ alias kall='killall'
 alias kid='kill -KILL'
 alias yt='youtube-dl --add-metadata -i'
 alias grep="command grep --color=auto --binary-files=without-match --directories=skip"
-alias rg="rg --colors 'match:fg:magenta' --colors 'line:fg:red' --colors 'path:fg:magenta' --hidden"
 alias prg="rg --pcre2"
 alias frg="rg -F"
 alias irg="rg --no-ignore"
@@ -259,7 +256,7 @@ alias nbconvert='jupyter nbconvert --to python'
 }
 
 # === other =====================================================================
-alias gpg-tui='gpg-tui --style colored'
+alias gpg-tui='gpg-tui --style colored -c 98676A'
 alias tno='terminal-notifier'
 
 alias thumbs='thumbsup --input ./img --output ./gallery --title "images" --theme cards --theme-style style.css && rsync -av gallery root@burnsac.xyz:/var/www/lmburns'

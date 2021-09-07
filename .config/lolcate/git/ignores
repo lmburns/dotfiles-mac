@@ -11,3 +11,4 @@ vim-persisted-undo/
 .ipynb_checkpoints
 .pycache
 per-directory-history
+target/

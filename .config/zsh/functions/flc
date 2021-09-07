@@ -3,12 +3,11 @@
 zparseopts -D -A opts -- u -update c -cd
 
 (( $+opts[-u] + $+opts[--update] )) && lolcate --db config --update && return 0
-
-# lolcate --db "$@" \
+(( $+opts[-c] + $+opts[--cd] )) && mime="d" || mime="f"
 
 local sel
 sel=$(\
-  lolcate --db config "$@" \
+  lolcate --db config "$@" --ansi 14 --mime "$mime" --color=always \
   | fzf \
     --delimiter / \
     --with-nth 5.. \

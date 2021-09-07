@@ -352,44 +352,64 @@ The <kbd>⌥ Option</kbd> + <kbd>⌃ Control</kbd> + <kbd>Arrow</kbd> mappings a
 .btp                       buku -- add tags
 @append_dir-history-var    helper function for per-dir-hist
 @chwpd_dir-history-var     helper function for per-dir-hist
+_ex_cmd                    Helper for vbindkey (taken from marlonrichert)
+acc_print                  fancify text
 autoenv-files              NICHOLAS85: find all autoenv zsh files and edit
 bcp                        delete (one or multiple) selected application(s)
 be                         use fzf to edit bookmark with buku
 bip                        brew install package fzf
 bo                         use fzf to open bookmark with buku
+bot                        use fzf to open bookmark with buku (search by tag first)
+bow2                       a copy of bow but as a zsh func
+bracketed-paste-win-path
 bup                        update (one or multiple) selected application(s)
 ccheat                     cheatsheet of cheat and tldr
-ccp                        preserve xattr for gnu copy
 cdown                      countdown timer
 cdownq                     countdown timer; no display
+cdrc                       my modification of cdr
+cdreal                     cd realpath
 cf                         Create lazily loaded Functions
 cfile                      copy contents of file to clipboard
 chpwd_ls                   func ran on every cd
 codeline                   get specific lang lines colorized
-da                         select a docker container to start and attach to
 delta                      delta variable column width side by side
 deploy-code
-ds                         select a running docker container to stop
+docka                      select a docker container to start and attach to
+dockrm                     select a docker container to remove
+dockrmi                    select a docker image or images to remove
+docks                      select a running docker container to stop
 exchange                   swap files
 fbd                        cd to selected parent directory
 fcd                        change directories with fzf
 fcd-zle                    change directories with fzf
 fcq                        use copyq to copy clipboard with fzf
-fe                         open the selected file with the default editor
+fcs                        get git commit sha
+fed                        open the selected file with the default editor
 fenv                       search environment vars with fzf
-ff                         mage commands to run
-fgl                        figlet font selector
+ffig                       figlet font selector
 fif                        using ripgrep combined with preview
+fim                        open script in editor (this one does functions)
 fjj                        autojump fzf
 fjrnl                      search JRNL headlines
 fkill                      interactively kill process with fzf
+flc                        lolcate fzf
+fld                        lolcate fzf default (HOME)
+flg                        lolcate fzf
+flp                        lolcate fzf projects
+fman                       fzf man pages
 fmas                       install app with mas and fzf
 fmates                     use fzf with mates contacts open mutt
+fmpc                       fzf mpd
 fpdf                       search directory for pdf and open in zathura
 frd                        fzf recent directories
 from-where                 tells from-where a zsh completion is coming from
 fsearch                    search fonts on system
+fssh                       fzf ssh
 ftags                      search ctags
+ftm                        create new tmux session, or switch
+fzf-close                  interactively close window with fzf
+g1all                      Iterates over .git directories, runs git "$@"
+g1zip                      Creates basename pwd-date archive
 getpid                     get pid and pipe to pstree
 gkey                       print keyboard shortcuts to application - iteractive option
 gman                       wrapper for gman to colorize
@@ -406,10 +426,12 @@ lowercasecurdir            lowercase every file in current dir
 manfind                    find location of manpage
 mp3                        use youtube-dl to get audio
 ngu                        get git repo url
+old_fk                     fzf rualdi and dirstack combined
 osx-ls-download-history    list download history
-paleta
+paleta                     escape codes instead of prompt expansion
 palette                    display colors
 palette2                   palette alternative
+palette::colortest         print full palette with blocks
 pblist                     lists mybin funcs with their embedded descriptions
 perldoc                    wrapper to colorize perldoc man pages
 pflist                     lists ZDOTDIR/functions/* with their embedded descriptions
@@ -418,20 +440,22 @@ prompt_my_per_dir_status   helper function for per-dir-hist
 psfind                     queries mdfind by kMDItemDisplayName
 rm                         remove wrapper depending on if root
 rmhist                     remove a line from history
+run-multi                  run tasks in parallel
 sudo                       sudo wrapper to allow aliases
 tab                        open new terminal tab in current dir
-tms                        select selected tmux session
-tsl                        select selected tmux session
+tm                         attach to tmux session or create new
 um                         wrapper to colorize um man pages
-vf                         fuzzy open with vim from anywhere
+urlshort                   shorten url with tinyurl
+vbindkey                   vim bindkey
 vii                        open file interactively with twf
 whichcomp                  tell which completion a command is using
 whim                       edit script from path
+wtag                       use wutag to either edit a file or cd to dir
 zdr                        fzf-extras cd to parent directory
 zicompinit_fast            faster & more efficient compinit
 zman                       Searches zshall with special keyword () matching
-zmanf                      Searches zshall with special keyword () matching
 zsh-help                   easier way to access zsh manual - taken from ZSH
+zstyle++
 ztes                       Searches zshall with special keyword () matching
 ======================================================================================
 ```
@@ -553,7 +577,7 @@ zm                   zsh       search zshall more efficiently
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ```
 
-### <a name="complex-scripts"></a>More Complex Scripts
+### <a name="complex-scripts"></a>More Scripts
 
 ### `jupview`
 
@@ -585,70 +609,3 @@ Options:
 ```
 
 ---
-
-## `chgmac`
-
-Change MAC address randomly or interactively. Can specify interface as well.
-
-#### Usage
-
-```sh
-Options:
-    -r, --restore           Restore to system default MAC
-    -m, --manual            Manually enter the MAC address in dialog box
-                               Optionally enter <MAC> on CLI without invoking dialog
-                              Type '-m x' (anything not a MAC) to be prompted for randomized addresses
-    -i, --interface         Select the interface with FZF (default en0)
-                               Optionally enter <interface> on CLI without invoking FZF
-    -v, --version           Show version information
-    -h, --help              Print this help message and exit
-```
-
----
-
-### `rmcrap`
-
-Deletes `.DS_Store` files and `__MACOSX` directories recursively.
-
-#### Usage
-
-```sh
-Options:
-    -s, --show     Show tree diagram of what rmcrap is removing
-    -c, --count    Show count of .DS_Store and __MACOSX removed
-```
----
-
-### `cps`
-
-Whenever you track your dotfiles with a git bare repo you are unable to use `xargs` to push changes to all remotes.
-
-This is setup to work with something like:
-```sh
-alias c='/usr/bin/git --git-dir=$XDG_DATA_HOME/dotfiles --work-tree=$HOME'
-```
-
-The remote names can be changed.
-
-**Usage**: `cps`
-
----
-
-### `grm`, `index-gen`, & `post-receive`
-
-`grm` is a git repo manager that I modified to fit my needs. It can create repos, list repos, recompile repos for `stagit`. See `grm -h` for help with all the commands.
-
-For use on home machine:
-```sh
-alias grm='ssh git@host_name -- grm'
-```
-
-`post-receive` is a post-receive git hook that is ran after pushing a commit.
-
-`index-gen` is used in combination with `grm` to generate an index.html file for my website.
-
----
-
-### `update_block`
-
-A script that updates block lists for `dnsmasq`, prints out the date the block list was updated, sets the DNS servers to `127.0.0.1` and `::1`, and then checks my website for DNSSEC validation by printing the flags needed for verification.

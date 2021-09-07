@@ -774,6 +774,7 @@ Plug 'voldikss/fzf-floaterm'
   let g:lf_map_keys = 0
   let g:lf_replace_netrw = 1
   nnoremap <Leader>lf :Lf<CR>
+  nnoremap <C-o> :Lf<CR>
 " }}}  === Floaterm | lf ===
 
 " ============== git  ============== {{{
@@ -804,18 +805,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'jreybert/vimagit'
   nnoremap  <Leader>ma :MagitO<Cr>
 " }}} === vimagit ===
-
-" ============== signify ============== {{{
-Plug 'mhinz/vim-signify'
-  let vcs_signs_delete_up   = [ '⤤', '◥', '⥔', '⬈', '⇗', '↗', '⎺']
-  let vcs_signs_delete_down = [ '⤥', '◢', '⥕', '⬊', '⇘', '↘', '⎽']
-  let g:signify_sign_add               = '┃'
-  let g:signify_sign_change            = '┃'
-  let g:signify_sign_changedelete      = '┃'
-  let g:signify_sign_delete            = vcs_signs_delete_down[5]
-  let g:signify_sign_delete_first_line = vcs_signs_delete_up[5]
-"}}} === signify ===
-
 " }}} === git ===
 
 " ============== UndoTree ============== {{{
@@ -830,7 +819,7 @@ Plug 'mbbill/undotree'
 
 " ============== nerdcommenter ============== {{{
 " Plug 'tpope/vim-commentary'
-Plug 'scrooloose/nerdcommenter'
+Plug 'preservim/nerdcommenter'
   let NERDSpaceDelims = 1
   let g:NERDCreateDefaultMappings = 0
   let g:NERDTrimTrailingWhitespace = 1
@@ -876,6 +865,16 @@ Plug 'antoinemadec/coc-fzf'
   nnoremap <C-x><C-]> :CocCommand fzf-preview.CocImplementations<CR>
   nnoremap <C-x><C-h> :CocCommand fzf-preview.CocDiagnostics<CR>
 
+  " nnoremap <C-x><C-r> :Telescope coc references<CR>
+  " nnoremap <C-x><C-d> :Telescope coc definitions<CR>
+  " nnoremap <C-x><C-]> :Telescope coc implementations<CR>
+  " nnoremap <C-x><C-h> :Telescope coc diagnostics<CR>
+
+  nnoremap ;s :Telescope coc workspace_symbols<CR>
+
+  nnoremap ;n :Telescope coc locations<CR>
+  " type_definitions
+
   let g:coc_fzf_opts = ['--no-border', '--layout=reverse-list']
   let g:coc_global_extensions = [
     \ 'coc-snippets',
@@ -902,16 +901,16 @@ Plug 'antoinemadec/coc-fzf'
     \ 'coc-syntax',
     \ 'coc-git',
     \ 'coc-go',
-    \ 'coc-rust-analyzer',
     \ 'coc-rls',
     \ 'coc-clangd',
-    \ 'coc-lua',
+    \ 'coc-rust-analyzer',
+    \ 'coc-toml',
     \ ]
 
+  " \ 'coc-lua',
     " \ 'coc-pyright',
 
   " FIX: Rust Analyzer does not provide hover or code completion
-" \ 'coc-rls',
 " \ 'coc-solargraph', # can't get it to work
 " \ 'coc-toml',
 
@@ -1204,7 +1203,6 @@ Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 augroup rust_env
   autocmd!
   autocmd FileType rust
-    \ nmap     <silent> <c-]>         <Plug>(coc-definition)|
     \ nmap     <buffer> <Leader>h<CR> :VT cargo clippy<CR>|
     \ nmap     <buffer> <Leader>n<CR> :VT cargo run   -q<CR>|
     \ nmap     <buffer> <Leader><Leader>n :VT cargo run -q<space>|
@@ -1357,7 +1355,6 @@ Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
 
 " ============== mkdx ============== {{{
 Plug 'SidOfc/mkdx'
-  " let g:polyglot_disabled = ['markdown']
   let g:mkdx#settings     = {
         \ 'restore_visual': 1,
         \ 'gf_on_steroids': 1,
@@ -1457,10 +1454,16 @@ Plug 'vimwiki/vimwiki'
   map <Leader>vw :VimwikiIndex<CR>
 "}}} === Vim Wiki ===
 
+
+" ========= Syntax Highlighting ======== {{{
 Plug 'sheerun/vim-polyglot'
-let g:polyglot_disabled = ['markdown']
+let g:polyglot_disabled = ['markdown', 'python', 'rust', 'lua']
 Plug 'wfxr/dockerfile.vim'  | let g:polyglot_disabled += ['dockerfile']
 Plug 'NoahTheDuke/vim-just' | let g:polyglot_disabled += ['just']
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
+  " Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+"}}} === Syntax Highlighting ===
 
 " ============= telescope ============= {{{
 Plug 'nvim-telescope/telescope.nvim'
@@ -1469,6 +1472,8 @@ Plug 'nvim-telescope/telescope.nvim'
   map <A-b> :Telescope buffers theme=get_dropdown<CR>
   map <Leader>tc :Telescope commands<CR>
   map <A-r> :Telescope live_grep theme=get_ivy<CR>
+
+  nmap <A-.> :Telescope oldfiles<CR>
 
   " nnoremap <space>o <cmd>Telescope find_files<cr>
   " nnoremap <space>p <cmd>Telescope git_files<cr>
@@ -1480,9 +1485,9 @@ Plug 'nvim-telescope/telescope.nvim'
   " nnoremap <space>m <cmd>Telescope marks<cr>
   " nnoremap <space>; <cmd>Telescope command_history<cr>
   " nnoremap <space>/ <cmd>Telescope search_history<cr>
-  nnoremap ;b <cmd>Telescope builtin<cr>
+  nnoremap ;b <cmd>Telescope builtin<CR>
 
-  nnoremap ;fd <cmd>Telescope fd<cr>
+  nnoremap ;fd <cmd>Telescope fd<CR>
 
 " }}} === telescope ===
 
@@ -1654,7 +1659,7 @@ command! -nargs=? -complete=dir AF
   nmap <Leader>rg :RG<CR>
   nmap <C-f> :Rg<CR>
 
-  " nmap <silent> <Leader>a  :Buffers<CR>
+  nmap <silent> <Leader>bu  :Buffers<CR>
   nmap <silent> <Leader>a  :CocCommand fzf-preview.AllBuffers<CR>
   " nmap <silent> <Leader>a  :CocCommand fzf-preview.Buffers<CR>
 
@@ -1737,15 +1742,14 @@ command! -nargs=? -complete=dir AF
 " }}} === FZF & Ripgrep ===
 
   " Plug 'vifm/vifm.vim'
-  " Plug 'junegunn/vim-journal'
   " Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
   " Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
 
-  " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  " Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-  " Plug 'nvim-telescope/telescope-fzf-writer.nvim'
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
+  Plug 'lewis6991/gitsigns.nvim'
+  Plug 'fhill2/telescope-ultisnips.nvim'
+  Plug 'fannheyward/telescope-coc.nvim'
   Plug 'folke/todo-comments.nvim'
   Plug 'Pocco81/HighStr.nvim'
 
@@ -1775,11 +1779,9 @@ command! -nargs=? -complete=dir AF
   Plug 'cocopon/iceberg.vim'
   Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/edge'
-  Plug 'sainnhe/sonokai'
   Plug 'sainnhe/everforest'
   Plug 'joshdick/onedark.vim'
   Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
-  Plug 'kaicataldo/material.vim', { 'branch': 'main' }
   Plug 'ghifarit53/daycula-vim' , {'branch' : 'main'}
   Plug 'ghifarit53/tokyonight-vim'
   Plug 'srcery-colors/srcery-vim'
@@ -1788,6 +1790,12 @@ command! -nargs=? -complete=dir AF
   Plug 'drewtempelmeyer/palenight.vim'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'tyrannicaltoucan/vim-deep-space'
+
+  " Lua
+  Plug 'marko-cerovac/material.nvim'
+  Plug 'sainnhe/sonokai'
+
+  " Plug 'kaicataldo/material.vim', { 'branch': 'main' }
   " Plug 'embark-theme/vim', { 'as': 'embark' }
   " Plug 'mhartington/oceanic-next'
   " Plug 'aswathkk/DarkScene.vim'
@@ -1908,6 +1916,8 @@ command! -nargs=? -complete=dir AF
   " colorscheme alduin      " needs work
   " colorscheme spacegray
   " colorscheme tokyonight
+
+  " colorscheme material
   " edge daycula srcery dogrun palenight
 
 " }}} === Theme Settings ===
@@ -2363,15 +2373,99 @@ autocmd FileType c nnoremap <Leader>r<CR> :FloatermNew --autoclose=0 gcc % -o %<
   tnoremap :q! <C-\><C-n>:q!<CR>
 " }}} === Default Terminal ===
 
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "c", "cpp", "go", "gomod", "lua", "rust",
+    "python",
+  }, -- "vim" "yaml" "toml" "ruby" "bash"
+  ignore_install = { }, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,  -- false will disable the whole extension
+    disable = { },  -- list of language that will be disabled
+  },
+}
+EOF
+
+" ================== GitSigns ================== {{{
+lua <<EOF
+require('gitsigns').setup {
+  signs = {
+    add          = {hl = 'GitSignsAdd'   , text = '┃', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+    change       = {hl = 'GitSignsChange', text = '┃', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+    delete       = {hl = 'GitSignsDelete', text = '↗', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    topdelete    = {hl = 'GitSignsDelete', text = '↘', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    changedelete = {hl = 'GitSignsChange', text = '┃', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+  },
+  signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+  numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
+  linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
+  word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+  keymaps = {
+    -- Default keymap options
+    noremap = true,
+
+    ['n ]c'] = { expr = true, "&diff ? ']c' : '<cmd>lua require\"gitsigns.actions\".next_hunk()<CR>'"},
+    ['n [c'] = { expr = true, "&diff ? '[c' : '<cmd>lua require\"gitsigns.actions\".prev_hunk()<CR>'"},
+
+    ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
+    ['v <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
+    ['n <leader>hu'] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
+    ['n <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
+    ['v <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
+    ['n <leader>hR'] = '<cmd>lua require"gitsigns".reset_buffer()<CR>',
+    ['n <leader>hp'] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
+    ['n <leader>hb'] = '<cmd>lua require"gitsigns".blame_line(true)<CR>',
+    ['n <leader>hS'] = '<cmd>lua require"gitsigns".stage_buffer()<CR>',
+    ['n <leader>hU'] = '<cmd>lua require"gitsigns".reset_buffer_index()<CR>',
+
+    -- Text objects
+    ['o ih'] = ':<C-U>lua require"gitsigns.actions".select_hunk()<CR>',
+    ['x ih'] = ':<C-U>lua require"gitsigns.actions".select_hunk()<CR>'
+  },
+  watch_index = {
+    interval = 1000,
+    follow_files = true
+  },
+  attach_to_untracked = true,
+  current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+  current_line_blame_opts = {
+    virt_text = true,
+    virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+    delay = 1000,
+  },
+  current_line_blame_formatter_opts = {
+    relative_time = false
+  },
+  sign_priority = 6,
+  update_debounce = 100,
+  status_formatter = nil, -- Use default
+  max_file_length = 40000,
+  preview_config = {
+    -- Options passed to nvim_open_win
+    border = 'single',
+    style = 'minimal',
+    relative = 'cursor',
+    row = 0,
+    col = 1
+  },
+  use_internal_diff = true,  -- If vim.diff or luajit is present
+  yadm = {
+    enable = false
+  },
+}
+EOF
+" GitSigns
 
 " ================== Telescope ================== {{{
-" lua require 'telescope'.setup({
-"   \ defaults = {}
-"   \ })
-
 lua << EOF
+local actions = require('telescope.actions')
 require("telescope").setup {
   defaults = {
+    mappings = {
+      n = {
+        ["<esc>"] = actions.close,
+      }
+    },
     vimgrep_arguments = {
           'rg',
           '--color=never',
@@ -2397,7 +2491,7 @@ require("telescope").setup {
       },
     },
     file_sorter =  require'telescope.sorters'.get_fuzzy_file,
-    file_ignore_patterns = {},
+    file_ignore_patterns = {"target/.*"},
     generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
     winblend = 0,
     border = {},
@@ -2409,16 +2503,12 @@ require("telescope").setup {
     file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
     grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
     qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
-
-    -- Developer configurations: Not meant for general override
-    buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
-  },
+   },
   pickers = {
-    -- Your special builtin config goes in here
     buffers = {
       sort_lastused = true,
       theme = "dropdown",
-      previewer = true,
+      -- previewer = true,
       mappings = {
         i = {
           ["<c-d>"] = require("telescope.actions").delete_buffer,
@@ -2430,14 +2520,21 @@ require("telescope").setup {
         }
       }
     },
+    live_grep = {
+      grep_open_files = false,
+    },
     find_files = {
       theme = "dropdown"
       -- Theme: ivy, cursor, dropdown
-    }
+    },
   },
   extensions = {
+    ultisnips,
+    coc
   }
 }
+require('telescope').load_extension('ultisnips')
+require('telescope').load_extension('coc')
 EOF
 " Telescope find_files theme=get_dropdown
 " }}} === Telescope ===
@@ -2455,29 +2552,23 @@ highlight TelescopeMatching       guifg=#FF5813
 
 highlight TelescopePromptPrefix   guifg=#EF1D55
 " ============== todo-comments-vim ============== {{{
-lua << EOF
-  require("todo-comments").setup {
-  signs = true,
-  keywords = {
-    FIX = {
-      icon = " ",
-      color = "#ea6962",
-      alt = { "FIXME", "BUG", "FIXIT", "FIX", "ISSUE" },
-    },
-    TODO = { icon = " ", color = "#d16d9e" },
-    HACK = { icon = " ", color = "#d8a657" },
-    WARN = { icon = " ", color = "#EC5f67", alt = { "WARNING", "XXX" } },
-    PERF = { icon = " ", alt = { "#a7c777", "PERFORMANCE", "OPTIMIZE", "FUNCTION" } },
-    NOTE = { icon = " ", color = "#62b3b2", alt = { "INFO", "NOTES", "SUBSECTION" } },
-    CHECK = { icon = "", color = "#e78a4e", alt = { "EXPLAIN", "DISCOVER", "SECTION" } },
-  },
-  highlight = {
-    before = "",
-    keyword = "bg", -- wide
-    after = "fg",
-  },
-}
-EOF
+lua require("todo-comments").setup({
+    \ signs = true,
+    \ keywords = {
+      \ FIX =  { icon = " ", color = "#ea6962", alt = { "FIXME", "BUG", "FIXIT", "FIX", "ISSUE" }},
+      \ TODO = { icon = " ", color = "#d16d9e" },
+      \ HACK = { icon = " ", color = "#d8a657" },
+      \ WARN = { icon = " ", color = "#EC5f67", alt = { "WARNING", "XXX" }},
+      \ PERF = { icon = " ", alt = { "#a7c777", "PERFORMANCE", "OPTIMIZE", "FUNCTION" }},
+      \ NOTE = { icon = " ", color = "#62b3b2", alt = { "INFO", "NOTES", "SUBSECTION" }},
+      \ CHECK = { icon = "", color = "#e78a4e", alt = { "EXPLAIN", "DISCOVER", "SECTION" }},
+    \ },
+  \ highlight = {
+    \ before = "",
+    \ keyword = "bg",
+    \ after = "fg",
+  \ },
+\ })
 " }}} === todo-comments-vim ===
 
 " ============== highlight line ============== {{{

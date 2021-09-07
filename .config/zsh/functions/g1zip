@@ -1,4 +1,4 @@
-# Desc: Creates `basename $(pwd)`-$(date ...) archive
+# Desc: Creates basename pwd-date archive
 
 local f=${PWD:h:t}-$(date +%Y%m%d)
 command rm -vf "$f".zip

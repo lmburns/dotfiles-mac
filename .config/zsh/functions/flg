@@ -3,11 +3,12 @@
 zmodload -F zsh/zutil b:zparseopts
 zparseopts -D -A opts -- u -update c -cd
 
+local mime sel
 (( $+opts[-u] + $+opts[--update] )) && lolcate --db git --update && return 0
+(( $+opts[-c] + $+opts[--cd] )) && mime="d" || mime="f"
 
-local sel
 sel=$(\
-  lolcate --db git "$@" \
+  lolcate --db git "$@" --ansi 13 --mime "$mime" --color=always \
   | fzf \
     --delimiter / \
     --with-nth 6.. \

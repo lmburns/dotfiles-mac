@@ -519,7 +519,7 @@ cmd wutag-remove ${{
 
 cmd wutag-list !{{
   clear
-  noglob wutag list '*' | bat -f -l bash
+  noglob wutag list files -tf | bat -f -l bash
 }}
 # ]]] === TAGS ===
 
@@ -614,6 +614,8 @@ map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file --mime -b -p $f # in
 
 map <c-f> push :rg<space>                           # search with rg
 map <c-z> push :rgu<space>                          # search interactively with fzf
+
+map Tk !clear; tokei
 # ]]]
 
 # == Archive Mappings == [[[

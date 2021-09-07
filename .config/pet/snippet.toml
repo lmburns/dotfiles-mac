@@ -4,46 +4,6 @@
   output = ""
 
 [[snippets]]
-  description = "stop proxy"
-  command = "sbrse stop dnsmasq && sbrse stop stubby && sbrse stop privoxy"
-  output = ""
-
-[[snippets]]
-  description = "start proxy"
-  command = "sbrse start dnsmasq && sbrse start stubby && sbrse start privoxy"
-  output = ""
-
-[[snippets]]
-  description = "zsh param expan mod"
-  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers'"
-  output = ""
-
-[[snippets]]
-  description = "zsh param expan"
-  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion'"
-  output = ""
-
-[[snippets]]
-  description = "zsh param expan flags"
-  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags'"
-  output = ""
-
-[[snippets]]
-  description = "zsh glob flags"
-  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Globbing-Flags'"
-  output = ""
-
-[[snippets]]
-  description = "zsh glob qualifiers"
-  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Expansion.html#Glob-Qualifiers'"
-  output = ""
-
-[[snippets]]
-  description = "zsh subscript flags"
-  command = "lynx 'http://zsh.sourceforge.net/Doc/Release/Parameters.html#Subscript-Flags'"
-  output = ""
-
-[[snippets]]
   description = "cpu/memory"
   command = "ps -A -o %cpu,%mem | awk '{ cpu += $1; mem += $2} END {print \"CPU: \"  cpu,\"MEM: \"  mem}'"
   output = ""
@@ -54,11 +14,16 @@
   output = ""
 
 [[snippets]]
-  description = "weather"
-  command = "wttr '65202?format=3'"
+  description = "run"
+  command = "HOARD_LOG=debug just r -c $PWD/config.toml -h $PWD/out backup"
   output = ""
 
 [[snippets]]
-  description = "weather chart"
-  command = "curl v2d.wttr.in/65202"
+  description = "yaml"
+  command = "HOARD_LOG=debug just r -c $PWD/config.yml -h $PWD/out backup"
+  output = ""
+
+[[snippets]]
+  description = "json"
+  command = "HOARD_LOG=debug just r -c $PWD/config.json -h $PWD/out backup"
   output = ""

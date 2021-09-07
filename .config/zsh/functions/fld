@@ -5,10 +5,11 @@
 zparseopts -D -A opts -- u -update c -cd
 
 (( $+opts[-u] + $+opts[--update] )) && lolcate --db default --update && return 0
+(( $+opts[-c] + $+opts[--cd] )) && mime="d" || mime="f"
 
 local sel
 sel=$(\
-  lolcate --db default "$@" \
+  lolcate --db default "$@" --ansi 11 --mime "$mime" --color=always \
   | fzf \
     --delimiter / \
     --with-nth 4.. \

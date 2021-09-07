@@ -246,9 +246,6 @@ zt 0b light-mode for \
 
 #  === wait'0c' - programs - sourced === [[[
 zt 0c light-mode binary for \
-  lbin patch"${pchf}/%PLUGIN%.patch" reset \
-  atload'alias drmi="dump -p -s" drm="dump -p" dd="dump"' \
-    kazhala/dump-cli \
   lbin'!**/*grep;**/*man;**/*diff' has'bat' atpull'%atclone' \
   atclone'(){local f;builtin cd -q src;for f (*.sh){mv ${f} ${f:r}};}' \
   atload'alias bdiff="batdiff" bm="batman" bgrep="env -u RIPGREP_CONFIG_PATH batgrep"' \
@@ -260,9 +257,7 @@ zt 0c light-mode binary for \
     tj/git-extras \
   lbin atload'alias gi="git-ignore"'\
     laggardkernel/git-ignore \
-  lbin"$ZPFX/bin/blackbox_*" make"copy-install PREFIX=$ZPFX" \
-    StackExchange/blackbox \
-  lbin'(f*~*.zsh)' pick'*.zsh' atinit'alias fs="fstat"' \
+  lbin'f*~*.zsh' pick'*.zsh' atinit'alias fs="fstat"' \
     lmburns/fzfgit \
   patch"${pchf}/%PLUGIN%.patch" reset \
   lbin'!src/pt*(*)' \
@@ -293,8 +288,6 @@ zt 0c light-mode binary for \
     tmux-plugins/tpm \
   lbin lman \
     sdushantha/tmpmail \
-  lbin'!nb;!*/bookmark;!*/notes' \
-    xwmx/nb \
   lbin'*/tag' make'tag' lman wait'[[ $OSTYPE = darwin* ]]' \
     jdberry/tag \
   lbin wait'[[ $OSTYPE = darwin* ]]' \
@@ -330,6 +323,8 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     ogham/dog \
   atclone'./just --completions zsh > _just' atpull'%atclone' \
     casey/just \
+  atclone'./imdl --completions zsh > _just' atpull'%atclone' \
+    casey/intermodal \
   lbin'**/gh' atclone'./**/gh completion --shell zsh > _gh' atpull'%atclone' \
     cli/cli \
   lbin'**/hub' extract'!' atclone'mv -f **/**.zsh* _hub' atpull'%atclone' \
@@ -417,6 +412,9 @@ zt 0c light-mode null for \
   lbin patch"${pchf}/%PLUGIN%.patch" make"PREFIX=$ZPFX install" reset \
   atpull'%atclone' atdelete"PREFIX=$ZPFX make uninstall"  \
     zdharma/zshelldoc \
+  lbin from'gh-r' bpick'*darwin_amd64*' \
+  atload"source $ZPFX/share/pet/pet_atload.zsh; alias pe='pet exec'" \
+    knqyf263/pet \
   id-as'bisqwit/regex-opt' lbin atclone'xh --download https://bisqwit.iki.fi/src/arch/regex-opt-1.2.4.tar.gz' \
   atclone'ziextract --move --auto regex-*.tar.gz' make'all' \
     zdharma/null
@@ -450,7 +448,7 @@ zt 0c light-mode null for \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
   atpull'%atclone' \
-    Shadow53/hoard \
+    lmburns/hoard \
   lbin'* -> ruplacer' from'gh-r' bpick'*osx*' \
   atinit'alias rup="ruplacer"' \
     dmerejkowsky/ruplacer \
@@ -540,7 +538,15 @@ zt 0c light-mode null for \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
   atload'alias touch="feel"' \
-    lmburns/feel
+    lmburns/feel \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  atload"alias par='parallel'" \
+    lmburns/parallel \
+  lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo build --release --features=backend-gpgme' \
+  atpull'%atclone' atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  atload'./prs internal completions zsh' \
+    timvisee/prs
 
 # === rust extensions === [[[
 zt 0c light-mode null for \
@@ -562,6 +568,8 @@ zt 0c light-mode null for \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     razrfalcon/cargo-bloat \
+  lbin from'gh-r' \
+    est31/cargo-udeps \
   lbin atclone'cargo build --release --features=fix' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     rustsec/rustsec \
@@ -570,7 +578,8 @@ zt 0c light-mode null for \
     andrewradev/cargo-local \
   lbin'tar*/rel*/cargo-{rm,add,upgrade}' atclone'cargo build --release' atpull'%atclone' \
     killercup/cargo-edit \
-  lbin'tar*/rel*/{cargo-make,makers}' atclone'cargo build --release' atpull'%atclone' \
+  lbin'{cargo-make,makers}' atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/{cargo-make,makers} . && cargo clean" \
   atload'export CARGO_MAKE_HOME="$XDG_CONFIG_HOME/cargo-make"' \
   atload'alias ncmake="$EDITOR $CARGO_MAKE_HOME/Makefile.toml"
                cm="makers --makefile $CARGO_MAKE_HOME/Makefile.toml"' \
@@ -586,6 +595,8 @@ zt 0c light-mode null for \
     mre/cargo-inspect \
   lbin from'gh-r' \
     cargo-generate/cargo-generate \
+  lbin from'gh-r' \
+    yozhgoor/cargo-temp \
   lbin atclone'cargo build --release' \
   atclone'command mv -f tar/*/rel*/evcxr . && cargo clean' atpull'%atclone' \
     google/evcxr \
@@ -837,6 +848,17 @@ function linkrust() {
 # lsof open fd
 zmodload -F zsh/system p:sysparams
 function lsfd() { lsof -p $sysparams[ppid] | hck -f1,4,5- ; }
+function cargo-bin() {
+  root=${$(cargo locate-project | jq -r '.root'):h} bin=${root:t}
+  binpath=${root}/target/release/${bin}
+  if [[ -x $binpath ]] {
+      command mv $binpath $root && cargo trim clear
+  } elif [[ -x $root/$bin ]] {
+      cargo trim clear
+  }
+}
+
+function cargo-home() { cargo show "${@}" --json | jq -r .crate.homepage; }
 # function cargo-take() { cargo new "$@" && builtin cd "$@"; }
 # wrapper for rusty-man for tui
 function rmant() { rusty-man "$1" --theme 'Solarized (dark)' --viewer tui "${@:2}"; }
@@ -1003,10 +1025,11 @@ zt 0c light-mode run-atpull for \
   eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac \
   && keychain --agents gpg -q --eval 0xC011CBEF6628B679' \
     zdharma/null \
-  id-as'dircolors' has'gdircolors' nocd eval"gdircolors ${0:h}/gruv.dircolors" \
-    zdharma/null \
   id-as'Cleanup' nocd atinit'unset -f zt grman; _zsh_autosuggest_bind_widgets' \
     zdharma/null
+
+# id-as'dircolors' has'gdircolors' nocd eval"gdircolors ${0:h}/gruv.dircolors" \
+#   zdharma/null \
 
 # FIX: only one zicdreplay
 # id-as'pip_comp' has'pip' nocd eval'pip completion --zsh' zdharma/null
@@ -1046,6 +1069,7 @@ typeset -g KEYTIMEOUT=15
 
 typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${BREW_PREFIX}/lib/password-store/extensions"
+typeset -gx LS_COLORS="$(vivid -d $ZDOTDIR/zsh.d/vivid/filetypes.yml generate $ZDOTDIR/zsh.d/vivid/kimbie.yml)"
 typeset -gx ZLS_COLORS=$LS_COLORS
 # ]]]
 
