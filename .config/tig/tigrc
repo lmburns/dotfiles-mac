@@ -273,4 +273,4 @@ bind stash A !?git stash apply %(stash)
 
 # ]]]
 
-# vim: ft=conf:et:sw=4:ts=4:sts=2:fdm=marker:fmr=[[[,]]]:
+# vim: ft=tmux:et:sw=4:ts=4:sts=2:fdm=marker:fmr=[[[,]]]:

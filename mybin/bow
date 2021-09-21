@@ -10,7 +10,7 @@ url=$(
     | perl -F'\t' -lne 'BEGIN{$,="\t"} $F[3] =~ s/(^,|,$)//g; print @F' \
     | fzf -m \
           --reverse \
-          --preview "buku -p {1}" \
+          --preview "buku --nostdin -p {1}" \
           --preview-window=wrap \
           --query "${*:-}" \
     | cut -f2

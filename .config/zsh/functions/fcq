@@ -1,4 +1,4 @@
-# Desc: use copyq to copy clipboard with fzf
+# Desc: use copyq to view clipboard history
 
 fcq() {
   # sel=$(\

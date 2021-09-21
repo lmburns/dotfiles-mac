@@ -1,6 +1,6 @@
 # --theme="KimbieDark"
 # --theme="gruvbox-dark"
---theme="kimbie"
+--theme="kimbro"
 --italic-text=always
 
 # Disable automatic paging:

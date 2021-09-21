@@ -22,6 +22,15 @@ shift + lctrl - 3 : "${HOME}"/mybin/yabai/show_disk.sh
 # === close application ====================================================
 hyper - backspace : $(yabai -m window $(yabai -m query --windows --window | jq -re ".id") --close)
 
+# === move container =======================================================
+shift + alt - m : yabai -m window --space last; yabai -m space --focus last
+shift + alt - p : yabai -m window --space prev; yabai -m space --focus prev
+shift + alt - n : yabai -m window --space next; yabai -m space --focus next
+shift + alt - 1 : yabai -m window --space 1; yabai -m space --focus 1
+shift + alt - 2 : yabai -m window --space 2; yabai -m space --focus 2
+shift + alt - 3 : yabai -m window --space 3; yabai -m space --focus 3
+shift + alt - 4 : yabai -m window --space 4; yabai -m space --focus 4
+
 # === toggle stackline icons ===============================================
 # shift + alt - b :  [[hs.wiki|hs]] -c 'stackline.config:toggle("appearance.showIcons")'
 
@@ -227,3 +236,5 @@ ctrl + alt + cmd + lshift - s :
 # shift + cmd - j : yabai -m window --warp south
 # shift + cmd - k : yabai -m window --warp north
 # hyper - 0x21 : yabai -m window --warp east # "[" key
+
+# vim: ft=sxhkdrc:et:sw=2:ts=2:sts=-1:fdm=marker:fmr={{{,}}}:

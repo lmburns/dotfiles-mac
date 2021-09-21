@@ -146,6 +146,7 @@ zt 0a light-mode for \
   trigger-load'!ugit' \
     Bhupesh-V/ugit \
   trigger-load'!ga;!grh;!grb;!glo;!gd;!gcf;!gco;!gclean;!gss;!gcp;!gcb' \
+  atload'export FORGIT_LOG_FORMAT="%C(red)%C(bold)%h%C(reset) %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset"' \
     wfxr/forgit \
   trigger-load'!gcomp' blockf \
   atclone'command rm -rf lib/*;git ls-files -z lib/ |xargs -0 git update-index --skip-worktree' \
@@ -268,7 +269,7 @@ zt 0c light-mode binary for \
   lbin atclone"mkdir -p $XDG_CONFIG_HOME/ytfzf; cp **/conf.sh $XDG_CONFIG_HOME/ytfzf" \
     pystardust/ytfzf \
   lbin from'gl' atclone'./prebuild; ./configure --prefix="$ZPFX"; make' \
-  make"install"  atpull'%atclone' \
+  make"install"  atpull'%atclone' atload'alias srg="sr google"' \
     surfraw/Surfraw \
   lbin atclone'./autogen.sh; ./configure --prefix="$ZPFX"; make' \
   make"install"  atpull'%atclone' lman \
@@ -442,6 +443,7 @@ zt 0c light-mode null for \
   lbin from'gh-r' \
     itchyny/mmv \
   lbin from'gh-r' eval"atuin init zsh | sed 's/bindkey .*\^\[.*$//g'" \
+  atload'alias clean-atuin="kill -9 $(lsof -c atuin -t)"' \
     ellie/atuin \
   lbin'* -> sd' from'gh-r' bpick'*darwin' \
     chmln/sd \
@@ -545,8 +547,21 @@ zt 0c light-mode null for \
     lmburns/parallel \
   lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo build --release --features=backend-gpgme' \
   atpull'%atclone' atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
-  atload'./prs internal completions zsh' \
-    timvisee/prs
+  atclone'./prs internal completions zsh' \
+    timvisee/prs \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/tidy-viewer . && cargo clean" \
+  atload"alias tv='tidy-viewer'" \
+    alexhallam/tv \
+  lbin from'gh-r' \
+    evansmurithi/cloak \
+  lbin from'gh-r' \
+    lotabout/rargs \
+  lbin atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  eval'emplace init zsh' atload"alias em='emplace'" \
+  atload'export EMPLACE_CONFIG="$XDG_CONFIG_HOME/emplace/emplace.toml"' \
+    lmburns/emplace
 
 # === rust extensions === [[[
 zt 0c light-mode null for \
@@ -1036,6 +1051,7 @@ zt 0c light-mode run-atpull for \
 # eval "$(/usr/local/mybin/rakubrew init Zsh)"
 # eval "$(fakedata --completion zsh)"
 
+export GPG_TTY=$TTY
 typeset -gx PDFVIEWER='zathura'                                                   # texdoc pdfviewer
 typeset -gx XML_CATALOG_FILES="/usr/local/etc/xml/catalog"                        # xdg-utils|asciidoc
 typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET" # vimtex
@@ -1141,6 +1157,8 @@ $FZF_COLORS
 "
 SKIM_DEFAULT_OPTIONS=${(F)${(M)${(@f)FZF_DEFAULT_OPTS}/(#m)*info*/${${(@s. .)MATCH}:#--info*}}:#--(bind=change:top|pointer*|marker*|color*)}
 SKIM_DEFAULT_OPTIONS+=$'\n'"--color=${(j:,:)SKIM_COLORS}"
+SKIM_DEFAULT_OPTIONS+=$'\n'"--cmd-prompt=➤"
+SKIM_DEFAULT_OPTIONS+=$'\n'"--bind='ctrl-p:preview-up,ctrl-n:preview-down'"
 export SKIM_DEFAULT_OPTIONS
 
 export FZF_ALT_E_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -1212,11 +1230,11 @@ manpath=(
 
 infopath=( ${BREW_PREFIX}/{share,}/info "${infopath[@]}" )
 
-cdpath=( $HOME/{projects,}/github $XDG_CONFIG_HOME )
+# cdpath=( $HOME/{projects,}/github $XDG_CONFIG_HOME )
 
-hash -d git=$HOME/projects/github
-hash -d pro=$HOME/projects
-hash -d opt=$HOME/opt
+# hash -d git=$HOME/projects/github
+# hash -d pro=$HOME/projects
+# hash -d opt=$HOME/opt
 hash -d ghq=$HOME/ghq
 hash -d TMPDIR=${TMPDIR:A}
 

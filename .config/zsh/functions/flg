@@ -8,8 +8,8 @@ local mime sel
 (( $+opts[-c] + $+opts[--cd] )) && mime="d" || mime="f"
 
 sel=$(\
-  lolcate --db git "$@" --ansi 13 --mime "$mime" --color=always \
-  | fzf \
+  lolcate --db git "$@" --mime "$mime" --color=always \
+  | sk \
     --delimiter / \
     --with-nth 6.. \
     --query "${*:-}"

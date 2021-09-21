@@ -1,7 +1,7 @@
 # Desc: interactively kill process with fzf
 
 fkill() {
-  px \
+  px ${*:-} \
     | sed 1d \
     | awk 'BEGIN{OFS="\t"}{print $1, $2, $NF}' \
     | fzf --height=70% \

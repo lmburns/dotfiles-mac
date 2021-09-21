@@ -1030,6 +1030,8 @@ Plug 'antoinemadec/coc-fzf'
   " use `:OR` for organize import of current buffer
   command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
 
+  nnoremap ;ff :Format<CR>
+
   let g:endwise_no_mappings = v:true
   " inoremap <expr> <Plug>CustomCocCR "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
   inoremap <silent><expr> <tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<tab>"
@@ -1277,6 +1279,7 @@ Plug 'fatih/vim-go', { 'for': 'go' }
       \ nmap <buffer> <C-A-n> :cnext<CR>|
       \ nmap <buffer> <C-A-m> :cprevious<CR>|
       \ nmap <buffer> <Leader>f :GoDeclsDir<cr>|
+      \ nmap <buffer> ;ff :GoFmt<CR>|
       \ let g:go_fmt_command = "goimports"|
       \ let g:go_list_type = "quickfix"|
       \ let g:go_highlight_types = 1|
@@ -2507,7 +2510,7 @@ require("telescope").setup {
   pickers = {
     buffers = {
       sort_lastused = true,
-      theme = "dropdown",
+      theme = "ivy",
       -- previewer = true,
       mappings = {
         i = {
@@ -2524,7 +2527,7 @@ require("telescope").setup {
       grep_open_files = false,
     },
     find_files = {
-      theme = "dropdown"
+      theme = "ivy"
       -- Theme: ivy, cursor, dropdown
     },
   },

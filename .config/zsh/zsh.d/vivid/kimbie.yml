@@ -103,6 +103,9 @@ text:
       foreground: magenta
       font-style: bold
 
+  gpg:
+    foreground: aqua
+
   other:
     foreground: purple
 

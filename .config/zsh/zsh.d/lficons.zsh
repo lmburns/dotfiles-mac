@@ -418,6 +418,6 @@ ex=:\
 # 36= cyan
 # 91= bright red
 
-export LF_COLORS="$LS_COLORS"
+export LF_COLORS="$(vivid -d $ZDOTDIR/zsh.d/vivid/filetypes.yml generate $ZDOTDIR/zsh.d/vivid/kimbie.yml)"
 
 # vim: ft=zsh:et:sw=0:ts=2:sts=2:

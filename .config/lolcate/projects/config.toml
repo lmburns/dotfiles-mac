@@ -15,3 +15,5 @@ ignore_hidden = false
 
 # Set to true to read .gitignore files and ignore matching files
 gitignore = true
+
+color = "#7EB2B1"

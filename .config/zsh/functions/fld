@@ -9,8 +9,8 @@ zparseopts -D -A opts -- u -update c -cd
 
 local sel
 sel=$(\
-  lolcate --db default "$@" --ansi 11 --mime "$mime" --color=always \
-  | fzf \
+  lolcate --db default "$@" --mime "$mime" --color=always \
+  | sk \
     --delimiter / \
     --with-nth 4.. \
     --query "${*:-}"

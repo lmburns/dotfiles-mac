@@ -9,6 +9,19 @@ function Rg() {
       --preview-window 'default:right:60%:~1:+{2}+3/2:border-left'
 }
 
+function Sk() {
+  sk --ansi \
+     --interactive \
+     --delimiter : \
+     --bind 'ctrl-e:execute($EDITOR "$(echo {} | cut -d: -f1)" >/dev/tty </dev/tty)' \
+     --preview 'bat --style=numbers,header,changes,snip --color=always --highlight-line {2} {1}' \
+     --preview-window 'default:right:60%:~1:+{2}+3/2:border-left' \
+     --cmd 'rg --column --line-number --no-heading --color=always --smart-case "{}"' \
+     --cmd-query "$1"
+}
+
+# --skip-to-pattern '[^/]*:'
+
 function RG() {
   local RG_PREFIX INITIAL_QUERY
   local -a selected

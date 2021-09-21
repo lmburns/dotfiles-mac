@@ -80,6 +80,9 @@ text:
       - passwd
       - shadow
 
+  gpg:
+    - .gpg
+
   other:
     - .txt
 

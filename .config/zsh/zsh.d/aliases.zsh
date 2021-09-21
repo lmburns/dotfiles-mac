@@ -14,8 +14,13 @@ alias xp="xplr"
 alias xx="xcompress"
 # alias ca='cargo'
 
+alias ctrim='par -vun "cd {} && cargo trim clear" ::: $(fd -td -d1)'
+
+(( ${+commands[stylua]} )) && alias stylua="stylua -c $XDG_CONFIG_HOME/stylua/stylua.toml"
 alias :q='exit'
 alias ng="noglob"
+
+alias ja="jaime"
 
 (( ${+commands[just]} )) && {
   alias jj='just'
@@ -67,10 +72,14 @@ alias mv='mv -iv'
   alias lsd='exa -D --icons --git'
   alias tree='exa --icons --git -TL'
   alias lm='tree 1 -@'
+  alias ls@='exa -FlahH --git --icons --time-style long-iso --no-permissions --no-user -@'
+  alias lsb='exa -FlahHB --git --icons --time-style long-iso --no-permissions --no-user -@'
   # alias lm='exa -l  --no-user --no-permissions --no-time -@'
 }
 
 (( ${+commands[fd]} )) && {
+  alias fd='fd -Hi'
+  alias fdc='fd --color=always'
   alias fdr='fd --changed-within=20m -d1'
   alias fdrd='fd --changed-within=30m'
   alias fdrr='fd --changed-within=1m'
@@ -128,6 +137,8 @@ alias nncm='$EDITOR $XDG_CONFIG_HOME/ncmpcpp/bindings'
 alias nmutt='$EDITOR $XDG_CONFIG_HOME/mutt/muttrc'
 alias nmuch='$EDITOR $XDG_DATA_HOME/mail/.notmuch/hooks/post-new'
 alias nsnip='$EDITOR $XDG_CONFIG_HOME/nvim/UltiSnips/all.snippets'
+alias nticker='$EDITOR $XDG_CONFIG_HOME/ticker/ticker.yaml'
+alias njaime='$EDITOR $XDG_CONFIG_HOME/jaime/config.yml'
 
 alias srct='tmux source $XDG_CONFIG_HOME/tmux/tmux.conf'
 
@@ -307,7 +318,6 @@ alias mycli='LESS="-S $LESS" mycli'
   alias pipp='p --using pip'
 }
 
-alias fd='fd -Hi'
 alias pat='bat --style=header'
 alias duso='du -hsx * | sort -rh | bat --paging=always'
 

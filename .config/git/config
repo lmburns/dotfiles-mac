@@ -245,10 +245,10 @@
 
 # ================== THIRD PARTY ==============================
 [delta]
-  features = unobstrusive-line-numbers decorations color-moved side-by-side
+  features = unobstrusive-line-numbers decorations color-moved side-by-side hyperlinks
   paging = auto
   whitespace-error-style = 22 reverse
-  syntax-theme = KimbieDark
+  syntax-theme = kimbro
   line-numbers-left-format = ""
   line-numbers-right-format = "│ "
   max-line-distance = 0.3

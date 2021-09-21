@@ -20,10 +20,25 @@
 
 [[snippets]]
   description = "yaml"
-  command = "HOARD_LOG=debug just r -c $PWD/config.yml -h $PWD/out backup"
+  command = "HOARD_LOG=warn just r -c $PWD/config.yml -h $PWD/out backup"
   output = ""
 
 [[snippets]]
   description = "json"
   command = "HOARD_LOG=debug just r -c $PWD/config.json -h $PWD/out backup"
+  output = ""
+
+[[snippets]]
+  description = "rage_ssh"
+  command = "just r -R ~/.ssh/id_rsa.pub -eo test_out test_file"
+  output = ""
+
+[[snippets]]
+  description = "rage_recip"
+  command = "just r -R recipients.txt -eo test_out test_file"
+  output = ""
+
+[[snippets]]
+  description = "rage_decrypt"
+  command = "just r -i test.key -do test_decrypt test_out"
   output = ""

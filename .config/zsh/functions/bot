@@ -11,7 +11,7 @@ sql="SELECT URL,metadata,tags FROM bookmarks WHERE tags LIKE '%$@%';"
 url=$(
   sqlite3 -separator $'\t' "$db" "$sql" \
     | perl -F'\t' -lne 'BEGIN{$,="\t"} $F[3] =~ s/(^,|,$)//g; print @F' \
-    | fzf -m --reverse --preview "buku -p {1}" --preview-window=wrap \
+    | fzf -m --reverse --preview "buku --nostdin -p {1}" --preview-window=wrap \
     | ${commands[hck]:-cut} -f1
 )
 
