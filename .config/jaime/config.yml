@@ -1,5 +1,5 @@
 ---
-shell: zsh
+shell: sh
 options:
   bookmarks:
     type: Command
@@ -131,12 +131,20 @@ options:
         command: echo "{0}" | awk '{print $1}' | xargs git show
         widgets:
           - type: FromCommand
+            # %C(red)%C(bold)%h%C(reset) %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset
             command: git log --graph --format="%C(auto)%h%d %s %C(black)%C(bold)%cr%Creset" --abbrev-commit --date=relative --color=always
             preview: |
               echo {} |
                 grep -Eo '[a-f0-9]+' | head -1 |
                 xargs -I% git show --color=always % -- $(sed -nE 's/.* -- (.*)/\1/p' <<< "$*") |
                 $(git config core.pager || echo 'cat')
+      log2:
+        type: Command
+        command: echo "{0}" | awk '{print $1}' | xargs git show
+        widgets:
+          - type: FromCommand
+            command: git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --color=always
+            preview: echo {} | awk '{print $1}' | xargs git show --name-status
       diff:
         description: Git diff
         type: Command

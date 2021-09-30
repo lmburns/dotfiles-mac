@@ -122,7 +122,19 @@ zt light-mode for \
       id-as"${1}-theme" \
       atinit"[[ -f ${thmf}/${1}-pre.zsh ]] && source ${thmf}/${1}-pre.zsh" \
       atload"[[ -f ${thmf}/${1}-post.zsh ]] && source ${thmf}/${1}-post.zsh" \
+      atload'alias ntheme="$EDITOR ${thmf}/${MYPROMPT}-post.zsh"' \
         zdharma/null
+  } || {
+    [[ -f "${thmf}/${1}.toml" ]] && {
+      export STARSHIP_CONFIG="${thmf}/${MYPROMPT}.toml"
+      export STARSHIP_CACHE="${XDG_CACHE_HOME}/${MYPROMPT}"
+      eval "$(starship init zsh)"
+      zt 0a light-mode for \
+        lbin atclone'cargo build --release --features=notify-rust' atpull'%atclone' \
+        atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+        atclone'./starship completions zsh > _starship' atload'alias ntheme="$EDITOR $STARSHIP_CONFIG"' \
+        starship/starship
+    }
   } || print -P "%F{4}Theme ${1} not found%f"
 } "${MYPROMPT=p10k}"
 
@@ -146,7 +158,6 @@ zt 0a light-mode for \
   trigger-load'!ugit' \
     Bhupesh-V/ugit \
   trigger-load'!ga;!grh;!grb;!glo;!gd;!gcf;!gco;!gclean;!gss;!gcp;!gcb' \
-  atload'export FORGIT_LOG_FORMAT="%C(red)%C(bold)%h%C(reset) %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset"' \
     wfxr/forgit \
   trigger-load'!gcomp' blockf \
   atclone'command rm -rf lib/*;git ls-files -z lib/ |xargs -0 git update-index --skip-worktree' \
@@ -198,12 +209,12 @@ zt 0a light-mode for \
 zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert)' \
     hlissner/zsh-autopair \
+  trackbinds bindmap'\e[1\;6D -> ^[[1\;6D; \e[1\;6C -> ^[[1\;6C' \
+    michaelxmcbride/zsh-dircycle \
   trackbinds bindmap'^G -> ^N' \
     andrewferrier/fzf-z \
   blockf nocompletions compile'functions/*~*.zwc' \
     marlonrichert/zsh-edit \
-  trackbinds bindmap'\e[1\;6D -> ^[[1\;6D; \e[1\;6C -> ^[[1\;6C' \
-    michaelxmcbride/zsh-dircycle \
   atload'add-zsh-hook chpwd @chwpd_dir-history-var;
   add-zsh-hook zshaddhistory @append_dir-history-var; @chwpd_dir-history-var now' \
     kadaan/per-directory-history \
@@ -234,10 +245,6 @@ zt 0b light-mode for \
   pick'autoenv.zsh' nocompletions \
   atload'AUTOENV_AUTH_FILE="${ZPFX}/share/autoenv/autoenv_auth"' \
     Tarrasch/zsh-autoenv \
-  pick'formarks.plugin.zsh' \
-  atload'export PATHMARKS_FILE="${ZPFX}/share/fzf-marks/marks"' \
-  atinit'export FZF_MARKS_JUMP="^[<"' \
-    lmburns/formarks \
   lbin'!bin/*' \
     bigH/git-fuzzy \
     zdharma/zui \
@@ -396,6 +403,7 @@ zt 0c light-mode null for \
   lbin from'gh-r' bpick'*win-x86*' \
     orf/gping \
   lbin'jq-* -> jq' from'gh-r' dl"$(grman -e '1.prebuilt')" lman \
+  atclone'mv jq.1* jq.1' \
     stedolan/jq \
   lbin from'gh-r' mv'yq_* -> yq' atclone'./yq shell-completion zsh > _yq' \
   atpull'%atclone' \
@@ -414,8 +422,10 @@ zt 0c light-mode null for \
   atpull'%atclone' atdelete"PREFIX=$ZPFX make uninstall"  \
     zdharma/zshelldoc \
   lbin from'gh-r' bpick'*darwin_amd64*' \
-  atload"source $ZPFX/share/pet/pet_atload.zsh; alias pe='pet exec'" \
+  atload"source $ZPFX/share/pet/pet_atload.zsh" \
     knqyf263/pet \
+  lbin from'gh-r' atload'alias of="onefetch"' \
+    o2sh/onefetch \
   id-as'bisqwit/regex-opt' lbin atclone'xh --download https://bisqwit.iki.fi/src/arch/regex-opt-1.2.4.tar.gz' \
   atclone'ziextract --move --auto regex-*.tar.gz' make'all' \
     zdharma/null
@@ -478,6 +488,8 @@ zt 0c light-mode null for \
     theryangeary/choose \
   lbin'* -> hck' from'gh-r' bpick'*os-*64' \
     sstadick/hck \
+  lbin lman from'gh-r' \
+    greymd/teip \
   lbin from'gh-r' \
     BurntSushi/xsv \
   lbin from'gh-r' \
@@ -495,11 +507,12 @@ zt 0c light-mode null for \
   lbin from'gh-r' \
     samtay/so \
   lbin'* -> podcast' from'gh-r' bpick'*-osx' \
+  atclone'podcast completion > _podcast' \
     njaremko/podcast \
   lbin from'gh-r' \
     rcoh/angle-grinder \
   lbin atclone'cargo build --release' atpull'%atclone' \
-  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
+  atclone"command mv -f tar*/rel*/hm . && cargo clean" \
     hlmtre/homemaker \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
@@ -596,8 +609,8 @@ zt 0c light-mode null for \
   lbin'{cargo-make,makers}' atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/{cargo-make,makers} . && cargo clean" \
   atload'export CARGO_MAKE_HOME="$XDG_CONFIG_HOME/cargo-make"' \
-  atload'alias ncmake="$EDITOR $CARGO_MAKE_HOME/Makefile.toml"
-               cm="makers --makefile $CARGO_MAKE_HOME/Makefile.toml"' \
+  atload'alias ncmake="$EDITOR $CARGO_MAKE_HOME/Makefile.toml"' \
+  atload'alias cm="makers --makefile $CARGO_MAKE_HOME/Makefile.toml"' \
     sagiegurari/cargo-make \
   lbin atclone'cargo build --release' atpull'%atclone' \
   atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
@@ -635,6 +648,7 @@ zt 0c light-mode null for \
   lbin from'gh-r' bpick'*darwin*' \
     wagoodman/dive \
   lbin'*/*/gpg-tui' atclone'cargo build --release' atpull'%atclone' \
+  atclone"command mv -f tar*/rel*/%PLUGIN% . && cargo clean" \
     orhun/gpg-tui \
   lbin from'gh-r' bpick'*n_x86*' \
     charmbracelet/glow \
@@ -697,9 +711,11 @@ zt light-mode is-snippet for \
 # ]]] == zinit closing ===
 
 # === powerlevel10k === [[[
-if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+[[ $MYPROMPT == p10k ]] && {
+  if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
+  fi
+}
 # ]]]
 
 # === zsh keybindings === [[[
@@ -1048,13 +1064,13 @@ zt 0c light-mode run-atpull for \
 
 # FIX: only one zicdreplay
 # id-as'pip_comp' has'pip' nocd eval'pip completion --zsh' zdharma/null
-# eval "$(/usr/local/mybin/rakubrew init Zsh)"
-# eval "$(fakedata --completion zsh)"
 
-export GPG_TTY=$TTY
+typeset -gx GPG_TTY=$TTY
 typeset -gx PDFVIEWER='zathura'                                                   # texdoc pdfviewer
 typeset -gx XML_CATALOG_FILES="/usr/local/etc/xml/catalog"                        # xdg-utils|asciidoc
 typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET" # vimtex
+typeset -gx FORGIT_LOG_FORMAT="%C(red)%C(bold)%h%C(reset) %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset"
+typeset -gx RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/library/
 #
 # typeset -gx _ZO_ECHO=1
 typeset -gx FZFZ_RECENT_DIRS_TOOL='autojump'
@@ -1087,6 +1103,7 @@ typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${BREW_PREFIX}/lib/password-store/extensions"
 typeset -gx LS_COLORS="$(vivid -d $ZDOTDIR/zsh.d/vivid/filetypes.yml generate $ZDOTDIR/zsh.d/vivid/kimbie.yml)"
 typeset -gx ZLS_COLORS=$LS_COLORS
+typeset -gx JQ_COLORS="1;30:0;39:1;36:1;39:0;35:1;32:1;32:1"
 # ]]]
 
 # === fzf === [[[
@@ -1184,7 +1201,6 @@ export FZF_ALT_C_COMMAND="cat $HOME/.cd_history"
 # export FZF_ALT_C_COMMAND="print -rl $dirstack"
 # export FZF_ALT_C_COMMAND="fd -t d ."
 export FORGIT_FZF_DEFAULT_OPTS="--preview-window='right:60%:nohidden' --bind='ctrl-e:execute(echo {2} | xargs -o nvim)'"
-
 export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --preview \"(exa -T {2} | less) 2>/dev/null | head -200\""
 
 alias db='dotbare'
@@ -1267,10 +1283,10 @@ export PKG_CONFIG_PATH="/usr/local/opt/libressl/lib/pkgconfig"
 # == sourcing === [[[
 # atload'x="$XDG_CONFIG_HOME/broot/launcher/bash/br"; [ -f "$x" ] && source "$x"'
 
+# atload'local x="$HOME/.iterm2_shell_integration.zsh"; [ -f "$x" ] && source "$x"' \
+#   zdharma/null \
 zt 0b light-mode null id-as for \
   multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lficons,git-token}.zsh" \
-    zdharma/null \
-  atload'local x="$HOME/.iterm2_shell_integration.zsh"; [ -f "$x" ] && source "$x"' \
     zdharma/null \
   atinit'
   export PERLBREW_ROOT="${XDG_DATA_HOME}/perl5/perlbrew";
@@ -1297,7 +1313,6 @@ zt 0b light-mode null id-as for \
 # atload'local x="${XDG_DATA_HOME}/cargo/env"; [ -f "$x" ] && source "$x"'\
 # atload"source $XDG_DATA_HOME/fonts/i_all.sh" zdharma/null
 
-# pl ${(kv)userdirs}
 # recache keychain if older than GPG cache time or first login
 # local first=${${${(M)${(%):-%l}:#*01}:+1}:-0}
 [[ -f "$ZINIT[PLUGINS_DIR]/keychain_init"/eval*~*.zwc(#qN.ms+45000) ]] && {

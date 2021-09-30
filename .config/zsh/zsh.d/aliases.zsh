@@ -12,7 +12,10 @@ alias -g T='| tail'
 
 alias xp="xplr"
 alias xx="xcompress"
-# alias ca='cargo'
+alias ca='cargo'
+alias cat="bat"
+
+alias zstats='zstat -sF "%b %e %H:%M:%S"'
 
 alias ctrim='par -vun "cd {} && cargo trim clear" ::: $(fd -td -d1)'
 
@@ -34,10 +37,15 @@ alias ja="jaime"
   alias .jr='just --justfile $HOME/projects/rust/rust_justfile --working-directory $PWD'
 }
 
+(( ${+commands[pet]} )) && {
+  alias pe="pet exec"
+  alias pee="pet edit"
+}
+
 (( ${+commands[hoard]} )) && {
-  alias hd='hoard -c $XDG_CONFIG_HOME/hoard/hoard_config -h $XDG_CONFIG_HOME/hoard/root'
-  alias hde='hoard -c $XDG_CONFIG_HOME/hoard/hoard_config -h /Volumes/SSD/manual-bkp/hoard'
-  alias nhd='$EDITOR $XDG_CONFIG_HOME/hoard/hoard_config'
+  alias hd='hoard -c $XDG_CONFIG_HOME/hoard/hoard.toml -h $XDG_CONFIG_HOME/hoard/root'
+  alias hde='hoard -c $XDG_CONFIG_HOME/hoard/hoard.toml -h /Volumes/SSD/manual-bkp/hoard'
+  alias nhd='$EDITOR $XDG_CONFIG_HOME/hoard/hoard.toml'
   alias hdocs='hoard -c $XDG_CONFIG_HOME/hoard/docs-config -h $XDG_CONFIG_HOME/hoard/docs'
   alias hdocse='hoard -c $XDG_CONFIG_HOME/hoard/docs-config -h /Volumes/SSD/manual-bkp/hoard-docs'
   alias nhdocs='$EDITOR $XDG_CONFIG_HOME/hoard/docs-config'
@@ -60,20 +68,20 @@ alias mv='mv -iv'
 
 (( ${+commands[exa]} )) && {
   # --ignore-glob=".DS_Store|__*
-  alias l='exa -FH --git --icons'
-  alias l.='exa -FH --git --icons -d .*'
+  alias l='exa -FHb --git --icons'
+  alias l.='exa -FHb --git --icons -d .*'
   alias lp='exa -1F'
-  alias ll='exa -FlahHg --git --icons --time-style long-iso'
-  alias ls='exa -Fh --git --icons'
-  alias lse='exa -Flh --git --sort=extension --icons'
-  alias lsm='exa -Flh --git --sort=modified --icons'
-  alias lsz='exa -Flh --git --sort=size --icons'
-  alias lss='exa -Flh --git --group-directories-first --icons'
+  alias ll='exa -FlahHgb --git --icons --time-style long-iso --octal-permissions'
+  alias ls='exa -Fhb --git --icons'
+  alias lse='exa -Flhb --git --sort=extension --icons'
+  alias lsm='exa -Flhb --git --sort=modified --icons'
+  alias lsz='exa -Flhb --git --sort=size --icons'
+  alias lss='exa -Flhb --git --group-directories-first --icons'
   alias lsd='exa -D --icons --git'
   alias tree='exa --icons --git -TL'
   alias lm='tree 1 -@'
-  alias ls@='exa -FlahH --git --icons --time-style long-iso --no-permissions --no-user -@'
-  alias lsb='exa -FlahHB --git --icons --time-style long-iso --no-permissions --no-user -@'
+  alias ls@='exa -FlaHb --git --icons --time-style long-iso --no-permissions --octal-permissions --no-user -@'
+  alias lsb='exa -FlaHBb --git --icons --time-style long-iso --no-permissions --octal-permissions --no-user -@'
   # alias lm='exa -l  --no-user --no-permissions --no-time -@'
 }
 

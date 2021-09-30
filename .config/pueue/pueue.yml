@@ -1,8 +1,9 @@
 ---
 client:
+  restart_in_place: false
   read_local_logs: true
   show_confirmation_questions: false
-  show_expanded_aliases: false
+  show_expanded_aliases: true
   dark_mode: false
   max_status_lines: ~
   status_time_format: "%H:%M:%S"

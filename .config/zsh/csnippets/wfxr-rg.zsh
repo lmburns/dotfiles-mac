@@ -4,7 +4,7 @@ function Rg() {
   rg --column --line-number --no-heading --color=always --smart-case "$1" |
     fzf --ansi \
       --delimiter : \
-      --bind 'ctrl-e:execute($EDITOR "$(echo {} | cut -d: -f1)" >/dev/tty </dev/tty)' \
+      --bind 'ctrl-e:execute($EDITOR "$(echo {} | hck -d: -f1)" >/dev/tty </dev/tty)' \
       --preview 'bat --style=numbers,header,changes,snip --color=always --highlight-line {2} {1}' \
       --preview-window 'default:right:60%:~1:+{2}+3/2:border-left'
 }
@@ -13,7 +13,7 @@ function Sk() {
   sk --ansi \
      --interactive \
      --delimiter : \
-     --bind 'ctrl-e:execute($EDITOR "$(echo {} | cut -d: -f1)" >/dev/tty </dev/tty)' \
+     --bind 'ctrl-e:execute($EDITOR "$(echo {} | hck -d: -f1)" >/dev/tty </dev/tty)' \
      --preview 'bat --style=numbers,header,changes,snip --color=always --highlight-line {2} {1}' \
      --preview-window 'default:right:60%:~1:+{2}+3/2:border-left' \
      --cmd 'rg --column --line-number --no-heading --color=always --smart-case "{}"' \
@@ -32,8 +32,8 @@ function RG() {
       fzf --bind "change:reload:$RG_PREFIX {q} || true" \
         --ansi --disabled --query "$INITIAL_QUERY" \
         --delimiter : \
-        --bind 'ctrl-e:execute($EDITOR "$(echo {} | cut -d: -f1)" >/dev/tty </dev/tty)' \
-        --bind='ctrl-y:execute-silent(echo {+} | cut -d: -f1 | pbcopy)' \
+        --bind 'ctrl-e:execute($EDITOR "$(echo {} | hck -d: -f1)" >/dev/tty </dev/tty)' \
+        --bind='ctrl-y:execute-silent(echo {+} | hck -d: -f1 | pbcopy)' \
         --preview 'bat --style=numbers,header,changes,snip --color=always --highlight-line {2} {1}' \
         --preview-window 'default:right:60%:~1:+{2}+3/2:border-left'
   )")

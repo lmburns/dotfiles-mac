@@ -15,7 +15,7 @@ version=${${(@s:.:)${(@s: :)$(wutag --version)[2]}}[2]}
 zmodload -Fa zsh/zutil b:zparseopts
 zparseopts -D -A opts -- c -cd
 
-sel="$(wutag list files -t \
+sel="$(wutag --color=always -g list files -t \
   | hck -d': ' -D $'\t' \
   | column -t \
   | fzf +m --delimiter / \

@@ -731,6 +731,8 @@ map U unselect
 map sf select-files                              # select all files
 map sd select-dirs                               # select all dirs
 map sx select-exec                               # select all executables
+map sg push :glob-select<space>                  # select files matching pattern
+map sG push :glob-unselect<space>                # unselect files matching pattern
 
 map sr :{{ set nopreview; set ratios 1:3; }}     # set display (preview)
 map sp :{{ set preview;   set ratios 1:2:3; }}   # set display (preview)

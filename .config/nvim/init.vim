@@ -619,6 +619,9 @@ Plug 'easymotion/vim-easymotion'
 
 " ============== gutentag | vista ============== {{{ "
 Plug 'ludovicchabant/vim-gutentags'
+  " autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty-tags.vi
+  " autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+
   " set tags=./.tags;,.tags
   set tags=tags
   let $GTAGSLABEL = 'native-pygments'
@@ -632,13 +635,11 @@ Plug 'ludovicchabant/vim-gutentags'
   let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
   let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
   " let g:gutentags_exclude_filetypes = ['rust']
-  " g:gutentags_exclude_project_root
-
-  function! GutentagsDisable(path) abort
-    return fnamemodify(a:path, ':e') != 'rs'
-  endfunction
-
-  let g:gutentags_enabled_user_func = 'GutentagsDisable'
+  " function! GutentagsDisable(path) abort
+  "   return fnamemodify(a:path, ':e') != 'rs'
+  " endfunction
+  "
+  " let g:gutentags_enabled_user_func = 'GutentagsDisable'
 
 
 Plug 'liuchengxu/vista.vim'
@@ -901,8 +902,8 @@ Plug 'antoinemadec/coc-fzf'
     \ 'coc-syntax',
     \ 'coc-git',
     \ 'coc-go',
-    \ 'coc-rls',
     \ 'coc-clangd',
+    \ 'coc-rls',
     \ 'coc-rust-analyzer',
     \ 'coc-toml',
     \ ]
@@ -1857,6 +1858,7 @@ command! -nargs=? -complete=dir AF
   let g:sonokai_cursor = 'blue'
   let g:sonokai_sign_column_background = 'none'
   let g:sonokai_better_performance = 1
+  let g:sonokai_diagnostic_text_highlight = 0
 
   " let g:miramare_enable_italic = 1
   let g:miramare_enable_bold = 1
@@ -2425,7 +2427,7 @@ require('gitsigns').setup {
     ['o ih'] = ':<C-U>lua require"gitsigns.actions".select_hunk()<CR>',
     ['x ih'] = ':<C-U>lua require"gitsigns.actions".select_hunk()<CR>'
   },
-  watch_index = {
+  watch_gitdir = {
     interval = 1000,
     follow_files = true
   },
@@ -2451,7 +2453,8 @@ require('gitsigns').setup {
     row = 0,
     col = 1
   },
-  use_internal_diff = true,  -- If vim.diff or luajit is present
+  -- diff_opts.internal
+  -- use_internal_diff = true,  -- If vim.diff or luajit is present
   yadm = {
     enable = false
   },

@@ -54,7 +54,7 @@ pw() {
     fi ;
     # `\(.id)` has to be first and is expected by `format_ids()` and `pueue_log` to be preceded by a comma.
     printf "%s" "${tasks}" \
-      | jq -r ".[] \
+      | jq -r --color-output ".[] \
       | \"\(.id),$(generate_jq_properties_output "${extra_properties}")\"" \
       | fzf --header "${header}" -m --preview="pueue_log {}" --preview-window="nohidden";
   }
@@ -64,7 +64,7 @@ pw() {
     tasks="${2}" ;
     selected_ids="${3}" ;
     with_commas="$(printf "%s" "${selected_ids}" | tr ' ' ',')" ;
-    printf "%s" "${tasks}" | jq -r ".[] | select(.id == (${with_commas})) | \"\(.id),$(generate_jq_properties_output "${extra_properties}")\"" ;
+    printf "%s" "${tasks}" | jq --color-output -r ".[] | select(.id == (${with_commas})) | \"\(.id),$(generate_jq_properties_output "${extra_properties}")\"" ;
   }
 
 

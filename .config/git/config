@@ -280,6 +280,7 @@
   vcs = git
   root = ~/ghq
 
-# vim:ft=gitconfig:et
 [global]
-  ignore = .cargo,.zinit.ipynb_checkpoints,Library,Applications,Downloads,Music,Movies,myMusic
+  ignore = .cargo,.zinit,.ipynb_checkpoints,Library,Applications,Downloads,Music,Movies,myMusic
+	basedir = /Users/lucasburns/projects/github
+# vim:ft=gitconfig:et

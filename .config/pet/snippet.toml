@@ -42,3 +42,8 @@
   description = "rage_decrypt"
   command = "just r -i test.key -do test_decrypt test_out"
   output = ""
+
+[[snippets]]
+  description = "directory"
+  command = "HOARD_LOG=trace just r -c $PWD/myconf.toml -h $PWD/out backup"
+  output = ""

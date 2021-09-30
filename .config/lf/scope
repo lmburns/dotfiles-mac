@@ -15,18 +15,18 @@ IFS="${$(printf '%b_' '\n')%_}"
 # 4    | fix height | Don't reload when height changes
 
 # Arguments:
-FILE_PATH="${1}"         # Full path of the highlighted file
-WIDTH="${2}"
-HEIGHT="${3}"
-IMAGE_CACHE_PATH="${4}"  # Full path that should be used to cache image preview
+local FILE_PATH="${1}"         # Full path of the highlighted file
+local WIDTH="${2}"
+local HEIGHT="${3}"
+local IMAGE_CACHE_PATH="${4}"  # Full path that should be used to cache image preview
 
-FILE_EXTENSION="${FILE_PATH##*.}"
-FILE_EXTENSION_LOWER="${(L)FILE_EXTENSION}"
+local FILE_EXTENSION="${FILE_PATH##*.}"
+local FILE_EXTENSION_LOWER="${(L)FILE_EXTENSION}"
 
 # Settings:
-HIGHLIGHT_SIZE_MAX=262143  # 256KiB
-HIGHLIGHT_TABWIDTH=8
-MAXLN=200
+local HIGHLIGHT_SIZE_MAX=262143  # 256KiB
+local HIGHLIGHT_TABWIDTH=8
+local MAXLN=200
 
 # Functions:
 try() { output=$(eval '"$@"'); }
@@ -45,8 +45,11 @@ handle_mime() {
       w3m -dump "${FILE_PATH}" && { dump | trim | fmt -s -w $WIDTH; exit 4; } ;;
     (text/troff)
       man ./ "${FILE_PATH}" | col -b ;;
+    (text/csv)
+      cat -- "${FILE_PATH}" | tidy-viewer -n 30 ;;
     (text/* | */xml)
-      bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme KimbieDark --style auto -- "${FILE_PATH}" ;;
+      # KimbieDark
+      bat -Pf --tabs "${HIGHLIGHT_TABWIDTH}" --theme kimbro --style auto -- "${FILE_PATH}" ;;
     (application/pgp-encrypted)
       bat -Pf --theme KimbieDark --style auto "${FILE_PATH}" ;;
     (application/zip)
@@ -92,13 +95,27 @@ handle_other() {
 
 # *.md) mdv "${FILE_PATH}" ;;
 
+typeset -A CO
+CO=(
+  red    $'\e[38;5;1m'  bred   $'\e[01;31m' brred   $'\e[38;5;9m'
+  green  $'\e[38;5;2m'  bgreen $'\e[01;32m' brgreen $'\e[38;5;10m'
+  yell   $'\e[38;5;3m'  byell  $'\e[01;33m' bryell  $'\e[38;5;11m'
+  blue   $'\e[38;5;4m'  bblue  $'\e[01;34m' brblue  $'\e[38;5;12m'
+  magen  $'\e[38;5;5m'  bmagen $'\e[01;35m' brmagen $'\e[38;5;13m'
+  cyan   $'\e[38;5;6m'  bcyan  $'\e[01;36m' brcyan  $'\e[38;5;14m'
+  und    $'\e[4m'       bold   $'\e[1m'     bg      $'\e[3m'
+  tb     $' \t '        nl     $'\n'        res     $'\e[0m'
+)
+
 handle_fallback() {
-    echo '----- File Type Classification -----' &&
-      file --dereference --brief -- "${FILE_PATH}"
+  print -rl "$CO[nl]$CO[brblue]$CO[bold]==========$CO[res] File Type Classification $CO[brblue]$CO[bold]==========$CO[res]" && {
+    mime=$(file --dereference --brief -- "${FILE_PATH}")
+    gstat -c "$CO[green]$CO[bold]${mime}$CO[res] $CO[nl]%F $CO[nl]$CO[bcyan]inode: %i$CO[res]" -- "${FILE_PATH}"
+  }
     exit 1
 }
 
-MIMETYPE="$(file --dereference --brief --mime-type -- "${FILE_PATH}" )"
+local MIMETYPE="$(file --dereference --brief --mime-type -- "${FILE_PATH}" )"
 handle_mime "${MIMETYPE}"
 handle_other
 handle_fallback

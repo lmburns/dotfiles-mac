@@ -68,6 +68,8 @@ export R_MAKE_VARS_USER="${XDG_CONFIG_HOME}/r/Makevars"
 export R_HISTFILE="${XDG_CONFIG_HOME}/r/Rhistory"
 export R_PROFILE_USER="${XDG_CONFIG_HOME}/r/Rprofile"
 export R_LIBS_USER="${XDG_CONFIG_HOME}/r"
+export RLWRAP_HOME="${XDG_DATA_HOME}/rlwrap"
+export SQLITE_HISTORY="${XDG_DATA_HOME}/sqlite/history"
 export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME}/password-store"
 

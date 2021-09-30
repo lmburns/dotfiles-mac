@@ -29,6 +29,11 @@
   # Zsh >= 5.1 is required.
   autoload -Uz is-at-least && is-at-least 5.1 || return
 
+  zmodload zsh/langinfo
+  if [[ ${langinfo[CODESET]:-} != (utf|UTF)(-|)8 ]]; then
+    local LC_ALL=${${(@M)$(locale -a):#*.(utf|UTF)(-|)8}[1]:-en_US.UTF-8}
+  fi
+
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
@@ -51,17 +56,19 @@
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
-    virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
-    anaconda                # conda environment (https://conda.io/)
+    # virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
+    # anaconda                # conda environment (https://conda.io/)
     pyenv                   # python environment (https://github.com/pyenv/pyenv)
     goenv                   # go environment (https://github.com/syndbg/goenv)
     # rbenv                   # ruby version from rbenv (https://github.com/rbenv/rbenv)
     # load                  # CPU load
-    # disk_usage            # disk usage
+    disk_usage            # disk usage
     # ram                   # free RAM
     # swap                  # used swap
-    todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
+    # todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
     taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
+    xplr                  # xplr shell (https://github.com/sayanarijit/xplr)
+    vim_shell
     # time                  # current time
     # =========================[ Line #2 ]=========================
     newline                 # \n
@@ -74,8 +81,7 @@
     # public_ip             # public IP address
     # proxy                 # system-wide http/https/ftp proxy
     # battery               # internal battery
-    # wifi                  # wifi speed
-    # example               # example user-defined segment (see prompt_example function below)
+    wifi                  # wifi speed
   )
 
   # Defines character set used by powerlevel10k. It's best to let `p10k configure` set it for you.
@@ -320,17 +326,22 @@
   #
 
   # add bookmark icon for list of 'formarks' bookmarks
-  : ${PATHMARKS_FILE:=$HOME/.config/zsh/zinit/polaris/share/fzf-marks/marks}
-  arr=(${(@s. .)${(@f)"$(<$PATHMARKS_FILE)"}})
-  bmark_dirs=("${${(i@)arr}[1,$(( ${#arr[@]} / 2 ))]}")
+  ### OLD METHOD ###
+  # : ${PATHMARKS_FILE:=$ZINIT_HOME/polaris/share/fzf-marks/marks}
+  # arr=(${(@s. .)${(@f)"$(<$PATHMARKS_FILE)"}})
+  # bmark_dirs=("${${(i@)arr}[1,$(( ${#arr[@]} / 2 ))]}")
+
+  # add bookmark icon for list of 'rualdi' bookmarks
+  ### NEW METHOD ###
+  bmark_dirs=(${(@f)"$(dasel select -f $XDG_DATA_HOME/rualdi/rualdi.toml -m '.aliases.[*]')"})
 
   typeset -g POWERLEVEL9K_DIR_CLASSES=(
-    '/etc/*|/usr/local/etc/*' ETC            ''
-    '~/projects/*'            GITHUB         ''
+    '/etc/*|/usr/local/etc/*'          ETC            ''
+    '~/projects/*'                     GITHUB         ''
     "${(j.|.)${(s. .)bmark_dirs[@]}}"  BOOKMARK       ''
-    '~'                       HOME           ''
-    '~/*'                     HOME_SUBFOLDER ''
-    '*'                       DEFAULT        ''
+    '~'                                HOME           ''
+    '~/*'                              HOME_SUBFOLDER ''
+    '*'                                DEFAULT        ''
   )
 
   typeset -g POWERLEVEL9K_DIR_{ETC,HOME,HOME_SUBFOLDER,GITHUB,DEFAULT,BOOKMARK}_NON_EXISTENT_VISUAL_IDENTIFIER_EXPANSION='%227F✖'
@@ -348,8 +359,8 @@
   typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON='?'
   typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON=${(g::)POWERLEVEL9K_VCS_UNTRACKED_ICON}
 
-  typeset -g POWERLEVEL9K_VCS_GIT_{GITHUB,GITLAB}_ICON=""
-  typeset -g POWERLEVEL9K_VCS_GIT_ICON=""
+  typeset -g POWERLEVEL9K_VCS_GIT_{GITHUB,GITLAB}_ICON=""
+  typeset -g POWERLEVEL9K_VCS_GIT_ICON=""
 
   # Formatter for Git status.
   #
@@ -411,6 +422,8 @@
 
     # Display the current Git commit if there is no branch and no tag.
     # Tip: To always display the current Git commit, delete the next line.
+
+    # UNCOMMENT TO HIDE COMMIT
     [[ -z $VCS_STATUS_LOCAL_BRANCH && -z $VCS_STATUS_TAG ]] &&  # <-- this line
       res+="${meta}@${clean}${VCS_STATUS_COMMIT[1,8]}"
 
@@ -430,11 +443,11 @@
     # ⇢42 if ahead of the push remote; no leading space if also behind: ⇠42⇢42.
     (( VCS_STATUS_PUSH_COMMITS_AHEAD  )) && res+="${clean}⇢${VCS_STATUS_PUSH_COMMITS_AHEAD}"
     # *42 if have stashes.
-    (( VCS_STATUS_STASHES        )) && res+=" ${clean}*${VCS_STATUS_STASHES}"
+    (( VCS_STATUS_STASHES        )) && res+=" ${clean}${VCS_STATUS_STASHES}"
     # 'merge' if the repo is in an unusual state.
     [[ -n $VCS_STATUS_ACTION     ]] && res+=" ${conflicted}${VCS_STATUS_ACTION}"
     # ~42 if have merge conflicts.
-    (( VCS_STATUS_NUM_CONFLICTED )) && res+=" ${conflicted}~${VCS_STATUS_NUM_CONFLICTED}"
+    (( VCS_STATUS_NUM_CONFLICTED )) && res+=" ${conflicted}${VCS_STATUS_NUM_CONFLICTED}"
     # +42 if have staged changes.
     (( VCS_STATUS_NUM_STAGED     )) && res+=" ${modified}+${VCS_STATUS_NUM_STAGED}"
     # !42 if have unstaged changes.

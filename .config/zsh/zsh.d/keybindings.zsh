@@ -68,6 +68,8 @@ zle -N fcq
 zle -N pw
 zle -N fe
 
+zle -N expand-aliases
+
 # zle -N __rualdi_fzf
 
 # zle -N fcd-zle
@@ -92,6 +94,7 @@ typeset -gA keybindings; keybindings=(
   'F3'            _wbmux
   'Esc-e'         wfxr::fzf-file-edit-widget
   'Esc-i'         fe
+  'Esc-d'         expand-aliases
   'M-r'           per-dir-fzf
   'M-p'           pw                    # fzf pueue
   'M-q'           push-line-or-edit     # zsh-edit
