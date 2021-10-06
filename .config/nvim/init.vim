@@ -1224,6 +1224,15 @@ augroup rust_env
 augroup END
 " }}} === vim-rust ===
 
+" ================ ruby ============== {{{
+Plug 'ruby-formatter/rufo-vim', { 'for': 'ruby' }
+let g:rufo_auto_formatting = 0
+  " autocmd FileType ruby
+    " \ nmap <buffer> ;ff :Rufo<CR>
+  " augroup END
+
+" }}} === ruby ===
+
 " ============== vim-go ============== {{{
 Plug 'fatih/vim-go', { 'for': 'go' }
 " run and view go output in floating or split window

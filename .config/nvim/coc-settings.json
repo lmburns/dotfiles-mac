@@ -15,7 +15,7 @@
   },
   "diagnostic-languageserver.formatFiletypes": {
     "sh": "shfmt"
-  //   "zsh": "shfmt"
+    //   "zsh": "shfmt"
   },
   "codeLens.enable": true,
   "codeLens.separator": "‣",
@@ -71,14 +71,8 @@
   "explorer.file.column.clip.cut": "",
   "explorer.file.column.indent.indentLine": true,
   "explorer.openAction.select.filter": {
-    "buftypes": [
-      "terminal"
-    ],
-    "filetypes": [
-      "vista_kind",
-      "qf",
-      "minimap"
-    ],
+    "buftypes": ["terminal"],
+    "filetypes": ["vista_kind", "qf", "minimap"],
     "floatingWindows": true,
     "sources": {
       "buffer": {
@@ -155,10 +149,7 @@
     "<<": "gitStage",
     ">>": "gitUnstage"
   },
-    "snippets.ultisnips.directories": [
-    "UltiSnips",
-    "gosnippets/UltiSnips"
-  ],
+  "snippets.ultisnips.directories": ["UltiSnips", "gosnippets/UltiSnips"],
   "snippets.userSnippetsDirectory": "~/.config/nvim/UltiSnips",
   "suggest.enablePreview": true,
   "suggest.removeDuplicateItems": true,
@@ -193,9 +184,15 @@
   },
   "snippets.shortcut": "\uf672",
   "clangd.enabled": true,
-  "clangd.arguments": ["--clang-tidy", "--completion-style=detailed", "--fallback-style=google", "--header-insertion=iwyu", "--suggest-missing-includes"],
+  "clangd.arguments": [
+    "--clang-tidy",
+    "--completion-style=detailed",
+    "--fallback-style=google",
+    "--header-insertion=iwyu",
+    "--suggest-missing-includes"
+  ],
   "rust-analyzer.server.path": "rust-analyzer",
-  "rust-analyzer.updates.channel":"nightly",
+  "rust-analyzer.updates.channel": "nightly",
   "rust-analyzer.cargo.allFeatures": true,
   "rust-analyzer.checkOnSave.allFeatures": true,
   "rust-analyzer.procMacro.enable": true,
@@ -217,6 +214,14 @@
   // "rust.clippy_preference": "on",
   // "rust.rustfmt_path": "/Users/lucasburns/.local/share/cargo/bin/rustfmt",
 
+  "prettier.printWidth": 80,
+  "prettier.tabWidth": 2,
+  "prettier.singleQuote": false,
+  "prettier.trailingComma": "es5",
+  "prettier.bracketSpacing": true,
+  "prettier.jsxBracketSameLine": false,
+  "prettier.useTabs": false,
+
   "languageserver": {
     "golang": {
       "command": "gopls",
@@ -226,5 +231,8 @@
   },
   "yank.highlight.duration": 100,
   "clangd.path": "/Users/lucasburns/.config/coc/extensions/coc-clangd-data/install/12.0.0/clangd_12.0.0/bin/clangd",
-  "solargraph.useBundler": true
+  "solargraph.diagnostics": true,
+  "solargraph.autoformat": true,
+  "solargraph.formatting": true
+  // "solargraph.useBundler": true,
 }
