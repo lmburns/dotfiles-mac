@@ -9,6 +9,7 @@ skip_global_compinit=1
 
 # [[ -x '/usr/libexec/path_helper' ]] && source <(/usr/libexec/path_helper -s)
 
+export DO_NOT_TRACK=1
 export LANGUAGE="en_US.UTF-8"
 export LANG="${LANGUAGE}"
 export LC_ALL="${LANGUAGE}"
@@ -19,12 +20,10 @@ export XDG_RUNTIME_DIR="/tmp"
 export XDG_BIN_HOME="$HOME/bin"
 export XDG_MBIN_HOME="$HOME/mybin"
 export BACKUP_DIR="$HOME/backup"
-# Aliased to Application\ Support (very annoying spaces)
-export DARWIN_CONF_HOME="$HOME/Library/ApplicationSupport"
+
 export LOCAL_OPT="$HOME/opt"
 export SUDO_ASKPASS="$XDG_MBIN_HOME/zenity_passphrase"
 
-export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
 export BROWSERCLI="w3m"
 export SR_BROWSER="$BROWSERCLI"
 export RTV_BROWSER="$BROWSERCLI"
@@ -73,23 +72,29 @@ export SQLITE_HISTORY="${XDG_DATA_HOME}/sqlite/history"
 export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME}/password-store"
 
-export DO_NOT_TRACK=1
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_BAT=1
-export HOMEBREW_BAT_CONFIG_PATH="${XDG_CONFIG_HOME}/bat/config"
-export HOMEBREW_COLOR=1
-export HOMEBREW_NO_AUTO_UPDATE=1
+[[ $OSTYPE = darwin* ]] {
+  export HOMEBREW_NO_ANALYTICS=1
+  export HOMEBREW_BAT=1
+  export HOMEBREW_BAT_CONFIG_PATH="${XDG_CONFIG_HOME}/bat/config"
+  export HOMEBREW_COLOR=1
+  export HOMEBREW_NO_AUTO_UPDATE=1
+  # Aliased to Application\ Support (very annoying spaces)
+  export DARWIN_CONF_HOME="$HOME/Library/ApplicationSupport"
+  export OSFONTDIR="$HOME/Library/Fonts"
+  export BROWSER='/Applications/LibreWolf.app/Contents/MacOS/librewolf-bin'
+
+  export GPGME_INCLUDE="/usr/local/Cellar/gpgme/1.16.0/include"
+  export GPGME_LIB_DIR="/usr/local/Cellar/gpgme/1.16.0/lib"
+  export GPGME_CONFIG="/usr/local/Cellar/gpgme/1.16.0/bin/gpgme-config"
+  export LIBGPG_ERROR_INCLUDE="/usr/local/Cellar/libgpg-error/1.42/include"
+  export LIBGPG_ERROR_LIB_DIR="/usr/local/Cellar/libgpg-error/1.42/lib"
+  export LIBGPG_ERROR_CONFIG="/usr/local/Cellar/libgpg-error/1.42/bin/gpg-error-config"
+}
+
 export BAT_CONFIG_PATH="${XDG_CONFIG_HOME}/bat/config"
 export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
 export GPG_AGENT_INFO="${GNUPGHOME}/S.gpg-agent"
-export GPGME_INCLUDE="/usr/local/Cellar/gpgme/1.16.0/include"
-export GPGME_LIB_DIR="/usr/local/Cellar/gpgme/1.16.0/lib"
-export GPGME_CONFIG="/usr/local/Cellar/gpgme/1.16.0/bin/gpgme-config"
-export LIBGPG_ERROR_INCLUDE="/usr/local/Cellar/libgpg-error/1.42/include"
-export LIBGPG_ERROR_LIB_DIR="/usr/local/Cellar/libgpg-error/1.42/lib"
-export LIBGPG_ERROR_CONFIG="/usr/local/Cellar/libgpg-error/1.42/bin/gpg-error-config"
 export PINENTRY_USER_DATA="USE_CURSES=1"
-export OSFONTDIR="$HOME/Library/Fonts"
 export UMCONFIG_HOME="${XDG_CONFIG_HOME}/um"
 export PIER_CONFIG_PATH="${XDG_CONFIG_HOME}/pier/config.toml"
 export GRIPHOME="${XDG_CONFIG_HOME}/grip"
@@ -103,8 +108,6 @@ export NNN_FIFO='/tmp/nnn.fifo'
 export URLPORTAL="$XDG_MBIN_HOME/urlportal"
 export MATES_DIR="${XDG_DATA_HOME}/mates"
 export JAIME_CACHE_DIR="${XDG_CONFIG_HOME}/jaime"
-
-# source "${XDG_DATA_HOME}/cargo/env"
 
 # [[ -x /usr/libexec/path_helper ]] && {
 #   PATH=""

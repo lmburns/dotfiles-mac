@@ -22,7 +22,7 @@ zflai-msg "[path] $path"
 
 typeset -g DIRSTACKSIZE=20
 typeset -g HISTSIZE=10000000
-typeset -g HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history"
+typeset -g HISTFILE="${XDG_CACHE_HOME}/zsh/zsh_history"
 typeset -g SAVEHIST=8000000
 typeset -g HIST_STAMPS="yyyy-mm-dd"
 typeset -g HISTORY_IGNORE="(jrnl|youtube-dl|you-get)"
@@ -1223,28 +1223,30 @@ $FZF_DEFAULT_OPTS
 [[ -z ${path[(re)$HOME/.local/bin]} ]] && path=( "$HOME/.local/bin" "${path[@]}" )
 [[ -z ${path[(re)/usr/local/sbin]} ]]  && path=( "/usr/local/sbin"  "${path[@]}" )
 
-# HOMEBREW_PREFIX is not reliable when sourced (brew shellenv)
-path=(
-  ${BREW_PREFIX}/bin
-  ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
-  ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
-  ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
-  ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
-  ${BREW_PREFIX}/opt/openvpn/sbin
-  ${BREW_PREFIX}/opt/llvm/bin
-  ${BREW_PREFIX}/texlive/2021/bin
-  ${HOME}/.ghg/bin
-  "${path[@]}"
-)
+[[ $OSTYPE = darwin* ]] && {
+  # HOMEBREW_PREFIX is not reliable when sourced (brew shellenv)
+  path=(
+    ${BREW_PREFIX}/bin
+    ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
+    ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
+    ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
+    ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
+    ${BREW_PREFIX}/opt/openvpn/sbin
+    ${BREW_PREFIX}/opt/llvm/bin
+    ${BREW_PREFIX}/texlive/2021/bin
+    ${HOMEBREW_PREFIX}/mysql/bin(N-/)
+    "${path[@]}"
+  )
 
-manpath=(
-  ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
-  ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
-  ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
-  "${manpath[@]}"
-)
+  manpath=(
+    ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
+    ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
+    ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
+    "${manpath[@]}"
+  )
 
-infopath=( ${BREW_PREFIX}/{share,}/info "${infopath[@]}" )
+  infopath=( ${BREW_PREFIX}/{share,}/info "${infopath[@]}" )
+}
 
 # cdpath=( $HOME/{projects,}/github $XDG_CONFIG_HOME )
 
@@ -1255,12 +1257,12 @@ hash -d ghq=$HOME/ghq
 hash -d TMPDIR=${TMPDIR:A}
 
 path=(
+  $HOME/.ghg/bin
   $HOME/.rbenv/version/3.0.0/bin(N-/)
   $PYENV_ROOT/{shims,bin}
   $CARGO_HOME/bin(N-/)
   $XDG_DATA_HOME/gem/bin(N-/)
   $GOPATH/bin(N-/)
-  $HOMEBREW_PREFIX/mysql/bin(N-/)
   $HOME/.poetry/bin(N-/)
   "${path[@]}"
 )
@@ -1324,8 +1326,11 @@ zt 0b light-mode null id-as for \
 }
 # ]]]
 
-local fdir="${HOMEBREW_PREFIX}/share/zsh/site-functions"
-[[ -z ${fpath[(re)$fdir]} && -d "$fdir" ]] && fpath=( "${fpath[@]}" "${fdir}" )
+[[ $OSTYPE = darwin* ]] && {
+  local fdir="${HOMEBREW_PREFIX}/share/zsh/site-functions"
+  [[ -z ${fpath[(re)$fdir]} && -d "$fdir" ]] && fpath=( "${fpath[@]}" "${fdir}" )
+}
+
 [[ -z ${path[(re)$XDG_BIN_HOME]} && -d "$XDG_BIN_HOME" ]] && path=( "$XDG_BIN_HOME" "${path[@]}")
 
 path=( "${ZPFX}/bin" "${path[@]}" )                # add back to be beginning
