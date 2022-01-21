@@ -16,7 +16,6 @@ export LC_ALL="${LANGUAGE}"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_RUNTIME_DIR="/tmp"
 export XDG_BIN_HOME="$HOME/bin"
 export XDG_MBIN_HOME="$HOME/mybin"
 export BACKUP_DIR="$HOME/backup"
@@ -72,7 +71,8 @@ export SQLITE_HISTORY="${XDG_DATA_HOME}/sqlite/history"
 export LESSHISTFILE="-"
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME}/password-store"
 
-[[ $OSTYPE = darwin* ]] {
+[[ $OSTYPE = darwin* ]] && {
+  export XDG_RUNTIME_DIR="/tmp"
   export HOMEBREW_NO_ANALYTICS=1
   export HOMEBREW_BAT=1
   export HOMEBREW_BAT_CONFIG_PATH="${XDG_CONFIG_HOME}/bat/config"

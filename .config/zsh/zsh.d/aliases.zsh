@@ -358,6 +358,7 @@ alias jrnlw=' jrnl wiki'
 alias nb='BROWSER=w3m nb'
 
 alias ume='um edit'
+alias tt='taskwarrior-tui'
 
 # === rsync =====================================================================
 (( $+commands[rsync] )) && {

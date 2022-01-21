@@ -14,8 +14,11 @@
   # Don't prompt for commit messages for merge commits.
   # mergeoptions = --no-edit
 
-[credential]
-  helper = osxkeychain
+; [credential]
+;   helper = osxkeychain
+
+[credential "https://github.com"]
+  helper = !gh auth git-credential
 
 [help]
   autocorrect = 1

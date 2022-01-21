@@ -331,7 +331,7 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     ogham/dog \
   atclone'./just --completions zsh > _just' atpull'%atclone' \
     casey/just \
-  atclone'./imdl --completions zsh > _just' atpull'%atclone' \
+  atclone'./imdl --completions zsh > _imdl' atpull'%atclone' \
     casey/intermodal \
   lbin'**/gh' atclone'./**/gh completion --shell zsh > _gh' atpull'%atclone' \
     cli/cli \
@@ -661,8 +661,6 @@ zt 0c light-mode null for \
   lbin from'gh-r' bpick'*macos.tar.gz' \
   atinit'export XPLR_BOOKMARK_FILE="$XDG_CONFIG_HOME/xplr/bookmarks"' \
     sayanarijit/xplr \
-  lbin from'gh-r' atload'alias tt="taskwarrior-tui"' \
-    kdheepak/taskwarrior-tui \
   lbin from'gh-r' atload'alias ld="lazydocker"' \
     jesseduffield/lazydocker
 # ]]] === tui specifi block ===
@@ -1038,13 +1036,13 @@ zt 0c light-mode run-atpull for \
   id-as'antidot_conf' has'antidot' nocd eval'antidot init' \
     zdharma/null \
   id-as'pyenv_init' has'pyenv' nocd eval'${${:-pyenv}:c:A} init - zsh' \
-    zdharma/null \
+    zdharma-zmirror/null \
   id-as'pipenv_comp' has'pipenv' nocd eval'pipenv --completion' \
     zdharma/null \
   id-as'navi_comp' has'navi' nocd eval'navi widget zsh' \
     zdharma/null \
   id-as'ruby_env' has'rbenv' nocd eval'rbenv init - --no-rehash' \
-    zdharma/null \
+    zdharma-zmirror/null \
   id-as'thefuck_alias' has'thefuck' nocd eval'thefuck --alias' \
     zdharma/null \
   id-as'zoxide_init' has'zoxide' nocd eval'zoxide init --no-aliases zsh' \
@@ -1055,7 +1053,7 @@ zt 0c light-mode run-atpull for \
   id-as'keychain_init' has'keychain' nocd \
   eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac \
   && keychain --agents gpg -q --eval 0xC011CBEF6628B679' \
-    zdharma/null \
+    zdharma-zmirror/null \
   id-as'Cleanup' nocd atinit'unset -f zt grman; _zsh_autosuggest_bind_widgets' \
     zdharma/null
 
@@ -1068,7 +1066,6 @@ zt 0c light-mode run-atpull for \
 typeset -gx GPG_TTY=$TTY
 typeset -gx PDFVIEWER='zathura'                                                   # texdoc pdfviewer
 typeset -gx XML_CATALOG_FILES="/usr/local/etc/xml/catalog"                        # xdg-utils|asciidoc
-typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET" # vimtex
 typeset -gx FORGIT_LOG_FORMAT="%C(red)%C(bold)%h%C(reset) %Cblue%an%Creset: %s%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset"
 typeset -gx RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/library/
 #
@@ -1095,7 +1092,11 @@ typeset -gx CDHISTSIZE=20 CDHISTTILDE=TRUE CDHISTCOMMAND=cdh
 typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 typeset -gx FZFGIT_DEFAULT_OPTS="--preview-window=':nohidden,right:65%:wrap'"
 typeset -gx NQDIR="$TMPDIR/nq"
-typeset -gx BREW_PREFIX="$(/usr/local/bin/brew --prefix)"
+[[ $OSTYPE = darwin* ]] && {
+  typeset -gx BREW_PREFIX="$(/usr/local/bin/brew --prefix)"
+  typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET" # vimtex
+}
+
 
 typeset -g KEYTIMEOUT=15
 
@@ -1207,6 +1208,12 @@ alias db='dotbare'
 export DOTBARE_DIR="${XDG_DATA_HOME}/dotfiles"
 export DOTBARE_TREE="$HOME"
 export DOTBARE_BACKUP="${XDG_DATA_HOME}/dotbare-b"
+
+alias dbh='\
+  DOTBARE_DIR="${XDG_DATA_HOME}/dotfiles-private" \
+  DOTBARE_BACKUP="${XDG_DATA_HOME}/dotbare-b" \
+  dotbare'
+
 export DOTBARE_FZF_DEFAULT_OPTS="
 $FZF_DEFAULT_OPTS
 --header='A:select-all, B:pager, Y:copy, E:nvim'
@@ -1287,6 +1294,17 @@ export PKG_CONFIG_PATH="/usr/local/opt/libressl/lib/pkgconfig"
 
 # atload'local x="$HOME/.iterm2_shell_integration.zsh"; [ -f "$x" ] && source "$x"' \
 #   zdharma/null \
+
+[[ $OSTYPE = darwin* ]] && {
+  zt 0b light-mode null id-as for \
+    atload'
+    ( [[ -S $XDG_DATA_HOME/pueue/pueue_lucasburns.socket ]] || \
+      pueued -dc "$XDG_CONFIG_HOME/pueue/pueue.yml" ) && {
+      ( chronic pueue clean && pueue status | rg -Fq limelight ) || chronic pueue add limelight
+    }' \
+      zdharma/null
+}
+
 zt 0b light-mode null id-as for \
   multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lficons,git-token}.zsh" \
     zdharma/null \
@@ -1298,12 +1316,6 @@ zt 0b light-mode null id-as for \
     zdharma/null \
   atload'export FAST_WORK_DIR=XDG;
   fast-theme XDG:mod-default.ini &>/dev/null' \
-    zdharma/null \
-  atload'
-  ( [[ -S $XDG_DATA_HOME/pueue/pueue_lucasburns.socket ]] || \
-    pueued -dc "$XDG_CONFIG_HOME/pueue/pueue.yml" ) && {
-    ( chronic pueue clean && pueue status | rg -Fq limelight ) || chronic pueue add limelight
-  }' \
     zdharma/null \
   atload'local x="$XDG_CONFIG_HOME/cdhist/cdhist.rc"; [ -f "$x" ] && source "$x"' \
     zdharma/null \
