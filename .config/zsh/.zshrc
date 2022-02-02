@@ -1348,6 +1348,11 @@ zt 0b light-mode null id-as for \
 path=( "${ZPFX}/bin" "${path[@]}" )                # add back to be beginning
 path=( "${path[@]:#}" )                            # remove empties
 
+{
+  [[ $(defaults read -g InitialKeyRepeat) != 15 ]] && krp -d 15
+  [[ $(defaults read -g KeyRepeat)        != 1  ]] && krp -r 1
+} >/dev/null
+
 zflai-msg "[zshrc] File took ${(M)$(( SECONDS * 1000 ))#*.?} ms"
 
 # vim: set sw=0 ts=2 sts=2 et ft=zsh fdm=marker fmr=[[[,]]]:

@@ -14,6 +14,7 @@ alias xp="xplr"
 alias xx="xcompress"
 alias ca='cargo'
 alias cat="bat"
+alias tt="taskwarrior-tui"
 
 alias zstats='zstat -sF "%b %e %H:%M:%S"'
 
