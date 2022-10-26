@@ -8,16 +8,16 @@
 # zshexpn -- zsh -o SOURCE_TRACE -lic ''
 # sed -n l -- infocmp -L1 -- zle -L
 
-if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )) {
-    function zle-line-init() {
-        echoti smkx
-    }
-    function zle-line-finish() {
-        echoti rmkx
-    }
-    zle -N zle-line-init
-    zle -N zle-line-finish
-}
+# if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )) {
+#     function zle-line-init() {
+#         echoti smkx
+#     }
+#     function zle-line-finish() {
+#         echoti rmkx
+#     }
+#     zle -N zle-line-init
+#     zle -N zle-line-finish
+# }
 
 builtin bindkey -v
 builtin bindkey -r '^[,'
@@ -127,7 +127,7 @@ typeset -gA keybindings; keybindings=(
   'mode=viins kj' vi-cmd-mode
   'mode=visual S' add-surround
   'mode=str M-t'  t                     # tmux wfxr
-  'mode=str C-o'  lc                    # lf change dir
+  'mode=str M-o'  lc                    # lf change dir
   'mode=str C-_'  lf
   'mode=@ C-b'    bow2                  # surfraw open w3m
   'mode=+ M-.'    kf                    # a formarks like thing in rust

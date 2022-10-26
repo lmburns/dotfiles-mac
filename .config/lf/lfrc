@@ -1,28 +1,29 @@
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Basics / General                                                          │
 # └───────────────────────────────────────────────────────────────────────────┘
-# set shell bash        # interpreter for shell commands
-# set shellopts '-eu'   # exit on error
-# set ifs "\n"          # internal field separator / split $fs, $fx
-
 set shell zsh
-# set shellopts '-eu:--shwordsplit'
 set shellopts '-euy'
 set ifs "\n"
 set filesep "\n"  # default already
 
 set scrolloff 10      # space on top and bottom of screen
 set icons on          # show icons next to files
+set history on        # save history across sessions
 set period 1          # interval to check for directory updates
 set hidden on         # show hidden files by default
 set incsearch o       # jump to first match after each keystroke in search
+set incfilter o       # apply filter after each keystroke
+set smartcase         # if capital letter then case sensitive
 set dircounts on      # show number of items in directory instead of sie
 set info "size"       # list directory information on the right
 set sortby "natural"  # don't sort files in any special way
+# set globsearch        # search with globs
 set preview on        # preview file on the right pane
 set drawbox on        # draw a border around all panes
 set ratios '1:2:3'    # ratio of pane widths
-set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
+# FIX: Doesn't change the color
+# set tagfmt "\033[34m%s\033[0m"
+set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml:lost+found"
 
 # -- Previewer: custom
 $lf -remote "send $id set previewer ${XDG_CONFIG_HOME}/lf/scope"
@@ -62,6 +63,8 @@ cmd q! ${{
 }}
 cmd Q! :q!
 map <esc> quit
+
+map Ev $vim "$fx"
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Commands / Functions                                                      │
@@ -191,7 +194,7 @@ cmd broot_jump ${{
 }}
 
 # -- Jump: zoxide
-cmd fzf_z ${{
+cmd fzf_zoxide ${{
   sel="$(zoxide query -i)"
   [[ -d "$sel" ]] && lf -remote "send $id cd \"$sel\""
 }}
@@ -586,10 +589,11 @@ cmd dlfile %dlfile
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ Mappings                                                                  │
 # └───────────────────────────────────────────────────────────────────────────┘
+# map n
+# map "'"
+# map '"'
 map m
-map n
-map "'"
-map '"'
+map M
 map d
 map O
 map e
@@ -600,6 +604,10 @@ map f
 map gh
 map .
 map r
+map t
+map <c-l>
+map H
+map L
 
 # == File Openers == [[[
 map ee $$EDITOR "$f"                            # open file in editor
@@ -629,7 +637,7 @@ map as !du -hsx * | sort -rh | bat --paging=always                          # di
 map ai !gstat $f || stat $f; echo ; du -sh $f ; echo ; file --mime -b -p $f # info
 
 map <c-f> push :rg<space>                           # search with rg
-map <c-z> push :rgu<space>                          # search interactively with fzf
+map F push :rgu<space>                          # search interactively with fzf
 
 map Tk !clear; tokei
 # ]]]
@@ -685,8 +693,8 @@ map fd push :fd<space>    # use fd to find file
 map fe fd_edit            # find files with fzf and edit
 map fa ajfzf              # use fzf with autojump
 # map <c-b> broot_jump    # use broot to jump to directory
-map nn fzf_z              # fzf zioxide
-map nb jumpi              # wfxr plugin
+map cc fzf_zoxide         # fzf zioxide
+map cb jumpi              # wfxr plugin
 map cJ njump              # lf specifc - jump bookmark
 map cB nbookmark          # lf specifc - add bookmark
 map cD ndel-bookmark      # lf specifc - del bookmark
@@ -698,7 +706,6 @@ map w fzf_cd              # fzf cd
 
 # == General == [[[
 map . set hidden!
-map L cd-followlink           # follow symlink on cd
 
 map x cut                     # general cut
 map p paste                   # regular
@@ -727,6 +734,10 @@ map K half-up
 map R reload
 map C clear
 map U unselect
+map <c-l> cd-followlink
+map H jump-prev
+map L jump-next
+map , :{{ clear; unselect; }}
 
 map sf select-files                              # select all files
 map sd select-dirs                               # select all dirs
@@ -783,6 +794,12 @@ map Twl wutag-list
 # ]]]
 
 # == Git == [[[
+cmd dotbare_add $for x ($fx) { dotbare add "$x" }
+cmd git_add $for x ($fx) { git add "$x" }
+
+map gta :{{ git_add; unselect; }}
+map gto &git brws
+
 map gtb :git_branch
 map gtp ${{clear; git pull --rebase || true; echo "press ENTER"; read ENTER}}
 map gtz ${{clear; git status; echo "press ENTER"; read ENTER}}
@@ -798,7 +815,8 @@ map gFa ${{clear; fadd}}
 map gFl ${{clear; flog}}
 map gFu ${{clear; funtrack}}
 
-map gfa ${{clear; dotbare fadd -f}}
+map gfa :{{ dotbare_add; unselect; }}
+map gfai ${{clear; dotbare fadd -f}}
 map gfs ${{clear; dotbare fstat}}
 map gfu ${{clear; dotbare funtrack}}
 map gftr ${{clear; dotbare ls-tree -r master --name-only | bat}}
@@ -839,5 +857,3 @@ map gh cd ~
 
 # map o &mimeopen $f
 # map O $mimeopen --ask $f
-
-# vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr=[[[,]]]:

@@ -298,3 +298,5 @@ taskd.server=lmburns.com:53589
 # taskd.credentials=Self\/Macbook\/b093c6bf-e927-488f-9f11-8b7225f0163a
 taskd.credentials=Self\/Lucas\/b82378f9-c7b4-4e78-9fb7-89fad80c4182
 taskd.trust=strict
+
+# vim: ft=taskrc:et:sw=0:ts=2:sts=2:fdm=marker:fmr={{{,}}}:

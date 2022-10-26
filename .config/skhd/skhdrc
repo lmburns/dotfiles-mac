@@ -1,16 +1,17 @@
 # === restart yabai =========================================================
-ctrl + alt + cmd - r :
-  /usr/local/bin/terminal-notifier -title "Restarted yabai"; \
-  launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"; \
-  killall limelight &> /dev/null; \
-  /usr/local/mybin/limelight &> /dev/null &
+ctrl + alt + cmd - r : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"; \
+  /usr/local/bin/terminal-notifier -title "Restarted yabai" -message "yabai restarted";
+
+  # killall limelight &> /dev/null; \
+  # /usr/local/mybin/limelight &> /dev/null &
 
 # === open mpv from clip =====================================================
 shift + cmd - m : open -na /Applications/mpv.app $(pbpaste)
-shift + cmd - m : "${HOME}"/mybin/open-mutt
+shift + cmd - m : $HOME/mybin/open-mutt
+cmd - return : $HOME/mybin/yabai/open_iterm2.sh
 
-# === debug yabai== =========================================================
-# lshift - x : terminal-notifier -message "lshift - x"
+# === debug yabai== ==========================================================
+# lctrl + alt + cmd - h : terminal-notifier -message "lshift - x"
 # lshift - x : terminal-notifier -message "$(yabai -m query --windows --window \
 #   | jq -re ".id")"
 
@@ -21,6 +22,7 @@ shift + lctrl - 3 : "${HOME}"/mybin/yabai/show_disk.sh
 
 # === close application ====================================================
 hyper - backspace : $(yabai -m window $(yabai -m query --windows --window | jq -re ".id") --close)
+cmd + shift - x : $(yabai -m window $(yabai -m query --windows --window | jq -re ".id") --close)
 
 # === move container =======================================================
 shift + alt - m : yabai -m window --space last; yabai -m space --focus last

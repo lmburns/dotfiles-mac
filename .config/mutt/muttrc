@@ -124,6 +124,8 @@ set timeout=10
 # set autoedit                   # go to the editor right away when composing
 set copy=yes                   # always save a copy of outgoing messages
 
+set abort_key = "<Esc>"
+
 # == Mail composition ==
 set edit_headers               # include headers in composition
 set include                    # include message in replies

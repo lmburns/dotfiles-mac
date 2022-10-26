@@ -775,7 +775,7 @@ Plug 'voldikss/fzf-floaterm'
   let g:lf_map_keys = 0
   let g:lf_replace_netrw = 1
   nnoremap <Leader>lf :Lf<CR>
-  nnoremap <C-o> :Lf<CR>
+  nnoremap <A-o> :Lf<CR>
 " }}}  === Floaterm | lf ===
 
 " ============== git  ============== {{{
@@ -1198,6 +1198,7 @@ Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins',  'for': 'python'}
 " }}} === vim-slime | python ===
 
 " ============== vim-rust ============== {{{
+Plug 'camnw/lf-vim', { 'for': 'lf'}
 Plug 'nastevens/vim-cargo-make'
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 " FIX: visual selection
@@ -1342,6 +1343,7 @@ Plug 'plasticboy/vim-markdown'
         \]
   let g:vim_markdown_follow_anchor = 1
 "}}} === vim-markdown ===
+
 
 " ============== vim-table-mode ============== {{{
 Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
@@ -2049,8 +2051,8 @@ command! -nargs=? -complete=dir AF
   " nnoremap <Leader>sa a<Space><ESC>h
 
   " inserts a line above or below
-  nnoremap <expr> oo printf('m`%so<ESC>``', v:count1)
-  nnoremap <expr> OO printf('m`%sO<ESC>``', v:count1)
+  nnoremap <expr> zj printf('m`%so<ESC>``', v:count1)
+  nnoremap <expr> zk printf('m`%sO<ESC>``', v:count1)
 
   " move through folded lines
   nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
@@ -2107,12 +2109,6 @@ command! -nargs=? -complete=dir AF
   " close quickfix
   nnoremap <Leader>cc :cclose<CR>
 
-  " :%s/<1b>\[[0-9;]*m//g                       " replace ANSI color codes
-
-  " shellcheck
-  nnoremap <Leader>sc :!shellcheck -x %<CR>
-  nnoremap <F1> :!./%<CR>
-
   " open corresponding .pdf/.html or preview
   nmap <Leader>p :w <Bar> !open %<CR>
 
@@ -2158,14 +2154,6 @@ command! -nargs=? -complete=dir AF
   " autocmd BufReadPost *.odt silent %!pandoc "%" -tmarkdown -o /dev/stdout
   " autocmd BufWritePost *.odt :%!pandoc -f markdown "%" -o "%:r".odt
 
-  " check html syntax
-  nmap <Leader>h5 :!html5check %<CR>
-
-  " NOTE: `,kp` compiles RMarkdown to PDF using NVim-R
-  autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
-
-  nmap <Leader>cp :w! <bar> !compiler %<CR>
-  nmap <Leader>pr :!opout <c-r>%<CR><CR>
 " }}} === General Mappings ===
 
 " ============== Syntax ============== {{{
