@@ -1,7 +1,6 @@
 core:
   regular_file: [$fi]
   directory: [$di]
-
   executable_file: [$ex]
 
   symlink: [$ln]
@@ -52,9 +51,11 @@ text:
       - .config
       - .ini
       - .json
+      - .hjson
       - .tml
       - .toml
       - .yaml
+      - .ron
       - .yml
 
     metadata:
@@ -82,6 +83,7 @@ text:
 
   gpg:
     - .gpg
+    - .asc
 
   other:
     - .txt
@@ -97,9 +99,17 @@ markup:
     - .csv
     - .markdown
     - .md
+    - .norg
     - .mdown
     - .rst
     - .xml
+    - .ctags
+    - .grc
+
+  sublime:
+    - .sublime-syntax
+    - .sublime-colorscheme
+    - .tmTheme
 
 programming:
   source:
@@ -112,8 +122,25 @@ programming:
     clojure: [.clj]
     crystal: [.cr]
     csharp: [.cs, .csx]
-    css: [css]
-    cxx: [.c, .cpp, .cc, .cp, .cxx, .c++, .h, .hh, .hpp, .hxx, .h++, .inc, .inl, .ipp, .def]
+    css: [.css]
+    cxx:
+      [
+        .c,
+        .cpp,
+        .cc,
+        .cp,
+        .cxx,
+        .c++,
+        .h,
+        .hh,
+        .hpp,
+        .hxx,
+        .h++,
+        .inc,
+        .inl,
+        .ipp,
+        .def,
+      ]
     d: [.d, .di]
     dart: [.dart]
     diff: [.diff, .patch]
@@ -128,6 +155,7 @@ programming:
     ipython: [.ipynb]
     java: [.java, .bsh]
     javascript: [.js, .htc]
+    javascriptreact: [.jsx]
     julia: [.jl]
     kotlin: [.kt, .kts]
     latex: [.tex, .ltx]
@@ -137,6 +165,7 @@ programming:
     lua: [.lua]
     mathematica: [.nb]
     matlab: [.matlab, .m, .mn]
+    nim: [.nim]
     ocaml: [.ml, .mli]
     pascal: [.pas, .p, .dpr]
     perl: [.pl, .pm, .pod, .t, .cgi]
@@ -146,16 +175,34 @@ programming:
     purescript: [.purs]
     python: [.py]
     r: [.r]
-    ruby: [.rb]
+    rasi: [.rasi]
+    rescript: [.res]
+    ruby: [.rb, .rbs]
     rust: [.rs]
     scala: [.scala, .sbt]
-    shell: [.sh, .bash, .zsh, .fish]
+    scss: [.scss]
+    shell: [.sh, .bash, .fish]
     sql: [.sql]
     swift: [.swift]
     tablegen: [.td]
     tcl: [.tcl]
-    typescript: [.ts, .tsx]
+    typescript: [.ts]
+    typescriptreact: [.tsx]
     viml: [.vim]
+    zig: [.zig]
+    zsh: [.zsh, .ztst, .zcompdump]
+
+    database: [.sqlite, .sqlite3, .db]
+    jq: [.jq]
+    solidity: [.sol]
+    teal: [.tl]
+    moon: [.moon]
+    fennel: [.fnl]
+    sass: [.sass]
+    reason: [.re]
+    scheme: [.scm]
+    vue: [.vue]
+    graphql: [.graphql]
 
   tooling:
     vcs:
@@ -172,8 +219,13 @@ programming:
       other:
         - CODEOWNERS
         - .ignore
+        - .npmignore
+        - .cvsignore
         - .fdignore
         - .rgignore
+        - .eslintignore
+        - .styluaignore
+        - .dockerignore
 
     build:
       cmake:
@@ -209,24 +261,42 @@ programming:
         - setup.py
       ruby:
         - .gemspec
+        - Rakefile
+        - Gemfile
+      lua:
+        - .rockspec
 
     code-style:
       python:
         - .flake8
-
       cxx:
         - .clang-format
+      lua:
+        - .lua-format
+        - .luarc.jsonc
+        - .luacheckrc
 
     editors:
       qt:
         - .pro
       kdevelop:
         - .kdevelop
+      other:
+        - .editorconfig
 
     documentation:
       doxygen:
         - Doxyfile
         - .dox
+
+      tag:
+        - tags
+
+      man-page:
+        - '.1'
+        - '.2'
+        - '.3'
+        - '.5'
 
     continuous-integration:
       - appveyor.yml
@@ -236,7 +306,6 @@ media:
   image:
     - .bmp
     - .eps
-    - .gif
     - .ico
     - .jpeg
     - .jpg
@@ -249,6 +318,10 @@ media:
     - .tif
     - .tiff
     - .xcf
+
+  # Do this so I can change its color specifically
+  gif:
+    - .gif
 
   audio:
     - .aif
@@ -270,6 +343,7 @@ media:
     - .mkv
     - .mov
     - .mp4
+    - .webm
     - .mpeg
     - .mpg
     - .rm
@@ -289,10 +363,11 @@ office:
     - .docx
     - .epub
     - .odt
-    - .pdf
     - .ps
     - .rtf
     - .sxw
+  pdf:
+    - .pdf
 
   spreadsheet:
     - .xls
@@ -334,6 +409,7 @@ archives:
     - .bz
     - .bz2
     - .gz
+    - .lzma
     - .jar
     - .pkg
     - .rar
@@ -361,6 +437,8 @@ executable:
     - .ko
 
 unimportant:
+  partial:
+    crdownload: [.crdownload]
   build_artifacts:
     cxx:
       - .o
@@ -403,10 +481,15 @@ unimportant:
     zsh:
       - .zwc
 
+  go:
+    - go.mod
+    - go.sum
+
   macos:
     - .CFUserTextEncoding
     - .DS_Store
     - .localized
+    - .icloud
 
   torrent:
     - .torrent
@@ -416,9 +499,9 @@ unimportant:
     - .zshrc
 
   other:
-    - "~"
+    - '~'
     - .bak
-    - .git  # only works for '.git' files (submodules)
+    - .git # only works for '.git' files (submodules)
     - .lock
     - .log
     - .orig

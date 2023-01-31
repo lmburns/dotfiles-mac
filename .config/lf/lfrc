@@ -180,19 +180,6 @@ cmd br_dir ${{
   lf -remote "send $id $cmd \"$res\""
 }}
 
-# -- Jump: broot
-cmd broot_jump ${{
-  f=$(mktemp)
-  res="$(broot --outcmd $f && cat $f | sed 's/cd //')"
-  rm -f "$f"
-  if [ -f "$res" ]; then
-    cmd="select"
-  elif [ -d "$res" ]; then
-    cmd="cd"
-  fi
-  lf -remote "send $id $cmd \"$res\""
-}}
-
 # -- Jump: zoxide
 cmd fzf_zoxide ${{
   sel="$(zoxide query -i)"
@@ -401,7 +388,7 @@ cmd ndel-bookmark ${{
 
 
 # -- Jump: wfxr plugin
-cmd jumpi ${{
+cmd jumpInteractive ${{
   field='\(\S\+\s*\)'
   esc=$(printf '\033')
   N="${esc}[0m"
@@ -557,7 +544,6 @@ cmd fzf_cd ${{
 }}
 
 cmd aj %lf -remote "send $id cd '$(autojump $1)'"
-cmd ajfzf $lf -remote "send $id cd '$(autojump -s | tac | awk 'NR>7{print $2}' | fzf)'"
 cmd fzf $clear; nvim $(fd -Hi -tf "$1" . |  fzf --no-height)
 cmd fd !clear; fd -Hi "$1"
 cmd rg !clear; rg "$1"
@@ -621,7 +607,7 @@ map eb $$EDITOR $ZDOTDIR/zsh.d/keybindings.zsh  # edit zsh bindings
 map ei $$EDITOR $ZDOTDIR/zsh.d/lficons.zsh      # edit lf colors/icons
 map et $$EDITOR $XDG_CONFIG_HOME/tmux/tmux.conf # edit & source lfrc
 
-map v $LESS='-iWQMXR~' bat --paging=always --theme=KimbieDark "$f"
+map v $LESS='-iWQMXR~' bat --paging=always --theme=kimbro "$f"
 map V push :!nvim<space>                     # enter filename for nvim
 map ? $batman lf                             # open lfrc docs
 map gH $bat -l bash -f ~/.config/lf/mappings # open these mappings
@@ -690,18 +676,21 @@ map rs rmspace
 # == File movement == [[[
 map fo push :fzf<space>   # fzf search and open
 map fd push :fd<space>    # use fd to find file
+map fr push :fd<space>-d1<space>--changed-within<space>
 map fe fd_edit            # find files with fzf and edit
-map fa ajfzf              # use fzf with autojump
-# map <c-b> broot_jump    # use broot to jump to directory
-map cc fzf_zoxide         # fzf zioxide
-map cb jumpi              # wfxr plugin
-map cJ njump              # lf specifc - jump bookmark
-map cB nbookmark          # lf specifc - add bookmark
-map cD ndel-bookmark      # lf specifc - del bookmark
+
 map zi zoxide_i           # zoxide interactive
 map zz push :z<space>     # very similar to autojump
 map <c-j> push :aj<space> # auto jump
+
+map cc fzf_zoxide         # fzf zioxide
+map ci jumpInteractive
+map cJ njump              # lf specifc - jump bookmark
+map cB nbookmark          # lf specifc - add bookmark
+map cD ndel-bookmark      # lf specifc - del bookmark
+
 map w fzf_cd              # fzf cd
+map Ma $neomutt -a "$fx"
 # ]]]
 
 # == General == [[[
