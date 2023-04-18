@@ -143,8 +143,7 @@ add-zsh-hook -Uz zsh_directory_name zsh_directory_name_cdr # cd ~[1]
 
 zstyle+ ':chpwd:*' recent-dirs-default true \
       + ''         recent-dirs-file    "${ZDOTDIR}/chpwd-recent-dirs" \
-      + ''         recent-dirs-max     20 \
-      + ''         recent-dirs-prune   'pattern:/tmp(|/*)'
+      + ''         recent-dirs-max     20
 
 zstyle ':completion:*' recent-dirs-insert  both
 
@@ -370,6 +369,7 @@ zt 0b light-mode for \
   zstyle ":history-search-multi-word" highlight-color "fg=cyan,bold";
   zstyle ":history-search-multi-word" page-size "16"' \
     zdharma-continuum/history-search-multi-word \
+  wait'[[ $TERM != "alacritty" ]]' \
   atload'
   zstyle ":notify:*" command-complete-timeout 3
   zstyle ":notify:*" error-title "Command failed (in #{time_elapsed} seconds)"
@@ -477,8 +477,6 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     casey/intermodal \
   lbin'**/gh' atclone'./**/gh completion --shell zsh > _gh' atpull'%atclone' \
     cli/cli \
-  lbin'**/hub' extract'!' atclone'mv -f **/**.zsh* _hub' atpull'%atclone' \
-    @github/hub \
   lbin'rclone/rclone' bpick'*osx-amd64*' mv'rclone* -> rclone' \
   atclone'./rclone/rclone genautocomplete zsh _rclone' atpull'%atclone' \
     rclone/rclone \
@@ -486,6 +484,9 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     aria2/aria2 \
   lman'*/**.1' atinit'export _ZO_DATA_DIR="${XDG_DATA_HOME}/zoxide"' \
     ajeetdsouza/zoxide
+
+# lbin'**/hub' extract'!' atclone'mv -f **/**.zsh* _hub' atpull'%atclone' \
+#   @github/hub \
 #  ]]] === wait'0c' - programs + man ===
 
 #  === wait'0c' - programs === [[[
@@ -912,6 +913,11 @@ LIMIT 1
 # ]]]
 
 # === paths (GNU) === [[[
+[[ $OSTYPE = darwin* ]] && {
+  typeset -gx BREW_PREFIX="$(/usr/local/bin/brew --prefix)"
+  typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET" # vimtex
+}
+
 [[ -z ${path[(re)$HOME/.local/bin]} ]] && path=( "$HOME/.local/bin" "${path[@]}" )
 [[ -z ${path[(re)/usr/local/sbin]} ]]  && path=( "/usr/local/sbin"  "${path[@]}" )
 
@@ -923,30 +929,28 @@ hash -d ghq=$HOME/ghq
 hash -d TMPDIR=${TMPDIR:A}
 hash -d config=$XDG_CONFIG_HOME
 
-[[ $OSTYPE = darwin* ]] && {
-  # HOMEBREW_PREFIX is not reliable when sourced (brew shellenv)
-  path=(
-    ${BREW_PREFIX}/bin
-    ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
-    ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
-    ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
-    ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
-    ${BREW_PREFIX}/opt/openvpn/sbin
-    ${BREW_PREFIX}/opt/llvm/bin
-    ${BREW_PREFIX}/texlive/2021/bin
-    ${HOMEBREW_PREFIX}/mysql/bin(N-/)
-    "${path[@]}"
-  )
+# HOMEBREW_PREFIX is not reliable when sourced (brew shellenv)
+path=(
+  ${BREW_PREFIX}/bin
+  ${BREW_PREFIX}/opt/{coreutils,gnu-sed,grep,gnu-tar}/libexec/gnubin
+  ${BREW_PREFIX}/opt/{gawk,findutils,ed}/libexec/gnubin
+  ${BREW_PREFIX}/opt/{gnu-getopt,file-formula,util-linux}/bin
+  ${BREW_PREFIX}/opt/{flex,libressl,unzip}/bin
+  ${BREW_PREFIX}/opt/openvpn/sbin
+  ${BREW_PREFIX}/opt/llvm/bin
+  ${BREW_PREFIX}/texlive/2021/bin
+  ${BREW_PREFIX}/mysql/bin(N-/)
+  "${path[@]}"
+)
 
-  manpath=(
-    ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
-    ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
-    ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
-    "${manpath[@]}"
-  )
+manpath=(
+  ${BREW_PREFIX}/opt/{grep,gawk,gnu-tar,gnu-getopt}/share/man
+  ${BREW_PREFIX}/opt/{gnu-sed,findutils,gnu-which,file-formula}/share/man
+  ${BREW_PREFIX}/opt/{gnu-getopt,task-spooler,util-linux}/share/man
+  "${manpath[@]}"
+)
 
-  infopath=( ${BREW_PREFIX}/{share,}/info "${infopath[@]}" )
-}
+infopath=( ${BREW_PREFIX}/{share,}/info "${infopath[@]}" )
 
 path=(
   $HOME/.ghg/bin
@@ -1004,15 +1008,11 @@ zt 0c light-mode run-atpull for \
     zdharma-continuum/null \
   id-as'antidot_conf' has'antidot' nocd eval'antidot init' \
     zdharma-continuum/null \
-  id-as'pyenv_init' has'pyenv' nocd eval'pyenv init - zsh' \
-    zdharma-continuum/null \
   id-as'pipenv_comp' has'pipenv' nocd eval'pipenv --completion' \
     zdharma-continuum/null \
   id-as'navi_comp' has'navi' nocd eval'navi widget zsh' \
     zdharma-continuum/null \
   id-as'ruby_env' has'rbenv' nocd eval'rbenv init - --no-rehash' \
-    zdharma-continuum/null \
-  id-as'thefuck_alias' has'thefuck' nocd eval'thefuck --alias' \
     zdharma-continuum/null \
   id-as'zoxide_init' has'zoxide' nocd eval'zoxide init --no-aliases zsh' \
   atload'alias o=__zoxide_z z=__zoxide_zi' \
@@ -1023,6 +1023,9 @@ zt 0c light-mode run-atpull for \
   eval'keychain --agents ssh -q --inherit any --eval id_rsa git burnsac \
   && keychain --agents gpg -q --eval 0xC011CBEF6628B679' \
     zdharma-continuum/null
+
+  # id-as'pyenv_init' has'pyenv' nocd eval'pyenv init - zsh' \
+  #   zdharma-continuum/null \
 
 zt 0c light-mode for \
   id-as'Cleanup' nocd atinit'unset -f zt grman mv_clean has id_as; _zsh_autosuggest_bind_widgets' \
@@ -1055,12 +1058,6 @@ typeset -g PER_DIRECTORY_HISTORY_BASE="${ZPFX}/share/per-directory-history"
 typeset -gx NQDIR="$TMPDIR/nq" FNQ_DIR="$HOME/tmp/fnq"
 typeset -gx FZFGIT_BACKUP="${XDG_DATA_HOME}/gitback"
 typeset -gx FZFGIT_DEFAULT_OPTS="--preview-window=':nohidden,right:65%:wrap'"
-
-[[ $OSTYPE = darwin* ]] && {
-  typeset -gx BREW_PREFIX="$(/usr/local/bin/brew --prefix)"
-  typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET" # vimtex
-}
-
 
 typeset -gx PASSWORD_STORE_ENABLE_EXTENSIONS='true'
 typeset -gx PASSWORD_STORE_EXTENSIONS_DIR="${BREW_PREFIX}/lib/password-store/extensions"
@@ -1209,16 +1206,6 @@ alias dbh='\
 # atload'local x="$HOME/.iterm2_shell_integration.zsh"; [ -f "$x" ] && source "$x"' \
 #   zdharma-continuum/null \
 
-[[ $OSTYPE = darwin* ]] && {
-  zt 0b light-mode null id-as for \
-    atload'
-    ( [[ -S $XDG_DATA_HOME/pueue/pueue_lucasburns.socket ]] || \
-      pueued -dc "$XDG_CONFIG_HOME/pueue/pueue.yml" ) && {
-      ( chronic pueue clean && pueue status | rg -Fq limelight ) || chronic pueue add limelight
-    }' \
-      zdharma-continuum/null
-}
-
 # multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lficons,functions,tmux,git-token}.zsh" \
 zt 0b light-mode null id-as for \
   multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lficons,functions,git-token}.zsh" \
@@ -1233,6 +1220,14 @@ zt 0b light-mode null id-as for \
   fast-theme XDG:kimbox.ini &>/dev/null' \
     zdharma-continuum/null \
   nocd null atload'source "${XDG_DATA_HOME}/cargo/env"' \
+    zdharma-continuum/null
+
+zt 0c light-mode null id-as for \
+  atload'
+  ( [[ -S $XDG_DATA_HOME/pueue/pueue_lucasburns.socket ]] || \
+    pueued -dc "$XDG_CONFIG_HOME/pueue/pueue.yml" ) && {
+    ( chronic pueue clean && pueue status | rg -Fq limelight ) || chronic pueue add limelight
+  }' \
     zdharma-continuum/null
 
 # nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || TS_SOCKET=/tmp/ts1 ts limelight >/dev/null" \
@@ -1252,7 +1247,7 @@ zt 0b light-mode null id-as for \
 # ]]]
 
 [[ $OSTYPE = darwin* ]] && {
-  local fdir="${HOMEBREW_PREFIX}/share/zsh/site-functions"
+  local fdir="${BREW_PREFIX}/share/zsh/site-functions"
   [[ -z ${fpath[(re)$fdir]} && -d "$fdir" ]] && fpath=( "${fpath[@]}" "${fdir}" )
 }
 
@@ -1262,10 +1257,15 @@ path=( "${ZPFX}/bin" "${path[@]}" )                # add back to be beginning
 path=( "${path[@]:#}" )                            # remove empties
 path=( "${(u)path[@]}" )                           # remove duplicates; goenv adds twice?
 
-{
-  [[ $(defaults read -g InitialKeyRepeat) -ne 15 ]] && krp -d 15
-  [[ $(defaults read -g KeyRepeat)        -ne 1  ]] && krp -r 1
-} >/dev/null
+# {
+#   [[ $(defaults read -g InitialKeyRepeat) -ne 14 ]] && krp -d 14
+#   [[ $(defaults read -g KeyRepeat)        -ne 2  ]] && krp -r 2
+# } >/dev/null
+
+# default value is 2 (30ms ?), each tick = 15ms
+defaults write NSGlobalDomain KeyRepeat -int 2
+# default value is 15 (225ms), each tick = 15ms
+defaults write NSGlobalDomain InitialKeyRepeat -int 18
 
 zflai-msg "[zshrc] File took ${(M)$(( SECONDS * 1000 ))#*.?} ms"
 

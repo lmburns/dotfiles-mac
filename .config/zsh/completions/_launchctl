@@ -1,0 +1,702 @@
+#compdef launchctl
+
+# system/[service-name]
+#    Targets the system domain or a service within the system domain.
+#    The system domain manages the root Mach bootstrap and is considered a privileged execution context.
+#    Anyone may read or query the system domain, but root privileges are required to make modifications.
+# user/<uid>/[service-name]
+#    Targets the user domain for the given UID or a service within that domain.
+#    A user domain may exist independently of a logged-in user.
+#    User domains do not exist on iOS.
+# login/<asid>/[service-name]
+#    Targets a user-login domain or service within that domain.
+#    A user-login domain is created when the user logs in at the GUI
+#       and is identified by the audit session identifier associated with that login.
+#    If a user domain has an associated login domain, the print subcommand will display the ASID of that login domain.
+#    User-login domains do not exist on iOS.
+# gui/<uid>/[service-name]
+#    Another form of the login specifier.
+#    Rather than specifying a user-login domain by its ASID, this specifier targets the
+#       domain based on which user it is associated with and is generally more convenient.
+# pid/<pid>/[service-name]
+#    Targets the domain for the given PID or a service within that domain.
+#    Each process on the system will have a PID domain associated with it that
+#       consists of the XPC services visible to that process which can be reached with xpc_connection_create(3).
+#
+# For instance, when referring to a service with the identifier
+#     com.apple.example loaded into the
+#     GUI domain of a user with UID 501,
+#     domain-target is gui/501/,
+#     service-name is com.apple.example,
+#     service-target is gui/501/com.apple.example
+
+local -a _commands
+_commands=(
+  # "export:Export all environment variables in launchd suitable for eval"
+  # "getrusage:Get resource utilization stats from launchd"
+  # "log:Get and set the syslog log level mask"
+  # "shutdown:Tell launchd to prepare for shutdown by removing all jobs"
+  # "umask:Get or set the umaks of launchd"
+  # "bslist:Get mach bootstrap services and states"
+  # "bstree:Print hierarchical view of entrie Mach bootstrap tree"
+  # "uncache:Removes the specified service name from the service cache"
+
+  "bootstrap:Bootstraps a domain or a service into a domain"
+  "bootout:Tears down a domain or removes a service from a domain"
+  "enable:Enables an existing service"
+  "disable:Disables an existing service"
+  "kickstart:Forces an existing service to start"
+  "attach:Attach the system's debugger to a service"
+  "debug:Configures the next invocation of a service for debugging"
+  "kill:Sends a signal to the service instance"
+  "blame:Prints the reason a service is running"
+  "print:Prints a description of a domain or service"
+  "print-cache:Prints information about the service cache"
+  "print-disabled:Prints which services are disabled"
+  "plist:Prints a property list embedded in a binary (targets the Info.plist by default)"
+  "procinfo:Prints port information about a process"
+  "hostinfo:Prints port information about the host"
+  "resolveport:Resolves a port name from a process to an endpoint in launchd"
+  "limit:Reads or modifies launchd's resource limits"
+  "runstats:Prints performance statistics for a service"
+  "examine:Runs the specified analysis tool against launchd in a non-reentrant manner"
+  "config:Modifies persistent configuration parameters for launchd domains"
+  "dumpstate:Dumps launchd state to stdout"
+  "dumpjpcategory:Dumps the jetsam properties category for all services"
+  "reboot:Initiates a system reboot of the specified type"
+  "bootshell:Brings the system up from single-user mode with a console shell"
+  "load:Bootstraps a service or directory of services"
+  "unload:Unloads a service or directory of services"
+  "remove:Unloads the specified service name"
+  "list:Lists information about services"
+  "start:Starts the specified service"
+  "stop:Stops the specified service if it is running"
+  "setenv:Sets the specified environment variables for all services within the domain"
+  "unsetenv:Unsets the specified environment variables for all services within the domain"
+  "getenv:Gets the value of an environment variable from within launchd"
+  "bsexec:Execute a program in another process' bootstrap context"
+  "asuser:Execute a program in the bootstrap context of a given user"
+  "submit:Submit a basic job from the command line (without a config file)"
+  "managerpid:Prints the PID of the launchd controlling the session"
+  "manageruid:Prints the UID of the current launchd session"
+  "managername:Prints the name of the current launchd session"
+  "error:Prints a description of an error"
+  "variant:Prints the launchd variant"
+  "version:Prints the launchd version"
+  "help:Prints the usage for a given subcommand"
+)
+
+_launchctl() {
+  integer ret=1
+
+  if (( CURRENT > 2 )); then
+    (( CURRENT-- ))
+    shift words
+    if (( $+functions[_launchctl-$words[1]] )); then
+      _call_function ret _launchctl-$words[1]
+    else
+      ret=0
+    fi
+  else
+    local context state state_descr line
+    _describe -t commands "subcommands" _commands
+  fi
+
+  return ret
+}
+
+__launch_agents() {
+  # local -a list
+  # list=( ${${(@f)"$(fd -e plist . ~/Library/LaunchAgents /Library/LaunchAgents)")}:t} )
+  # print -rl -- "$list[@]"
+
+  if (( ${#${(@f)"$(print -rl -- *.log)"}} > 1 )); then
+    _wanted files expl \
+      "launchd plist files in $PWD" \
+      _files -g '*.plist'
+  else
+     _wanted files expl \
+       'system-wide launchd plist files' \
+       _files -g '*.plist /System/Library/Launch*/*.plist /Library/Launch*/*.plist  ~/Library/Launch*/*.plist'
+  fi
+}
+
+__launchctl_domains() {
+  local -a domains
+  domains=(
+    'system:targets the system domain or a service within the system domain'
+    'user:targets the user domain for the given UID or a service within that domain'
+    'login:targets a user-login domain or service within that domain'
+    'gui:another form of the login specifier'
+    'pid:targets the domain for the given PID or a service within that domain'
+  )
+  _describe -t domains "domains" domains
+}
+
+__launchctl_jobs() {
+  local expl
+  local -a jobs
+  integer ret=1
+
+  jobs=${(z)$(launchctl list | awk '$3 !~ /^0x|^\[0x/ { print $3 }')}
+  _wanted jobs expl job compadd - $jobs[2,-1] && ret=0
+
+  return ret
+}
+
+_launchctl-bootstrap() {
+  # Usage: launchctl bootstrap <domain-target> [service-path, service-path2, ...]
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  #     '--angel[bootstrap the plist as a LaunchAngel]' \
+  #     '-s[run as server (does not return)]' \
+  #     '-S+[session type]:session type' \
+
+  _arguments -w -C -S -s \
+    '1:domain-target:__launchctl_domains' \
+    '*:service-path:__launch_agents' && ret=0
+
+  return ret
+}
+
+_launchctl-bootout() {
+  # Usage: launchctl bootout <domain-target> [service-path1, service-path2, ...] | <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:domain-target or service-target:__launchctl_domains' \
+    '*:service-path:__launch_agents' && ret=0
+
+  return ret
+}
+
+_launchctl-enable() {
+  # Usage: launchctl enable <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '*:service-target:__launchctl_domains' && ret=0
+
+  return ret
+}
+
+_launchctl-disable() {
+  # Usage: launchctl disable <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '*:service-target:__launchctl_domains' && ret=0
+
+  return ret
+}
+
+_launchctl-kickstart() {
+  # Usage: launchctl kickstart [-k] [-p] <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '-k[kill the running instance before restarting the service]' \
+    '-p[print the PID of the new process or the already-running process to stdout]' \
+    '-s[starts the service suspended so that a debugger may attach]' \
+    '*:service-target:__launchctl_domains' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-attach() {
+  # Usage: launchctl attach [-k] [-s] [-x] <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '-k[kill the running instance before restarting the service]' \
+    "-s[orces the service to start if it isn't already running]" \
+    '-x[attaches to execution trampoline for the service (implies -k)]' \
+    '*:service-target:__launchctl_domains' && ret=0
+
+  return ret
+}
+
+_launchctl-debug() {
+  # Usage: launchctl debug <service-target> [--program <program-path>] [--start-suspended]
+  #    [--guard-malloc] [--malloc-stack-logging] [--malloc-nano-allocator] [--debug-libraries]
+  #    [--NSZombie] [--32] [--stdin [path]] [--stdout [path]] [--stderr [path]]
+  #    [--environment VARIABLE0=value0 VARIABLE1=value1 ...] -- [argv0 argv1 ...]
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    "--program[use a different binary for the service's executable]:program:_command_names -e" \
+    '--start-suspended[start the process suspended]' \
+    '--guard-malloc[enable libgmalloc(3) for the service]' \
+    '--malloc-stack-logging[enable malloc(3) stack logging]' \
+    '--malloc-nano-allocator[enables the malloc(3) nano allocator]' \
+    '--debug-libraries[sets DYLD_IMAGE_SUFFIX to "_debug"]' \
+    '--NSZombie[enables NSZombie]' \
+    '--environment[set environment variables on the service]:key=value:_parameters' \
+    '--32[runs the service in 32-bit mode (only available on 64-bit platforms)]' \
+    '--stdin[with arg, file at path is used; else terminal stdin]:stdin:_files' \
+    '--stdout[with arg, file at path is used; else terminal stdout]:stdout:_files' \
+    '--stderr[with arg, file at path is used; else terminal stderr]:stderr:_files' \
+    '1:service-target:__launchctl_domains' \
+    '*:args:given to service as a vecotr. They replace default args & are not merged' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-kill() {
+  # Usage: launchctl kill <signal-number|signal-name> <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:signal:_signals -s' \
+    '2:service-target:__launchctl_domains' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-blame() {
+  # Usage: launchctl blame <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:service-target:__launchctl_domains' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-print() {
+  # Usage: launchctl print <domain-target> | <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:domain-target OR service-target:__launch_agents' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-print-cache() {
+  # Usage: launchctl print-cache
+  integer ret=0
+  return ret
+}
+
+_launchctl-print-disabled() {
+  # Usage: launchctl print-disabled <domain-specifier>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:domain-specifier:__launchctl_domains' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-plist() {
+  # Usage: launchctl plist [segment,section] <path>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  # '1::segment,section:' \
+
+  _arguments -w -C -S -s \
+    '1:path:__launch_agents' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-procinfo() {
+  # Usage: launchctl procinfo <pid>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:pid:_pids' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-hostinfo() {
+  # Usage: launchctl hostinfo
+  integer ret=0
+  return ret
+}
+
+_launchctl-resolveport() {
+  # Usage: launchctl resolveport <owner-pid> <port-name>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:owner pid:_pids' \
+    '2:port:_ports' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-limit() {
+  # Usage: launchctl limit [<limit-name> [<both-limits> | <soft-limit> <hard-limit>]
+  integer ret=1
+  local expl
+  local -a opts
+  if (( CURRENT == 2 )); then
+    opts=(cpu filesize data stack core rss memlock maxproc maxfiles) && ret=0
+    _wanted name expl "resource" compadd -a opts && ret=0
+  fi
+  return ret
+}
+
+_launchctl-runstats() {
+  # Usage: launchctl runstats <service-target>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:service-target:__launchctl_domains' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-examine() {
+  # Usage: launchctl examine [<tool> [arg0, arg1, ... , @PID, ...]]
+  # $ launchctl examine leaks @PID
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '*:to examine - tool, argv, @PID:(@PID)' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-config() {
+  # Usage: launchctl config <system|user> <parameter> <value>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:system or user:((
+      system\:"modifies the configuration for the system domain"
+      user\:"modifies the configuration for all user domains"
+    ))' \
+    '2:configuration params:((
+      umask\:"modifies the umask(2) applied to services launched in the domain"
+      path\:"modifies the PATH environment variable set on each service in the domain"
+    ))' \
+    '2:configuration values:integer as octal OR string' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-dumpstate() {
+  # Usage: launchctl dumpstate
+  integer ret=0
+  return ret
+}
+
+_launchctl-dumpjpcategory() {
+  # Usage: launchctl dumpjpcategory
+  integer ret=0
+  return ret
+}
+
+_launchctl-reboot() {
+  # Usage: launchctl reboot [system|halt|userspace|logout|apps] [-s]
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '-s[unknown]' \
+    '1::userspace to teardown:((
+      system\:"begin reboot of system, equiv to calling the reboot2() interface (not reboot(2) syscall)"
+      userspace\:"tear down as usual, except when has quiesced, launchd will re-exec itself"
+      logout\:"tear down the caller GUI login session in a manner similar to logout from the Apple menu (faster)"
+      apps\:"terminate all apps running in caller GUI login session that did not come plist (Finder, Dock and SystemUIServer remain)"
+      halt\:"make reboot(2) syscall when userspace is torn down & pass RB_HALT flag, halting system, not initiating a reboot"
+    ))' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-bootshell() {
+  # Usage: launchctl bootshell [continue]
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:: :((
+      continue\:"normal system reboot may be resumed"
+    ))' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-load() {
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '-w[override the disabled key and sets it to false]' \
+    '-F[force the loading of the plist ignoring the Disabled key]' \
+    '-S+[look for job in specified session]:session name:(Aqua Login-Window Background StandardIO System)' \
+    '-D+[look for *.plist files for the given domain]:domain:((
+        system\:"searches /System/Library for either daemons or agents"
+        local\:"searches /Library for either daemons or agents"
+        network\:"searches /Network. This session type is no longer valid"
+        user\:"searches the home directory of the calling user for agents only"
+      ))' \
+    '*:service:__launch_agents' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-unload() {
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '-w[override the Disabled key and sets it to true]' \
+    '-S+[look for job in specified session]:session name:(Aqua Login-Window Background StandardIO System)' \
+    '-D+[look for *.plist files for the given domain]:domain:((
+        system\:"searches /System/Library for either daemons or agents"
+        local\:"searches /Library for either daemons or agents"
+        network\:"searches /Network. This session type is no longer valid"
+        user\:"searches the home directory of the calling user for agents only"
+      ))' \
+    '*:Service:__launch_agents' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-remove() {
+  # Usage: launchctl remove <service-name>
+  integer ret=1
+  _call_function ret __launchctl_jobs && ret=0
+  return ret
+}
+
+_launchctl-list() {
+  # Usage: launchctl list [service-name]
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '-x[(deprecated) output information in XML property list]' \
+    '*::job:__launchctl_jobs' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-start() {
+  # Usage: launchctl start <service-name>
+  integer ret=1
+  _call_function ret __launchctl_jobs && ret=0
+  return ret
+}
+
+_launchctl-stop() {
+  # Usage: launchctl stop <service-name>
+  integer ret=1
+  _call_function ret __launchctl_jobs && ret=0
+  return ret
+}
+
+_launchctl-setenv() {
+  # Usage: launchctl setenv <<key> <value>, ...>
+  integer ret=1
+  local expl
+  local -a vars
+  vars=${(z)$(env 2>&1 | cut -d = -f 1)} && ret=0
+  _wanted vars expl "environment variables" compadd - $vars && ret=0
+  return ret
+}
+
+_launchctl-unsetenv() {
+  # Usage: launchctl unsetenv <key, ...>
+  integer ret=1
+  local expl
+  local -a vars
+  vars=${(z)$(launchctl export | cut -d = -f 1)}
+  _wanted vars expl "environment variables" compadd - $vars && ret=0
+  return ret
+}
+
+_launchctl-getenv() {
+  # Usage: launchctl getenv <key>
+  integer ret=1
+  _call_function ret _launchctl-unsetenv
+  return ret
+}
+
+_launchctl-bsexec() {
+  # Usage: launchctl bsexec <pid> <program> [...]
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:pid:_pids' \
+    '2:program:_command_names -e' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-asuser() {
+  # Usage: launchctl asuser <uid> <program> [...]
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:uid:' \
+    '2:program:_command_names -e' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-submit() {
+  # Usage: launchctl submit -l <label> [-p <program>] [-o <stdout-path>] [-e <stderr-path] -- <command> [arg0, arg1, ...]
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '-l+[unique label to assign this job to launchd]:label:' \
+    '-p[program to execute regardless of one given after --]::program:_command_names -e' \
+    '-o[where to send the stdout of the program]::stdout path:_files' \
+    '-e[where to send the stderr of the program]::stderr path:_files' \
+    '1:command:_command_names -e' \
+    '*:arguments:' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-managerpid() {
+  # Usage: launchctl managerpid
+  integer ret=1
+  return ret
+}
+
+_launchctl-manageruid() {
+  # Usage: launchctl managerpid
+  integer ret=1
+  return ret
+}
+
+_launchctl-managername() {
+  # Usage: launchctl managername
+  integer ret=1
+  return ret
+}
+
+_launchctl-error() {
+  # Usage: launchctl error [posix|mach|bootstrap] <code>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:domain:(posix mach bootstrap)' \
+    '2:code: _wanted errno expl errno compadd -a errnos' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl-variant() {
+  # Usage: launchctl variant
+  integer ret=0
+  return ret
+}
+
+_launchctl-version() {
+  # Usage: launchctl version
+  integer ret=0
+  return ret
+}
+
+_launchctl-help() {
+  # Usage: launchctl help <subcommand>
+  integer ret=1
+  local curcontext=$curcontext state line
+
+  _arguments -w -C -S -s \
+    '1:subcommand: _describe -t commands "subcommands" _commands' \
+    && ret=0
+
+  return ret
+}
+
+_launchctl "$@"
+
+# _launchctl-getrusage() {
+#   integer ret=1
+#   local context state state_descr line
+#   typeset -A val_args
+#
+#   _values "target" \
+#     "self[launchd itself]" \
+#     "children[children of launchd]" && ret=0
+#
+#   return ret
+# }
+
+# _launchctl-log() {
+#   integer ret=1
+#   local curcontext=$curcontext state line
+#
+#   # Not perfect but it works
+#   _arguments \
+#     ':action:(level only mask)' \
+#     ':log level:(debug info notice warning error critical alert emergency)' \
+#     ':log level or mask:(only mask debug info notice warning error critical alert emergency)' \
+#     ":log level:(debug info notice warning error critical alert emergency)" && ret=0
+#
+#   return ret
+# }
+
+# _launchctl-bslist() {
+#   integer ret=1
+#   local curcontext=$curcontext state line
+#
+#   _arguments -w -C -S -s \
+#     '-j[add the job which registered each service after each name]' && ret=0
+#
+#   return ret
+# }
+
+# _launchctl-bstree() {
+#   integer ret=1
+#   local curcontext=$curcontext state line
+#
+#   _arguments -w -C -S -s \
+#     '-j[add the job which registered each service after each name]' && ret=0
+#
+#   return ret
+# }
+
+# vim: set ft=zsh:

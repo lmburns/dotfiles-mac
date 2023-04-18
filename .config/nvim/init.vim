@@ -1775,36 +1775,18 @@ command! -nargs=? -complete=dir AF
   Plug 'ap/vim-css-color'
 
 " ============== Themes ============== {{{
-  " Plug 'Rigellute/rigel'
-  " Plug 'lifepillar/vim-gruvbox8'
-  " Plug 'morhetz/gruvbox'
-  " Plug 'gavinok/spaceway.vim'
-  Plug 'AlessandroYorba/Alduin'
   Plug 'franbach/miramare'
-  Plug 'wojciechkepka/bogster'
-  Plug 'wojciechkepka/vim-github-dark'
-  Plug 'haishanh/night-owl.vim'
-  Plug 'ackyshake/Spacegray.vim'
-  Plug 'bluz71/vim-nightfly-guicolors'
   Plug 'savq/melange'
-  Plug 'ajmwagar/vim-deus'
-  Plug 'habamax/vim-gruvbit'
   Plug 'lmburns/kimbox'
   Plug 'nanotech/jellybeans.vim'
   Plug 'cocopon/iceberg.vim'
   Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/edge'
   Plug 'sainnhe/everforest'
-  Plug 'joshdick/onedark.vim'
   Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
-  Plug 'ghifarit53/daycula-vim' , {'branch' : 'main'}
   Plug 'ghifarit53/tokyonight-vim'
-  Plug 'srcery-colors/srcery-vim'
-  Plug 'wadackel/vim-dogrun'
   Plug 'glepnir/oceanic-material'
   Plug 'drewtempelmeyer/palenight.vim'
-  Plug 'KeitaNakamura/neodark.vim'
-  Plug 'tyrannicaltoucan/vim-deep-space'
 
   " Lua
   Plug 'marko-cerovac/material.nvim'

@@ -804,13 +804,13 @@ map gFa ${{clear; fadd}}
 map gFl ${{clear; flog}}
 map gFu ${{clear; funtrack}}
 
-map gfa :{{ dotbare_add; unselect; }}
-map gfai ${{clear; dotbare fadd -f}}
-map gfs ${{clear; dotbare fstat}}
-map gfu ${{clear; dotbare funtrack}}
-map gftr ${{clear; dotbare ls-tree -r master --name-only | bat}}
-map gftt ${{clear; dotbare ls-tree -r master --name-only | as-tree --color always | bat -p}}
-map gftu ${{clear; dotbare ls-files --other | bat}}
+map gda :{{ dotbare_add; unselect; }}
+map gdai ${{clear; dotbare fadd -f}}
+map gds ${{clear; dotbare fstat}}
+map gdu ${{clear; dotbare funtrack}}
+map gdtr ${{clear; dotbare ls-tree -r master --name-only | bat}}
+map gdtt ${{clear; dotbare ls-tree -r master --name-only | as-tree --color always | bat -p}}
+map gdtu ${{clear; dotbare ls-files --other | bat}}
 # ]]]
 
 # == TUI's == [[[
@@ -821,7 +821,7 @@ map bo $bow       # buku bookmarks
 # ]]]
 
 # == Directory Movement == [[[
-map gd cd ~/Documents
+map gD cd ~/Documents
 map gW cd ~/vimwiki
 map gG cd ~/projects/github
 map gp cd ~/projects
