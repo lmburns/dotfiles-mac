@@ -1,0 +1,5 @@
+# @desc: zsh history stats
+
+fc -ln 0 | awk '{print $1}' | sort | uniq -c | sort -nr | head
+
+# vim: ft=zsh:et:sw=2:ts=2:sts=-1:fdm=marker:fmr=[[[,]]]:

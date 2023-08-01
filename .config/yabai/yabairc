@@ -1,12 +1,21 @@
 #!/usr/bin/env sh
 
+# TODO: remove minimum size
+
+# mission-control desktop labels
+yabai -m space 1 --label I
+yabai -m space 2 --label II
+yabai -m space 3 --label III
+yabai -m space 4 --label IV
+yabai -m space 5 --label V
+
 # === variables =============================================================
 gaps="2"
 gaps_inner="10"
 
-normal_border_color="4c96a8"
-focused_border_color="a3b95a"
-preselect_border_color="98676a"
+normal_border_color="4c96a8" # #4396a8
+focused_border_color="98676a" # #98676a
+preselect_border_color="a3b95a" # #a3b95a
 
 # === if disabling SIP ======================================================
 # sudo yabai --load-sa
@@ -17,36 +26,41 @@ preselect_border_color="98676a"
 # sudo yabai --load-sa
 
 # === apps to ignore ========================================================
-yabai -m rule --add app="R" manage=off
-yabai -m rule --add app="^mpv$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Automator$" sticky=on layer=above manage=off
 yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Console$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Font Book$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Alfred Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="^LuLu Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Disk Utility$" sticky=on layer=above manage=off
+yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Messages$" sticky=on layer=above manage=off
+yabai -m rule --add app="^iTerm2$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="^General$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Contacts$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Stats$" sticky=on layer=above manage=off
+yabai -m rule --add app="^mpv$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Adobe Photoshop 2020" sticky=on layer=above manage=off
 yabai -m rule --add app="^LibreOffice" sticky=on layer=above manage=off
 yabai -m rule --add app="^CleanMyMac" sticky=on layer=above manage=off
 yabai -m rule --add app="^App Uninstaller$" sticky=on layer=above manage=off
-yabai -m rule --add app="^Font Book$" sticky=on layer=above manage=off
 yabai -m rule --add app="Photoshop" sticky=on layer=above manage=off
 yabai -m rule --add app="^Keychain Access$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Bartender 4$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-Elements$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Karabiner-EventViewer$" sticky=on layer=above manage=off
-yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
-yabai -m rule --add app="^Alfred Preferences$" sticky=on layer=above manage=off
-yabai -m rule --add app="^Disk Utility$" sticky=on layer=above manage=off
-yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
-yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
-yabai -m rule --add app="Fantastical" manage=off
 yabai -m rule --add app="Discord" sticky=on layer=above manage=off
-yabai -m rule --add app="^Messages$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Netiquette$" sticky=on layer=above manage=off
-yabai -m rule --add app="Bear" manage=off layer=above
-yabai -m rule --add app="^iTerm2$" manage=on
+yabai -m rule --add app="^Bear$" manage=off layer=above
 yabai -m rule --add app="^DaisyDisk$" sticky=on layer=above manage=off
-yabai -m rule --add app="KnockKnock" sticky=on layer=above manage=off
-yabai -m rule --add app="Contacts" sticky=on layer=above manage=off
+yabai -m rule --add app="^KnockKnock$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Canary Mail" sticky=on layer=above manage=off
+
+yabai -m rule --add app="R" manage=off
+yabai -m rule --add app="^Fantastical" manage=off
 yabai -m rule --add app="^Flux$" manage=off
 yabai -m rule --add app="^PDF Expert$" manage=off
 yabai -m rule --add app="^Skim$" manage=off
@@ -61,7 +75,7 @@ yabai -m config layout bsp
 # yabai -m config --space 2 layout float
 
 # When focusing a window, put the mouse at its center. (default: off)
-yabai -m config mouse_follows_focus           off
+yabai -m config mouse_follows_focus           on
 # Automatically focus the window under the mouse. (off, autoraise, autofocus)
 yabai -m config focus_follows_mouse           autoraise
 # Specify which display a newly created window should be managed in.
@@ -74,7 +88,7 @@ yabai -m config window_origin_display         default
 yabai -m config window_placement              second_child
 # Floating windows are always on top (default: off)
 #    System Integrity Protection must be partially disabled.
-yabai -m config window_topmost                off
+yabai -m config window_topmost                on
 
 # Windows will keep their zoom-state through layout changes
 yabai -m window_zoom_persist                  on
@@ -94,7 +108,7 @@ yabai -m config active_window_opacity         1.0
 yabai -m config normal_window_opacity         0.95
 # Duration of transition between active / normal opacity.
 #    System Integrity Protection must be partially disabled.
-yabai -m config window_opacity_duration       0.2
+yabai -m config window_opacity_duration       0.25
 
 # Duration of window frame animation.
 #    If 0.0, the change in dimension is not animated.
@@ -113,7 +127,7 @@ yabai -m config window_border               on
 yabai -m config window_border_hidpi         on
 # Width of window border.
 #    If the given width is an odd number, it will be incremented by 1.
-yabai -m config window_border_width         5
+yabai -m config window_border_width         3
 # Radius of window border
 yabai -m config window_border_radius        12
 # Blur border allowing it to act as a backdrop for transparent windows.
@@ -168,26 +182,12 @@ yabai -m config window_gap                      "${gaps_inner}"
 
 # === statusbar =============================================================
 yabai -m config status_bar_space_icon_strip  I II III IV V VI VII VIII IX X
+yabai -m config external_bar                 off:41:0
 
 # https://github.com/felixhageloh/uebersicht
-#
-# Add 20 padding to the top and 0 padding to the bottom of
-#   every space located on the main display
-# yabai -m config external_bar main:20:0
 
-# Add 20 padding to the top and bottom of
-#   all spaces regardless of the display it belongs to
-# yabai -m config external_bar all:20:20
+# yabai -m query --windows yabai -m signal --add event=window_destroyed action="bash "$HOME/mybin/yabai/winfocus.sh""
+# yabai -m query --windows
 
-# yabai -m config                                 \
-#     split_ratio                  0.50           \
-#     split_type                   auto           \
-#     auto_balance                 off            \
-#     top_padding                  12             \
-#     bottom_padding               12             \
-#     left_padding                 12             \
-#     right_padding                12             \
-#     window_gap                   06             \
-
-# focus on next window when closing
-# yabai -m signal --add event=window_destroyed action="bash "$HOME/mybin/yabai/winfocus.sh""
+yabai -m signal --add event=window_destroyed active=yes action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus mouse &> /dev/null || yabai -m window --focus \$(yabai -m query --windows --space | jq .[0].id) &> /dev/null"
+yabai -m signal --add event=window_minimized active=yes action="if \$(yabai -m query --windows --window \$YABAI_WINDOW_ID | jq -r '.\"is-floating\"'); then yabai -m query --windows --window &> /dev/null || yabai -m window --focus mouse &> /dev/null || yabai -m window --focus \$(yabai -m query --windows --space | jq .[0].id) &> /dev/null; fi"

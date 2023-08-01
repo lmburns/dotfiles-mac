@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>homebrew.mxcl.pueue</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/lucasburns/.config/zsh/zinit/polaris/bin/pueued</string>
+      <string>--verbose</string>
+      <string>--config /Users/lucasburns/.config/pueue/pueue.yml"</string>
+    </array>
+    <key>KeepAlive</key>
+    <false/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>WorkingDirectory</key>
+    <string>/usr/local/var</string>
+    <key>StandardErrorPath</key>
+    <string>/usr/local/var/log/pueued.log</string>
+    <key>StandardOutPath</key>
+    <string>/usr/local/var/log/pueued.log</string>
+  </dict>
+</plist>

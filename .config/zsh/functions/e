@@ -1,0 +1,22 @@
+# Desc: Edit files with a search and fzf
+
+function e() {
+  local -a files sel
+  files=$(command fd -Hi -tf -d3 --color=always)
+  sel=("$(
+    print -rl -- "$files[@]" | \
+    fzf --query="$1" \
+      --multi \
+      --select-1 \
+      --exit-0 \
+      --bind=ctrl-x:toggle-sort \
+      --preview-window=':nohidden,right:65%:wrap' \
+      --preview='([[ -f {} ]] && (bat --style=numbers --color=always {})) || ([[ -d {} ]] && (exa -TL 3 --color=always --icons {} | less)) || echo {} 2> /dev/null | head -200'
+    )"
+  )
+  [[ -n "$sel" ]] && ${EDITOR:-vim} "${sel[@]}"
+}
+
+e
+
+# vim: ft=zsh:et:sw=0:ts=2:sts=2:fdm=marker:fmr={{{,}}}:

@@ -22,4 +22,4 @@ _installer() {
     "(-showChoicesXML -showChoicesAfterApplyingChangesXML)-applyChoiceChangesXML[apply changes specified in the file to the package and proceeds with installation]:path to choice changes xml file:_files" \
     "(-target -tgt)"{-target,-tgt}"[path to target volume or domain]:path to target volume or domain:_files -/" \
     "(-package -pkg)"{-package,-pkg}"[path to package file]:path to package file:_files -g *.{pkg,mpkg}"
-}]
+}

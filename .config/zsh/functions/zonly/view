@@ -1,0 +1,112 @@
+#===========================================================================
+#    @author: Lucas Burns <burnsac@me.com> [lmburns]                       #
+#   @created: 2023-06-20                                                   #
+#    @module: view                                                         #
+#      @desc: view various builtin parameters                              #
+#===========================================================================
+
+alias pbuiltins='print -raC2 ${(kv)builtins} | bat --color=always -l bash'
+
+local function __make_patt() {
+  typeset -g REPLY
+  if [[ -n "$2" ]]; then
+    if (( $1 )) { REPLY="$2" } else { REPLY="*${2}*" }
+  else
+    REPLY=
+  fi
+}
+
+local function print_help() {
+  print::usage "view" "[FLAGS] [PATTERN]"
+  print::header 12 "OPTIONS"
+  print::flag 20 "-e,--exact     " "          Pattern is an exact"
+  print::flag 20 "-f,--func      " "[PATTERN] Show functions"
+  print::flag 20 "-v,--vec       " "[PATTERN] Show vector variables"
+  print::flag 20 "-A,--assoc     " "[PATTERN] Show associative array variables"
+  print::flag 20 "-a,--arr       " "[PATTERN] Show all array variables"
+  print::flag 20 "-H,--hidden    " "[PATTERN] Show hidden variables"
+  print::flag 20 "-h,--special   " "[PATTERN] Show special variables"
+  print::flag 20 "-l,--local     " "[PATTERN] Show local variables"
+  print::flag 20 "-g,--global    " "[PATTERN] Show global variables"
+  print::flag 20 "-x,--export    " "[PATTERN] Show exported variables"
+  print::flag 20 "-r,--readonly  " "[PATTERN] Show readonly variables"
+  print::flag 20 "    --help      " "          Show help menu"
+}
+
+# @desc: view various params
+function view() {
+  builtin emulate -L zsh -o extendedglob -o warncreateglobal
+  zmodload -Fa zsh/zutil b:zparseopts
+
+  local -a match mend mbegin
+  local -A Opts; builtin zparseopts -D -E -A Opts -- \
+      -exact      e   \
+      -func::     f:: \
+      -vec::      v:: \
+      -assoc::    A:: \
+      -arr::      a:: \
+      -hidden::   H:: \
+      -special::  h:: \
+      -local::    l:: \
+      -global::   g:: \
+      -export::   x:: \
+      -readonly:: r:: \
+      -help \
+      || { zerr 'invalid option given; see {cmd}--help{%}'; return 7; }
+
+  (( $+Opts[--help] )) && { print_help; return 0; }
+
+  integer ex; ex=$(( ${+Opts[--exact]} + ${+Opts[-e]} ))
+
+  {
+    case "${(k)Opts[@]}" {
+      ((#b)*(--export|-x)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -xmp1 "$REPLY"
+        # export -mp1 "$REPLY"
+      ;|
+      ((#b)*(--global|-g)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -gmp1 "$REPLY"
+      ;|
+      ((#b)*(--local|-l)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -mp1 "$REPLY"
+      ;|
+      ((#b)*(--func|-f)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        # typeset -mfp1 "$REPLY"
+        functions -mx2 "$REPLY"
+      ;|
+      ((#b)*(--vec|-v)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -map1 "$REPLY"
+      ;|
+      ((#b)*(--assoc|-A)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -mAp1 $REPLY
+      ;|
+      ((#b)*(--arr|-a)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -map1 "$REPLY"
+        typeset -mAp1 "$REPLY"
+      ;|
+      ((#b)*(--hidden|-H)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -mHp1 "$REPLY"
+      ;|
+      ((#b)*(--special|-h)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -mhp1 "$REPLY"
+      ;|
+      ((#b)*(--readonly|-r)*)
+        __make_patt $ex "${Opts[$match[1]]}"
+        typeset -mhp1 "$REPLY"
+      ;|
+    }
+  } | bat -fl bash
+}
+
+view "$@"
+
+# vim: ft=zsh:et:sw=0:ts=2:sts=2

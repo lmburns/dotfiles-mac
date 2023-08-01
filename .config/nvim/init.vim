@@ -903,7 +903,6 @@ Plug 'antoinemadec/coc-fzf'
     \ 'coc-git',
     \ 'coc-go',
     \ 'coc-clangd',
-    \ 'coc-rls',
     \ 'coc-rust-analyzer',
     \ 'coc-toml',
     \ ]

@@ -1,0 +1,12 @@
+# @desc: wrapper for bat to use COLUMNS for less with a status-column
+#        Use COLUMNS-2 if status-column is enabled in $LESS
+
+if (( $+COLUMNS )) && [[ $1 != "cache" ]]; then
+  # LESS_COLUMNS
+  # LESS_LINES
+  command bat --terminal-width=$(( COLUMNS - 2 )) "${(z)@:-/dev/stdin}"
+else
+  command bat "${(z)@:-/dev/stdin}"
+fi
+
+# vim: ft=zsh:et:sw=0:ts=2:sts=2

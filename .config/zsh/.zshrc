@@ -13,33 +13,45 @@ umask 022
 
 typeset -gaxU path fpath manpath infopath cdpath mailpath
 typeset -fuz zkbd
-
 typeset -ga mylogs
 typeset -F4 SECONDS=0
 function zflai-msg()    { mylogs+=( "$1" ); }
 function zflai-assert() { mylogs+=( "$4"${${${1:#$2}:+FAIL}:-OK}": $3" ); }
+function zflai-print()  {
+  print -rl -- ${(%)mylogs//(#b)(\[*\]): (*)/"%F{1}$match[1]%f: $match[2]"};
+}
 
-zflai-msg "[path] $path"
+# Write zprof to $mylogs
+function zflai-zprof() {
+  local -a arr; arr=( ${(@f)"$(zprof)"} )
+  for idx ({3..7}) {
+    zflai-msg "[zprof]: ${arr[$idx]##*)[[:space:]]##}"
+  }
+}
+
+zflai-msg "[path]: ${${(pj:\n\t:)path}}"
 
 typeset -g DIRSTACKSIZE=20
-typeset -g HISTFILE="${XDG_CACHE_HOME}/zsh/zsh_history"
-typeset -g HISTORY_IGNORE="(youtube-dl|you-get|yt-dlp|history|exit)"
-typeset -g HIST_STAMPS="yyyy-mm-dd"
-typeset -g SAVEHIST=10_000_000
+typeset -ga histignore=(youtube-dl you-get yt-dlp history exit)
+# typeset -g SAVEHIST=10_000_000
+typeset -g SAVEHIST=$(( 10 ** 7 ))  # 10_000_000
 typeset -g HISTSIZE=$(( 1.2 * SAVEHIST ))
-
-typeset -g LISTMAX=50                            # Size of asking history
-typeset -g PROMPT_EOL_MARK="%F{14}⏎%f"           # Show non-newline ending
-typeset -g ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;)'    # Don't eat space with | with tabs
+typeset -g HISTFILE="${XDG_CACHE_HOME}/zsh/zsh_history"
+typeset -g HIST_STAMPS="yyyy-mm-dd"
+typeset -g LISTMAX=50                         # Size of asking history
+typeset -g ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;)' # Don't eat space with | with tabs
 typeset -g ZLE_SPACE_SUFFIX_CHARS=$'&|'
 typeset -g MAILCHECK=0                 # Don't check for mail
-typeset -g KEYTIMEOUT=15               # Key action time
+typeset -g KEYTIMEOUT=25               # Key action time
 typeset -g FCEDIT=$EDITOR              # History editor
 typeset -g READNULLCMD=$PAGER          # Read contents of file with <file
 typeset -g TMPPREFIX="${TMPDIR%/}/zsh" # Temporary file prefix for zsh
-typeset -g TIMEFMT=$'\n================\nCPU\t%P\nuser\t%*U\nsystem\t%*S\ntotal\t%*E'
-# typeset -g ZSH_DISABLE_COMPFIX=true
-# typeset -g WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
+typeset -g PROMPT_EOL_MARK="%F{14}⏎%f" # Show non-newline ending
+# setopt no_prompt_cr                    # Can turn off above
+
+watch=( notme )
+PERIOD=3600
+function periodic() { builtin rehash; }
 
 # Various highlights for CLI
 typeset -ga zle_highlight=(
@@ -52,8 +64,14 @@ typeset -ga zle_highlight=(
   paste:none
 )
 
+[[ "$UID" = 0 ]] && { unset HISTFILE && SAVEHIST=0 }
+
 () {
-  declare -g SPROMPT="Correct '%F{12}%B%R%f%b' to '%F{14}%B%r%f%b'? [%F{2}%Bnyae%f%b] : "  # Spelling correction prompt
+  # local i; i=${(@j::):-%\({1..36}"e,$( echoti cuf 2 ),)"}
+  # typeset -g PS4=$'%(?,,\t\t-> %F{9}%?%f\n)'
+  # PS4+=$'%2<< %{\e[2m%}%e%22<<             %F{10}%N%<<%f %3<<  %I%<<%b %(1_,%F{11}%_%f ,)'
+
+  declare -g SPROMPT="Correct '%F{17}%B%R%f%b' to '%F{20}%B%r%f%b'? [%F{18}%Bnyae%f%b] : "  # Spelling correction prompt
   declare -g PS2="%F{1}%B>%f%b "  # Secondary prompt
   declare -g RPS2="%F{14}%i:%_%f" # Right-hand side of secondary prompt
 
@@ -66,53 +84,72 @@ typeset -ga zle_highlight=(
   )
 }
 
-setopt hist_ignore_space    # don't add if starts with space
-setopt hist_reduce_blanks   # remove superfluous blanks from each command
-setopt hist_ignore_all_dups # replace duplicate commands in history file
+setopt no_global_rcs          # startup files in /etc/ won't be ran
+
+setopt hist_ignore_space      # don't add if starts with space
+setopt hist_reduce_blanks     # remove superfluous blanks from each command
+setopt hist_ignore_all_dups   # replace duplicate commands in history file
 setopt hist_expire_dups_first # if the internal history needs to be trimmed, trim oldest
-setopt hist_ignore_dups     # do not enter command lines into the history list if they are duplicates
-setopt hist_fcntl_lock      # use fcntl to lock hist file
-setopt extended_history     # add beginning time, and duration to history
-setopt append_history       # all zsh sessions append to history, not replace
-setopt share_history        # imports commands and appends, can't be used with inc_append_history
-setopt no_hist_no_functions # don't remove function defs from history
+setopt hist_ignore_dups       # do not enter command lines into the history list if they are duplicates
+setopt hist_fcntl_lock        # use fcntl to lock hist file
+setopt hist_subst_pattern     # allow :s/:& to use patterns instead of strings
+setopt extended_history       # add beginning time, and duration to history
+setopt append_history         # all zsh sessions append to history, not replace
+setopt share_history          # imports commands and appends, can't be used with inc_append_history
+setopt no_hist_no_functions   # don't remove function defs from history
 # setopt inc_append_history # append to history file immediately, not when shell exits
 
-# cd settings
-setopt auto_cd      auto_pushd  pushd_ignore_dups  pushd_minus  pushd_silent
-setopt cdable_vars  # if item isn't a dir, try to expand as if it started with '~'
+setopt auto_cd             # if command name is a dir, cd to it
+setopt auto_pushd          # cd pushes old dir onto dirstack
+setopt pushd_ignore_dups   # don't push dupes onto dirstack
+setopt pushd_minus         # inverse meaning of '-' and '+'
+setopt pushd_silent        # don't print dirstack after 'pushd' / 'popd'
+setopt cd_silent           # don't print dirstack after 'cd'
+setopt cdable_vars         # if item isn't a dir, try to expand as if it started with '~'
+# setopt chase_dots          # if path segment has '..' within it, resolve it if it's a symlink
 
-setopt prompt_subst # allow substitution in prompt (p10k?)
-
-setopt numeric_glob_sort # sort globs numerically
+# setopt case_match        # when using =~ make expression sensitive to case
+setopt rematch_pcre      # when using =~ use PCRE regex
 setopt case_paths        # nocaseglob + casepaths treats only path components containing glob chars as insensitive
 setopt no_case_glob      # case insensitive globbing
 setopt extended_glob     # extension of glob patterns
 setopt glob_complete     # generate glob matches as completions
 setopt glob_dots         # do not require leading '.' for dotfiles
-# setopt glob_star_short   # ** = **/*; *** = ***/*
+setopt glob_star_short   # ** == **/*      *** == ***/*
+setopt numeric_glob_sort # sort globs numerically
+# setopt magicequalsubst   # # ~ substitution and tab completion after a = (for --x=filename args)
+# setopt glob_assign       # expand globs on RHS of assignment
+# setopt glob_subst        # results from param exp are eligible for filename generation
 
-setopt complete_in_word # cursor stays in same spot with completion
+# setopt recexact         # if a word matches exactly, accept it even if ambiguous
+setopt complete_in_word # allow completions in middle of word
 setopt always_to_end    # cursor moves to end of word if completion is executed
-setopt auto_menu        # automatically use menu completion (fzf-tab?)
+setopt auto_menu        # automatically use menu completion (non-fzf-tab)
+setopt menu_complete    # insert first match from menu if ambiguous (non-fzf-tab)
+setopt list_types       # show type of file with indicator at end
+setopt list_packed      # completions don't have to be equally spaced
+# setopt no_always_to_end
 
 # setopt hash_cmds     # save location of command preventing path search
+setopt hash_dirs     # when command is completed hash it and all in the dir
 setopt hash_list_all # when a completion is attempted, hash it first
 setopt correct      # try to correct mistakes
 
+setopt prompt_subst         # allow substitution in prompt (p10k?)
 setopt rc_quotes            # allow '' inside '' to indicate a single '
-setopt rm_star_silent       # do not query the user before executing `rm *' or `rm path/*'
+setopt no_rm_star_silent    # do not query the user before executing `rm *' or `rm path/*'
 setopt interactive_comments # allow comments in history
 setopt unset                # don't error out when unset parameters are used
 setopt long_list_jobs       # list jobs in long format by default
 setopt notify               # report status of jobs immediately
-setopt multios              # perform multiple implicit tees and cats with redirection
+setopt short_loops          # allow short forms of for, repeat, select, if, function
+# setopt ksh_option_print    # print all options
+# setopt brace_ccl           # expand in braces, which would not otherwise, into a sorted list
+
 setopt c_bases              # 0xFF instead of 16#FF
 setopt c_precedences        # use precendence of operators found in C
 setopt octal_zeroes         # 077 instead of 8#77
-# setopt ksh_option_print    # print all options
-# setopt brace_ccl           # expand in braces, which would not otherwise, into a sorted list
-# setopt list_types          # show type of file with indicator at end
+setopt multios              # perform multiple implicit tees and cats with redirection
 
 setopt no_flow_control # don't output flow control chars (^S/^Q)
 setopt no_hup          # don't send HUP to jobs when shell exits
@@ -120,13 +157,19 @@ setopt no_nomatch      # don't print an error if pattern doesn't match
 setopt no_beep         # don't beep on error
 setopt no_mail_warning # don't print mail warning
 
-typeset -gx ZINIT_HOME="${0:h}/zinit"
-typeset -gx GENCOMP_DIR="${0:h}/completions"
-typeset -gx GENCOMPL_FPATH="${0:h}/completions"
-local pchf="${0:h}/patches"
-local thmf="${0:h}/themes"
-
-typeset -gA ZINIT=(
+local null="zdharma-continuum/null"
+declare -gx ABSD=${${(M)OSTYPE:#*(darwin|bsd)*}:+1}
+declare -gx ZINIT_HOME="${0:h}/zinit"
+declare -gx GENCOMP_DIR="${0:h}/completions"
+declare -gx GENCOMPL_FPATH="${0:h}/completions"
+declare -gxA Plugs
+declare -gxA Zkeymaps=()
+declare -gxA Zinfo=(
+    patchd  ${0:h}/patches
+    themed  ${0:h}/themes
+    plugd   ${0:h}/plugins
+)
+declare -gA ZINIT=(
     HOME_DIR        ${0:h}/zinit
     BIN_DIR         ${0:h}/zinit/bin
     PLUGINS_DIR     ${0:h}/zinit/plugins
@@ -136,14 +179,21 @@ typeset -gA ZINIT=(
     COMPINIT_OPTS   -C
 )
 
-zmodload -F zsh/parameter p:dirstack
+alias ziu='zi update'
+alias zid='zi delete'
+
+zmodload -i zsh/complist
+zmodload -F zsh/parameter +p:dirstack
 autoload -Uz chpwd_recent_dirs add-zsh-hook cdr zstyle+
 add-zsh-hook chpwd chpwd_recent_dirs
 add-zsh-hook -Uz zsh_directory_name zsh_directory_name_cdr # cd ~[1]
 
 zstyle+ ':chpwd:*' recent-dirs-default true \
+      + ''         recent-dirs-max     20 \
       + ''         recent-dirs-file    "${ZDOTDIR}/chpwd-recent-dirs" \
-      + ''         recent-dirs-max     20
+      + ''         recent-dirs-prune   'pattern:/tmp(|/*)'
+# + ''         recent-dirs-file    "${ZDOTDIR}/chpwd-recent-dirs-${TTY##*/}" "${ZDOTDIR}/chpwd-recent-dirs" + \
+# + ''         recent-dirs-file    "${ZDOTDIR}/chpwd-recent-dirs-${TTY##*/}" \
 
 zstyle ':completion:*' recent-dirs-insert  both
 
@@ -179,9 +229,9 @@ local dir=${(%):-%~}  # ${(D)PWD}
 }
 alias c=cdr
 
-fpath=( ${0:h}/{functions,completions} "${fpath[@]}")
-autoload -Uz $fpath[1]/*(:t)
-# module_path+=( "$ZINIT[BIN_DIR]/zmodules/Src" ); zmodload zdharma/zplugin &>/dev/null
+fpath=( ${0:h}/{functions{/hooks,/lib,/utils,/wrap,/widgets,/zonly},completions} "${fpath[@]}")
+autoload -Uz $^fpath[1,7]/*(:t)
+
 # ]]]
 
 # === zinit === [[[
@@ -249,17 +299,17 @@ zt light-mode for \
 # zdharma-continuum/zinit-annex-readurl
 
 (){
-  [[ -f "${thmf}/${1}-pre.zsh" || -f "${thmf}/${1}-post.zsh" ]] && {
+  [[ -f "${Zinfo[themed]}/${1}-pre.zsh" || -f "${Zinfo[themed]}/${1}-post.zsh" ]] && {
     zt light-mode for \
         romkatv/powerlevel10k \
       id-as"${1}-theme" \
-      atinit"[[ -f ${thmf}/${1}-pre.zsh ]] && source ${thmf}/${1}-pre.zsh" \
-      atload"[[ -f ${thmf}/${1}-post.zsh ]] && source ${thmf}/${1}-post.zsh" \
-      atload'alias ntheme="$EDITOR ${thmf}/${MYPROMPT}-post.zsh"' \
+      atinit"[[ -f ${Zinfo[themed]}/${1}-pre.zsh ]] && source ${Zinfo[themed]}/${1}-pre.zsh" \
+      atload"[[ -f ${Zinfo[themed]}/${1}-post.zsh ]] && source ${Zinfo[themed]}/${1}-post.zsh" \
+      atload'alias ntheme="$EDITOR ${Zinfo[themed]}/${MYPROMPT}-post.zsh"' \
         zdharma-continuum/null
   } || {
-    [[ -f "${thmf}/${1}.toml" ]] && {
-      export STARSHIP_CONFIG="${thmf}/${MYPROMPT}.toml"
+    [[ -f "${Zinfo[themed]}/${1}.toml" ]] && {
+      export STARSHIP_CONFIG="${Zinfo[themed]}/${MYPROMPT}.toml"
       export STARSHIP_CACHE="${XDG_CACHE_HOME}/${MYPROMPT}"
       eval "$(starship init zsh)"
       zt 0a light-mode for \
@@ -270,7 +320,7 @@ zt light-mode for \
   } || print -P "%F{4}Theme ${1} not found%f"
 } "${MYPROMPT=p10k}"
 
-add-zsh-hook chpwd chpwd_ls
+add-zsh-hook chpwd @chpwd_ls
 # ]]] === annex, prompt ===
 
 # === trigger-load block ===[[[
@@ -315,7 +365,7 @@ zt 0a light-mode for \
     felipec/git-completion \
   pick'you-should-use.plugin.zsh' \
     MichaelAquilina/zsh-you-should-use \
-  lbin'!' patch"${pchf}/%PLUGIN%.patch" reset nocompletions \
+  lbin'!' patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset nocompletions \
   atinit'_w_db_faddf() { dotbare fadd -f; }; zle -N db-faddf _w_db_faddf' \
   pick'dotbare.plugin.zsh' \
     kazhala/dotbare \
@@ -323,10 +373,10 @@ zt 0a light-mode for \
     svenXY/timewarrior \
   pick'async.zsh' \
     mafredri/zsh-async \
-  patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' blockf \
+  patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset nocompile'!' blockf \
     psprint/zsh-navigation-tools \
     zdharma-continuum/zflai \
-  patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' \
+  patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset nocompile'!' \
   atinit'alias wzman="ZMAN_BROWSER=w3m zman"' \
   atinit'alias zmand="info zsh "' \
     mattmc3/zman \
@@ -334,7 +384,7 @@ zt 0a light-mode for \
 # ]]] === wait'0a' block ===
 
 #  === wait'0b' - patched === [[[
-zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
+zt 0b light-mode patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset nocompile'!' for \
   blockf atclone'cd -q functions;renamer --verbose "^\.=@" .*' \
   compile'functions/*~*.zwc' \
     marlonrichert/zsh-edit \
@@ -343,8 +393,8 @@ zt 0b light-mode patch"${pchf}/%PLUGIN%.patch" reset nocompile'!' for \
   trackbinds bindmap'\e[1\;6D -> ^[[1\;6D; \e[1\;6C -> ^[[1\;6C' \
     michaelxmcbride/zsh-dircycle \
   trackbinds bindmap'^H -> ^X^T' \
-  atload'add-zsh-hook chpwd @chwpd_dir-history-var;
-  add-zsh-hook zshaddhistory @append_dir-history-var; @chwpd_dir-history-var now' \
+  atload'add-zsh-hook chpwd @chpwd_dir-history-var;
+  add-zsh-hook zshaddhistory @append_dir-history-var; @chpwd_dir-history-var now' \
     kadaan/per-directory-history \
   atinit'zicompinit_fast; zicdreplay;' atload'unset "FAST_HIGHLIGHT[chroma-man]"' \
   atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' \
@@ -369,7 +419,7 @@ zt 0b light-mode for \
   zstyle ":history-search-multi-word" highlight-color "fg=cyan,bold";
   zstyle ":history-search-multi-word" page-size "16"' \
     zdharma-continuum/history-search-multi-word \
-  wait'[[ $TERM != "alacritty" ]]' \
+  wait'[[ $TERM != "alacritty" && -n "$DISPLAY" ]]' \
   atload'
   zstyle ":notify:*" command-complete-timeout 3
   zstyle ":notify:*" error-title "Command failed (in #{time_elapsed} seconds)"
@@ -407,7 +457,7 @@ zt 0c light-mode binary for \
     laggardkernel/git-ignore \
   lbin'f*~*.zsh' pick'*.zsh' atinit'alias fs="fstat"' \
     lmburns/fzfgit \
-  patch"${pchf}/%PLUGIN%.patch" reset \
+  patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset \
   lbin'!src/pt*(*)' \
   atclone'(){local f;builtin cd -q src;for f (*.sh){mv ${f} ${f:r:l}};}' \
   atclone"command mv -f config $ZPFX/share/ptSh/config" \
@@ -427,7 +477,7 @@ zt 0c light-mode binary for \
   lbin atclone'./autogen.sh && ./configure --enable-unicode --prefix="$ZPFX"' \
   make'install' atpull'%atclone' lman \
     KoffeinFlummi/htop-vim \
-  wait"$(has tmux)" lbin bpick'*.tar.gz*' patch"${pchf}/%PLUGIN%.patch" lman \
+  wait"$(has tmux)" lbin bpick'*.tar.gz*' patch"${Zinfo[patchd]}/%PLUGIN%.patch" lman \
   atclone'./autogen.sh && ./configure --prefix=$ZPFX' make"install PREFIX=$ZPFX" atpull'%atclone' \
     tmux/tmux \
   atclone'local d="$XDG_CONFIG_HOME/tmux/plugins";
@@ -475,8 +525,6 @@ zt 0c light-mode binary lbin lman from'gh-r' for \
     casey/just \
   atclone'./imdl --completions zsh > _imdl' atpull'%atclone' \
     casey/intermodal \
-  lbin'**/gh' atclone'./**/gh completion --shell zsh > _gh' atpull'%atclone' \
-    cli/cli \
   lbin'rclone/rclone' bpick'*osx-amd64*' mv'rclone* -> rclone' \
   atclone'./rclone/rclone genautocomplete zsh _rclone' atpull'%atclone' \
     rclone/rclone \
@@ -519,11 +567,9 @@ zt 0c light-mode null for \
     SoptikHa2/desed \
   lbin'f2' from'gh-r' \
     ayoisaiah/f2 \
-  lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo br' \
+  lbin patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset atclone'cargo br' \
   atclone"$(mv_clean)" atpull'%atclone' has'cargo' \
     crockeo/taskn \
-  lbin"!**/nvim" from'gh-r' lman bpick'*macos*' \
-    neovim/neovim \
   lbin atclone'make build' \
     @motemen/gore \
   lbin from'gh-r' bpick'*darwin_amd64*' \
@@ -563,13 +609,15 @@ zt 0c light-mode null for \
     zdharma-continuum/null \
   lbin from'gh-r' \
     muesli/duf \
-  lbin patch"${pchf}/%PLUGIN%.patch" make"PREFIX=$ZPFX install" reset \
+  lbin patch"${Zinfo[patchd]}/%PLUGIN%.patch" make"PREFIX=$ZPFX install" reset \
   atpull'%atclone' atdelete"PREFIX=$ZPFX make uninstall"  \
     zdharma/zshelldoc \
   lbin from'gh-r' bpick'*darwin_amd64*' \
   atload"source $ZPFX/share/pet/pet_atload.zsh" \
     knqyf263/pet
 
+  # lbin"!**/nvim" from'gh-r' lman bpick'*macos*' \
+  #   neovim/neovim \
 # yq isn't picking up completions
 
 # == rust [[[
@@ -580,7 +628,7 @@ zt 0c light-mode null for \
     timvisee/ffsend \
   lbin from'gh-r' wait'[[ $OSTYPE = darwin* ]]'  \
     rami3l/pacaptr \
-  lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo br' \
+  lbin patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset atclone'cargo br' \
   atclone"$(mv_clean)" \
     XAMPPRocky/tokei \
   lbin atclone'cargo build --release' \
@@ -606,7 +654,7 @@ zt 0c light-mode null for \
     lmburns/hoard \
   lbin'* -> ruplacer' from'gh-r' bpick'*osx*' atinit'alias rup="ruplacer"' \
     dmerejkowsky/ruplacer \
-  lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo br' \
+  lbin patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset atclone'cargo br' \
   atclone"$(mv_clean rgr)" lman \
     acheronfail/repgrep \
   lbin'* -> renamer' from'gh-r' bpick'*macos*' \
@@ -643,7 +691,7 @@ zt 0c light-mode null for \
     hlmtre/homemaker \
   lbin atclone'cargo br' atpull'%atclone' atclone"$(mv_clean)" \
     rdmitr/inventorize \
-  has'%PLUGIN%' lbin patch"${pchf}/%PLUGIN%.patch" reset atclone'cargo br' \
+  has'%PLUGIN%' lbin patch"${Zinfo[patchd]}/%PLUGIN%.patch" reset atclone'cargo br' \
   atclone"$(mv_clean)" atpull'%atclone' \
     magiclen/xcompress \
   lbin atclone'cargo br' atpull'%atclone' atclone"$(mv_clean)" \
@@ -769,7 +817,7 @@ zt 0c light-mode null for \
   lbin atclone'./autogen.sh; ./configure --prefix="$ZPFX"; mv -f **/**.zsh _tig' \
   make'install' atpull'%atclone' mv"_tig -> $ZINIT[COMPLETIONS_DIR]" \
     jonas/tig \
-  lbin'**/delta' from'gh-r' patch"${pchf}/%PLUGIN%.patch" \
+  lbin'**/delta' from'gh-r' patch"${Zinfo[patchd]}/%PLUGIN%.patch" \
     dandavison/delta \
   lbin from'gh-r' \
     extrawurst/gitui \
@@ -787,12 +835,15 @@ zt 0c light-mode null for \
 
 #  === snippet block === [[[
 zt light-mode is-snippet for \
-  atload'zle -N RG' \
-    $ZDOTDIR/csnippets/*.zsh \
     OMZ::plugins/iterm2 \
   atload"unalias ofd" \
   mv"_security -> $ZINIT[COMPLETIONS_DIR]/_security" svn \
     OMZ::plugins/osx
+
+zt light-mode nocompile is-snippet for $ZDOTDIR/plugins/*.zsh
+zt light-mode is-snippet for $ZDOTDIR/snippets/*.zsh
+zt light-mode is-snippet for $ZDOTDIR/snippets/bundled/*.(z|)sh
+zt light-mode is-snippet for $ZDOTDIR/snippets/zle/*.zsh
 #  ]]] === snippet block ===
 # ]]] == zinit closing ===
 
@@ -844,8 +895,9 @@ function max_history_len() {
 # Function that is ran on each command
 function zshaddhistory() {
   emulate -L zsh
-  # whence ${${(z)1}[1]} >| /dev/null || return 1 # doesn't add setting arrays
-  [[ ${1%%$'\n'} != ${~HISTORY_IGNORE} ]]
+  local -r line=${1%%$'\n'}
+  local -r cmd=${line%% *}
+  (( ! $+histignore[(r)${cmd}] ))
 }
 
 # Based on directory history
@@ -913,7 +965,7 @@ LIMIT 1
 # ]]]
 
 # === paths (GNU) === [[[
-[[ $OSTYPE = darwin* ]] && {
+(( ABSD )) && {
   typeset -gx BREW_PREFIX="$(/usr/local/bin/brew --prefix)"
   typeset -gx DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET" # vimtex
 }
@@ -925,6 +977,8 @@ LIMIT 1
 # hash -d git=$HOME/projects/github
 # hash -d pro=$HOME/projects
 # hash -d opt=$HOME/opt
+hash -d icloud=$HOME/Library/Mobile\ Documents/com~apple~CloudDocs
+hash -d zsh=$ZDOTDIR
 hash -d ghq=$HOME/ghq
 hash -d TMPDIR=${TMPDIR:A}
 hash -d config=$XDG_CONFIG_HOME
@@ -958,11 +1012,13 @@ path=(
   $PYENV_ROOT/{shims,bin}
   $CARGO_HOME/bin(N-/)
   $XDG_DATA_HOME/gem/bin(N-/)
-  $XDG_DATA_HOME/neovim/bin(N-/)
+  $XDG_DATA_HOME/bob/nvim-bin(N-/)
   $GOPATH/bin(N-/)
   $HOME/.poetry/bin(N-/)
   "${path[@]}"
 )
+
+typeset -gx TERMINFO_DIRS="$TERMINFO_DIRS:$XDG_DATA_HOME/terminfo"
 
 ### llvm
 # export LDFLAGS="-L/usr/local/opt/llvm/lib"
@@ -979,10 +1035,10 @@ export LDFLAGS="-L/usr/local/opt/bison/lib"
 # export CPPFLAGS="-I/usr/local/opt/libressl/include"
 # export PKG_CONFIG_PATH="/usr/local/opt/libressl/lib/pkgconfig"
 
-export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
-export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
-export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
+export PATH="/usr/local/opt/openssl@3.1/bin:$PATH"
+export LDFLAGS="-L/usr/local/opt/openssl@3.1/lib"
+export CPPFLAGS="-I/usr/local/opt/openssl@3.1/include"
+export PKG_CONFIG_PATH="/usr/local/opt/openssl@3.1/lib/pkgconfig"
 # ]]]
 
 #===== completions ===== [[[
@@ -1206,9 +1262,9 @@ alias dbh='\
 # atload'local x="$HOME/.iterm2_shell_integration.zsh"; [ -f "$x" ] && source "$x"' \
 #   zdharma-continuum/null \
 
-# multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lficons,functions,tmux,git-token}.zsh" \
+# multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lf,functions,tmux,git-token}.zsh" \
 zt 0b light-mode null id-as for \
-  multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lficons,functions,git-token}.zsh" \
+  multisrc="$ZDOTDIR/zsh.d/{aliases,keybindings,lf,functions,git-token}.zsh" \
     zdharma-continuum/null \
   atinit'
   export PERLBREW_ROOT="${XDG_DATA_HOME}/perl5/perlbrew";
@@ -1222,13 +1278,13 @@ zt 0b light-mode null id-as for \
   nocd null atload'source "${XDG_DATA_HOME}/cargo/env"' \
     zdharma-continuum/null
 
-zt 0c light-mode null id-as for \
-  atload'
-  ( [[ -S $XDG_DATA_HOME/pueue/pueue_lucasburns.socket ]] || \
-    pueued -dc "$XDG_CONFIG_HOME/pueue/pueue.yml" ) && {
-    ( chronic pueue clean && pueue status | rg -Fq limelight ) || chronic pueue add limelight
-  }' \
-    zdharma-continuum/null
+# zt 0c light-mode null id-as for \
+#   atload'
+#   ( [[ -S $XDG_DATA_HOME/pueue/pueue_lucasburns.socket ]] || \
+#     pueued -dc "$XDG_CONFIG_HOME/pueue/pueue.yml" ) && {
+#     ( chronic pueue clean && pueue status | rg -Fq limelight ) || chronic pueue add limelight
+#   }' \
+#     zdharma-continuum/null
 
 # nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || TS_SOCKET=/tmp/ts1 ts limelight >/dev/null" \
 # nocd atinit"TS_SOCKET=/tmp/ts1 ts -C && ts -l | rg -Fq 'limelight' || chronic ts limelight"
@@ -1246,7 +1302,7 @@ zt 0c light-mode null id-as for \
 }
 # ]]]
 
-[[ $OSTYPE = darwin* ]] && {
+(( ABSD )) && {
   local fdir="${BREW_PREFIX}/share/zsh/site-functions"
   [[ -z ${fpath[(re)$fdir]} && -d "$fdir" ]] && fpath=( "${fpath[@]}" "${fdir}" )
 }
@@ -1257,15 +1313,15 @@ path=( "${ZPFX}/bin" "${path[@]}" )                # add back to be beginning
 path=( "${path[@]:#}" )                            # remove empties
 path=( "${(u)path[@]}" )                           # remove duplicates; goenv adds twice?
 
-# {
-#   [[ $(defaults read -g InitialKeyRepeat) -ne 14 ]] && krp -d 14
-#   [[ $(defaults read -g KeyRepeat)        -ne 2  ]] && krp -r 2
-# } >/dev/null
+{
+  [[ $(defaults read -g InitialKeyRepeat) -ne 14 ]] && krp -d 18
+  [[ $(defaults read -g KeyRepeat)        -ne 2  ]] && krp -r 2
+} >/dev/null
 
 # default value is 2 (30ms ?), each tick = 15ms
-defaults write NSGlobalDomain KeyRepeat -int 2
+# defaults write NSGlobalDomain KeyRepeat -int 2
 # default value is 15 (225ms), each tick = 15ms
-defaults write NSGlobalDomain InitialKeyRepeat -int 18
+# defaults write NSGlobalDomain InitialKeyRepeat -int 18
 
 zflai-msg "[zshrc] File took ${(M)$(( SECONDS * 1000 ))#*.?} ms"
 
