@@ -30,10 +30,10 @@
 
 [credential "https://github.com"]
   helper =
-  helper = !/usr/bin/gh auth git-credential
+  helper = !/usr/local/bin/gh auth git-credential
 [credential "https://gist.github.com"]
   helper =
-  helper = !/usr/bin/gh auth git-credential
+  helper = !/usr/local/bin/gh auth git-credential
 
 [url "git@github.com:"]
   # Always use GitHub SSH protocol to push.
@@ -267,7 +267,7 @@
   y = %C(bold yellow)%h%C(reset) %C(cyan)%s%C(reset) %C(bold magenta)-%C(reset) %ar %C(bold blue)<%an>%C(reset)%C(auto)%d%C(reset)%n
 
 [gpg]
-  program = /usr/bin/gpg
+  program = /usr/local/bin/gpg
   # format = x509
 
 # [gpg "x509"]
